@@ -850,6 +850,196 @@
           }
         }
       }
+    },
+    "weather.current" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Navarende"
+          }
+        }
+      }
+    },
+    "weather.forecast" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7-dagers varsel"
+          }
+        }
+      }
+    },
+    "weather.precipitation" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nedbor"
+          }
+        }
+      }
+    },
+    "weather.humidity" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fuktighet"
+          }
+        }
+      }
+    },
+    "weather.loading" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Henter vaerdata..."
+          }
+        }
+      }
+    },
+    "weather.error" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kunne ikke hente vaerdata"
+          }
+        }
+      }
+    },
+    "weather.noData" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingen vaerdata"
+          }
+        }
+      }
+    },
+    "weather.noDataDescription" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flytt kartet for a hente vaerdata for omradet"
+          }
+        }
+      }
+    },
+    "weather.updated %@" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oppdatert %@"
+          }
+        }
+      }
+    },
+    "weather.back" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tilbake"
+          }
+        }
+      }
+    },
+    "weather.daySummary" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dagsoversikt"
+          }
+        }
+      }
+    },
+    "weather.hourly" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timevarsel"
+          }
+        }
+      }
+    },
+    "weather.accessibility %lld" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vaer: %lld grader"
+          }
+        }
+      }
+    },
+    "measurement.selectMode" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Velg maletype"
+          }
+        }
+      }
+    },
+    "measurement.distanceHint" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trykk pa kartet for a legge til punkter"
+          }
+        }
+      }
+    },
+    "measurement.areaHint" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trykk pa kartet for a markere omradet (min. 3 punkter)"
+          }
+        }
+      }
+    },
+    "measurement.points %lld" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Punkter: %lld"
+          }
+        }
+      }
+    },
+    "measurement.clear" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nullstill"
+          }
+        }
+      }
+    },
+    "measurement.switchMode" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bytt modus"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

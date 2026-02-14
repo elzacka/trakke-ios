@@ -6,6 +6,9 @@ struct MapControlsOverlay: View {
     var onCategoryTapped: (() -> Void)?
     var onRouteTapped: (() -> Void)?
     var onOfflineTapped: (() -> Void)?
+    var onWeatherTapped: (() -> Void)?
+    var onMeasurementTapped: (() -> Void)?
+    var weatherWidget: AnyView?
 
     var body: some View {
         VStack {
@@ -30,6 +33,11 @@ struct MapControlsOverlay: View {
 
     private var controlStack: some View {
         VStack(spacing: 12) {
+            // Weather widget
+            if let weatherWidget {
+                weatherWidget
+            }
+
             // Search button
             Button {
                 onSearchTapped?()
@@ -78,6 +86,18 @@ struct MapControlsOverlay: View {
                     .clipShape(RoundedRectangle(cornerRadius: 10))
             }
             .accessibilityLabel(String(localized: "categories.title"))
+
+            // Measurement
+            Button {
+                onMeasurementTapped?()
+            } label: {
+                Image(systemName: "ruler")
+                    .font(.system(size: 20))
+                    .frame(width: 44, height: 44)
+                    .background(.regularMaterial)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+            }
+            .accessibilityLabel(String(localized: "measurement.title"))
 
             // Offline maps
             Button {

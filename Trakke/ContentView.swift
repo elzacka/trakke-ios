@@ -8,6 +8,8 @@ struct ContentView: View {
     @State private var poiViewModel = POIViewModel()
     @State private var routeViewModel = RouteViewModel()
     @State private var offlineViewModel = OfflineViewModel()
+    @State private var weatherViewModel = WeatherViewModel()
+    @State private var measurementViewModel = MeasurementViewModel()
     @State private var showSearchSheet = false
     @State private var showCategoryPicker = false
     @State private var showPOIDetail = false
@@ -16,6 +18,8 @@ struct ContentView: View {
     @State private var showRouteName = false
     @State private var showOfflineManager = false
     @State private var showDownloadArea = false
+    @State private var showWeatherSheet = false
+    @State private var showMeasurementSheet = false
     @State private var newRouteName = ""
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.modelContext) private var modelContext
@@ -47,9 +51,24 @@ struct ContentView: View {
             if offlineViewModel.hasValidSelection {
                 showDownloadArea = true
             }
+        } else if measurementViewModel.isActive {
+            measurementViewModel.addPoint(coordinate)
         } else if routeViewModel.isDrawing {
             routeViewModel.addPoint(coordinate)
         }
+    }
+
+    // MARK: - Viewport Handler
+
+    private func handleViewportChanged(bounds: ViewportBounds, zoom: Double) {
+        poiViewModel.viewportChanged(bounds: bounds, zoom: zoom)
+
+        // Fetch weather for map center
+        let center = CLLocationCoordinate2D(
+            latitude: (bounds.north + bounds.south) / 2,
+            longitude: (bounds.east + bounds.west) / 2
+        )
+        weatherViewModel.fetchForecast(for: center)
     }
 
     // MARK: - iPhone Layout
@@ -64,9 +83,9 @@ struct ContentView: View {
                 isDrawing: routeViewModel.isDrawing,
                 selectionCorner1: offlineViewModel.selectionCorner1,
                 selectionCorner2: offlineViewModel.selectionCorner2,
-                onViewportChanged: { bounds, zoom in
-                    poiViewModel.viewportChanged(bounds: bounds, zoom: zoom)
-                },
+                measurementCoordinates: measurementViewModel.points,
+                measurementMode: measurementViewModel.mode,
+                onViewportChanged: handleViewportChanged,
                 onPOISelected: { poi in
                     poiViewModel.selectPOI(poi)
                     showPOIDetail = true
@@ -80,12 +99,23 @@ struct ContentView: View {
                 onSearchTapped: { showSearchSheet = true },
                 onCategoryTapped: { showCategoryPicker = true },
                 onRouteTapped: { showRouteList = true },
-                onOfflineTapped: { showOfflineManager = true }
+                onOfflineTapped: { showOfflineManager = true },
+                onWeatherTapped: { showWeatherSheet = true },
+                onMeasurementTapped: { showMeasurementSheet = true },
+                weatherWidget: AnyView(
+                    WeatherWidgetView(viewModel: weatherViewModel) {
+                        showWeatherSheet = true
+                    }
+                )
             )
             .padding(.top)
 
             if routeViewModel.isDrawing {
                 drawingToolbar
+            }
+
+            if measurementViewModel.isActive {
+                measurementToolbar
             }
 
             if offlineViewModel.isSelectingArea && !offlineViewModel.hasValidSelection {
@@ -139,6 +169,15 @@ struct ContentView: View {
         .sheet(isPresented: $showDownloadArea) {
             DownloadAreaSheet(viewModel: offlineViewModel)
                 .presentationDetents([.medium, .large])
+        }
+        .sheet(isPresented: $showWeatherSheet) {
+            WeatherSheet(viewModel: weatherViewModel)
+                .presentationDetents([.medium, .large])
+        }
+        .sheet(isPresented: $showMeasurementSheet) {
+            MeasurementSheet(viewModel: measurementViewModel)
+                .presentationDetents([.medium])
+                .interactiveDismissDisabled(measurementViewModel.isActive)
         }
         .alert(String(localized: "routes.namePrompt"), isPresented: $showRouteName) {
             TextField(String(localized: "routes.namePlaceholder"), text: $newRouteName)
@@ -208,6 +247,25 @@ struct ContentView: View {
                     }
                 }
 
+                Section(String(localized: "weather.title")) {
+                    if let forecast = weatherViewModel.forecast {
+                        Button { showWeatherSheet = true } label: {
+                            HStack(spacing: 8) {
+                                Image(systemName: WeatherViewModel.sfSymbol(for: forecast.current.symbol))
+                                    .foregroundStyle(.orange)
+                                Text("\(Int(forecast.current.temperature.rounded()))°")
+                                    .font(.headline)
+                                    .foregroundStyle(.primary)
+                                Text(String(format: "%.1f m/s", forecast.current.windSpeed))
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    } else if weatherViewModel.isLoading {
+                        ProgressView()
+                    }
+                }
+
                 Section(String(localized: "categories.title")) {
                     ForEach(POICategory.allCases) { category in
                         Button {
@@ -244,9 +302,9 @@ struct ContentView: View {
                     isDrawing: routeViewModel.isDrawing,
                     selectionCorner1: offlineViewModel.selectionCorner1,
                     selectionCorner2: offlineViewModel.selectionCorner2,
-                    onViewportChanged: { bounds, zoom in
-                        poiViewModel.viewportChanged(bounds: bounds, zoom: zoom)
-                    },
+                    measurementCoordinates: measurementViewModel.points,
+                    measurementMode: measurementViewModel.mode,
+                    onViewportChanged: handleViewportChanged,
                     onPOISelected: { poi in
                         poiViewModel.selectPOI(poi)
                         showPOIDetail = true
@@ -255,11 +313,23 @@ struct ContentView: View {
                 )
                 .ignoresSafeArea()
 
-                MapControlsOverlay(viewModel: mapViewModel)
-                    .padding(.top)
+                MapControlsOverlay(
+                    viewModel: mapViewModel,
+                    onMeasurementTapped: { showMeasurementSheet = true },
+                    weatherWidget: AnyView(
+                        WeatherWidgetView(viewModel: weatherViewModel) {
+                            showWeatherSheet = true
+                        }
+                    )
+                )
+                .padding(.top)
 
                 if routeViewModel.isDrawing {
                     drawingToolbar
+                }
+
+                if measurementViewModel.isActive {
+                    measurementToolbar
                 }
 
                 if offlineViewModel.isSelectingArea && !offlineViewModel.hasValidSelection {
@@ -281,6 +351,15 @@ struct ContentView: View {
             .sheet(isPresented: $showDownloadArea) {
                 DownloadAreaSheet(viewModel: offlineViewModel)
                     .presentationDetents([.medium, .large])
+            }
+            .sheet(isPresented: $showWeatherSheet) {
+                WeatherSheet(viewModel: weatherViewModel)
+                    .presentationDetents([.medium, .large])
+            }
+            .sheet(isPresented: $showMeasurementSheet) {
+                MeasurementSheet(viewModel: measurementViewModel)
+                    .presentationDetents([.medium])
+                    .interactiveDismissDisabled(measurementViewModel.isActive)
             }
         }
         .alert(String(localized: "routes.namePrompt"), isPresented: $showRouteName) {
@@ -334,6 +413,61 @@ struct ContentView: View {
                         .clipShape(Capsule())
                 }
                 .disabled(routeViewModel.drawingCoordinates.count < 2)
+            }
+            .padding(.bottom, 40)
+        }
+    }
+
+    // MARK: - Measurement Toolbar
+
+    private var measurementToolbar: some View {
+        VStack {
+            Spacer()
+
+            VStack(spacing: 8) {
+                if let result = measurementViewModel.formattedResult {
+                    Text(result)
+                        .font(.title3.monospacedDigit().bold())
+                        .foregroundStyle(Color.Trakke.brand)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 8)
+                        .background(.regularMaterial)
+                        .clipShape(Capsule())
+                }
+
+                HStack(spacing: 16) {
+                    Button(role: .destructive) {
+                        measurementViewModel.stop()
+                    } label: {
+                        Label(String(localized: "common.cancel"), systemImage: "xmark")
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 10)
+                            .background(.regularMaterial)
+                            .clipShape(Capsule())
+                    }
+
+                    Button {
+                        measurementViewModel.undoLastPoint()
+                    } label: {
+                        Label(String(localized: "route.undo"), systemImage: "arrow.uturn.backward")
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 10)
+                            .background(.regularMaterial)
+                            .clipShape(Capsule())
+                    }
+                    .disabled(measurementViewModel.points.isEmpty)
+
+                    Button {
+                        measurementViewModel.clearAll()
+                    } label: {
+                        Label(String(localized: "measurement.clear"), systemImage: "trash")
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 10)
+                            .background(.regularMaterial)
+                            .clipShape(Capsule())
+                    }
+                    .disabled(measurementViewModel.points.isEmpty)
+                }
             }
             .padding(.bottom, 40)
         }

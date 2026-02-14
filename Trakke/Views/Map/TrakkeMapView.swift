@@ -45,6 +45,8 @@ struct TrakkeMapView: UIViewRepresentable {
     var isDrawing = false
     var selectionCorner1: CLLocationCoordinate2D?
     var selectionCorner2: CLLocationCoordinate2D?
+    var measurementCoordinates: [CLLocationCoordinate2D] = []
+    var measurementMode: MeasurementMode?
     var onViewportChanged: ((ViewportBounds, Double) -> Void)?
     var onPOISelected: ((POI) -> Void)?
     var onMapTapped: ((CLLocationCoordinate2D) -> Void)?
@@ -122,7 +124,15 @@ struct TrakkeMapView: UIViewRepresentable {
             corner2: selectionCorner2
         )
 
+        // Update measurement overlay
+        context.coordinator.updateMeasurementOverlay(
+            on: mapView,
+            coordinates: measurementCoordinates,
+            mode: measurementMode
+        )
+
         context.coordinator.isDrawingMode = isDrawing
+        context.coordinator.isMeasuringMode = measurementMode != nil
     }
 
     func makeCoordinator() -> Coordinator {
@@ -142,12 +152,16 @@ struct TrakkeMapView: UIViewRepresentable {
         let onPOISelected: ((POI) -> Void)?
         let onMapTapped: ((CLLocationCoordinate2D) -> Void)?
         var isDrawingMode = false
+        var isMeasuringMode = false
 
         private var currentPOIIds: Set<String> = []
         private var currentRouteIds: Set<String> = []
         private var drawingPolyline: MLNPolyline?
         private var drawingAnnotations: [RoutePointAnnotation] = []
         private var selectionPolygon: MLNPolygon?
+        private var measurementPolyline: MLNPolyline?
+        private var measurementPolygon: MLNPolygon?
+        private var measurementAnnotations: [RoutePointAnnotation] = []
 
         init(
             viewModel: MapViewModel,
@@ -164,7 +178,8 @@ struct TrakkeMapView: UIViewRepresentable {
         // MARK: - Tap Gesture
 
         @objc func handleMapTap(_ gesture: UITapGestureRecognizer) {
-            guard isDrawingMode, let mapView = gesture.view as? MLNMapView else { return }
+            guard isDrawingMode || isMeasuringMode,
+                  let mapView = gesture.view as? MLNMapView else { return }
             let point = gesture.location(in: mapView)
             let coordinate = mapView.convert(point, toCoordinateFrom: mapView)
             onMapTapped?(coordinate)
@@ -232,6 +247,9 @@ struct TrakkeMapView: UIViewRepresentable {
             if annotation === drawingPolyline {
                 return UIColor(hex: "#3e4533")
             }
+            if annotation === measurementPolyline || annotation === measurementPolygon {
+                return .systemOrange
+            }
             if let polyline = annotation as? MLNPolyline, let colorHex = polyline.title {
                 return UIColor(hex: colorHex)
             }
@@ -242,7 +260,8 @@ struct TrakkeMapView: UIViewRepresentable {
             _ mapView: MLNMapView,
             lineWidthForPolylineAnnotation annotation: MLNPolyline
         ) -> CGFloat {
-            annotation === drawingPolyline ? 3 : 4
+            if annotation === measurementPolyline { return 3 }
+            return annotation === drawingPolyline ? 3 : 4
         }
 
         func mapView(
@@ -250,7 +269,9 @@ struct TrakkeMapView: UIViewRepresentable {
             alphaForShapeAnnotation annotation: MLNShape
         ) -> CGFloat {
             if annotation === selectionPolygon { return 0.2 }
+            if annotation === measurementPolygon { return 0.15 }
             if annotation === drawingPolyline { return 0.8 }
+            if annotation === measurementPolyline { return 0.9 }
             return 0.9
         }
 
@@ -258,7 +279,8 @@ struct TrakkeMapView: UIViewRepresentable {
             _ mapView: MLNMapView,
             fillColorForPolygonAnnotation annotation: MLNPolygon
         ) -> UIColor {
-            UIColor.systemBlue
+            if annotation === measurementPolygon { return .systemOrange }
+            return UIColor.systemBlue
         }
 
         // MARK: - POI Annotations
@@ -380,6 +402,57 @@ struct TrakkeMapView: UIViewRepresentable {
             let polygon = MLNPolygon(coordinates: &corners, count: 4)
             mapView.addAnnotation(polygon)
             selectionPolygon = polygon
+        }
+
+        // MARK: - Measurement Overlay
+
+        func updateMeasurementOverlay(
+            on mapView: MLNMapView,
+            coordinates: [CLLocationCoordinate2D],
+            mode: MeasurementMode?
+        ) {
+            // Remove old measurement elements
+            if let existing = measurementPolyline {
+                mapView.removeAnnotation(existing)
+                measurementPolyline = nil
+            }
+            if let existing = measurementPolygon {
+                mapView.removeAnnotation(existing)
+                measurementPolygon = nil
+            }
+            if !measurementAnnotations.isEmpty {
+                mapView.removeAnnotations(measurementAnnotations)
+                measurementAnnotations = []
+            }
+
+            guard let mode, !coordinates.isEmpty else { return }
+
+            // Add point markers
+            let pointAnnotations = coordinates.enumerated().map { index, coord in
+                RoutePointAnnotation(coordinate: coord, index: index)
+            }
+            mapView.addAnnotations(pointAnnotations)
+            measurementAnnotations = pointAnnotations
+
+            if mode == .distance && coordinates.count >= 2 {
+                var mutableCoords = coordinates
+                let polyline = MLNPolyline(
+                    coordinates: &mutableCoords,
+                    count: UInt(coordinates.count)
+                )
+                mapView.addAnnotation(polyline)
+                measurementPolyline = polyline
+            } else if mode == .area && coordinates.count >= 3 {
+                // Close the polygon
+                var closed = coordinates
+                closed.append(coordinates[0])
+                let polygon = MLNPolygon(
+                    coordinates: &closed,
+                    count: UInt(closed.count)
+                )
+                mapView.addAnnotation(polygon)
+                measurementPolygon = polygon
+            }
         }
 
         // MARK: - Annotation Views

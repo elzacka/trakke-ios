@@ -2,7 +2,9 @@ import Foundation
 
 enum APIError: Error, LocalizedError {
     case invalidURL
+    case invalidResponse
     case httpError(statusCode: Int)
+    case rateLimited
     case decodingError(Error)
     case networkError(Error)
     case timeout
@@ -11,8 +13,12 @@ enum APIError: Error, LocalizedError {
         switch self {
         case .invalidURL:
             return "Ugyldig URL"
+        case .invalidResponse:
+            return "Ugyldig respons"
         case .httpError(let code):
             return "HTTP-feil: \(code)"
+        case .rateLimited:
+            return "For mange forsok"
         case .decodingError(let error):
             return "Dekodingsfeil: \(error.localizedDescription)"
         case .networkError(let error):
