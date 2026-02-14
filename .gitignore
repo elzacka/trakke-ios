@@ -43,6 +43,9 @@ Thumbs.db
 .env
 .env.local
 
+# AI developer context
+CLAUDE.md
+
 # Fastlane
 fastlane/report.xml
 fastlane/Preview.html
