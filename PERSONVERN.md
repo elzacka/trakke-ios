@@ -1,4 +1,4 @@
-# Personvernerklaering for Tråkke
+# Personvernerklæring for Tråkke
 
 **Sist oppdatert:** 14. februar 2026
 **Behandlingsansvarlig:** Tazk
