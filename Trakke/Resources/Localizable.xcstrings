@@ -400,6 +400,146 @@
           }
         }
       }
+    },
+    "poi.details" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detaljer"
+          }
+        }
+      }
+    },
+    "poi.coordinates" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Koordinater"
+          }
+        }
+      }
+    },
+    "poi.moreInfo" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mer informasjon"
+          }
+        }
+      }
+    },
+    "poi.detail.address" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adresse"
+          }
+        }
+      }
+    },
+    "poi.detail.capacity" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kapasitet"
+          }
+        }
+      }
+    },
+    "poi.detail.category" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kategori"
+          }
+        }
+      }
+    },
+    "poi.detail.description" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beskrivelse"
+          }
+        }
+      }
+    },
+    "poi.detail.height" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoyde"
+          }
+        }
+      }
+    },
+    "poi.detail.operator" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Driftsansvarlig"
+          }
+        }
+      }
+    },
+    "poi.detail.inscription" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inskripsjon"
+          }
+        }
+      }
+    },
+    "poi.detail.period" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Periode"
+          }
+        }
+      }
+    },
+    "poi.detail.shelterType" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Type ly"
+          }
+        }
+      }
+    },
+    "poi.detail.municipality" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kommune"
+          }
+        }
+      }
+    },
+    "poi.detail.county" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fylke"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
