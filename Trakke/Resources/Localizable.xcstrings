@@ -6,7 +6,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trakke"
+            "value" : "Tr\u00e5kke"
           }
         }
       }
@@ -26,7 +26,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gratone"
+            "value" : "Gråtone"
           }
         }
       }
@@ -46,7 +46,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sok etter steder eller adresser"
+            "value" : "S\u00f8k etter steder eller adresser"
           }
         }
       }
@@ -56,7 +56,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sok"
+            "value" : "S\u00f8k"
           }
         }
       }
@@ -136,7 +136,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Observasjonstarn"
+            "value" : "Observasjonst\u00e5rn"
           }
         }
       }
@@ -186,7 +186,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Last ned omrade"
+            "value" : "Last ned omr\u00e5de"
           }
         }
       }
@@ -196,7 +196,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vaer"
+            "value" : "V\u00e6r"
           }
         }
       }
@@ -206,7 +206,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Maleverktoy"
+            "value" : "M\u00e5leverkt\u00f8y"
           }
         }
       }
@@ -266,7 +266,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vis malestokk"
+            "value" : "Vis m\u00e5lestokk"
           }
         }
       }
@@ -366,7 +366,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hoydeprofil"
+            "value" : "H\u00f8ydeprofil"
           }
         }
       }
@@ -476,7 +476,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hoyde"
+            "value" : "H\u00f8yde"
           }
         }
       }
@@ -556,7 +556,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trykk + for a tegne en ny rute"
+            "value" : "Trykk + for \u00e5 tegne en ny rute"
           }
         }
       }
@@ -636,7 +636,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Henter hoydeprofil..."
+            "value" : "Henter h\u00f8ydeprofil..."
           }
         }
       }
@@ -646,7 +646,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hoydeprofil ikke tilgjengelig"
+            "value" : "H\u00f8ydeprofil ikke tilgjengelig"
           }
         }
       }
@@ -666,7 +666,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ingen nedlastede omrader"
+            "value" : "Ingen nedlastede omr\u00e5der"
           }
         }
       }
@@ -676,7 +676,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Last ned kartomrader for frakoblet bruk"
+            "value" : "Last ned kartomr\u00e5der for frakoblet bruk"
           }
         }
       }
@@ -696,7 +696,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Velg omrade"
+            "value" : "Velg omr\u00e5de"
           }
         }
       }
@@ -706,7 +706,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trykk to hjorner pa kartet for a velge omrade"
+            "value" : "Trykk to hj\u00f8rner p\u00e5 kartet for \u00e5 velge omr\u00e5de"
           }
         }
       }
@@ -716,7 +716,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Omrade valgt"
+            "value" : "Omr\u00e5de valgt"
           }
         }
       }
@@ -726,7 +726,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trykk forste hjorne"
+            "value" : "Trykk f\u00f8rste hj\u00f8rne"
           }
         }
       }
@@ -736,7 +736,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trykk andre hjorne"
+            "value" : "Trykk andre hj\u00f8rne"
           }
         }
       }
@@ -756,7 +756,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Omradenavn"
+            "value" : "Omr\u00e5denavn"
           }
         }
       }
@@ -806,7 +806,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Estimert storrelse"
+            "value" : "Estimert st\u00f8rrelse"
           }
         }
       }
@@ -836,7 +836,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fullfort"
+            "value" : "Fullf\u00f8rt"
           }
         }
       }
@@ -856,7 +856,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Navarende"
+            "value" : "N\u00e5v\u00e6rende"
           }
         }
       }
@@ -876,7 +876,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nedbor"
+            "value" : "Nedb\u00f8r"
           }
         }
       }
@@ -896,7 +896,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Henter vaerdata..."
+            "value" : "Henter v\u00e6rdata..."
           }
         }
       }
@@ -906,7 +906,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kunne ikke hente vaerdata"
+            "value" : "Kunne ikke hente v\u00e6rdata"
           }
         }
       }
@@ -916,7 +916,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ingen vaerdata"
+            "value" : "Ingen v\u00e6rdata"
           }
         }
       }
@@ -926,7 +926,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Flytt kartet for a hente vaerdata for omradet"
+            "value" : "Flytt kartet for \u00e5 hente v\u00e6rdata for omr\u00e5det"
           }
         }
       }
@@ -976,7 +976,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vaer: %lld grader"
+            "value" : "V\u00e6r: %lld grader"
           }
         }
       }
@@ -986,7 +986,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Velg maletype"
+            "value" : "Velg m\u00e5letype"
           }
         }
       }
@@ -996,7 +996,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trykk pa kartet for a legge til punkter"
+            "value" : "Trykk p\u00e5 kartet for \u00e5 legge til punkter"
           }
         }
       }
@@ -1006,7 +1006,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trykk pa kartet for a markere omradet (min. 3 punkter)"
+            "value" : "Trykk p\u00e5 kartet for \u00e5 markere omr\u00e5det (min. 3 punkter)"
           }
         }
       }
@@ -1056,7 +1056,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vis vaerwidget"
+            "value" : "Vis v\u00e6rwidget"
           }
         }
       }
@@ -1096,7 +1096,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Grader, desimalminutter (sjokart)"
+            "value" : "Grader, desimalminutter (sj\u00f8kart)"
           }
         }
       }
@@ -1106,7 +1106,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nodtjenester og forvaltning"
+            "value" : "N\u00f8dtjenester og forvaltning"
           }
         }
       }
@@ -1116,7 +1116,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Militaer presisjon"
+            "value" : "Milit\u00e6r presisjon"
           }
         }
       }
@@ -1136,7 +1136,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vaer"
+            "value" : "V\u00e6r"
           }
         }
       }
@@ -1156,7 +1156,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Topografiske kart, stedsnavn, adresser, hoydedata"
+            "value" : "Topografiske kart, stedsnavn, adresser, h\u00f8ydedata"
           }
         }
       }
@@ -1226,7 +1226,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "All brukerdata lagres lokalt pa enheten"
+            "value" : "All brukerdata lagres lokalt p\u00e5 enheten"
           }
         }
       }
@@ -1236,7 +1236,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kun EU/EOS-datakilder"
+            "value" : "Kun EU/E\u00d8S-datakilder"
           }
         }
       }
@@ -1266,7 +1266,7 @@
         "no" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tom sok"
+            "value" : "T\u00f8m s\u00f8k"
           }
         }
       }

@@ -22,7 +22,7 @@ struct ElevationProfileView: View {
         Chart(Array(points.enumerated()), id: \.offset) { _, point in
             AreaMark(
                 x: .value("Avstand", point.distance / 1000),
-                y: .value("Hoyde", point.elevation)
+                y: .value("Høyde", point.elevation)
             )
             .foregroundStyle(
                 .linearGradient(
@@ -34,7 +34,7 @@ struct ElevationProfileView: View {
 
             LineMark(
                 x: .value("Avstand", point.distance / 1000),
-                y: .value("Hoyde", point.elevation)
+                y: .value("Høyde", point.elevation)
             )
             .foregroundStyle(Color.Trakke.brand)
             .lineStyle(StrokeStyle(lineWidth: 2))
