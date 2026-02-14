@@ -540,6 +540,126 @@
           }
         }
       }
+    },
+    "routes.empty" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingen ruter"
+          }
+        }
+      }
+    },
+    "routes.emptyDescription" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trykk + for a tegne en ny rute"
+          }
+        }
+      }
+    },
+    "routes.namePrompt" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gi ruten et navn"
+          }
+        }
+      }
+    },
+    "routes.namePlaceholder" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rutenavn"
+          }
+        }
+      }
+    },
+    "route.points" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Punkter"
+          }
+        }
+      }
+    },
+    "route.undo" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Angre"
+          }
+        }
+      }
+    },
+    "elevation.max" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maks"
+          }
+        }
+      }
+    },
+    "elevation.min" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Min"
+          }
+        }
+      }
+    },
+    "elevation.distanceKm" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avstand (km)"
+          }
+        }
+      }
+    },
+    "elevation.loading" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Henter hoydeprofil..."
+          }
+        }
+      }
+    },
+    "elevation.unavailable" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoydeprofil ikke tilgjengelig"
+          }
+        }
+      }
+    },
+    "common.close" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lukk"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
