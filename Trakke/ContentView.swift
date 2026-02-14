@@ -1,17 +1,21 @@
 import SwiftUI
 import SwiftData
+import CoreLocation
 
 struct ContentView: View {
     @State private var mapViewModel = MapViewModel()
     @State private var searchViewModel = SearchViewModel()
     @State private var poiViewModel = POIViewModel()
     @State private var routeViewModel = RouteViewModel()
+    @State private var offlineViewModel = OfflineViewModel()
     @State private var showSearchSheet = false
     @State private var showCategoryPicker = false
     @State private var showPOIDetail = false
     @State private var showRouteList = false
     @State private var showRouteDetail = false
     @State private var showRouteName = false
+    @State private var showOfflineManager = false
+    @State private var showDownloadArea = false
     @State private var newRouteName = ""
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.modelContext) private var modelContext
@@ -28,6 +32,23 @@ struct ContentView: View {
             let container = modelContext.container
             routeViewModel.setModelContainer(container)
             routeViewModel.loadRoutes()
+            offlineViewModel.startObserving()
+        }
+        .onDisappear {
+            offlineViewModel.stopObserving()
+        }
+    }
+
+    // MARK: - Map Tap Handler
+
+    private func handleMapTap(_ coordinate: CLLocationCoordinate2D) {
+        if offlineViewModel.isSelectingArea {
+            offlineViewModel.addSelectionPoint(coordinate)
+            if offlineViewModel.hasValidSelection {
+                showDownloadArea = true
+            }
+        } else if routeViewModel.isDrawing {
+            routeViewModel.addPoint(coordinate)
         }
     }
 
@@ -41,6 +62,8 @@ struct ContentView: View {
                 routes: routeViewModel.routes,
                 drawingCoordinates: routeViewModel.drawingCoordinates,
                 isDrawing: routeViewModel.isDrawing,
+                selectionCorner1: offlineViewModel.selectionCorner1,
+                selectionCorner2: offlineViewModel.selectionCorner2,
                 onViewportChanged: { bounds, zoom in
                     poiViewModel.viewportChanged(bounds: bounds, zoom: zoom)
                 },
@@ -48,9 +71,7 @@ struct ContentView: View {
                     poiViewModel.selectPOI(poi)
                     showPOIDetail = true
                 },
-                onMapTapped: { coordinate in
-                    routeViewModel.addPoint(coordinate)
-                }
+                onMapTapped: handleMapTap
             )
             .ignoresSafeArea()
 
@@ -58,12 +79,17 @@ struct ContentView: View {
                 viewModel: mapViewModel,
                 onSearchTapped: { showSearchSheet = true },
                 onCategoryTapped: { showCategoryPicker = true },
-                onRouteTapped: { showRouteList = true }
+                onRouteTapped: { showRouteList = true },
+                onOfflineTapped: { showOfflineManager = true }
             )
             .padding(.top)
 
             if routeViewModel.isDrawing {
                 drawingToolbar
+            }
+
+            if offlineViewModel.isSelectingArea && !offlineViewModel.hasValidSelection {
+                selectionHint
             }
         }
         .sheet(isPresented: $showSearchSheet) {
@@ -100,6 +126,19 @@ struct ContentView: View {
                 RouteDetailSheet(viewModel: routeViewModel, route: route)
                     .presentationDetents([.medium, .large])
             }
+        }
+        .sheet(isPresented: $showOfflineManager) {
+            DownloadManagerSheet(
+                viewModel: offlineViewModel,
+                onNewDownload: {
+                    offlineViewModel.startSelection()
+                }
+            )
+            .presentationDetents([.medium, .large])
+        }
+        .sheet(isPresented: $showDownloadArea) {
+            DownloadAreaSheet(viewModel: offlineViewModel)
+                .presentationDetents([.medium, .large])
         }
         .alert(String(localized: "routes.namePrompt"), isPresented: $showRouteName) {
             TextField(String(localized: "routes.namePlaceholder"), text: $newRouteName)
@@ -146,6 +185,29 @@ struct ContentView: View {
                     }
                 }
 
+                Section(String(localized: "offline.title")) {
+                    ForEach(offlineViewModel.packs) { pack in
+                        HStack {
+                            Text(pack.name)
+                            Spacer()
+                            if pack.progress.isComplete {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundStyle(.green)
+                                    .font(.caption)
+                            } else {
+                                ProgressView(value: pack.progress.percentage, total: 100)
+                                    .frame(width: 60)
+                            }
+                        }
+                    }
+
+                    Button {
+                        offlineViewModel.startSelection()
+                    } label: {
+                        Label(String(localized: "offline.download"), systemImage: "plus")
+                    }
+                }
+
                 Section(String(localized: "categories.title")) {
                     ForEach(POICategory.allCases) { category in
                         Button {
@@ -180,6 +242,8 @@ struct ContentView: View {
                     routes: routeViewModel.routes,
                     drawingCoordinates: routeViewModel.drawingCoordinates,
                     isDrawing: routeViewModel.isDrawing,
+                    selectionCorner1: offlineViewModel.selectionCorner1,
+                    selectionCorner2: offlineViewModel.selectionCorner2,
                     onViewportChanged: { bounds, zoom in
                         poiViewModel.viewportChanged(bounds: bounds, zoom: zoom)
                     },
@@ -187,9 +251,7 @@ struct ContentView: View {
                         poiViewModel.selectPOI(poi)
                         showPOIDetail = true
                     },
-                    onMapTapped: { coordinate in
-                        routeViewModel.addPoint(coordinate)
-                    }
+                    onMapTapped: handleMapTap
                 )
                 .ignoresSafeArea()
 
@@ -198,6 +260,10 @@ struct ContentView: View {
 
                 if routeViewModel.isDrawing {
                     drawingToolbar
+                }
+
+                if offlineViewModel.isSelectingArea && !offlineViewModel.hasValidSelection {
+                    selectionHint
                 }
             }
             .sheet(isPresented: $showPOIDetail) {
@@ -211,6 +277,10 @@ struct ContentView: View {
                     RouteDetailSheet(viewModel: routeViewModel, route: route)
                         .presentationDetents([.medium, .large])
                 }
+            }
+            .sheet(isPresented: $showDownloadArea) {
+                DownloadAreaSheet(viewModel: offlineViewModel)
+                    .presentationDetents([.medium, .large])
             }
         }
         .alert(String(localized: "routes.namePrompt"), isPresented: $showRouteName) {
@@ -266,6 +336,34 @@ struct ContentView: View {
                 .disabled(routeViewModel.drawingCoordinates.count < 2)
             }
             .padding(.bottom, 40)
+        }
+    }
+
+    // MARK: - Selection Hint
+
+    private var selectionHint: some View {
+        VStack {
+            HStack {
+                Text(offlineViewModel.selectionCorner1 == nil
+                     ? String(localized: "offline.tapFirstCorner")
+                     : String(localized: "offline.tapSecondCorner"))
+                    .font(.callout)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 10)
+                    .background(.regularMaterial)
+                    .clipShape(Capsule())
+
+                Button {
+                    offlineViewModel.cancelSelection()
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.title3)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .padding(.top, 60)
+
+            Spacer()
         }
     }
 
