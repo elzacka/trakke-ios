@@ -4,6 +4,7 @@ struct MapControlsOverlay: View {
     @Bindable var viewModel: MapViewModel
     var onSearchTapped: (() -> Void)?
     var onCategoryTapped: (() -> Void)?
+    var onRouteTapped: (() -> Void)?
 
     var body: some View {
         VStack {
@@ -52,6 +53,18 @@ struct MapControlsOverlay: View {
                     .clipShape(RoundedRectangle(cornerRadius: 10))
             }
             .accessibilityLabel(String(localized: "map.controls.myPosition"))
+
+            // Routes button
+            Button {
+                onRouteTapped?()
+            } label: {
+                Image(systemName: "point.topleft.down.to.point.bottomright.curvepath")
+                    .font(.system(size: 20))
+                    .frame(width: 44, height: 44)
+                    .background(.regularMaterial)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+            }
+            .accessibilityLabel(String(localized: "routes.title"))
 
             // Category picker
             Button {

@@ -15,17 +15,23 @@
 		23C4ABC8368D581B7E310078 /* CoordinateService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7184F69A6CAAAE19B8881113 /* CoordinateService.swift */; };
 		24CA9F0CFA4F49FCCAD9ED14 /* Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80BECFF55D8883F57D1EF29 /* Project.swift */; };
 		31602BB4473F218CC565B788 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4630C010440BDC6D4BE2E8 /* APIClient.swift */; };
+		326AFABCDC0359C2ABF7E8C9 /* RouteDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B26B00165D1496C9D5529B5 /* RouteDetailSheet.swift */; };
 		38B325270EA26C82353B2AAC /* POIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EC1194CD1BCB7392992B45D /* POIService.swift */; };
 		3993ED3E7C59EF2E48FD0121 /* SearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7E5CE034FD5DA5AE8F00993 /* SearchService.swift */; };
 		3B24D12D500F6939390B99C5 /* MapLibre in Frameworks */ = {isa = PBXBuildFile; productRef = 254EF731837012093F79F386 /* MapLibre */; };
+		4DDF07E33660131E3B064ADB /* RouteListSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A28F55BF5ED38660D8A6D8 /* RouteListSheet.swift */; };
 		4EB430D7926BB414550656AF /* MapLibreSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = B20C41DFD30629853159F9CD /* MapLibreSwiftUI */; };
+		5A5D405A78217CEF4A26AACD /* RouteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A343A959D49B61F0D7D11BB /* RouteViewModel.swift */; };
+		66640F542303D7A53822618E /* RouteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3354199B3E2F9BAC54AC475 /* RouteService.swift */; };
 		808AA69F56CBE74E3EBBC1AC /* Color+Trakke.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8239B38DDD3DD8EA4588E103 /* Color+Trakke.swift */; };
 		82AB66960A754A939F84BB4B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04BA7D999B573FB8FACDB81 /* ContentView.swift */; };
 		8F5783424360AB7D976D9A0B /* DownloadedArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3680924DBF859458A1CA6473 /* DownloadedArea.swift */; };
 		A3EFF083EC4B51A062A832A4 /* TrakkeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5473FD0EBFDACA3278AFB2E7 /* TrakkeTests.swift */; };
 		A5659CFB7E780DCA27ABCFE0 /* TrakkeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB6D3487EBF4CF7D6E9589EB /* TrakkeUITests.swift */; };
+		B2FE2723F6FC71535E972310 /* Haversine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FC502C1D744A263083D1FFA /* Haversine.swift */; };
 		BA6877207ADABA84E283B8E8 /* POI.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB10B0187C9B9DAF22046927 /* POI.swift */; };
 		C1695E5DDFF85DD005D05F33 /* Projections in Frameworks */ = {isa = PBXBuildFile; productRef = E2C260BC90781F110FC4A581 /* Projections */; };
+		C4FF56FF5DC59F82AF8E7D9D /* ElevationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4FA68D8B869F97DA683451 /* ElevationService.swift */; };
 		C979D033A45C6AE88A84B8D5 /* Waypoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC92D2F03A2083F4A6FA2DB /* Waypoint.swift */; };
 		D3ACC6AEE46BAE0878A98F34 /* SearchSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F3227EF60259A5DDBAB21C /* SearchSheet.swift */; };
 		D56237AC20BCA3F0F9885FD9 /* POIDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1B7445203EE8264FCD19E3F /* POIDetailSheet.swift */; };
@@ -33,11 +39,13 @@
 		D93E5AAF99E9E852878F6594 /* TrakkeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B03F9398DB7A9AE8052F970 /* TrakkeApp.swift */; };
 		D9BAFBF64307433147F829DA /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A197CF679D956441DF290BEE /* MapViewModel.swift */; };
 		E164ADD33A1575D147AF39EC /* SearchResultRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14BF64BF4F13693F38DFCEF3 /* SearchResultRow.swift */; };
+		E4EB953A286E201CD77B95F8 /* ElevationProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04340B1B4403F9188A626348 /* ElevationProfileView.swift */; };
 		E5B758BF45F55039DD871AA9 /* KartverketTileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D98545EADB9E8AFE4CDBC64 /* KartverketTileService.swift */; };
 		EA62572CF51EB9F2EA1CC4D0 /* MapControlsOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E771B0038B66E3A05A4334B /* MapControlsOverlay.swift */; };
 		F02120925CA0AF97951BFB53 /* CategoryPickerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 621B221F56A79F77A10ED993 /* CategoryPickerSheet.swift */; };
 		F313BA1545DC0193F31F9E39 /* POIViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5A64668B3D5B242EA5910C /* POIViewModel.swift */; };
 		F5B76961FC8F9649F633D278 /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B29F6390BF0EEEC81B010AF /* SearchViewModel.swift */; };
+		F8F517E28C3371FBAD7DC0B2 /* GPXExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB767622B5A8BEEFB5A12F9 /* GPXExportService.swift */; };
 		FE7F88708B3B888BF2E903C6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A5BE335BBFB4AF5BB2B6595F /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -59,27 +67,35 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		04340B1B4403F9188A626348 /* ElevationProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElevationProfileView.swift; sourceTree = "<group>"; };
 		0782F458BDA46D1718B3F7DB /* TrakkeTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = TrakkeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		14BF64BF4F13693F38DFCEF3 /* SearchResultRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultRow.swift; sourceTree = "<group>"; };
+		1B26B00165D1496C9D5529B5 /* RouteDetailSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteDetailSheet.swift; sourceTree = "<group>"; };
 		2A0D13322F67F86A945E22BC /* Route.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Route.swift; sourceTree = "<group>"; };
 		2B5AA04468954FB6FBA31348 /* Trakke.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Trakke.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3680924DBF859458A1CA6473 /* DownloadedArea.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadedArea.swift; sourceTree = "<group>"; };
 		3EC1194CD1BCB7392992B45D /* POIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POIService.swift; sourceTree = "<group>"; };
 		4B29F6390BF0EEEC81B010AF /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
+		4FC502C1D744A263083D1FFA /* Haversine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haversine.swift; sourceTree = "<group>"; };
 		50F70A751732CC3771DF3531 /* MapLayerPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapLayerPicker.swift; sourceTree = "<group>"; };
 		5473FD0EBFDACA3278AFB2E7 /* TrakkeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrakkeTests.swift; sourceTree = "<group>"; };
 		5CC92D2F03A2083F4A6FA2DB /* Waypoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Waypoint.swift; sourceTree = "<group>"; };
 		621B221F56A79F77A10ED993 /* CategoryPickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryPickerSheet.swift; sourceTree = "<group>"; };
 		6672497810D8608FD93B7A54 /* TrakkeMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrakkeMapView.swift; sourceTree = "<group>"; };
+		68A28F55BF5ED38660D8A6D8 /* RouteListSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteListSheet.swift; sourceTree = "<group>"; };
 		6E574D64AAAB4D2201F6384A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		7184F69A6CAAAE19B8881113 /* CoordinateService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoordinateService.swift; sourceTree = "<group>"; };
+		7A343A959D49B61F0D7D11BB /* RouteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteViewModel.swift; sourceTree = "<group>"; };
 		7D98545EADB9E8AFE4CDBC64 /* KartverketTileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KartverketTileService.swift; sourceTree = "<group>"; };
 		8239B38DDD3DD8EA4588E103 /* Color+Trakke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Trakke.swift"; sourceTree = "<group>"; };
 		8B03F9398DB7A9AE8052F970 /* TrakkeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrakkeApp.swift; sourceTree = "<group>"; };
+		8FB767622B5A8BEEFB5A12F9 /* GPXExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPXExportService.swift; sourceTree = "<group>"; };
 		9E771B0038B66E3A05A4334B /* MapControlsOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapControlsOverlay.swift; sourceTree = "<group>"; };
 		A197CF679D956441DF290BEE /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
+		A3354199B3E2F9BAC54AC475 /* RouteService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteService.swift; sourceTree = "<group>"; };
 		A5BE335BBFB4AF5BB2B6595F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A7E5CE034FD5DA5AE8F00993 /* SearchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchService.swift; sourceTree = "<group>"; };
+		AE4FA68D8B869F97DA683451 /* ElevationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElevationService.swift; sourceTree = "<group>"; };
 		B0FF38196268941563D81847 /* Trakke.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Trakke.entitlements; sourceTree = "<group>"; };
 		B461F0109B3D0DC2B15E78F6 /* Levenshtein.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Levenshtein.swift; sourceTree = "<group>"; };
 		CF5C74893EF7B38931FA8BC9 /* TrakkeUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = TrakkeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -113,8 +129,11 @@
 			isa = PBXGroup;
 			children = (
 				7184F69A6CAAAE19B8881113 /* CoordinateService.swift */,
+				AE4FA68D8B869F97DA683451 /* ElevationService.swift */,
+				8FB767622B5A8BEEFB5A12F9 /* GPXExportService.swift */,
 				7D98545EADB9E8AFE4CDBC64 /* KartverketTileService.swift */,
 				3EC1194CD1BCB7392992B45D /* POIService.swift */,
+				A3354199B3E2F9BAC54AC475 /* RouteService.swift */,
 				A7E5CE034FD5DA5AE8F00993 /* SearchService.swift */,
 			);
 			path = Services;
@@ -151,6 +170,9 @@
 		28820234EC7C97D7C59469D0 /* Routes */ = {
 			isa = PBXGroup;
 			children = (
+				04340B1B4403F9188A626348 /* ElevationProfileView.swift */,
+				1B26B00165D1496C9D5529B5 /* RouteDetailSheet.swift */,
+				68A28F55BF5ED38660D8A6D8 /* RouteListSheet.swift */,
 			);
 			path = Routes;
 			sourceTree = "<group>";
@@ -214,6 +236,7 @@
 		6C4A33A185EB71AB712E7159 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				4FC502C1D744A263083D1FFA /* Haversine.swift */,
 				B461F0109B3D0DC2B15E78F6 /* Levenshtein.swift */,
 			);
 			path = Utilities;
@@ -295,6 +318,7 @@
 			children = (
 				A197CF679D956441DF290BEE /* MapViewModel.swift */,
 				DF5A64668B3D5B242EA5910C /* POIViewModel.swift */,
+				7A343A959D49B61F0D7D11BB /* RouteViewModel.swift */,
 				4B29F6390BF0EEEC81B010AF /* SearchViewModel.swift */,
 			);
 			path = ViewModels;
@@ -455,6 +479,10 @@
 				82AB66960A754A939F84BB4B /* ContentView.swift in Sources */,
 				23C4ABC8368D581B7E310078 /* CoordinateService.swift in Sources */,
 				8F5783424360AB7D976D9A0B /* DownloadedArea.swift in Sources */,
+				E4EB953A286E201CD77B95F8 /* ElevationProfileView.swift in Sources */,
+				C4FF56FF5DC59F82AF8E7D9D /* ElevationService.swift in Sources */,
+				F8F517E28C3371FBAD7DC0B2 /* GPXExportService.swift in Sources */,
+				B2FE2723F6FC71535E972310 /* Haversine.swift in Sources */,
 				E5B758BF45F55039DD871AA9 /* KartverketTileService.swift in Sources */,
 				D65FF08B3B67A8222B2B7AAC /* Levenshtein.swift in Sources */,
 				EA62572CF51EB9F2EA1CC4D0 /* MapControlsOverlay.swift in Sources */,
@@ -466,6 +494,10 @@
 				F313BA1545DC0193F31F9E39 /* POIViewModel.swift in Sources */,
 				24CA9F0CFA4F49FCCAD9ED14 /* Project.swift in Sources */,
 				0F051C209281F38C528947D9 /* Route.swift in Sources */,
+				326AFABCDC0359C2ABF7E8C9 /* RouteDetailSheet.swift in Sources */,
+				4DDF07E33660131E3B064ADB /* RouteListSheet.swift in Sources */,
+				66640F542303D7A53822618E /* RouteService.swift in Sources */,
+				5A5D405A78217CEF4A26AACD /* RouteViewModel.swift in Sources */,
 				E164ADD33A1575D147AF39EC /* SearchResultRow.swift in Sources */,
 				3993ED3E7C59EF2E48FD0121 /* SearchService.swift in Sources */,
 				D3ACC6AEE46BAE0878A98F34 /* SearchSheet.swift in Sources */,
