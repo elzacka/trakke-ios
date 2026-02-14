@@ -2,7 +2,7 @@
 
 ## Secure by Design
 
-Trakke follows Secure by Design principles aligned with the CIS (Center for Internet Security) framework. Security is embedded from the start -- in the code, the configuration, and the defaults -- not bolted on after deployment.
+Tråkke follows Secure by Design principles aligned with the CIS (Center for Internet Security) framework. Security is embedded from the start -- in the code, the configuration, and the defaults -- not bolted on after deployment.
 
 ## Security Architecture
 
@@ -73,7 +73,7 @@ If you discover a security vulnerability, please report it responsibly:
 2. **Subject:** `[SECURITY] Trakke iOS - Brief description`
 3. **Include:** Steps to reproduce, potential impact, suggested fix if any
 
-We will acknowledge receipt within 48 hours and provide an initial assessment within 7 days.
+I will acknowledge receipt within 48 hours and provide an initial assessment within 7 days.
 
 Please do not open public GitHub issues for security vulnerabilities.
 
