@@ -1,0 +1,396 @@
+{
+  "sourceLanguage" : "no",
+  "strings" : {
+    "app.name" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trakke"
+          }
+        }
+      }
+    },
+    "map.layer.topo" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Topografisk"
+          }
+        }
+      }
+    },
+    "map.layer.grayscale" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratone"
+          }
+        }
+      }
+    },
+    "map.controls.myPosition" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Min posisjon"
+          }
+        }
+      }
+    },
+    "search.placeholder" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sok etter steder eller adresser"
+          }
+        }
+      }
+    },
+    "search.title" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sok"
+          }
+        }
+      }
+    },
+    "routes.title" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ruter"
+          }
+        }
+      }
+    },
+    "routes.new" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ny rute"
+          }
+        }
+      }
+    },
+    "waypoints.title" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veipunkter"
+          }
+        }
+      }
+    },
+    "categories.title" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kategorier"
+          }
+        }
+      }
+    },
+    "poi.tilfluktsrom" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tilfluktsrom"
+          }
+        }
+      }
+    },
+    "poi.huler" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Huler"
+          }
+        }
+      }
+    },
+    "poi.observasjonstarn" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Observasjonstarn"
+          }
+        }
+      }
+    },
+    "poi.krigsminner" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Krigsminner"
+          }
+        }
+      }
+    },
+    "poi.gapahuk" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gapahuk/vindskjul"
+          }
+        }
+      }
+    },
+    "poi.kulturminner" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kulturminner"
+          }
+        }
+      }
+    },
+    "offline.title" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frakoblede kart"
+          }
+        }
+      }
+    },
+    "offline.download" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last ned omrade"
+          }
+        }
+      }
+    },
+    "weather.title" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vaer"
+          }
+        }
+      }
+    },
+    "measurement.title" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maleverktoy"
+          }
+        }
+      }
+    },
+    "measurement.distance" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avstand"
+          }
+        }
+      }
+    },
+    "measurement.area" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Areal"
+          }
+        }
+      }
+    },
+    "settings.title" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Innstillinger"
+          }
+        }
+      }
+    },
+    "settings.coordinateFormat" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Koordinatformat"
+          }
+        }
+      }
+    },
+    "settings.baseLayer" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bakgrunnskart"
+          }
+        }
+      }
+    },
+    "settings.showScaleBar" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vis malestokk"
+          }
+        }
+      }
+    },
+    "settings.enableRotation" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tillat rotasjon"
+          }
+        }
+      }
+    },
+    "info.title" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informasjon"
+          }
+        }
+      }
+    },
+    "info.dataSources" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datakilder"
+          }
+        }
+      }
+    },
+    "info.attribution" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(c) Kartverket"
+          }
+        }
+      }
+    },
+    "common.cancel" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avbryt"
+          }
+        }
+      }
+    },
+    "common.save" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lagre"
+          }
+        }
+      }
+    },
+    "common.delete" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slett"
+          }
+        }
+      }
+    },
+    "common.edit" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rediger"
+          }
+        }
+      }
+    },
+    "common.done" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ferdig"
+          }
+        }
+      }
+    },
+    "elevation.profile" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoydeprofil"
+          }
+        }
+      }
+    },
+    "elevation.gain" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stigning"
+          }
+        }
+      }
+    },
+    "elevation.loss" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fall"
+          }
+        }
+      }
+    },
+    "gpx.export" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eksporter GPX"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}
