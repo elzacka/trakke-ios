@@ -7,7 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		018F4A247AC8082A21855C51 /* MapLayerPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50F70A751732CC3771DF3531 /* MapLayerPicker.swift */; };
 		020FCC94EFA0E15C9A21D598 /* MGRS in Frameworks */ = {isa = PBXBuildFile; productRef = 97B2D7D8D3A31119337EF8C7 /* MGRS */; };
+		0708C19448134DE5282529E4 /* TrakkeMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6672497810D8608FD93B7A54 /* TrakkeMapView.swift */; };
 		0F051C209281F38C528947D9 /* Route.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0D13322F67F86A945E22BC /* Route.swift */; };
 		22622F474B78BA60BB411BA3 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = DC4089C79E39FF29856AABDB /* Localizable.xcstrings */; };
 		24CA9F0CFA4F49FCCAD9ED14 /* Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80BECFF55D8883F57D1EF29 /* Project.swift */; };
@@ -21,6 +23,9 @@
 		C1695E5DDFF85DD005D05F33 /* Projections in Frameworks */ = {isa = PBXBuildFile; productRef = E2C260BC90781F110FC4A581 /* Projections */; };
 		C979D033A45C6AE88A84B8D5 /* Waypoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC92D2F03A2083F4A6FA2DB /* Waypoint.swift */; };
 		D93E5AAF99E9E852878F6594 /* TrakkeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B03F9398DB7A9AE8052F970 /* TrakkeApp.swift */; };
+		D9BAFBF64307433147F829DA /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A197CF679D956441DF290BEE /* MapViewModel.swift */; };
+		E5B758BF45F55039DD871AA9 /* KartverketTileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D98545EADB9E8AFE4CDBC64 /* KartverketTileService.swift */; };
+		EA62572CF51EB9F2EA1CC4D0 /* MapControlsOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E771B0038B66E3A05A4334B /* MapControlsOverlay.swift */; };
 		FE7F88708B3B888BF2E903C6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A5BE335BBFB4AF5BB2B6595F /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -46,11 +51,16 @@
 		2A0D13322F67F86A945E22BC /* Route.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Route.swift; sourceTree = "<group>"; };
 		2B5AA04468954FB6FBA31348 /* Trakke.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Trakke.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3680924DBF859458A1CA6473 /* DownloadedArea.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadedArea.swift; sourceTree = "<group>"; };
+		50F70A751732CC3771DF3531 /* MapLayerPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapLayerPicker.swift; sourceTree = "<group>"; };
 		5473FD0EBFDACA3278AFB2E7 /* TrakkeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrakkeTests.swift; sourceTree = "<group>"; };
 		5CC92D2F03A2083F4A6FA2DB /* Waypoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Waypoint.swift; sourceTree = "<group>"; };
+		6672497810D8608FD93B7A54 /* TrakkeMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrakkeMapView.swift; sourceTree = "<group>"; };
 		6E574D64AAAB4D2201F6384A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		7D98545EADB9E8AFE4CDBC64 /* KartverketTileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KartverketTileService.swift; sourceTree = "<group>"; };
 		8239B38DDD3DD8EA4588E103 /* Color+Trakke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Trakke.swift"; sourceTree = "<group>"; };
 		8B03F9398DB7A9AE8052F970 /* TrakkeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrakkeApp.swift; sourceTree = "<group>"; };
+		9E771B0038B66E3A05A4334B /* MapControlsOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapControlsOverlay.swift; sourceTree = "<group>"; };
+		A197CF679D956441DF290BEE /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
 		A5BE335BBFB4AF5BB2B6595F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B0FF38196268941563D81847 /* Trakke.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Trakke.entitlements; sourceTree = "<group>"; };
 		CF5C74893EF7B38931FA8BC9 /* TrakkeUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = TrakkeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -78,6 +88,7 @@
 		12AAA05BD044A1242A035EFE /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				7D98545EADB9E8AFE4CDBC64 /* KartverketTileService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -162,6 +173,9 @@
 		4C495BD884B3E9DC63342CB0 /* Map */ = {
 			isa = PBXGroup;
 			children = (
+				9E771B0038B66E3A05A4334B /* MapControlsOverlay.swift */,
+				50F70A751732CC3771DF3531 /* MapLayerPicker.swift */,
+				6672497810D8608FD93B7A54 /* TrakkeMapView.swift */,
 			);
 			path = Map;
 			sourceTree = "<group>";
@@ -245,6 +259,7 @@
 		B7AC659CDF74239571927955 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				A197CF679D956441DF290BEE /* MapViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -401,9 +416,14 @@
 				808AA69F56CBE74E3EBBC1AC /* Color+Trakke.swift in Sources */,
 				82AB66960A754A939F84BB4B /* ContentView.swift in Sources */,
 				8F5783424360AB7D976D9A0B /* DownloadedArea.swift in Sources */,
+				E5B758BF45F55039DD871AA9 /* KartverketTileService.swift in Sources */,
+				EA62572CF51EB9F2EA1CC4D0 /* MapControlsOverlay.swift in Sources */,
+				018F4A247AC8082A21855C51 /* MapLayerPicker.swift in Sources */,
+				D9BAFBF64307433147F829DA /* MapViewModel.swift in Sources */,
 				24CA9F0CFA4F49FCCAD9ED14 /* Project.swift in Sources */,
 				0F051C209281F38C528947D9 /* Route.swift in Sources */,
 				D93E5AAF99E9E852878F6594 /* TrakkeApp.swift in Sources */,
+				0708C19448134DE5282529E4 /* TrakkeMapView.swift in Sources */,
 				C979D033A45C6AE88A84B8D5 /* Waypoint.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -444,6 +464,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -607,6 +628,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -623,6 +645,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -661,6 +684,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
