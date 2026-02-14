@@ -57,6 +57,14 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
         isTrackingUser = true
     }
 
+    func centerOn(coordinate: CLLocationCoordinate2D, zoom: Double? = nil) {
+        isTrackingUser = false
+        currentCenter = coordinate
+        if let zoom {
+            currentZoom = zoom
+        }
+    }
+
     // MARK: - CLLocationManagerDelegate
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {

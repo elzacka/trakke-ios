@@ -41,14 +41,14 @@ struct TrakkeMapView: UIViewRepresentable {
             mapView.styleURL = newStyleURL
         }
 
-        // Center on user if tracking
-        if viewModel.isTrackingUser, let location = viewModel.userLocation {
-            let currentCenter = mapView.centerCoordinate
-            let distance = CLLocation(latitude: currentCenter.latitude, longitude: currentCenter.longitude)
-                .distance(from: location)
-            if distance > 5 {
-                mapView.setCenter(location.coordinate, animated: true)
-            }
+        // Center map on viewModel's current center/zoom
+        let vmCenter = viewModel.currentCenter
+        let currentCenter = mapView.centerCoordinate
+        let distance = CLLocation(latitude: currentCenter.latitude, longitude: currentCenter.longitude)
+            .distance(from: CLLocation(latitude: vmCenter.latitude, longitude: vmCenter.longitude))
+
+        if distance > 5 || abs(mapView.zoomLevel - viewModel.currentZoom) > 0.5 {
+            mapView.setCenter(vmCenter, zoomLevel: viewModel.currentZoom, animated: true)
         }
     }
 
