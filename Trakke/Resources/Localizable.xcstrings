@@ -1040,6 +1040,236 @@
           }
         }
       }
+    },
+    "settings.display" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visning"
+          }
+        }
+      }
+    },
+    "settings.showWeatherWidget" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vis vaerwidget"
+          }
+        }
+      }
+    },
+    "settings.resetDefaults" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tilbakestill til standardverdier"
+          }
+        }
+      }
+    },
+    "settings.format.dd.description" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desimalgrader (standard GPS)"
+          }
+        }
+      }
+    },
+    "settings.format.dms.description" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grader, minutter, sekunder"
+          }
+        }
+      }
+    },
+    "settings.format.ddm.description" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grader, desimalminutter (sjokart)"
+          }
+        }
+      }
+    },
+    "settings.format.utm.description" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nodtjenester og forvaltning"
+          }
+        }
+      }
+    },
+    "settings.format.mgrs.description" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Militaer presisjon"
+          }
+        }
+      }
+    },
+    "info.maps" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kart"
+          }
+        }
+      }
+    },
+    "info.weather" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vaer"
+          }
+        }
+      }
+    },
+    "info.poi" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kategorier"
+          }
+        }
+      }
+    },
+    "info.kartverket.detail" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Topografiske kart, stedsnavn, adresser, hoydedata"
+          }
+        }
+      }
+    },
+    "info.met.detail" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Locationforecast 2.0 API"
+          }
+        }
+      }
+    },
+    "info.dsb.detail" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Offentlige tilfluktsrom"
+          }
+        }
+      }
+    },
+    "info.osm.detail" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Interessepunkter via Overpass API"
+          }
+        }
+      }
+    },
+    "info.ra.detail" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kulturminner (OGC API-Features)"
+          }
+        }
+      }
+    },
+    "info.privacy" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Personvern"
+          }
+        }
+      }
+    },
+    "info.privacy.noTracking" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingen sporing, ingen analyse, ingen informasjonskapsler"
+          }
+        }
+      }
+    },
+    "info.privacy.localData" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All brukerdata lagres lokalt pa enheten"
+          }
+        }
+      }
+    },
+    "info.privacy.euOnly" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kun EU/EOS-datakilder"
+          }
+        }
+      }
+    },
+    "info.appInfo" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Om appen"
+          }
+        }
+      }
+    },
+    "info.version" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versjon"
+          }
+        }
+      }
+    },
+    "search.clear" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tom sok"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

@@ -44,6 +44,7 @@ struct SearchSheet: View {
                     Image(systemName: "xmark.circle.fill")
                         .foregroundStyle(.secondary)
                 }
+                .accessibilityLabel(String(localized: "search.clear"))
             }
         }
         .padding(.horizontal, 16)
