@@ -20,6 +20,8 @@ struct ContentView: View {
     @State private var showDownloadArea = false
     @State private var showWeatherSheet = false
     @State private var showMeasurementSheet = false
+    @State private var showPreferences = false
+    @State private var showInfo = false
     @State private var newRouteName = ""
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.modelContext) private var modelContext
@@ -102,6 +104,8 @@ struct ContentView: View {
                 onOfflineTapped: { showOfflineManager = true },
                 onWeatherTapped: { showWeatherSheet = true },
                 onMeasurementTapped: { showMeasurementSheet = true },
+                onSettingsTapped: { showPreferences = true },
+                onInfoTapped: { showInfo = true },
                 weatherWidget: AnyView(
                     WeatherWidgetView(viewModel: weatherViewModel) {
                         showWeatherSheet = true
@@ -178,6 +182,14 @@ struct ContentView: View {
             MeasurementSheet(viewModel: measurementViewModel)
                 .presentationDetents([.medium])
                 .interactiveDismissDisabled(measurementViewModel.isActive)
+        }
+        .sheet(isPresented: $showPreferences) {
+            PreferencesSheet(mapViewModel: mapViewModel)
+                .presentationDetents([.medium, .large])
+        }
+        .sheet(isPresented: $showInfo) {
+            InfoSheet()
+                .presentationDetents([.medium, .large])
         }
         .alert(String(localized: "routes.namePrompt"), isPresented: $showRouteName) {
             TextField(String(localized: "routes.namePlaceholder"), text: $newRouteName)
@@ -290,6 +302,15 @@ struct ContentView: View {
                 Section(String(localized: "settings.baseLayer")) {
                     MapLayerPicker(selectedLayer: $mapViewModel.baseLayer)
                 }
+
+                Section {
+                    Button { showPreferences = true } label: {
+                        Label(String(localized: "settings.title"), systemImage: "gearshape")
+                    }
+                    Button { showInfo = true } label: {
+                        Label(String(localized: "info.title"), systemImage: "info.circle")
+                    }
+                }
             }
             .navigationTitle("Trakke")
         } detail: {
@@ -360,6 +381,14 @@ struct ContentView: View {
                 MeasurementSheet(viewModel: measurementViewModel)
                     .presentationDetents([.medium])
                     .interactiveDismissDisabled(measurementViewModel.isActive)
+            }
+            .sheet(isPresented: $showPreferences) {
+                PreferencesSheet(mapViewModel: mapViewModel)
+                    .presentationDetents([.medium, .large])
+            }
+            .sheet(isPresented: $showInfo) {
+                InfoSheet()
+                    .presentationDetents([.medium, .large])
             }
         }
         .alert(String(localized: "routes.namePrompt"), isPresented: $showRouteName) {
@@ -493,6 +522,7 @@ struct ContentView: View {
                     Image(systemName: "xmark.circle.fill")
                         .font(.title3)
                         .foregroundStyle(.secondary)
+                        .accessibilityLabel(String(localized: "common.cancel"))
                 }
             }
             .padding(.top, 60)

@@ -8,6 +8,8 @@ struct MapControlsOverlay: View {
     var onOfflineTapped: (() -> Void)?
     var onWeatherTapped: (() -> Void)?
     var onMeasurementTapped: (() -> Void)?
+    var onSettingsTapped: (() -> Void)?
+    var onInfoTapped: (() -> Void)?
     var weatherWidget: AnyView?
 
     var body: some View {
@@ -111,28 +113,29 @@ struct MapControlsOverlay: View {
             }
             .accessibilityLabel(String(localized: "offline.title"))
 
-            // Layer picker
-            Menu {
-                ForEach(BaseLayer.allCases) { layer in
-                    Button {
-                        viewModel.switchLayer(to: layer)
-                    } label: {
-                        HStack {
-                            Text(layer.displayName)
-                            if viewModel.baseLayer == layer {
-                                Image(systemName: "checkmark")
-                            }
-                        }
-                    }
-                }
+            // Settings
+            Button {
+                onSettingsTapped?()
             } label: {
-                Image(systemName: "map")
+                Image(systemName: "gearshape")
                     .font(.system(size: 20))
                     .frame(width: 44, height: 44)
                     .background(.regularMaterial)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
             }
-            .accessibilityLabel(String(localized: "settings.baseLayer"))
+            .accessibilityLabel(String(localized: "settings.title"))
+
+            // Info
+            Button {
+                onInfoTapped?()
+            } label: {
+                Image(systemName: "info.circle")
+                    .font(.system(size: 20))
+                    .frame(width: 44, height: 44)
+                    .background(.regularMaterial)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+            }
+            .accessibilityLabel(String(localized: "info.title"))
         }
     }
 
