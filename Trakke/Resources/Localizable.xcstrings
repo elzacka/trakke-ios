@@ -660,6 +660,196 @@
           }
         }
       }
+    },
+    "offline.empty" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingen nedlastede omrader"
+          }
+        }
+      }
+    },
+    "offline.emptyDescription" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last ned kartomrader for frakoblet bruk"
+          }
+        }
+      }
+    },
+    "offline.startDownload" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last ned"
+          }
+        }
+      }
+    },
+    "offline.selectArea" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Velg omrade"
+          }
+        }
+      }
+    },
+    "offline.selectAreaHint" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trykk to hjorner pa kartet for a velge omrade"
+          }
+        }
+      }
+    },
+    "offline.areaSelected" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Omrade valgt"
+          }
+        }
+      }
+    },
+    "offline.tapFirstCorner" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trykk forste hjorne"
+          }
+        }
+      }
+    },
+    "offline.tapSecondCorner" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trykk andre hjorne"
+          }
+        }
+      }
+    },
+    "offline.configuration" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konfigurasjon"
+          }
+        }
+      }
+    },
+    "offline.areaName" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Omradenavn"
+          }
+        }
+      }
+    },
+    "offline.zoomRange" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Min. zoom"
+          }
+        }
+      }
+    },
+    "offline.zoomMax" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maks. zoom"
+          }
+        }
+      }
+    },
+    "offline.estimate" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estimat"
+          }
+        }
+      }
+    },
+    "offline.tileCount" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antall fliser"
+          }
+        }
+      }
+    },
+    "offline.estimatedSize" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estimert storrelse"
+          }
+        }
+      }
+    },
+    "offline.tooManyTiles" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "For mange fliser (maks 20 000)"
+          }
+        }
+      }
+    },
+    "offline.largDownload" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stor nedlasting"
+          }
+        }
+      }
+    },
+    "offline.complete" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fullfort"
+          }
+        }
+      }
+    },
+    "offline.totalStorage" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Totalt lagret"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

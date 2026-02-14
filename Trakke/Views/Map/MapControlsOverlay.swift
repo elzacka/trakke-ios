@@ -5,6 +5,7 @@ struct MapControlsOverlay: View {
     var onSearchTapped: (() -> Void)?
     var onCategoryTapped: (() -> Void)?
     var onRouteTapped: (() -> Void)?
+    var onOfflineTapped: (() -> Void)?
 
     var body: some View {
         VStack {
@@ -77,6 +78,18 @@ struct MapControlsOverlay: View {
                     .clipShape(RoundedRectangle(cornerRadius: 10))
             }
             .accessibilityLabel(String(localized: "categories.title"))
+
+            // Offline maps
+            Button {
+                onOfflineTapped?()
+            } label: {
+                Image(systemName: "arrow.down.circle")
+                    .font(.system(size: 20))
+                    .frame(width: 44, height: 44)
+                    .background(.regularMaterial)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+            }
+            .accessibilityLabel(String(localized: "offline.title"))
 
             // Layer picker
             Menu {

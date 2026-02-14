@@ -43,6 +43,8 @@ struct TrakkeMapView: UIViewRepresentable {
     var routes: [Route] = []
     var drawingCoordinates: [CLLocationCoordinate2D] = []
     var isDrawing = false
+    var selectionCorner1: CLLocationCoordinate2D?
+    var selectionCorner2: CLLocationCoordinate2D?
     var onViewportChanged: ((ViewportBounds, Double) -> Void)?
     var onPOISelected: ((POI) -> Void)?
     var onMapTapped: ((CLLocationCoordinate2D) -> Void)?
@@ -113,6 +115,13 @@ struct TrakkeMapView: UIViewRepresentable {
             isDrawing: isDrawing
         )
 
+        // Update selection rectangle
+        context.coordinator.updateSelectionRect(
+            on: mapView,
+            corner1: selectionCorner1,
+            corner2: selectionCorner2
+        )
+
         context.coordinator.isDrawingMode = isDrawing
     }
 
@@ -138,6 +147,7 @@ struct TrakkeMapView: UIViewRepresentable {
         private var currentRouteIds: Set<String> = []
         private var drawingPolyline: MLNPolyline?
         private var drawingAnnotations: [RoutePointAnnotation] = []
+        private var selectionPolygon: MLNPolygon?
 
         init(
             viewModel: MapViewModel,
@@ -239,7 +249,16 @@ struct TrakkeMapView: UIViewRepresentable {
             _ mapView: MLNMapView,
             alphaForShapeAnnotation annotation: MLNShape
         ) -> CGFloat {
-            annotation === drawingPolyline ? 0.8 : 0.9
+            if annotation === selectionPolygon { return 0.2 }
+            if annotation === drawingPolyline { return 0.8 }
+            return 0.9
+        }
+
+        func mapView(
+            _ mapView: MLNMapView,
+            fillColorForPolygonAnnotation annotation: MLNPolygon
+        ) -> UIColor {
+            UIColor.systemBlue
         }
 
         // MARK: - POI Annotations
@@ -331,6 +350,36 @@ struct TrakkeMapView: UIViewRepresentable {
                 mapView.addAnnotation(polyline)
                 drawingPolyline = polyline
             }
+        }
+
+        // MARK: - Selection Rectangle
+
+        func updateSelectionRect(
+            on mapView: MLNMapView,
+            corner1: CLLocationCoordinate2D?,
+            corner2: CLLocationCoordinate2D?
+        ) {
+            if let existing = selectionPolygon {
+                mapView.removeAnnotation(existing)
+                selectionPolygon = nil
+            }
+
+            guard let c1 = corner1, let c2 = corner2 else { return }
+
+            let south = min(c1.latitude, c2.latitude)
+            let north = max(c1.latitude, c2.latitude)
+            let west = min(c1.longitude, c2.longitude)
+            let east = max(c1.longitude, c2.longitude)
+
+            var corners = [
+                CLLocationCoordinate2D(latitude: south, longitude: west),
+                CLLocationCoordinate2D(latitude: north, longitude: west),
+                CLLocationCoordinate2D(latitude: north, longitude: east),
+                CLLocationCoordinate2D(latitude: south, longitude: east),
+            ]
+            let polygon = MLNPolygon(coordinates: &corners, count: 4)
+            mapView.addAnnotation(polygon)
+            selectionPolygon = polygon
         }
 
         // MARK: - Annotation Views

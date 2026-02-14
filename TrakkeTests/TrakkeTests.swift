@@ -191,3 +191,33 @@ import CoreLocation
     // Roughly 800m
     #expect(distance > 500 && distance < 1500)
 }
+
+// MARK: - Offline Tile Estimation Tests
+
+@Test func tileCountEstimation() {
+    // Small area at single zoom
+    let count = OfflineMapService.estimateTileCount(
+        south: 59.9, west: 10.7, north: 60.0, east: 10.8,
+        minZoom: 10, maxZoom: 10
+    )
+    #expect(count > 0)
+    #expect(count < 100)
+}
+
+@Test func tileCountIncreasesWithZoom() {
+    let countLow = OfflineMapService.estimateTileCount(
+        south: 59.9, west: 10.7, north: 60.0, east: 10.8,
+        minZoom: 10, maxZoom: 10
+    )
+    let countHigh = OfflineMapService.estimateTileCount(
+        south: 59.9, west: 10.7, north: 60.0, east: 10.8,
+        minZoom: 10, maxZoom: 14
+    )
+    #expect(countHigh > countLow)
+}
+
+@Test func formatBytesReadable() {
+    #expect(OfflineMapService.formatBytes(500).contains("B"))
+    #expect(OfflineMapService.formatBytes(1_500_000).contains("MB"))
+    #expect(OfflineMapService.formatBytes(1_500_000_000).contains("GB"))
+}
