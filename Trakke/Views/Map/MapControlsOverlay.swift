@@ -2,6 +2,7 @@ import SwiftUI
 
 struct MapControlsOverlay: View {
     @Bindable var viewModel: MapViewModel
+    var onSearchTapped: (() -> Void)?
 
     var body: some View {
         VStack {
@@ -26,6 +27,18 @@ struct MapControlsOverlay: View {
 
     private var controlStack: some View {
         VStack(spacing: 12) {
+            // Search button
+            Button {
+                onSearchTapped?()
+            } label: {
+                Image(systemName: "magnifyingglass")
+                    .font(.system(size: 20))
+                    .frame(width: 44, height: 44)
+                    .background(.regularMaterial)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+            }
+            .accessibilityLabel(String(localized: "search.title"))
+
             // Location button
             Button {
                 viewModel.centerOnUser()

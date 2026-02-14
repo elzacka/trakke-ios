@@ -61,6 +61,16 @@
         }
       }
     },
+    "search.noResults" : {
+      "localizations" : {
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingen treff"
+          }
+        }
+      }
+    },
     "routes.title" : {
       "localizations" : {
         "no" : {
