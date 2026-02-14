@@ -3,7 +3,10 @@ import SwiftUI
 struct ContentView: View {
     @State private var mapViewModel = MapViewModel()
     @State private var searchViewModel = SearchViewModel()
+    @State private var poiViewModel = POIViewModel()
     @State private var showSearchSheet = false
+    @State private var showCategoryPicker = false
+    @State private var showPOIDetail = false
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
@@ -16,12 +19,24 @@ struct ContentView: View {
 
     private var iPhoneLayout: some View {
         ZStack {
-            TrakkeMapView(viewModel: mapViewModel)
-                .ignoresSafeArea()
+            TrakkeMapView(
+                viewModel: mapViewModel,
+                pois: poiViewModel.pois,
+                onViewportChanged: { bounds, zoom in
+                    poiViewModel.viewportChanged(bounds: bounds, zoom: zoom)
+                },
+                onPOISelected: { poi in
+                    poiViewModel.selectPOI(poi)
+                    showPOIDetail = true
+                }
+            )
+            .ignoresSafeArea()
 
-            MapControlsOverlay(viewModel: mapViewModel) {
-                showSearchSheet = true
-            }
+            MapControlsOverlay(
+                viewModel: mapViewModel,
+                onSearchTapped: { showSearchSheet = true },
+                onCategoryTapped: { showCategoryPicker = true }
+            )
             .padding(.top)
         }
         .sheet(isPresented: $showSearchSheet) {
@@ -29,6 +44,16 @@ struct ContentView: View {
                 mapViewModel.centerOn(coordinate: result.coordinate, zoom: 14)
             }
             .presentationDetents([.medium, .large])
+        }
+        .sheet(isPresented: $showCategoryPicker) {
+            CategoryPickerSheet(viewModel: poiViewModel)
+                .presentationDetents([.medium])
+        }
+        .sheet(isPresented: $showPOIDetail) {
+            if let poi = poiViewModel.selectedPOI {
+                POIDetailSheet(poi: poi)
+                    .presentationDetents([.medium])
+            }
         }
     }
 
@@ -40,6 +65,27 @@ struct ContentView: View {
                     searchResults
                 }
 
+                Section(String(localized: "categories.title")) {
+                    ForEach(POICategory.allCases) { category in
+                        Button {
+                            poiViewModel.toggleCategory(category)
+                        } label: {
+                            HStack(spacing: 12) {
+                                Image(systemName: category.iconName)
+                                    .foregroundStyle(Color(hex: category.color))
+                                    .frame(width: 28)
+                                Text(category.displayName)
+                                    .foregroundStyle(.primary)
+                                Spacer()
+                                if poiViewModel.enabledCategories.contains(category) {
+                                    Image(systemName: "checkmark")
+                                        .foregroundStyle(.tint)
+                                }
+                            }
+                        }
+                    }
+                }
+
                 Section(String(localized: "settings.baseLayer")) {
                     MapLayerPicker(selectedLayer: $mapViewModel.baseLayer)
                 }
@@ -47,11 +93,27 @@ struct ContentView: View {
             .navigationTitle("Trakke")
         } detail: {
             ZStack {
-                TrakkeMapView(viewModel: mapViewModel)
-                    .ignoresSafeArea()
+                TrakkeMapView(
+                    viewModel: mapViewModel,
+                    pois: poiViewModel.pois,
+                    onViewportChanged: { bounds, zoom in
+                        poiViewModel.viewportChanged(bounds: bounds, zoom: zoom)
+                    },
+                    onPOISelected: { poi in
+                        poiViewModel.selectPOI(poi)
+                        showPOIDetail = true
+                    }
+                )
+                .ignoresSafeArea()
 
                 MapControlsOverlay(viewModel: mapViewModel)
                     .padding(.top)
+            }
+            .sheet(isPresented: $showPOIDetail) {
+                if let poi = poiViewModel.selectedPOI {
+                    POIDetailSheet(poi: poi)
+                        .presentationDetents([.medium])
+                }
             }
         }
     }
