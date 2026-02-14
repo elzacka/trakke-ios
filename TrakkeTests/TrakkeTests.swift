@@ -221,3 +221,75 @@ import CoreLocation
     #expect(OfflineMapService.formatBytes(1_500_000).contains("MB"))
     #expect(OfflineMapService.formatBytes(1_500_000_000).contains("GB"))
 }
+
+// MARK: - Measurement Service Tests
+
+@Test func measurementDistanceTwoPoints() {
+    let oslo = CLLocationCoordinate2D(latitude: 59.9139, longitude: 10.7522)
+    let bergen = CLLocationCoordinate2D(latitude: 60.3913, longitude: 5.3221)
+    let distance = MeasurementService.distance(from: oslo, to: bergen)
+    // Oslo to Bergen ~305 km
+    #expect(distance > 300_000 && distance < 310_000)
+}
+
+@Test func measurementPolylineDistance() {
+    let coords = [
+        CLLocationCoordinate2D(latitude: 59.9139, longitude: 10.7522),
+        CLLocationCoordinate2D(latitude: 59.9200, longitude: 10.7600),
+        CLLocationCoordinate2D(latitude: 59.9300, longitude: 10.7700),
+    ]
+    let distance = MeasurementService.polylineDistance(coords)
+    #expect(distance > 0)
+    // Sum of segments
+    let expected = Haversine.totalDistance(coordinates: coords)
+    #expect(abs(distance - expected) < 0.01)
+}
+
+@Test func measurementPolygonArea() {
+    // Roughly 1 km x 1 km square near Oslo
+    let coords = [
+        CLLocationCoordinate2D(latitude: 59.90, longitude: 10.70),
+        CLLocationCoordinate2D(latitude: 59.91, longitude: 10.70),
+        CLLocationCoordinate2D(latitude: 59.91, longitude: 10.72),
+        CLLocationCoordinate2D(latitude: 59.90, longitude: 10.72),
+    ]
+    let area = MeasurementService.polygonArea(coords)
+    // Area should be roughly 1.1 km^2 = 1,100,000 m^2
+    #expect(area > 500_000 && area < 2_000_000)
+}
+
+@Test func measurementPolygonAreaTooFewPoints() {
+    let coords = [
+        CLLocationCoordinate2D(latitude: 59.90, longitude: 10.70),
+        CLLocationCoordinate2D(latitude: 59.91, longitude: 10.70),
+    ]
+    let area = MeasurementService.polygonArea(coords)
+    #expect(area == 0)
+}
+
+@Test func measurementFormatDistance() {
+    #expect(MeasurementService.formatDistance(500).contains("m"))
+    #expect(MeasurementService.formatDistance(2500).contains("km"))
+}
+
+@Test func measurementFormatArea() {
+    #expect(MeasurementService.formatArea(5000).contains("m"))
+    #expect(MeasurementService.formatArea(50_000).contains("km"))
+}
+
+// MARK: - Weather Symbol Mapping Tests
+
+@Test func weatherSymbolMapping() {
+    #expect(WeatherViewModel.sfSymbol(for: "clearsky_day") == "sun.max.fill")
+    #expect(WeatherViewModel.sfSymbol(for: "clearsky_night") == "moon.stars.fill")
+    #expect(WeatherViewModel.sfSymbol(for: "rain") == "cloud.rain.fill")
+    #expect(WeatherViewModel.sfSymbol(for: "heavysnow") == "cloud.snow.fill")
+    #expect(WeatherViewModel.sfSymbol(for: "unknown_symbol") == "cloud.fill")
+}
+
+@Test func weatherWindDirection() {
+    #expect(WeatherService.windDirectionName(0) == "N")
+    #expect(WeatherService.windDirectionName(90) == "O")
+    #expect(WeatherService.windDirectionName(180) == "S")
+    #expect(WeatherService.windDirectionName(270) == "V")
+}

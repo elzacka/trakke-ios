@@ -7,14 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		018DBCB3293351FDB15F3659 /* WeatherViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD31263DF1383B4F9570BD7 /* WeatherViewModel.swift */; };
 		018F4A247AC8082A21855C51 /* MapLayerPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50F70A751732CC3771DF3531 /* MapLayerPicker.swift */; };
 		020FCC94EFA0E15C9A21D598 /* MGRS in Frameworks */ = {isa = PBXBuildFile; productRef = 97B2D7D8D3A31119337EF8C7 /* MGRS */; };
 		0708C19448134DE5282529E4 /* TrakkeMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6672497810D8608FD93B7A54 /* TrakkeMapView.swift */; };
 		0F051C209281F38C528947D9 /* Route.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0D13322F67F86A945E22BC /* Route.swift */; };
+		0FCAB2E0C251794C34AC48AE /* MeasurementViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F6D928AD7D002ECC5E284AE /* MeasurementViewModel.swift */; };
 		21DEF037F3A9BBD30A3FBFBC /* DownloadManagerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A44EA42EAE3F1A2EFCC4970 /* DownloadManagerSheet.swift */; };
+		2236E75784F95AEEB323FC61 /* MeasurementService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 819A5E924F30A97BE68BEB3B /* MeasurementService.swift */; };
 		22622F474B78BA60BB411BA3 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = DC4089C79E39FF29856AABDB /* Localizable.xcstrings */; };
 		23C4ABC8368D581B7E310078 /* CoordinateService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7184F69A6CAAAE19B8881113 /* CoordinateService.swift */; };
 		24CA9F0CFA4F49FCCAD9ED14 /* Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80BECFF55D8883F57D1EF29 /* Project.swift */; };
+		2A1621299C4F32C80A69466A /* WeatherWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C18516D4096D860B26F52A5B /* WeatherWidgetView.swift */; };
 		31602BB4473F218CC565B788 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4630C010440BDC6D4BE2E8 /* APIClient.swift */; };
 		326AFABCDC0359C2ABF7E8C9 /* RouteDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B26B00165D1496C9D5529B5 /* RouteDetailSheet.swift */; };
 		38B325270EA26C82353B2AAC /* POIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EC1194CD1BCB7392992B45D /* POIService.swift */; };
@@ -22,8 +26,10 @@
 		3B24D12D500F6939390B99C5 /* MapLibre in Frameworks */ = {isa = PBXBuildFile; productRef = 254EF731837012093F79F386 /* MapLibre */; };
 		4DDF07E33660131E3B064ADB /* RouteListSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A28F55BF5ED38660D8A6D8 /* RouteListSheet.swift */; };
 		4EB430D7926BB414550656AF /* MapLibreSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = B20C41DFD30629853159F9CD /* MapLibreSwiftUI */; };
+		599297614F9FC8909BD23309 /* WeatherService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85804A9ADE33A40BE3F01CA2 /* WeatherService.swift */; };
 		5A5D405A78217CEF4A26AACD /* RouteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A343A959D49B61F0D7D11BB /* RouteViewModel.swift */; };
 		66640F542303D7A53822618E /* RouteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3354199B3E2F9BAC54AC475 /* RouteService.swift */; };
+		75C87D092FBC77734976D549 /* WeatherSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 221FFB6A9D3755A4F47D4774 /* WeatherSheet.swift */; };
 		808AA69F56CBE74E3EBBC1AC /* Color+Trakke.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8239B38DDD3DD8EA4588E103 /* Color+Trakke.swift */; };
 		82AB66960A754A939F84BB4B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04BA7D999B573FB8FACDB81 /* ContentView.swift */; };
 		8F5783424360AB7D976D9A0B /* DownloadedArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3680924DBF859458A1CA6473 /* DownloadedArea.swift */; };
@@ -47,6 +53,7 @@
 		E7FEDC2BCE0405BD223132C7 /* OfflineMapService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A072AA3247DF55D602639556 /* OfflineMapService.swift */; };
 		EA62572CF51EB9F2EA1CC4D0 /* MapControlsOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E771B0038B66E3A05A4334B /* MapControlsOverlay.swift */; };
 		F02120925CA0AF97951BFB53 /* CategoryPickerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 621B221F56A79F77A10ED993 /* CategoryPickerSheet.swift */; };
+		F161D9A25AE4B1BD583FEE27 /* MeasurementSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6636CECF08E17D7F0EF8B705 /* MeasurementSheet.swift */; };
 		F313BA1545DC0193F31F9E39 /* POIViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5A64668B3D5B242EA5910C /* POIViewModel.swift */; };
 		F5B76961FC8F9649F633D278 /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B29F6390BF0EEEC81B010AF /* SearchViewModel.swift */; };
 		F8F517E28C3371FBAD7DC0B2 /* GPXExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB767622B5A8BEEFB5A12F9 /* GPXExportService.swift */; };
@@ -75,6 +82,7 @@
 		0782F458BDA46D1718B3F7DB /* TrakkeTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = TrakkeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		14BF64BF4F13693F38DFCEF3 /* SearchResultRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultRow.swift; sourceTree = "<group>"; };
 		1B26B00165D1496C9D5529B5 /* RouteDetailSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteDetailSheet.swift; sourceTree = "<group>"; };
+		221FFB6A9D3755A4F47D4774 /* WeatherSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherSheet.swift; sourceTree = "<group>"; };
 		2A0D13322F67F86A945E22BC /* Route.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Route.swift; sourceTree = "<group>"; };
 		2B51FCCCA65C36296EAFA352 /* DownloadAreaSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadAreaSheet.swift; sourceTree = "<group>"; };
 		2B5AA04468954FB6FBA31348 /* Trakke.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Trakke.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -86,6 +94,7 @@
 		5473FD0EBFDACA3278AFB2E7 /* TrakkeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrakkeTests.swift; sourceTree = "<group>"; };
 		5CC92D2F03A2083F4A6FA2DB /* Waypoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Waypoint.swift; sourceTree = "<group>"; };
 		621B221F56A79F77A10ED993 /* CategoryPickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryPickerSheet.swift; sourceTree = "<group>"; };
+		6636CECF08E17D7F0EF8B705 /* MeasurementSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementSheet.swift; sourceTree = "<group>"; };
 		6672497810D8608FD93B7A54 /* TrakkeMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrakkeMapView.swift; sourceTree = "<group>"; };
 		68A28F55BF5ED38660D8A6D8 /* RouteListSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteListSheet.swift; sourceTree = "<group>"; };
 		6E574D64AAAB4D2201F6384A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -93,11 +102,14 @@
 		7A343A959D49B61F0D7D11BB /* RouteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteViewModel.swift; sourceTree = "<group>"; };
 		7D98545EADB9E8AFE4CDBC64 /* KartverketTileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KartverketTileService.swift; sourceTree = "<group>"; };
 		7FE74A8C165B99B8F2441A21 /* OfflineViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineViewModel.swift; sourceTree = "<group>"; };
+		819A5E924F30A97BE68BEB3B /* MeasurementService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementService.swift; sourceTree = "<group>"; };
 		8239B38DDD3DD8EA4588E103 /* Color+Trakke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Trakke.swift"; sourceTree = "<group>"; };
+		85804A9ADE33A40BE3F01CA2 /* WeatherService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherService.swift; sourceTree = "<group>"; };
 		8A44EA42EAE3F1A2EFCC4970 /* DownloadManagerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManagerSheet.swift; sourceTree = "<group>"; };
 		8B03F9398DB7A9AE8052F970 /* TrakkeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrakkeApp.swift; sourceTree = "<group>"; };
 		8FB767622B5A8BEEFB5A12F9 /* GPXExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPXExportService.swift; sourceTree = "<group>"; };
 		9E771B0038B66E3A05A4334B /* MapControlsOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapControlsOverlay.swift; sourceTree = "<group>"; };
+		9F6D928AD7D002ECC5E284AE /* MeasurementViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementViewModel.swift; sourceTree = "<group>"; };
 		A072AA3247DF55D602639556 /* OfflineMapService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineMapService.swift; sourceTree = "<group>"; };
 		A197CF679D956441DF290BEE /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
 		A3354199B3E2F9BAC54AC475 /* RouteService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteService.swift; sourceTree = "<group>"; };
@@ -106,6 +118,7 @@
 		AE4FA68D8B869F97DA683451 /* ElevationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElevationService.swift; sourceTree = "<group>"; };
 		B0FF38196268941563D81847 /* Trakke.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Trakke.entitlements; sourceTree = "<group>"; };
 		B461F0109B3D0DC2B15E78F6 /* Levenshtein.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Levenshtein.swift; sourceTree = "<group>"; };
+		C18516D4096D860B26F52A5B /* WeatherWidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherWidgetView.swift; sourceTree = "<group>"; };
 		CF5C74893EF7B38931FA8BC9 /* TrakkeUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = TrakkeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DB10B0187C9B9DAF22046927 /* POI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POI.swift; sourceTree = "<group>"; };
 		DC4089C79E39FF29856AABDB /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
@@ -114,6 +127,7 @@
 		E0F3227EF60259A5DDBAB21C /* SearchSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchSheet.swift; sourceTree = "<group>"; };
 		E1B7445203EE8264FCD19E3F /* POIDetailSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POIDetailSheet.swift; sourceTree = "<group>"; };
 		E80BECFF55D8883F57D1EF29 /* Project.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Project.swift; sourceTree = "<group>"; };
+		EAD31263DF1383B4F9570BD7 /* WeatherViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherViewModel.swift; sourceTree = "<group>"; };
 		F04BA7D999B573FB8FACDB81 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		FB6D3487EBF4CF7D6E9589EB /* TrakkeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrakkeUITests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -140,10 +154,12 @@
 				AE4FA68D8B869F97DA683451 /* ElevationService.swift */,
 				8FB767622B5A8BEEFB5A12F9 /* GPXExportService.swift */,
 				7D98545EADB9E8AFE4CDBC64 /* KartverketTileService.swift */,
+				819A5E924F30A97BE68BEB3B /* MeasurementService.swift */,
 				A072AA3247DF55D602639556 /* OfflineMapService.swift */,
 				3EC1194CD1BCB7392992B45D /* POIService.swift */,
 				A3354199B3E2F9BAC54AC475 /* RouteService.swift */,
 				A7E5CE034FD5DA5AE8F00993 /* SearchService.swift */,
+				85804A9ADE33A40BE3F01CA2 /* WeatherService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -198,6 +214,7 @@
 		3086EB1E25DE4B4C6779CFB2 /* Measurement */ = {
 			isa = PBXGroup;
 			children = (
+				6636CECF08E17D7F0EF8B705 /* MeasurementSheet.swift */,
 			);
 			path = Measurement;
 			sourceTree = "<group>";
@@ -328,10 +345,12 @@
 			isa = PBXGroup;
 			children = (
 				A197CF679D956441DF290BEE /* MapViewModel.swift */,
+				9F6D928AD7D002ECC5E284AE /* MeasurementViewModel.swift */,
 				7FE74A8C165B99B8F2441A21 /* OfflineViewModel.swift */,
 				DF5A64668B3D5B242EA5910C /* POIViewModel.swift */,
 				7A343A959D49B61F0D7D11BB /* RouteViewModel.swift */,
 				4B29F6390BF0EEEC81B010AF /* SearchViewModel.swift */,
+				EAD31263DF1383B4F9570BD7 /* WeatherViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -356,6 +375,8 @@
 		F4907F3CCF211D3183412955 /* Weather */ = {
 			isa = PBXGroup;
 			children = (
+				221FFB6A9D3755A4F47D4774 /* WeatherSheet.swift */,
+				C18516D4096D860B26F52A5B /* WeatherWidgetView.swift */,
 			);
 			path = Weather;
 			sourceTree = "<group>";
@@ -502,6 +523,9 @@
 				EA62572CF51EB9F2EA1CC4D0 /* MapControlsOverlay.swift in Sources */,
 				018F4A247AC8082A21855C51 /* MapLayerPicker.swift in Sources */,
 				D9BAFBF64307433147F829DA /* MapViewModel.swift in Sources */,
+				2236E75784F95AEEB323FC61 /* MeasurementService.swift in Sources */,
+				F161D9A25AE4B1BD583FEE27 /* MeasurementSheet.swift in Sources */,
+				0FCAB2E0C251794C34AC48AE /* MeasurementViewModel.swift in Sources */,
 				E7FEDC2BCE0405BD223132C7 /* OfflineMapService.swift in Sources */,
 				C01E19DEEA45FD77A687EE2D /* OfflineViewModel.swift in Sources */,
 				BA6877207ADABA84E283B8E8 /* POI.swift in Sources */,
@@ -521,6 +545,10 @@
 				D93E5AAF99E9E852878F6594 /* TrakkeApp.swift in Sources */,
 				0708C19448134DE5282529E4 /* TrakkeMapView.swift in Sources */,
 				C979D033A45C6AE88A84B8D5 /* Waypoint.swift in Sources */,
+				599297614F9FC8909BD23309 /* WeatherService.swift in Sources */,
+				75C87D092FBC77734976D549 /* WeatherSheet.swift in Sources */,
+				018DBCB3293351FDB15F3659 /* WeatherViewModel.swift in Sources */,
+				2A1621299C4F32C80A69466A /* WeatherWidgetView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
