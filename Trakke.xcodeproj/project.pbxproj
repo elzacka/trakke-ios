@@ -1,0 +1,776 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		020FCC94EFA0E15C9A21D598 /* MGRS in Frameworks */ = {isa = PBXBuildFile; productRef = 97B2D7D8D3A31119337EF8C7 /* MGRS */; };
+		0F051C209281F38C528947D9 /* Route.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0D13322F67F86A945E22BC /* Route.swift */; };
+		22622F474B78BA60BB411BA3 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = DC4089C79E39FF29856AABDB /* Localizable.xcstrings */; };
+		24CA9F0CFA4F49FCCAD9ED14 /* Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80BECFF55D8883F57D1EF29 /* Project.swift */; };
+		3B24D12D500F6939390B99C5 /* MapLibre in Frameworks */ = {isa = PBXBuildFile; productRef = 254EF731837012093F79F386 /* MapLibre */; };
+		4EB430D7926BB414550656AF /* MapLibreSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = B20C41DFD30629853159F9CD /* MapLibreSwiftUI */; };
+		808AA69F56CBE74E3EBBC1AC /* Color+Trakke.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8239B38DDD3DD8EA4588E103 /* Color+Trakke.swift */; };
+		82AB66960A754A939F84BB4B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04BA7D999B573FB8FACDB81 /* ContentView.swift */; };
+		8F5783424360AB7D976D9A0B /* DownloadedArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3680924DBF859458A1CA6473 /* DownloadedArea.swift */; };
+		A3EFF083EC4B51A062A832A4 /* TrakkeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5473FD0EBFDACA3278AFB2E7 /* TrakkeTests.swift */; };
+		A5659CFB7E780DCA27ABCFE0 /* TrakkeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB6D3487EBF4CF7D6E9589EB /* TrakkeUITests.swift */; };
+		C1695E5DDFF85DD005D05F33 /* Projections in Frameworks */ = {isa = PBXBuildFile; productRef = E2C260BC90781F110FC4A581 /* Projections */; };
+		C979D033A45C6AE88A84B8D5 /* Waypoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC92D2F03A2083F4A6FA2DB /* Waypoint.swift */; };
+		D93E5AAF99E9E852878F6594 /* TrakkeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B03F9398DB7A9AE8052F970 /* TrakkeApp.swift */; };
+		FE7F88708B3B888BF2E903C6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A5BE335BBFB4AF5BB2B6595F /* Assets.xcassets */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		1207E84116C5BCA3E9B9DD61 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7F71593192F90EC14DC7727B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4CDCAF61BAE86FC76BC013F3;
+			remoteInfo = Trakke;
+		};
+		E63D7C49D912DF39AC8F754A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7F71593192F90EC14DC7727B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4CDCAF61BAE86FC76BC013F3;
+			remoteInfo = Trakke;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		0782F458BDA46D1718B3F7DB /* TrakkeTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = TrakkeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		2A0D13322F67F86A945E22BC /* Route.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Route.swift; sourceTree = "<group>"; };
+		2B5AA04468954FB6FBA31348 /* Trakke.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Trakke.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3680924DBF859458A1CA6473 /* DownloadedArea.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadedArea.swift; sourceTree = "<group>"; };
+		5473FD0EBFDACA3278AFB2E7 /* TrakkeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrakkeTests.swift; sourceTree = "<group>"; };
+		5CC92D2F03A2083F4A6FA2DB /* Waypoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Waypoint.swift; sourceTree = "<group>"; };
+		6E574D64AAAB4D2201F6384A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		8239B38DDD3DD8EA4588E103 /* Color+Trakke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Trakke.swift"; sourceTree = "<group>"; };
+		8B03F9398DB7A9AE8052F970 /* TrakkeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrakkeApp.swift; sourceTree = "<group>"; };
+		A5BE335BBFB4AF5BB2B6595F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B0FF38196268941563D81847 /* Trakke.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Trakke.entitlements; sourceTree = "<group>"; };
+		CF5C74893EF7B38931FA8BC9 /* TrakkeUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = TrakkeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		DC4089C79E39FF29856AABDB /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		E80BECFF55D8883F57D1EF29 /* Project.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Project.swift; sourceTree = "<group>"; };
+		F04BA7D999B573FB8FACDB81 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		FB6D3487EBF4CF7D6E9589EB /* TrakkeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrakkeUITests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		11C5E63DF89A61466FB69BBC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3B24D12D500F6939390B99C5 /* MapLibre in Frameworks */,
+				4EB430D7926BB414550656AF /* MapLibreSwiftUI in Frameworks */,
+				020FCC94EFA0E15C9A21D598 /* MGRS in Frameworks */,
+				C1695E5DDFF85DD005D05F33 /* Projections in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		12AAA05BD044A1242A035EFE /* Services */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		18005C6C5A4CF8F4DAA43BAA /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				8239B38DDD3DD8EA4588E103 /* Color+Trakke.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		1E9E23F0C6FACF848FAAC70C /* Trakke */ = {
+			isa = PBXGroup;
+			children = (
+				18005C6C5A4CF8F4DAA43BAA /* Extensions */,
+				31E5884A623A2161C94A7B76 /* Models */,
+				377E3D3C693DAD1188622ABF /* Networking */,
+				9142F8DA21B2601B8A180D44 /* Preview Content */,
+				8AB36068F65B63BD00B0C48F /* Resources */,
+				12AAA05BD044A1242A035EFE /* Services */,
+				6C4A33A185EB71AB712E7159 /* Utilities */,
+				B7AC659CDF74239571927955 /* ViewModels */,
+				998DED2D880996FF62698801 /* Views */,
+				F04BA7D999B573FB8FACDB81 /* ContentView.swift */,
+				6E574D64AAAB4D2201F6384A /* Info.plist */,
+				B0FF38196268941563D81847 /* Trakke.entitlements */,
+				8B03F9398DB7A9AE8052F970 /* TrakkeApp.swift */,
+			);
+			path = Trakke;
+			sourceTree = "<group>";
+		};
+		28820234EC7C97D7C59469D0 /* Routes */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Routes;
+			sourceTree = "<group>";
+		};
+		28C22EF4069B982A7C204939 /* POI */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = POI;
+			sourceTree = "<group>";
+		};
+		3086EB1E25DE4B4C6779CFB2 /* Measurement */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Measurement;
+			sourceTree = "<group>";
+		};
+		31E5884A623A2161C94A7B76 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				3680924DBF859458A1CA6473 /* DownloadedArea.swift */,
+				E80BECFF55D8883F57D1EF29 /* Project.swift */,
+				2A0D13322F67F86A945E22BC /* Route.swift */,
+				5CC92D2F03A2083F4A6FA2DB /* Waypoint.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		3241D291E1877084913966F9 = {
+			isa = PBXGroup;
+			children = (
+				1E9E23F0C6FACF848FAAC70C /* Trakke */,
+				AF6A68507C4E16E6B2C4821B /* TrakkeTests */,
+				8CC2233841B761D1DA08D541 /* TrakkeUITests */,
+				E278F38408598BFA012F07DB /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		377E3D3C693DAD1188622ABF /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
+		4C495BD884B3E9DC63342CB0 /* Map */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Map;
+			sourceTree = "<group>";
+		};
+		6C4A33A185EB71AB712E7159 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		701FF454B8A86FB3DD14099E /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		72D3BD58F29D2DA0B716DA3E /* Search */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Search;
+			sourceTree = "<group>";
+		};
+		8AB36068F65B63BD00B0C48F /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				DC60D1ADA213449D6A33C4BA /* POIIcons */,
+				A5BE335BBFB4AF5BB2B6595F /* Assets.xcassets */,
+				DC4089C79E39FF29856AABDB /* Localizable.xcstrings */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		8CC2233841B761D1DA08D541 /* TrakkeUITests */ = {
+			isa = PBXGroup;
+			children = (
+				FB6D3487EBF4CF7D6E9589EB /* TrakkeUITests.swift */,
+			);
+			path = TrakkeUITests;
+			sourceTree = "<group>";
+		};
+		8DE0A7D8375AA0814F8C3174 /* Offline */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Offline;
+			sourceTree = "<group>";
+		};
+		9142F8DA21B2601B8A180D44 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		998DED2D880996FF62698801 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				4C495BD884B3E9DC63342CB0 /* Map */,
+				3086EB1E25DE4B4C6779CFB2 /* Measurement */,
+				8DE0A7D8375AA0814F8C3174 /* Offline */,
+				28C22EF4069B982A7C204939 /* POI */,
+				28820234EC7C97D7C59469D0 /* Routes */,
+				72D3BD58F29D2DA0B716DA3E /* Search */,
+				701FF454B8A86FB3DD14099E /* Settings */,
+				F4907F3CCF211D3183412955 /* Weather */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		AF6A68507C4E16E6B2C4821B /* TrakkeTests */ = {
+			isa = PBXGroup;
+			children = (
+				5473FD0EBFDACA3278AFB2E7 /* TrakkeTests.swift */,
+			);
+			path = TrakkeTests;
+			sourceTree = "<group>";
+		};
+		B7AC659CDF74239571927955 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		DC60D1ADA213449D6A33C4BA /* POIIcons */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = POIIcons;
+			sourceTree = "<group>";
+		};
+		E278F38408598BFA012F07DB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2B5AA04468954FB6FBA31348 /* Trakke.app */,
+				0782F458BDA46D1718B3F7DB /* TrakkeTests.xctest */,
+				CF5C74893EF7B38931FA8BC9 /* TrakkeUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F4907F3CCF211D3183412955 /* Weather */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Weather;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		4CDCAF61BAE86FC76BC013F3 /* Trakke */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5107392F5837D01BFDDE1AB1 /* Build configuration list for PBXNativeTarget "Trakke" */;
+			buildPhases = (
+				A82DCE99D42F527F7391095B /* Sources */,
+				78EE195079755D91697AAFE8 /* Resources */,
+				11C5E63DF89A61466FB69BBC /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Trakke;
+			packageProductDependencies = (
+				254EF731837012093F79F386 /* MapLibre */,
+				B20C41DFD30629853159F9CD /* MapLibreSwiftUI */,
+				97B2D7D8D3A31119337EF8C7 /* MGRS */,
+				E2C260BC90781F110FC4A581 /* Projections */,
+			);
+			productName = Trakke;
+			productReference = 2B5AA04468954FB6FBA31348 /* Trakke.app */;
+			productType = "com.apple.product-type.application";
+		};
+		6F3C7C6A8023E83C98783BF1 /* TrakkeTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A7FDD7529042087A7285A904 /* Build configuration list for PBXNativeTarget "TrakkeTests" */;
+			buildPhases = (
+				A8ABD07D96626FF5D9671763 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E4290E2543F0D4FD254FBCE4 /* PBXTargetDependency */,
+			);
+			name = TrakkeTests;
+			packageProductDependencies = (
+			);
+			productName = TrakkeTests;
+			productReference = 0782F458BDA46D1718B3F7DB /* TrakkeTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		746496025FF3B330585A58C4 /* TrakkeUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AC56635C3AC8A59205FCD798 /* Build configuration list for PBXNativeTarget "TrakkeUITests" */;
+			buildPhases = (
+				EF852289C2F9A16AB5531344 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				571B4ABC92E100BD3D63A973 /* PBXTargetDependency */,
+			);
+			name = TrakkeUITests;
+			packageProductDependencies = (
+			);
+			productName = TrakkeUITests;
+			productReference = CF5C74893EF7B38931FA8BC9 /* TrakkeUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		7F71593192F90EC14DC7727B /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 2620;
+				TargetAttributes = {
+					4CDCAF61BAE86FC76BC013F3 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+					746496025FF3B330585A58C4 = {
+						TestTargetID = 4CDCAF61BAE86FC76BC013F3;
+					};
+				};
+			};
+			buildConfigurationList = EE88E3822F3A90838539679F /* Build configuration list for PBXProject "Trakke" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+				no,
+			);
+			mainGroup = 3241D291E1877084913966F9;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				D4C9855FA77B07F460F4B3CF /* XCRemoteSwiftPackageReference "mgrs-ios" */,
+				3044EB09DCC6BF380138ED4D /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */,
+				E304B341153993036392B3D4 /* XCRemoteSwiftPackageReference "swiftui-dsl" */,
+				51140A449D72BC304A5A09BA /* XCRemoteSwiftPackageReference "projections-ios" */,
+			);
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				4CDCAF61BAE86FC76BC013F3 /* Trakke */,
+				6F3C7C6A8023E83C98783BF1 /* TrakkeTests */,
+				746496025FF3B330585A58C4 /* TrakkeUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		78EE195079755D91697AAFE8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FE7F88708B3B888BF2E903C6 /* Assets.xcassets in Resources */,
+				22622F474B78BA60BB411BA3 /* Localizable.xcstrings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A82DCE99D42F527F7391095B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				808AA69F56CBE74E3EBBC1AC /* Color+Trakke.swift in Sources */,
+				82AB66960A754A939F84BB4B /* ContentView.swift in Sources */,
+				8F5783424360AB7D976D9A0B /* DownloadedArea.swift in Sources */,
+				24CA9F0CFA4F49FCCAD9ED14 /* Project.swift in Sources */,
+				0F051C209281F38C528947D9 /* Route.swift in Sources */,
+				D93E5AAF99E9E852878F6594 /* TrakkeApp.swift in Sources */,
+				C979D033A45C6AE88A84B8D5 /* Waypoint.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A8ABD07D96626FF5D9671763 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A3EFF083EC4B51A062A832A4 /* TrakkeTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EF852289C2F9A16AB5531344 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A5659CFB7E780DCA27ABCFE0 /* TrakkeUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		571B4ABC92E100BD3D63A973 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4CDCAF61BAE86FC76BC013F3 /* Trakke */;
+			targetProxy = 1207E84116C5BCA3E9B9DD61 /* PBXContainerItemProxy */;
+		};
+		E4290E2543F0D4FD254FBCE4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4CDCAF61BAE86FC76BC013F3 /* Trakke */;
+			targetProxy = E63D7C49D912DF39AC8F754A /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		0D0DE030E151215319BDB571 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = no.tazk.trakke.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Trakke.app/Trakke";
+			};
+			name = Release;
+		};
+		2591D96FB689ECF416BE50D9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 0.1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+		40BDA04D5B9A79AF65193F39 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Trakke/Trakke.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = Trakke/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = no.tazk.trakke;
+				PRODUCT_NAME = Trakke;
+				SDKROOT = iphoneos;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		559325759BD3D3122B76A039 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 0.1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		92B1FB1D2F118C82CF0A69F3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = no.tazk.trakke.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Trakke;
+			};
+			name = Release;
+		};
+		B2A94C5EB6148B176BC65668 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = no.tazk.trakke.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Trakke.app/Trakke";
+			};
+			name = Debug;
+		};
+		DE15D4D12242520ACC800413 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Trakke/Trakke.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = Trakke/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = no.tazk.trakke;
+				PRODUCT_NAME = Trakke;
+				SDKROOT = iphoneos;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		F07075ED1C86D0FF479DB6BD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = no.tazk.trakke.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Trakke;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		5107392F5837D01BFDDE1AB1 /* Build configuration list for PBXNativeTarget "Trakke" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				40BDA04D5B9A79AF65193F39 /* Debug */,
+				DE15D4D12242520ACC800413 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		A7FDD7529042087A7285A904 /* Build configuration list for PBXNativeTarget "TrakkeTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B2A94C5EB6148B176BC65668 /* Debug */,
+				0D0DE030E151215319BDB571 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		AC56635C3AC8A59205FCD798 /* Build configuration list for PBXNativeTarget "TrakkeUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F07075ED1C86D0FF479DB6BD /* Debug */,
+				92B1FB1D2F118C82CF0A69F3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		EE88E3822F3A90838539679F /* Build configuration list for PBXProject "Trakke" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				559325759BD3D3122B76A039 /* Debug */,
+				2591D96FB689ECF416BE50D9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		3044EB09DCC6BF380138ED4D /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/maplibre/maplibre-gl-native-distribution";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.23.0;
+			};
+		};
+		51140A449D72BC304A5A09BA /* XCRemoteSwiftPackageReference "projections-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ngageoint/projections-ios";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.0.0;
+			};
+		};
+		D4C9855FA77B07F460F4B3CF /* XCRemoteSwiftPackageReference "mgrs-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ngageoint/mgrs-ios";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+		E304B341153993036392B3D4 /* XCRemoteSwiftPackageReference "swiftui-dsl" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/maplibre/swiftui-dsl";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.21.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		254EF731837012093F79F386 /* MapLibre */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3044EB09DCC6BF380138ED4D /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */;
+			productName = MapLibre;
+		};
+		97B2D7D8D3A31119337EF8C7 /* MGRS */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D4C9855FA77B07F460F4B3CF /* XCRemoteSwiftPackageReference "mgrs-ios" */;
+			productName = MGRS;
+		};
+		B20C41DFD30629853159F9CD /* MapLibreSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E304B341153993036392B3D4 /* XCRemoteSwiftPackageReference "swiftui-dsl" */;
+			productName = MapLibreSwiftUI;
+		};
+		E2C260BC90781F110FC4A581 /* Projections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 51140A449D72BC304A5A09BA /* XCRemoteSwiftPackageReference "projections-ios" */;
+			productName = Projections;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 7F71593192F90EC14DC7727B /* Project object */;
+}
