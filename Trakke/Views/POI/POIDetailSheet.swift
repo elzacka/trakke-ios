@@ -6,71 +6,103 @@ struct POIDetailSheet: View {
 
     var body: some View {
         NavigationStack {
-            List {
-                Section {
-                    HStack(spacing: 12) {
-                        Image(systemName: poi.category.iconName)
-                            .font(.title2)
-                            .foregroundStyle(Color(hex: poi.category.color))
-                            .frame(width: 36, height: 36)
+            ScrollView {
+                VStack(alignment: .leading, spacing: .Trakke.cardGap) {
+                    // MARK: - Category
+                    Text(poi.category.displayName)
+                        .font(.subheadline)
+                        .foregroundStyle(Color.Trakke.textSoft)
 
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(poi.name)
-                                .font(.headline)
-                            Text(poi.category.displayName)
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                }
-
-                if !poi.details.isEmpty {
-                    Section(String(localized: "poi.details")) {
-                        ForEach(sortedDetails, id: \.key) { key, value in
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(localizedDetailKey(key))
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                                Text(value)
-                                    .font(.body)
+                    // MARK: - Details
+                    if !poi.details.isEmpty {
+                        CardSection(String(localized: "poi.details")) {
+                            ForEach(Array(sortedDetails.enumerated()), id: \.element.key) { index, detail in
+                                if index > 0 {
+                                    Divider().padding(.leading, 4)
+                                }
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(localizedDetailKey(detail.key))
+                                        .font(.caption)
+                                        .foregroundStyle(Color.Trakke.textSoft)
+                                    Text(detail.value)
+                                        .font(.subheadline)
+                                }
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.vertical, .Trakke.rowVertical)
                             }
                         }
                     }
-                }
 
-                Section(String(localized: "poi.coordinates")) {
-                    let formatted = CoordinateService.format(
-                        coordinate: poi.coordinate,
-                        format: .dd
-                    )
-                    HStack {
-                        Text(formatted.display)
-                            .font(.body.monospacedDigit())
-                        Spacer()
-                        Button {
-                            UIPasteboard.general.string = formatted.copyText
-                        } label: {
-                            Image(systemName: "doc.on.doc")
+                    // MARK: - Coordinates
+                    CardSection(String(localized: "poi.coordinates")) {
+                        let formatted = CoordinateService.format(
+                            coordinate: poi.coordinate,
+                            format: .dd
+                        )
+                        HStack {
+                            Text(formatted.display)
+                                .font(.subheadline.monospacedDigit())
+                            Spacer()
+                            Button {
+                                UIPasteboard.general.string = formatted.copyText
+                            } label: {
+                                Image(systemName: "doc.on.doc")
+                                    .font(.subheadline)
+                                    .foregroundStyle(Color.Trakke.brand)
+                            }
+                            .accessibilityLabel(String(localized: "common.copy"))
                         }
                     }
-                }
 
-                if let link = poi.details["link"], let url = URL(string: link) {
-                    Section {
-                        Link(destination: url) {
-                            HStack {
-                                Text(String(localized: "poi.moreInfo"))
-                                Spacer()
-                                Image(systemName: "arrow.up.right")
+                    // MARK: - External Link
+                    if let link = poi.details["link"],
+                       let url = URL(string: link),
+                       url.scheme == "https" {
+                        CardSection {
+                            Link(destination: url) {
+                                HStack {
+                                    Text(String(localized: "poi.moreInfo"))
+                                        .font(.subheadline)
+                                    Spacer()
+                                    Image(systemName: "arrow.up.right")
+                                        .font(.caption2)
+                                        .foregroundStyle(Color.Trakke.textSoft)
+                                }
+                                .padding(.vertical, 2)
                             }
                         }
                     }
+
+                    // MARK: - Data Source Attribution
+                    HStack(spacing: 4) {
+                        Text(String(localized: "poi.source"))
+                        Text(poi.category.sourceName)
+                        Text("(\(poi.category.sourceLicense))")
+                    }
+                    .font(.caption)
+                    .foregroundStyle(Color.Trakke.textSoft)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 4)
+
+                    Spacer(minLength: .Trakke.lg)
                 }
+                .padding(.horizontal, .Trakke.sheetHorizontal)
+                .padding(.top, .Trakke.sheetTop)
             }
+            .background(Color(.systemGroupedBackground))
+            .tint(Color.Trakke.brand)
             .navigationTitle(poi.name)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
+                ToolbarItem(placement: .topBarLeading) {
+                    Image(poi.category.iconName)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 22, height: 22)
+                        .foregroundStyle(Color(hex: poi.category.color))
+                        .accessibilityHidden(true)
+                }
+                ToolbarItem(placement: .topBarTrailing) {
                     Button(String(localized: "common.close")) {
                         dismiss()
                     }
@@ -78,6 +110,8 @@ struct POIDetailSheet: View {
             }
         }
     }
+
+    // MARK: - Helpers
 
     private var sortedDetails: [(key: String, value: String)] {
         poi.details
@@ -96,6 +130,7 @@ struct POIDetailSheet: View {
         case "inscription": return String(localized: "poi.detail.inscription")
         case "period": return String(localized: "poi.detail.period")
         case "shelterType": return String(localized: "poi.detail.shelterType")
+        case "subtype": return String(localized: "poi.detail.subtype")
         case "municipality": return String(localized: "poi.detail.municipality")
         case "county": return String(localized: "poi.detail.county")
         default: return key

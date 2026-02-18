@@ -13,7 +13,7 @@ final class POIViewModel {
     private var loadTask: Task<Void, Never>?
     private var lastBounds: ViewportBounds?
     private var lastZoom: Double = 0
-    private static let debounceInterval: Duration = .milliseconds(1000)
+    private static let debounceInterval: Duration = .milliseconds(1500)
 
     func toggleCategory(_ category: POICategory) {
         if enabledCategories.contains(category) {
@@ -22,7 +22,28 @@ final class POIViewModel {
         } else {
             enabledCategories.insert(category)
             if let bounds = lastBounds {
-                loadPOIs(bounds: bounds, zoom: lastZoom)
+                loadCategory(category, bounds: bounds, zoom: lastZoom)
+            }
+        }
+    }
+
+    private func loadCategory(_ category: POICategory, bounds: ViewportBounds, zoom: Double) {
+        if category.isBundled {
+            let newPOIs = BundledPOIService.pois(for: category, in: bounds.buffered())
+            pois.removeAll { $0.category == category }
+            pois.append(contentsOf: newPOIs)
+        } else {
+            let service = poiService
+            Task {
+                isLoading = true
+                let newPOIs = await service.fetchPOIs(category: category, bounds: bounds, zoom: zoom)
+                guard enabledCategories.contains(category) else {
+                    isLoading = false
+                    return
+                }
+                pois.removeAll { $0.category == category }
+                pois.append(contentsOf: newPOIs)
+                isLoading = false
             }
         }
     }
@@ -33,31 +54,36 @@ final class POIViewModel {
 
         guard !enabledCategories.isEmpty else { return }
 
+        // Update bundled categories immediately (no network cost)
+        let bundledCategories = enabledCategories.filter(\.isBundled)
+        let buffered = bounds.buffered()
+        for category in bundledCategories {
+            let result = BundledPOIService.pois(for: category, in: buffered)
+            pois.removeAll { $0.category == category }
+            pois.append(contentsOf: result)
+        }
+
+        // Debounce live categories (network requests)
+        let liveCategories = enabledCategories.filter { !$0.isBundled }
+        guard !liveCategories.isEmpty else { return }
+
         loadTask?.cancel()
         let service = poiService
-        let categories = enabledCategories
         loadTask = Task {
             try? await Task.sleep(for: Self.debounceInterval)
             guard !Task.isCancelled else { return }
 
             self.isLoading = true
 
-            await withTaskGroup(of: [POI].self) { group in
-                for category in categories {
-                    group.addTask {
-                        await service.fetchPOIs(category: category, bounds: bounds, zoom: zoom)
-                    }
-                }
-
-                var allPOIs: [POI] = []
-                for await result in group {
-                    allPOIs.append(contentsOf: result)
-                }
-
+            for category in liveCategories {
                 guard !Task.isCancelled else { return }
-                self.pois = allPOIs
+                let result = await service.fetchPOIs(category: category, bounds: bounds, zoom: zoom)
+                guard !Task.isCancelled else { return }
+                self.pois.removeAll { $0.category == category }
+                self.pois.append(contentsOf: result)
             }
 
+            self.pois.removeAll { !self.enabledCategories.contains($0.category) }
             self.isLoading = false
         }
     }
@@ -68,9 +94,5 @@ final class POIViewModel {
 
     func clearSelection() {
         selectedPOI = nil
-    }
-
-    private func loadPOIs(bounds: ViewportBounds, zoom: Double) {
-        viewportChanged(bounds: bounds, zoom: zoom)
     }
 }

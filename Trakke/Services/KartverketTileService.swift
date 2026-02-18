@@ -1,6 +1,6 @@
 import Foundation
 
-enum BaseLayer: String, CaseIterable, Identifiable {
+enum BaseLayer: String, CaseIterable, Identifiable, Sendable {
     case topo
     case grayscale
 
@@ -28,6 +28,48 @@ enum BaseLayer: String, CaseIterable, Identifiable {
 
     var layerID: String {
         "kartverket-\(rawValue)-layer"
+    }
+}
+
+enum OverlayLayer: String, CaseIterable, Identifiable, Sendable {
+    case turrutebasen
+    case naturskog
+
+    var id: String { rawValue }
+
+    var displayName: String {
+        switch self {
+        case .turrutebasen: return String(localized: "map.overlay.turrutebasen")
+        case .naturskog: return String(localized: "map.overlay.naturskog")
+        }
+    }
+
+    var sourceID: String { "overlay-\(rawValue)" }
+    var layerID: String { "overlay-\(rawValue)-layer" }
+
+    var tileURL: String {
+        switch self {
+        case .turrutebasen:
+            return "https://wms.geonorge.no/skwms1/wms.friluftsruter2"
+                + "?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap"
+                + "&LAYERS=Fotrute&STYLES=default&SRS=EPSG:3857"
+                + "&BBOX={bbox-epsg-3857}&WIDTH=256&HEIGHT=256"
+                + "&FORMAT=image/png&TRANSPARENT=true"
+        case .naturskog:
+            // ArcGIS REST export -- more reliable with MapLibre than the WMS adapter
+            return "https://image001.miljodirektoratet.no/arcgis/rest/services"
+                + "/naturskog/naturskog_v1/MapServer/export"
+                + "?bbox={bbox-epsg-3857}&bboxSR=3857&imageSR=3857"
+                + "&size=256,256&format=png32&transparent=true"
+                + "&layers=show:1&f=image"
+        }
+    }
+
+    var attribution: String {
+        switch self {
+        case .turrutebasen: return "\u{00A9} Kartverket"
+        case .naturskog: return "\u{00A9} Milj\u{00F8}direktoratet"
+        }
     }
 }
 
@@ -65,12 +107,21 @@ enum KartverketTileService {
                 ] as [String: Any]
             ],
         ]
-        return try! JSONSerialization.data(withJSONObject: json)
+        // The JSON structure is fully static and known-valid, so failure is not expected.
+        // Using a do/catch to avoid a force unwrap in production.
+        do {
+            return try JSONSerialization.data(withJSONObject: json)
+        } catch {
+            // Fallback: return a minimal valid MapLibre style as empty JSON
+            return Data("{}".utf8)
+        }
     }
 
     static func styleURL(for layer: BaseLayer) -> URL {
         let data = styleJSON(for: layer)
-        let base64 = data.base64EncodedString()
-        return URL(string: "data:application/json;base64,\(base64)")!
+        let fileName = "kartverket-style-\(layer.rawValue).json"
+        let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
+        try? data.write(to: fileURL)
+        return fileURL
     }
 }

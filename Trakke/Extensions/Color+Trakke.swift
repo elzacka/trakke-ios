@@ -1,22 +1,74 @@
 import SwiftUI
 
 extension Color {
+    /// Hex initializer for convenience
+    init(hex: String) {
+        let hex = hex.trimmingCharacters(in: CharacterSet(charactersIn: "#"))
+        let scanner = Scanner(string: hex)
+        var rgb: UInt64 = 0
+        scanner.scanHexInt64(&rgb)
+        self.init(
+            red: Double((rgb >> 16) & 0xFF) / 255,
+            green: Double((rgb >> 8) & 0xFF) / 255,
+            blue: Double(rgb & 0xFF) / 255
+        )
+    }
+
+    // MARK: - Tråkke Design System
+
     enum Trakke {
-        static let brand = Color(red: 0.243, green: 0.271, blue: 0.200)       // #3e4533
-        static let brandLight = Color(red: 0.459, green: 0.490, blue: 0.408)  // #757d68
-        static let brandDark = Color(red: 0.180, green: 0.200, blue: 0.149)   // #2e3326
+        // MARK: Brand
+        static let brand = Color(hex: "3e4533")
+        static let brandSoft = Color(hex: "606756")
+        static let brandTint = Color(hex: "e9ece6")
 
-        static let neutral50 = Color(red: 0.976, green: 0.980, blue: 0.984)   // #f9fafb
-        static let neutral100 = Color(red: 0.945, green: 0.961, blue: 0.973)  // #f1f5f8
-        static let neutral200 = Color(red: 0.898, green: 0.910, blue: 0.929)  // #e5e8ed
-        static let neutral600 = Color(red: 0.290, green: 0.333, blue: 0.388)  // #4a5563
-        static let neutral800 = Color(red: 0.122, green: 0.149, blue: 0.192)  // #1f2631
+        // MARK: Neutrals
+        static let background = Color(hex: "fafaf7")
+        static let surface = Color(hex: "ffffff")
+        static let surfaceSubtle = Color(hex: "f2f3f0")
+        static let border = Color(hex: "e4e5e1")
+        static let borderStrong = Color(hex: "c9ccc5")
 
-        static let poiShelter = Color(red: 0.984, green: 0.749, blue: 0.145)  // #fbbf24
-        static let poiCave = Color(red: 0.545, green: 0.271, blue: 0.075)     // #8b4513
-        static let poiTower = Color(red: 0.290, green: 0.333, blue: 0.408)    // #4a5568
-        static let poiWarMemorial = Color(red: 0.420, green: 0.451, blue: 0.498) // #6b7280
-        static let poiWildernessShelter = Color(red: 0.706, green: 0.325, blue: 0.035) // #b45309
-        static let poiCulturalHeritage = Color(red: 0.545, green: 0.451, blue: 0.333)  // #8b7355
+        // MARK: Text
+        static let text = Color(hex: "1a1d1b")
+        static let textMuted = Color(hex: "4a4f47")
+        static let textSoft = Color(hex: "7c8278")
+        static let textInverse = Color(hex: "ffffff")
+
+        // MARK: Functional
+        static let blue = Color(hex: "1e6ce0")
+        static let red = Color(hex: "d0443e")
+        static let green = Color(hex: "2e9e5b")
+        static let yellow = Color(hex: "d4a012")
+
+        // MARK: POI Categories
+        static let poiShelter = Color(hex: "fbbf24")
+        static let poiCave = Color(hex: "8b4513")
+        static let poiTower = Color(hex: "4a5568")
+        static let poiWarMemorial = Color(hex: "6b7280")
+        static let poiWildernessShelter = Color(hex: "b45309")
+        static let poiCulturalHeritage = Color(hex: "8b7355")
+
+        // MARK: Future POI (configured but not yet active in PWA)
+        static let poiParking = Color(hex: "60a5fa")
+        static let poiAlpineHut = Color(hex: "f59e0b")
+        static let poiViewpoint = Color(hex: "10b981")
+        static let poiMemorial = Color(hex: "6b7280")
+    }
+}
+
+// MARK: - Shadow Tokens
+
+extension View {
+    func trakkeCardShadow() -> some View {
+        shadow(color: .black.opacity(0.06), radius: 3, x: 0, y: 1)
+    }
+
+    func trakkeControlShadow() -> some View {
+        shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
+    }
+
+    func trakkeFABShadow() -> some View {
+        shadow(color: .black.opacity(0.2), radius: 12, x: 0, y: 8)
     }
 }

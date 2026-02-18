@@ -10,11 +10,7 @@ struct WeatherSheet: View {
                 if viewModel.isLoading {
                     ProgressView(String(localized: "weather.loading"))
                 } else if let forecast = viewModel.forecast {
-                    if let dayIndex = viewModel.selectedDayIndex {
-                        dayDetailView(dayIndex: dayIndex)
-                    } else {
-                        forecastList(forecast)
-                    }
+                    forecastContent(forecast)
                 } else if let error = viewModel.error {
                     ContentUnavailableView(
                         String(localized: "weather.error"),
@@ -29,6 +25,7 @@ struct WeatherSheet: View {
                     )
                 }
             }
+            .tint(Color.Trakke.brand)
             .navigationTitle(String(localized: "weather.title"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -39,55 +36,80 @@ struct WeatherSheet: View {
         }
     }
 
-    // MARK: - Forecast List
+    // MARK: - Forecast Content
 
-    private func forecastList(_ forecast: WeatherForecast) -> some View {
-        List {
-            // Current conditions
-            Section(String(localized: "weather.current")) {
-                currentWeatherRow(forecast.current)
-            }
+    private func forecastContent(_ forecast: WeatherForecast) -> some View {
+        ScrollView {
+            VStack(spacing: 24) {
+                // Current conditions
+                CardSection(String(localized: "weather.current")) {
+                    currentWeatherCard(forecast.current)
+                }
 
-            // 7-day forecast
-            Section(String(localized: "weather.forecast")) {
-                ForEach(Array(forecast.daily.enumerated()), id: \.offset) { index, day in
-                    Button {
-                        viewModel.selectDay(index)
-                    } label: {
-                        dailyRow(day)
+                // 7-day forecast
+                CardSection(String(localized: "weather.forecast")) {
+                    VStack(spacing: 0) {
+                        ForEach(Array(forecast.daily.enumerated()), id: \.offset) { index, day in
+                            if index > 0 {
+                                Divider().padding(.leading, .Trakke.dividerLeading)
+                            }
+                            NavigationLink(value: index) {
+                                dailyRow(day)
+                            }
+                        }
                     }
                 }
-            }
 
-            // Attribution
-            Section {
-                HStack {
-                    Text("MET Norway")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    Spacer()
-                    Text(String(localized: "weather.updated \(formatTime(forecast.fetchedAt))"))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                // Attribution (CC BY 4.0 required by MET Norway ToS)
+                VStack(spacing: 4) {
+                    HStack {
+                        Text("MET Norway")
+                        Spacer()
+                        Text(String(localized: "weather.updated \(formatHour(forecast.fetchedAt))"))
+                    }
+                    HStack {
+                        Text("CC BY 4.0")
+                        Spacer()
+                    }
                 }
+                .font(.caption)
+                .foregroundStyle(Color.Trakke.textSoft)
+                .padding(.horizontal, 4)
+                .padding(.bottom, 16)
             }
+            .padding(.horizontal, .Trakke.sheetHorizontal)
+            .padding(.top, .Trakke.sheetTop)
+        }
+        .background(Color(.systemGroupedBackground))
+        .navigationDestination(for: Int.self) { dayIndex in
+            dayDetailView(dayIndex: dayIndex, forecast: forecast)
         }
     }
 
-    // MARK: - Current Weather
+    // MARK: - Current Weather Card
 
-    private func currentWeatherRow(_ data: WeatherData) -> some View {
-        VStack(spacing: 12) {
-            HStack(spacing: 16) {
-                Image(systemName: WeatherViewModel.sfSymbol(for: data.symbol))
-                    .font(.system(size: 40))
-                    .foregroundStyle(symbolColor(for: data.symbol))
+    private func currentWeatherCard(_ data: WeatherData) -> some View {
+        VStack(spacing: 16) {
+            HStack(spacing: 14) {
+                Image(data.symbol)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 48, height: 48)
 
-                Text("\(Int(data.temperature.rounded()))°")
-                    .font(.system(size: 48, weight: .light, design: .rounded))
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("\(Int(data.temperature.rounded()))°")
+                        .font(.system(size: 44, weight: .light, design: .rounded))
+                        .foregroundStyle(Color.Trakke.text)
+
+                    Text(WeatherViewModel.conditionText(for: data.symbol))
+                        .font(.subheadline)
+                        .foregroundStyle(Color.Trakke.textMuted)
+                }
 
                 Spacer()
             }
+
+            Divider()
 
             LazyVGrid(columns: [
                 GridItem(.flexible()),
@@ -111,164 +133,199 @@ struct WeatherSheet: View {
                 )
             }
         }
-        .padding(.vertical, 4)
     }
 
     private func weatherStat(icon: String, value: String, label: String) -> some View {
         VStack(spacing: 4) {
             Image(systemName: icon)
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .font(.system(size: 14))
+                .foregroundStyle(Color.Trakke.textSoft)
             Text(value)
-                .font(.callout.monospacedDigit())
+                .font(.subheadline.monospacedDigit())
+                .foregroundStyle(Color.Trakke.text)
             Text(label)
                 .font(.caption2)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.Trakke.textSoft)
         }
     }
 
     // MARK: - Daily Row
 
     private func dailyRow(_ day: WeatherData) -> some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 10) {
             Text(formatDayName(day.time))
                 .font(.subheadline)
-                .frame(width: 50, alignment: .leading)
+                .foregroundStyle(Color.Trakke.text)
+                .frame(width: 62, alignment: .leading)
 
-            Image(systemName: WeatherViewModel.sfSymbol(for: day.symbol))
-                .foregroundStyle(symbolColor(for: day.symbol))
-                .frame(width: 24)
+            Image(day.symbol)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 28, height: 28)
 
-            Text("\(Int(day.temperature.rounded()))°")
+            if let min = day.temperatureMin, let max = day.temperatureMax {
+                HStack(spacing: 0) {
+                    Text("\(Int(min.rounded()))°")
+                        .foregroundStyle(Color.Trakke.textSoft)
+                        .frame(width: 40, alignment: .trailing)
+                    Text("/")
+                        .font(.subheadline)
+                        .foregroundStyle(Color.Trakke.textSoft)
+                    Text("\(Int(max.rounded()))°")
+                        .foregroundStyle(Color.Trakke.text)
+                        .frame(width: 40, alignment: .leading)
+                }
                 .font(.subheadline.monospacedDigit())
-                .frame(width: 32, alignment: .trailing)
+            } else {
+                Text("\(Int(day.temperature.rounded()))°")
+                    .font(.subheadline.monospacedDigit())
+                    .foregroundStyle(Color.Trakke.text)
+                    .frame(width: 82, alignment: .center)
+            }
 
             Spacer()
 
-            HStack(spacing: 8) {
-                Label(String(format: "%.0f m/s", day.windSpeed), systemImage: "wind")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-
+            HStack(spacing: 6) {
                 if day.precipitationProbability > 0 {
-                    Label(String(format: "%.0f%%", day.precipitationProbability), systemImage: "drop")
-                        .font(.caption)
-                        .foregroundStyle(.blue)
+                    HStack(spacing: 2) {
+                        Image(systemName: "drop")
+                            .font(.caption2)
+                        Text(String(format: "%.0f%%", day.precipitationProbability))
+                    }
+                    .font(.caption)
+                    .foregroundStyle(Color.Trakke.textMuted)
                 }
+
+                Text(String(format: "%.0f m/s", day.windSpeed))
+                    .font(.caption)
+                    .foregroundStyle(Color.Trakke.textSoft)
             }
 
             Image(systemName: "chevron.right")
-                .font(.caption)
-                .foregroundStyle(.tertiary)
+                .font(.caption2)
+                .foregroundStyle(Color.Trakke.textSoft)
         }
-        .foregroundStyle(.primary)
+        .padding(.vertical, 10)
     }
 
     // MARK: - Day Detail
 
-    private func dayDetailView(dayIndex: Int) -> some View {
-        List {
-            if let day = viewModel.selectedDay {
-                Section {
-                    HStack {
-                        Button {
-                            viewModel.clearDaySelection()
-                        } label: {
-                            Label(String(localized: "weather.back"), systemImage: "chevron.left")
-                        }
-                        Spacer()
-                        Text(formatFullDate(day.time))
-                            .font(.headline)
-                        Spacer()
-                    }
-                }
+    private func dayDetailView(dayIndex: Int, forecast: WeatherForecast) -> some View {
+        let day = forecast.daily[dayIndex]
+        let hours = hoursForDay(dayIndex, forecast: forecast)
 
-                let hours = viewModel.hoursForSelectedDay
+        return ScrollView {
+            VStack(spacing: 24) {
                 if hours.isEmpty {
-                    Section(String(localized: "weather.daySummary")) {
-                        currentWeatherRow(day)
+                    CardSection(String(localized: "weather.daySummary")) {
+                        currentWeatherCard(day)
                     }
                 } else {
-                    Section(String(localized: "weather.hourly")) {
-                        ForEach(hours, id: \.time) { hour in
-                            hourlyRow(hour)
+                    CardSection(String(localized: "weather.current")) {
+                        currentWeatherCard(day)
+                    }
+
+                    CardSection(String(localized: "weather.hourly")) {
+                        VStack(spacing: 0) {
+                            ForEach(Array(hours.enumerated()), id: \.element.time) { index, hour in
+                                if index > 0 {
+                                    Divider().padding(.leading, .Trakke.dividerLeading)
+                                }
+                                hourlyRow(hour)
+                            }
                         }
                     }
                 }
             }
+            .padding(.horizontal, .Trakke.sheetHorizontal)
+            .padding(.top, .Trakke.sheetTop)
+            .padding(.bottom, .Trakke.lg)
         }
+        .background(Color(.systemGroupedBackground))
+        .navigationTitle(formatFullDate(day.time))
+        .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private func hoursForDay(_ dayIndex: Int, forecast: WeatherForecast) -> [WeatherData] {
+        guard dayIndex < forecast.daily.count else { return [] }
+        let dayDate = forecast.daily[dayIndex].time
+        let calendar = Calendar.current
+        let dayStart = calendar.startOfDay(for: dayDate)
+        guard let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart) else { return [] }
+        return forecast.hourly.filter { $0.time >= dayStart && $0.time < dayEnd }
     }
 
     // MARK: - Hourly Row
 
     private func hourlyRow(_ hour: WeatherData) -> some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 0) {
             Text(formatHour(hour.time))
                 .font(.subheadline.monospacedDigit())
-                .frame(width: 44, alignment: .leading)
+                .foregroundStyle(Color.Trakke.textMuted)
+                .frame(maxWidth: .infinity, alignment: .leading)
 
-            Image(systemName: WeatherViewModel.sfSymbol(for: hour.symbol))
-                .foregroundStyle(symbolColor(for: hour.symbol))
-                .frame(width: 24)
+            Image(hour.symbol)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 28, height: 28)
+                .frame(maxWidth: .infinity)
 
             Text("\(Int(hour.temperature.rounded()))°")
                 .font(.subheadline.monospacedDigit())
-                .frame(width: 32, alignment: .trailing)
+                .foregroundStyle(Color.Trakke.text)
+                .frame(maxWidth: .infinity)
 
-            Spacer()
-
-            HStack(spacing: 8) {
-                Label(String(format: "%.0f m/s", hour.windSpeed), systemImage: "wind")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-
+            HStack(spacing: 4) {
                 if hour.precipitation > 0 {
-                    Label(String(format: "%.1f mm", hour.precipitation), systemImage: "drop.fill")
-                        .font(.caption)
-                        .foregroundStyle(.blue)
+                    HStack(spacing: 2) {
+                        Image(systemName: "drop.fill")
+                            .font(.caption2)
+                        Text(String(format: "%.1f mm", hour.precipitation))
+                    }
+                    .font(.caption)
+                    .foregroundStyle(Color.Trakke.textMuted)
                 }
+
+                Text(String(format: "%.0f m/s", hour.windSpeed))
+                    .font(.caption)
+                    .foregroundStyle(Color.Trakke.textSoft)
             }
+            .frame(maxWidth: .infinity, alignment: .trailing)
         }
+        .padding(.vertical, 8)
     }
 
     // MARK: - Formatters
 
-    private func formatDayName(_ date: Date) -> String {
+    private static let dayNameFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "nb_NO")
         formatter.dateFormat = "EEE d."
-        return formatter.string(from: date)
-    }
+        return formatter
+    }()
 
-    private func formatFullDate(_ date: Date) -> String {
+    private static let fullDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "nb_NO")
         formatter.dateStyle = .long
-        return formatter.string(from: date)
+        return formatter
+    }()
+
+    private static let hourFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+        return formatter
+    }()
+
+    private func formatDayName(_ date: Date) -> String {
+        Self.dayNameFormatter.string(from: date)
+    }
+
+    private func formatFullDate(_ date: Date) -> String {
+        Self.fullDateFormatter.string(from: date)
     }
 
     private func formatHour(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm"
-        return formatter.string(from: date)
-    }
-
-    private func formatTime(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm"
-        return formatter.string(from: date)
-    }
-
-    private func symbolColor(for symbol: String) -> Color {
-        if symbol.contains("clearsky") || symbol.contains("fair") {
-            return .orange
-        } else if symbol.contains("rain") || symbol.contains("sleet") {
-            return .blue
-        } else if symbol.contains("snow") {
-            return .cyan
-        } else if symbol.contains("thunder") {
-            return .purple
-        }
-        return .secondary
+        Self.hourFormatter.string(from: date)
     }
 }

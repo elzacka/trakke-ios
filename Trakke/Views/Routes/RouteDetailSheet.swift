@@ -9,15 +9,23 @@ struct RouteDetailSheet: View {
 
     var body: some View {
         NavigationStack {
-            List {
-                routeInfoSection
-                elevationSection
-                actionsSection
+            ScrollView {
+                VStack(spacing: .Trakke.cardGap) {
+                    routeInfoCard
+                    elevationCard
+                    actionsCard
+
+                    Spacer(minLength: .Trakke.lg)
+                }
+                .padding(.horizontal, .Trakke.sheetHorizontal)
+                .padding(.top, .Trakke.sheetTop)
             }
+            .background(Color(.systemGroupedBackground))
+            .tint(Color.Trakke.brand)
             .navigationTitle(route.name)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
+                ToolbarItem(placement: .topBarTrailing) {
                     Button(String(localized: "common.close")) {
                         dismiss()
                     }
@@ -31,92 +39,134 @@ struct RouteDetailSheet: View {
         }
     }
 
-    // MARK: - Sections
+    // MARK: - Route Info
 
-    private var routeInfoSection: some View {
-        Section {
-            HStack(spacing: 12) {
+    private var routeInfoCard: some View {
+        CardSection(String(localized: "route.info")) {
+            HStack(spacing: .Trakke.md) {
                 Circle()
                     .fill(Color(hex: route.color ?? "#3e4533"))
-                    .frame(width: 16, height: 16)
+                    .frame(width: .Trakke.lg, height: .Trakke.lg)
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(route.name)
-                        .font(.headline)
+                        .font(Font.Trakke.bodyMedium)
                     Text(viewModel.formattedDistance(route.distance))
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .font(Font.Trakke.caption)
+                        .foregroundStyle(Color.Trakke.textSoft)
                 }
             }
+            .padding(.vertical, 2)
 
             if let gain = route.elevationGain, gain > 0 {
-                HStack {
-                    Label(String(localized: "elevation.gain"), systemImage: "arrow.up.right")
-                    Spacer()
-                    Text("\(Int(gain)) m")
-                        .monospacedDigit()
-                }
+                Divider().padding(.leading, .Trakke.dividerLeading)
+                infoRow(
+                    label: String(localized: "elevation.gain"),
+                    icon: "arrow.up.right",
+                    value: "\(Int(gain)) m"
+                )
             }
 
             if let loss = route.elevationLoss, loss > 0 {
-                HStack {
-                    Label(String(localized: "elevation.loss"), systemImage: "arrow.down.right")
-                    Spacer()
-                    Text("\(Int(loss)) m")
-                        .monospacedDigit()
-                }
+                Divider().padding(.leading, .Trakke.dividerLeading)
+                infoRow(
+                    label: String(localized: "elevation.loss"),
+                    icon: "arrow.down.right",
+                    value: "\(Int(loss)) m"
+                )
             }
 
+            Divider().padding(.leading, .Trakke.dividerLeading)
+            infoRow(
+                label: String(localized: "route.points"),
+                icon: "mappin.and.ellipse",
+                value: "\(route.coordinates.count)"
+            )
+
+            Divider().padding(.leading, .Trakke.dividerLeading)
             HStack {
-                Label(String(localized: "route.points"), systemImage: "mappin.and.ellipse")
+                Label(
+                    String(localized: "routes.visibleOnMap"),
+                    systemImage: route.isVisible ? "eye" : "eye.slash"
+                )
+                .font(Font.Trakke.bodyRegular)
                 Spacer()
-                Text("\(route.coordinates.count)")
-                    .monospacedDigit()
+                Toggle("", isOn: Binding(
+                    get: { route.isVisible },
+                    set: { _ in viewModel.toggleVisibility(route) }
+                ))
+                .labelsHidden()
             }
+            .padding(.vertical, .Trakke.xs)
         }
     }
 
-    private var elevationSection: some View {
-        Section(String(localized: "elevation.profile")) {
+    // MARK: - Elevation Profile
+
+    private var elevationCard: some View {
+        CardSection(String(localized: "elevation.profile")) {
             if viewModel.isLoadingElevation {
                 HStack {
                     ProgressView()
                     Text(String(localized: "elevation.loading"))
-                        .foregroundStyle(.secondary)
-                        .padding(.leading, 8)
+                        .font(Font.Trakke.caption)
+                        .foregroundStyle(Color.Trakke.textSoft)
+                        .padding(.leading, .Trakke.sm)
                 }
+                .padding(.vertical, .Trakke.xs)
             } else if !viewModel.elevationProfile.isEmpty {
                 ElevationProfileView(
                     points: viewModel.elevationProfile,
                     stats: viewModel.elevationStats
                 )
-                .padding(.vertical, 4)
+                .padding(.vertical, .Trakke.xs)
             } else {
                 Text(String(localized: "elevation.unavailable"))
-                    .foregroundStyle(.secondary)
+                    .font(Font.Trakke.caption)
+                    .foregroundStyle(Color.Trakke.textSoft)
+                    .padding(.vertical, .Trakke.xs)
             }
         }
     }
 
-    private var actionsSection: some View {
-        Section {
+    // MARK: - Actions
+
+    private var actionsCard: some View {
+        VStack(spacing: .Trakke.sm) {
             Button {
                 gpxURL = viewModel.exportGPX(for: route)
                 if gpxURL != nil {
                     showShareSheet = true
                 }
             } label: {
-                Label(String(localized: "gpx.export"), systemImage: "square.and.arrow.up")
+                Label(String(localized: "gpx.export"), systemImage: "square.and.arrow.down")
             }
+            .buttonStyle(.trakkeSecondary)
 
-            Button(role: .destructive) {
+            Button {
                 viewModel.deleteRoute(route)
                 dismiss()
             } label: {
                 Label(String(localized: "common.delete"), systemImage: "trash")
             }
+            .buttonStyle(.trakkeDanger)
         }
     }
+
+    // MARK: - Helpers
+
+    private func infoRow(label: String, icon: String, value: String) -> some View {
+        HStack {
+            Label(label, systemImage: icon)
+                .font(Font.Trakke.bodyRegular)
+            Spacer()
+            Text(value)
+                .font(.subheadline.monospacedDigit())
+                .foregroundStyle(Color.Trakke.textSoft)
+        }
+        .padding(.vertical, .Trakke.xs)
+    }
+
 }
 
 // MARK: - Share Sheet

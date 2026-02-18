@@ -12,10 +12,12 @@ struct SearchSheet: View {
                 Divider()
                 resultsList
             }
+            .background(Color(.systemGroupedBackground))
+            .tint(Color.Trakke.brand)
             .navigationTitle(String(localized: "search.title"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
+                ToolbarItem(placement: .topBarTrailing) {
                     Button(String(localized: "common.close")) {
                         dismiss()
                     }
@@ -42,13 +44,21 @@ struct SearchSheet: View {
                     viewModel.clearSearch()
                 } label: {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Color.Trakke.brand)
                 }
                 .accessibilityLabel(String(localized: "search.clear"))
             }
         }
-        .padding(.horizontal, 16)
+        .padding(.horizontal, .Trakke.md)
         .padding(.vertical, 10)
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))
+        .overlay(
+            RoundedRectangle(cornerRadius: .TrakkeRadius.lg)
+                .stroke(Color(.separator).opacity(0.5), lineWidth: 0.5)
+        )
+        .padding(.horizontal, .Trakke.cardPadH)
+        .padding(.vertical, .Trakke.sm)
     }
 
     private var resultsList: some View {
@@ -70,6 +80,7 @@ struct SearchSheet: View {
             } else {
                 List(viewModel.results) { result in
                     SearchResultRow(result: result)
+                        .listRowBackground(Color(.systemGroupedBackground))
                         .onTapGesture {
                             viewModel.selectResult(result)
                             onResultSelected(result)
@@ -77,6 +88,7 @@ struct SearchSheet: View {
                         }
                 }
                 .listStyle(.plain)
+                .scrollContentBackground(.hidden)
             }
         }
     }

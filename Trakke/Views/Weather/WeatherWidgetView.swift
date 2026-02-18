@@ -10,27 +10,33 @@ struct WeatherWidgetView: View {
                 if viewModel.isLoading {
                     ProgressView()
                         .scaleEffect(0.7)
+                        .frame(width: .Trakke.touchMin, height: .Trakke.touchMin)
                 } else if let forecast = viewModel.forecast {
-                    HStack(spacing: 4) {
-                        Image(systemName: WeatherViewModel.sfSymbol(for: forecast.current.symbol))
-                            .font(.system(size: 14))
-                            .foregroundStyle(symbolColor(for: forecast.current.symbol))
+                    VStack(spacing: 2) {
+                        Image(forecast.current.symbol)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: .Trakke.xxl, height: .Trakke.xxl)
                         Text("\(Int(forecast.current.temperature.rounded()))°")
-                            .font(.caption.monospacedDigit().bold())
+                            .font(.system(size: 13, weight: .semibold, design: .rounded).monospacedDigit())
+                            .foregroundStyle(Color.Trakke.text)
                     }
+                    .frame(width: .Trakke.touchMin, height: .Trakke.touchMin)
                 } else if viewModel.error != nil {
                     Image(systemName: "cloud.slash")
-                        .font(.system(size: 16))
+                        .font(.system(size: 14))
                         .foregroundStyle(.secondary)
+                        .frame(width: .Trakke.touchMin, height: .Trakke.touchMin)
                 } else {
                     Image(systemName: "cloud")
-                        .font(.system(size: 16))
+                        .font(.system(size: 14))
                         .foregroundStyle(.secondary)
+                        .frame(width: .Trakke.touchMin, height: .Trakke.touchMin)
                 }
             }
-            .frame(width: 44, height: 44)
-            .background(.regularMaterial)
-            .clipShape(RoundedRectangle(cornerRadius: 10))
+            .background(Color.Trakke.background)
+            .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.md))
+            .trakkeControlShadow()
         }
         .accessibilityLabel(accessibilityText)
     }
@@ -40,18 +46,5 @@ struct WeatherWidgetView: View {
             return String(localized: "weather.accessibility \(Int(forecast.current.temperature.rounded()))")
         }
         return String(localized: "weather.title")
-    }
-
-    private func symbolColor(for symbol: String) -> Color {
-        if symbol.contains("clearsky") || symbol.contains("fair") {
-            return .orange
-        } else if symbol.contains("rain") || symbol.contains("sleet") {
-            return .blue
-        } else if symbol.contains("snow") {
-            return .cyan
-        } else if symbol.contains("thunder") {
-            return .purple
-        }
-        return .secondary
     }
 }

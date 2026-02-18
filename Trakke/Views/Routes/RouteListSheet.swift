@@ -10,24 +10,21 @@ struct RouteListSheet: View {
         NavigationStack {
             Group {
                 if viewModel.routes.isEmpty {
-                    ContentUnavailableView(
-                        String(localized: "routes.empty"),
-                        systemImage: "point.topleft.down.to.point.bottomright.curvepath",
-                        description: Text(String(localized: "routes.emptyDescription"))
+                    EmptyStateView(
+                        icon: "point.topleft.down.to.point.bottomright.curvepath",
+                        title: String(localized: "routes.empty.title"),
+                        subtitle: String(localized: "routes.empty.subtitle")
                     )
                 } else {
                     routeList
                 }
             }
+            .background(Color(.systemGroupedBackground))
+            .tint(Color.Trakke.brand)
             .navigationTitle(String(localized: "routes.title"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "common.close")) {
-                        dismiss()
-                    }
-                }
-                ToolbarItem(placement: .primaryAction) {
+                ToolbarItem(placement: .topBarLeading) {
                     Button {
                         onNewRoute?()
                         dismiss()
@@ -36,26 +33,56 @@ struct RouteListSheet: View {
                     }
                     .accessibilityLabel(String(localized: "routes.new"))
                 }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(String(localized: "common.close")) {
+                        dismiss()
+                    }
+                }
             }
         }
     }
 
     private var routeList: some View {
-        List {
-            ForEach(viewModel.routes, id: \.id) { route in
-                Button {
-                    onRouteSelected?(route)
-                    dismiss()
-                } label: {
-                    routeRow(route)
+        ScrollView {
+            VStack(spacing: .Trakke.cardGap) {
+                CardSection(String(localized: "routes.saved")) {
+                    ForEach(Array(viewModel.routes.enumerated()), id: \.element.id) { index, route in
+                        if index > 0 {
+                            Divider().padding(.leading, 4)
+                        }
+                        Button {
+                            onRouteSelected?(route)
+                            dismiss()
+                        } label: {
+                            routeRow(route)
+                        }
+                        .contextMenu {
+                            Button {
+                                viewModel.toggleVisibility(route)
+                            } label: {
+                                Label(
+                                    route.isVisible
+                                        ? String(localized: "routes.hideFromMap")
+                                        : String(localized: "routes.showOnMap"),
+                                    systemImage: route.isVisible ? "eye.slash" : "eye"
+                                )
+                            }
+
+                            Button(role: .destructive) {
+                                viewModel.deleteRoute(route)
+                            } label: {
+                                Label(String(localized: "common.delete"), systemImage: "trash")
+                            }
+                        }
+                    }
                 }
+
+                Spacer(minLength: .Trakke.lg)
             }
-            .onDelete { indexSet in
-                for index in indexSet {
-                    viewModel.deleteRoute(viewModel.routes[index])
-                }
-            }
+            .padding(.horizontal, .Trakke.sheetHorizontal)
+            .padding(.top, .Trakke.sheetTop)
         }
+        .background(Color(.systemGroupedBackground))
     }
 
     private func routeRow(_ route: Route) -> some View {
@@ -66,13 +93,13 @@ struct RouteListSheet: View {
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(route.name)
-                    .font(.body)
+                    .font(.subheadline.weight(.medium))
                     .foregroundStyle(.primary)
 
                 HStack(spacing: 8) {
                     Text(viewModel.formattedDistance(route.distance))
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Color.Trakke.textSoft)
 
                     if let gain = route.elevationGain, gain > 0 {
                         HStack(spacing: 2) {
@@ -81,16 +108,19 @@ struct RouteListSheet: View {
                             Text("\(Int(gain)) m")
                                 .font(.caption)
                         }
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Color.Trakke.textSoft)
                     }
                 }
             }
 
             Spacer()
 
-            Image(systemName: "chevron.right")
-                .font(.caption)
-                .foregroundStyle(.tertiary)
+            Image(systemName: route.isVisible ? "chevron.right" : "eye.slash")
+                .font(.caption2)
+                .foregroundStyle(Color.Trakke.textSoft)
         }
+        .padding(.vertical, 6)
+        .opacity(route.isVisible ? 1 : 0.45)
     }
+
 }

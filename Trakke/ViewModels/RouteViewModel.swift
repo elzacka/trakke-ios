@@ -1,6 +1,9 @@
 import SwiftUI
 import SwiftData
 import CoreLocation
+import os
+
+private let logger = Logger(subsystem: "no.tazk.trakke", category: "RouteViewModel")
 
 @MainActor
 @Observable
@@ -19,28 +22,37 @@ final class RouteViewModel {
         "#f39c12", "#9b59b6", "#1abc9c", "#e67e22",
     ]
 
-    private var modelContainer: ModelContainer?
+    private var modelContext: ModelContext?
     private let elevationService = ElevationService()
 
-    func setModelContainer(_ container: ModelContainer) {
-        modelContainer = container
+    func setModelContext(_ context: ModelContext) {
+        modelContext = context
     }
 
     // MARK: - CRUD
 
     func loadRoutes() {
-        guard let container = modelContainer else { return }
-        let context = container.mainContext
+        guard let context = modelContext else { return }
         let descriptor = FetchDescriptor<Route>(sortBy: [SortDescriptor(\.updatedAt, order: .reverse)])
         routes = (try? context.fetch(descriptor)) ?? []
     }
 
     func deleteRoute(_ route: Route) {
-        guard let container = modelContainer else { return }
-        let context = container.mainContext
+        guard let context = modelContext else { return }
         context.delete(route)
-        try? context.save()
+        do { try context.save() } catch { logger.error("Failed to save after deleting route: \(error)") }
         loadRoutes()
+    }
+
+    func toggleVisibility(_ route: Route) {
+        route.isVisible.toggle()
+        route.updatedAt = Date()
+        do { try modelContext?.save() } catch { logger.error("Failed to save route visibility: \(error)") }
+        loadRoutes()
+    }
+
+    var visibleRoutes: [Route] {
+        routes.filter(\.isVisible)
     }
 
     func selectRoute(_ route: Route) {
@@ -52,6 +64,16 @@ final class RouteViewModel {
         selectedRoute = nil
         elevationProfile = []
         elevationStats = nil
+    }
+
+    // MARK: - Drawing Distance
+
+    var drawingDistance: Double {
+        Haversine.totalDistance(coordinates: drawingCoordinates)
+    }
+
+    var formattedDrawingDistance: String {
+        formattedDistance(drawingDistance)
     }
 
     // MARK: - Drawing
@@ -71,25 +93,29 @@ final class RouteViewModel {
         drawingCoordinates.removeLast()
     }
 
+    func movePoint(at index: Int, to coordinate: CLLocationCoordinate2D) {
+        guard drawingCoordinates.indices.contains(index) else { return }
+        drawingCoordinates[index] = coordinate
+    }
+
     func cancelDrawing() {
         isDrawing = false
         drawingCoordinates = []
     }
 
     func finishDrawing(name: String, color: String? = nil) {
-        guard let container = modelContainer, drawingCoordinates.count >= 2 else { return }
+        guard let context = modelContext, drawingCoordinates.count >= 2 else { return }
 
         let coords = drawingCoordinates.map { [$0.longitude, $0.latitude] }
-        let distance = RouteService.calculateDistance(coordinates: coords)
+        let distance = Haversine.totalDistance(coordinates: coords)
 
         let route = Route(name: name)
         route.coordinates = coords
         route.distance = distance
         route.color = color ?? Self.routeColors[routes.count % Self.routeColors.count]
 
-        let context = container.mainContext
         context.insert(route)
-        try? context.save()
+        do { try context.save() } catch { logger.error("Failed to save new route: \(error)") }
 
         isDrawing = false
         drawingCoordinates = []
@@ -120,7 +146,7 @@ final class RouteViewModel {
                 route.elevationGain = Double(stats.gain)
                 route.elevationLoss = Double(stats.loss)
                 route.updatedAt = Date()
-                try? self.modelContainer?.mainContext.save()
+                do { try self.modelContext?.save() } catch { logger.error("Failed to save elevation data: \(error)") }
             } catch {
                 #if DEBUG
                 print("Elevation fetch error: \(error)")

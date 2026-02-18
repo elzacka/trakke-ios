@@ -6,33 +6,55 @@ struct CategoryPickerSheet: View {
 
     var body: some View {
         NavigationStack {
-            List {
-                ForEach(POICategory.allCases) { category in
-                    Button {
-                        viewModel.toggleCategory(category)
-                    } label: {
-                        HStack(spacing: 12) {
-                            Image(systemName: category.iconName)
-                                .foregroundStyle(Color(hex: category.color))
-                                .frame(width: 28, height: 28)
+            ScrollView {
+                VStack(spacing: .Trakke.cardGap) {
+                    CardSection(String(localized: "categories.title")) {
+                        let sorted = POICategory.allCases.sorted {
+                            $0.displayName.localizedCompare($1.displayName) == .orderedAscending
+                        }
+                        ForEach(Array(sorted.enumerated()), id: \.element) { index, category in
+                            if index > 0 {
+                                Divider().padding(.leading, 4)
+                            }
+                            Button {
+                                viewModel.toggleCategory(category)
+                            } label: {
+                                HStack(spacing: 12) {
+                                    Image(category.iconName)
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 20, height: 20)
+                                        .foregroundStyle(Color(hex: category.color))
+                                        .frame(width: 28, height: 28)
 
-                            Text(category.displayName)
-                                .foregroundStyle(.primary)
+                                    Text(category.displayName)
+                                        .font(.subheadline)
+                                        .foregroundStyle(.primary)
 
-                            Spacer()
+                                    Spacer()
 
-                            if viewModel.enabledCategories.contains(category) {
-                                Image(systemName: "checkmark")
-                                    .foregroundStyle(.tint)
+                                    if viewModel.enabledCategories.contains(category) {
+                                        Image(systemName: "checkmark")
+                                            .font(.subheadline.weight(.semibold))
+                                            .foregroundStyle(Color.Trakke.brand)
+                                    }
+                                }
+                                .padding(.vertical, 6)
                             }
                         }
                     }
+
+                    Spacer(minLength: .Trakke.lg)
                 }
+                .padding(.horizontal, .Trakke.sheetHorizontal)
+                .padding(.top, .Trakke.sheetTop)
             }
+            .background(Color(.systemGroupedBackground))
             .navigationTitle(String(localized: "categories.title"))
             .navigationBarTitleDisplayMode(.inline)
+            .tint(Color.Trakke.brand)
             .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
+                ToolbarItem(placement: .topBarTrailing) {
                     Button(String(localized: "common.close")) {
                         dismiss()
                     }
@@ -40,22 +62,5 @@ struct CategoryPickerSheet: View {
             }
         }
     }
-}
 
-// MARK: - Color Hex Init
-
-extension Color {
-    init(hex: String) {
-        var hexString = hex.trimmingCharacters(in: .whitespacesAndNewlines)
-        if hexString.hasPrefix("#") { hexString.removeFirst() }
-
-        var rgb: UInt64 = 0
-        Scanner(string: hexString).scanHexInt64(&rgb)
-
-        self.init(
-            red: Double((rgb >> 16) & 0xFF) / 255.0,
-            green: Double((rgb >> 8) & 0xFF) / 255.0,
-            blue: Double(rgb & 0xFF) / 255.0
-        )
-    }
 }

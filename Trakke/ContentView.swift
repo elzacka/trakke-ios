@@ -7,22 +7,18 @@ struct ContentView: View {
     @State private var searchViewModel = SearchViewModel()
     @State private var poiViewModel = POIViewModel()
     @State private var routeViewModel = RouteViewModel()
+    @State private var waypointViewModel = WaypointViewModel()
     @State private var offlineViewModel = OfflineViewModel()
     @State private var weatherViewModel = WeatherViewModel()
     @State private var measurementViewModel = MeasurementViewModel()
-    @State private var showSearchSheet = false
-    @State private var showCategoryPicker = false
-    @State private var showPOIDetail = false
-    @State private var showRouteList = false
-    @State private var showRouteDetail = false
-    @State private var showRouteName = false
-    @State private var showOfflineManager = false
-    @State private var showDownloadArea = false
-    @State private var showWeatherSheet = false
-    @State private var showMeasurementSheet = false
-    @State private var showPreferences = false
-    @State private var showInfo = false
-    @State private var newRouteName = ""
+    @State private var sheets = SheetCoordinator()
+    @AppStorage("showWeatherWidget") private var showWeatherWidget = false
+    @AppStorage("showCompass") private var showCompass = true
+    @AppStorage("showZoomControls") private var showZoomControls = false
+    @AppStorage("showScaleBar") private var showScaleBar = false
+    @AppStorage("enableRotation") private var enableRotation = true
+    @AppStorage("overlayTurrutebasen") private var overlayTurrutebasen = false
+    @AppStorage("overlayNaturskog") private var overlayNaturskog = false
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.modelContext) private var modelContext
 
@@ -35,29 +31,51 @@ struct ContentView: View {
             }
         }
         .onAppear {
-            let container = modelContext.container
-            routeViewModel.setModelContainer(container)
+            routeViewModel.setModelContext(modelContext)
             routeViewModel.loadRoutes()
+            waypointViewModel.setModelContext(modelContext)
+            waypointViewModel.loadWaypoints()
             offlineViewModel.startObserving()
+            syncOverlays()
         }
+        .onChange(of: overlayTurrutebasen) { syncOverlays() }
+        .onChange(of: overlayNaturskog) { syncOverlays() }
         .onDisappear {
             offlineViewModel.stopObserving()
         }
+        .onChange(of: searchViewModel.query) {
+            mapViewModel.searchPinCoordinate = nil
+        }
+    }
+
+    // MARK: - Overlay Sync
+
+    private func syncOverlays() {
+        var overlays = Set<OverlayLayer>()
+        if overlayTurrutebasen { overlays.insert(.turrutebasen) }
+        if overlayNaturskog { overlays.insert(.naturskog) }
+        mapViewModel.enabledOverlays = overlays
     }
 
     // MARK: - Map Tap Handler
 
     private func handleMapTap(_ coordinate: CLLocationCoordinate2D) {
-        if offlineViewModel.isSelectingArea {
-            offlineViewModel.addSelectionPoint(coordinate)
-            if offlineViewModel.hasValidSelection {
-                showDownloadArea = true
-            }
-        } else if measurementViewModel.isActive {
+        if measurementViewModel.isActive {
             measurementViewModel.addPoint(coordinate)
         } else if routeViewModel.isDrawing {
             routeViewModel.addPoint(coordinate)
         }
+    }
+
+    // MARK: - Long Press Handler
+
+    private func handleMapLongPress(_ coordinate: CLLocationCoordinate2D) {
+        guard !routeViewModel.isDrawing,
+              !measurementViewModel.isActive,
+              !offlineViewModel.isSelectingArea else { return }
+        waypointViewModel.startPlacing(at: coordinate)
+        sheets.editingWaypoint = nil
+        sheets.showWaypointEdit = true
     }
 
     // MARK: - Viewport Handler
@@ -80,39 +98,78 @@ struct ContentView: View {
             TrakkeMapView(
                 viewModel: mapViewModel,
                 pois: poiViewModel.pois,
-                routes: routeViewModel.routes,
+                routes: routeViewModel.visibleRoutes,
+                waypoints: waypointViewModel.visibleWaypoints,
                 drawingCoordinates: routeViewModel.drawingCoordinates,
                 isDrawing: routeViewModel.isDrawing,
                 selectionCorner1: offlineViewModel.selectionCorner1,
                 selectionCorner2: offlineViewModel.selectionCorner2,
                 measurementCoordinates: measurementViewModel.points,
                 measurementMode: measurementViewModel.mode,
+                searchPinCoordinate: mapViewModel.searchPinCoordinate,
+                enabledOverlays: mapViewModel.enabledOverlays,
+                showWeatherWidget: showWeatherWidget,
+                enableRotation: enableRotation,
                 onViewportChanged: handleViewportChanged,
                 onPOISelected: { poi in
                     poiViewModel.selectPOI(poi)
-                    showPOIDetail = true
+                    sheets.showPOIDetail = true
                 },
-                onMapTapped: handleMapTap
+                onWaypointSelected: { wp in
+                    waypointViewModel.selectedWaypoint = wp
+                    sheets.showWaypointDetail = true
+                },
+                onMapTapped: handleMapTap,
+                onMapLongPressed: handleMapLongPress,
+                onRoutePointDragged: { index, coord in
+                    routeViewModel.movePoint(at: index, to: coord)
+                },
+                onMeasurementPointDragged: { index, coord in
+                    measurementViewModel.movePoint(at: index, to: coord)
+                },
+                onSelectionCornerDragged: { index, coord in
+                    offlineViewModel.moveSelectionCorner(at: index, to: coord)
+                }
             )
             .ignoresSafeArea()
 
             MapControlsOverlay(
                 viewModel: mapViewModel,
-                onSearchTapped: { showSearchSheet = true },
-                onCategoryTapped: { showCategoryPicker = true },
-                onRouteTapped: { showRouteList = true },
-                onOfflineTapped: { showOfflineManager = true },
-                onWeatherTapped: { showWeatherSheet = true },
-                onMeasurementTapped: { showMeasurementSheet = true },
-                onSettingsTapped: { showPreferences = true },
-                onInfoTapped: { showInfo = true },
-                weatherWidget: AnyView(
-                    WeatherWidgetView(viewModel: weatherViewModel) {
-                        showWeatherSheet = true
+                onSearchTapped: { sheets.showSearchSheet = true },
+                onCategoryTapped: { sheets.showCategoryPicker = true },
+                onRouteTapped: {
+                    if routeViewModel.routes.isEmpty {
+                        routeViewModel.startDrawing()
+                    } else {
+                        sheets.showRouteList = true
                     }
-                )
+                },
+                onMyPlacesTapped: { sheets.showWaypointList = true },
+                onOfflineTapped: {
+                    if offlineViewModel.packs.isEmpty {
+                        offlineViewModel.startSelection(
+                            center: mapViewModel.currentCenter,
+                            zoom: mapViewModel.currentZoom
+                        )
+                    } else {
+                        sheets.showOfflineManager = true
+                    }
+                },
+                onWeatherTapped: { sheets.showWeatherSheet = true },
+                onMeasurementTapped: { sheets.showMeasurementSheet = true },
+                onSettingsTapped: { sheets.showPreferences = true },
+                onInfoTapped: { sheets.showInfo = true },
+                enabledOverlays: mapViewModel.enabledOverlays,
+                weatherWidget: showWeatherWidget ? AnyView(
+                    WeatherWidgetView(viewModel: weatherViewModel) {
+                        sheets.showWeatherSheet = true
+                    }
+                ) : nil,
+                showCompass: showCompass,
+                showZoomControls: showZoomControls,
+                showScaleBar: showScaleBar,
+                hideMenuAndZoom: routeViewModel.isDrawing || measurementViewModel.isActive || offlineViewModel.isSelectingArea
             )
-            .padding(.top)
 
             if routeViewModel.isDrawing {
                 drawingToolbar
@@ -122,32 +179,34 @@ struct ContentView: View {
                 measurementToolbar
             }
 
-            if offlineViewModel.isSelectingArea && !offlineViewModel.hasValidSelection {
-                selectionHint
+            if offlineViewModel.isSelectingArea {
+                selectionToolbar
             }
         }
-        .sheet(isPresented: $showSearchSheet) {
+        .tint(Color.Trakke.brand)
+        .sheet(isPresented: $sheets.showSearchSheet) {
             SearchSheet(viewModel: searchViewModel) { result in
+                mapViewModel.searchPinCoordinate = result.coordinate
                 mapViewModel.centerOn(coordinate: result.coordinate, zoom: 14)
             }
             .presentationDetents([.medium, .large])
         }
-        .sheet(isPresented: $showCategoryPicker) {
+        .sheet(isPresented: $sheets.showCategoryPicker) {
             CategoryPickerSheet(viewModel: poiViewModel)
                 .presentationDetents([.medium])
         }
-        .sheet(isPresented: $showPOIDetail) {
+        .sheet(isPresented: $sheets.showPOIDetail) {
             if let poi = poiViewModel.selectedPOI {
                 POIDetailSheet(poi: poi)
                     .presentationDetents([.medium])
             }
         }
-        .sheet(isPresented: $showRouteList) {
+        .sheet(isPresented: $sheets.showRouteList) {
             RouteListSheet(
                 viewModel: routeViewModel,
                 onRouteSelected: { route in
                     routeViewModel.selectRoute(route)
-                    showRouteDetail = true
+                    sheets.showRouteDetail = true
                 },
                 onNewRoute: {
                     routeViewModel.startDrawing()
@@ -155,51 +214,81 @@ struct ContentView: View {
             )
             .presentationDetents([.medium, .large])
         }
-        .sheet(isPresented: $showRouteDetail) {
+        .sheet(isPresented: $sheets.showRouteDetail) {
             if let route = routeViewModel.selectedRoute {
                 RouteDetailSheet(viewModel: routeViewModel, route: route)
                     .presentationDetents([.medium, .large])
             }
         }
-        .sheet(isPresented: $showOfflineManager) {
+        .sheet(isPresented: $sheets.showOfflineManager) {
             DownloadManagerSheet(
                 viewModel: offlineViewModel,
                 onNewDownload: {
-                    offlineViewModel.startSelection()
+                    offlineViewModel.startSelection(
+                        center: mapViewModel.currentCenter,
+                        zoom: mapViewModel.currentZoom
+                    )
                 }
             )
             .presentationDetents([.medium, .large])
         }
-        .sheet(isPresented: $showDownloadArea) {
+        .sheet(isPresented: $sheets.showDownloadArea) {
             DownloadAreaSheet(viewModel: offlineViewModel)
                 .presentationDetents([.medium, .large])
         }
-        .sheet(isPresented: $showWeatherSheet) {
+        .sheet(isPresented: $sheets.showWeatherSheet) {
             WeatherSheet(viewModel: weatherViewModel)
                 .presentationDetents([.medium, .large])
         }
-        .sheet(isPresented: $showMeasurementSheet) {
+        .sheet(isPresented: $sheets.showMeasurementSheet) {
             MeasurementSheet(viewModel: measurementViewModel)
-                .presentationDetents([.medium])
-                .interactiveDismissDisabled(measurementViewModel.isActive)
+                .presentationDetents([.height(200)])
         }
-        .sheet(isPresented: $showPreferences) {
+        .onChange(of: measurementViewModel.isActive) { _, isActive in
+            if isActive { sheets.showMeasurementSheet = false }
+        }
+        .sheet(isPresented: $sheets.showPreferences) {
             PreferencesSheet(mapViewModel: mapViewModel)
                 .presentationDetents([.medium, .large])
         }
-        .sheet(isPresented: $showInfo) {
+        .sheet(isPresented: $sheets.showInfo) {
             InfoSheet()
                 .presentationDetents([.medium, .large])
         }
-        .alert(String(localized: "routes.namePrompt"), isPresented: $showRouteName) {
-            TextField(String(localized: "routes.namePlaceholder"), text: $newRouteName)
-            Button(String(localized: "common.save")) {
-                routeViewModel.finishDrawing(name: newRouteName)
-                newRouteName = ""
+        .sheet(isPresented: $sheets.showWaypointList) {
+            WaypointListSheet(
+                viewModel: waypointViewModel,
+                onWaypointSelected: { wp in
+                    waypointViewModel.selectedWaypoint = wp
+                    sheets.showWaypointDetail = true
+                }
+            )
+            .presentationDetents([.medium, .large])
+        }
+        .sheet(isPresented: $sheets.showWaypointDetail) {
+            if let wp = waypointViewModel.selectedWaypoint {
+                WaypointDetailSheet(
+                    viewModel: waypointViewModel,
+                    waypoint: wp,
+                    onEdit: { waypoint in
+                        sheets.showWaypointDetail = false
+                        sheets.editingWaypoint = waypoint
+                        sheets.showWaypointEdit = true
+                    }
+                )
+                .presentationDetents([.medium])
             }
-            Button(String(localized: "common.cancel"), role: .cancel) {
-                newRouteName = ""
-            }
+        }
+        .sheet(isPresented: $sheets.showWaypointEdit) {
+            WaypointEditSheet(
+                viewModel: waypointViewModel,
+                editingWaypoint: sheets.editingWaypoint
+            )
+            .presentationDetents([.medium])
+        }
+        .sheet(isPresented: $sheets.showRouteSave) {
+            RouteSaveSheet(viewModel: routeViewModel)
+                .presentationDetents([.medium])
         }
     }
 
@@ -217,7 +306,7 @@ struct ContentView: View {
                     ForEach(routeViewModel.routes, id: \.id) { route in
                         Button {
                             routeViewModel.selectRoute(route)
-                            showRouteDetail = true
+                            sheets.showRouteDetail = true
                         } label: {
                             HStack(spacing: 8) {
                                 Circle()
@@ -236,6 +325,23 @@ struct ContentView: View {
                     }
                 }
 
+                Section(String(localized: "waypoints.title")) {
+                    ForEach(waypointViewModel.waypoints, id: \.id) { waypoint in
+                        Button {
+                            waypointViewModel.selectedWaypoint = waypoint
+                            sheets.showWaypointDetail = true
+                        } label: {
+                            HStack(spacing: 8) {
+                                Image(systemName: "mappin")
+                                    .font(.caption)
+                                    .foregroundStyle(Color.Trakke.brand)
+                                Text(waypoint.name)
+                                    .foregroundStyle(.primary)
+                            }
+                        }
+                    }
+                }
+
                 Section(String(localized: "offline.title")) {
                     ForEach(offlineViewModel.packs) { pack in
                         HStack {
@@ -243,7 +349,7 @@ struct ContentView: View {
                             Spacer()
                             if pack.progress.isComplete {
                                 Image(systemName: "checkmark.circle.fill")
-                                    .foregroundStyle(.green)
+                                    .foregroundStyle(Color.Trakke.brand)
                                     .font(.caption)
                             } else {
                                 ProgressView(value: pack.progress.percentage, total: 100)
@@ -253,7 +359,10 @@ struct ContentView: View {
                     }
 
                     Button {
-                        offlineViewModel.startSelection()
+                        offlineViewModel.startSelection(
+                            center: mapViewModel.currentCenter,
+                            zoom: mapViewModel.currentZoom
+                        )
                     } label: {
                         Label(String(localized: "offline.download"), systemImage: "plus")
                     }
@@ -261,10 +370,12 @@ struct ContentView: View {
 
                 Section(String(localized: "weather.title")) {
                     if let forecast = weatherViewModel.forecast {
-                        Button { showWeatherSheet = true } label: {
+                        Button { sheets.showWeatherSheet = true } label: {
                             HStack(spacing: 8) {
-                                Image(systemName: WeatherViewModel.sfSymbol(for: forecast.current.symbol))
-                                    .foregroundStyle(.orange)
+                                Image(forecast.current.symbol)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 24, height: 24)
                                 Text("\(Int(forecast.current.temperature.rounded()))°")
                                     .font(.headline)
                                     .foregroundStyle(.primary)
@@ -279,12 +390,15 @@ struct ContentView: View {
                 }
 
                 Section(String(localized: "categories.title")) {
-                    ForEach(POICategory.allCases) { category in
+                    ForEach(POICategory.allCases.sorted { $0.displayName.localizedCompare($1.displayName) == .orderedAscending }) { category in
                         Button {
                             poiViewModel.toggleCategory(category)
                         } label: {
                             HStack(spacing: 12) {
-                                Image(systemName: category.iconName)
+                                Image(category.iconName)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 20, height: 20)
                                     .foregroundStyle(Color(hex: category.color))
                                     .frame(width: 28)
                                 Text(category.displayName)
@@ -292,7 +406,7 @@ struct ContentView: View {
                                 Spacer()
                                 if poiViewModel.enabledCategories.contains(category) {
                                     Image(systemName: "checkmark")
-                                        .foregroundStyle(.tint)
+                                        .foregroundStyle(Color.Trakke.brand)
                                 }
                             }
                         }
@@ -304,46 +418,70 @@ struct ContentView: View {
                 }
 
                 Section {
-                    Button { showPreferences = true } label: {
+                    Button { sheets.showPreferences = true } label: {
                         Label(String(localized: "settings.title"), systemImage: "gearshape")
                     }
-                    Button { showInfo = true } label: {
+                    Button { sheets.showInfo = true } label: {
                         Label(String(localized: "info.title"), systemImage: "info.circle")
                     }
                 }
             }
-            .navigationTitle("Trakke")
+            .navigationTitle("Tråkke")
+            .tint(Color.Trakke.brand)
         } detail: {
             ZStack {
                 TrakkeMapView(
                     viewModel: mapViewModel,
                     pois: poiViewModel.pois,
-                    routes: routeViewModel.routes,
+                    routes: routeViewModel.visibleRoutes,
+                    waypoints: waypointViewModel.visibleWaypoints,
                     drawingCoordinates: routeViewModel.drawingCoordinates,
                     isDrawing: routeViewModel.isDrawing,
                     selectionCorner1: offlineViewModel.selectionCorner1,
                     selectionCorner2: offlineViewModel.selectionCorner2,
                     measurementCoordinates: measurementViewModel.points,
                     measurementMode: measurementViewModel.mode,
+                    searchPinCoordinate: mapViewModel.searchPinCoordinate,
+                    enabledOverlays: mapViewModel.enabledOverlays,
+                    showWeatherWidget: showWeatherWidget,
+                    enableRotation: enableRotation,
                     onViewportChanged: handleViewportChanged,
                     onPOISelected: { poi in
                         poiViewModel.selectPOI(poi)
-                        showPOIDetail = true
+                        sheets.showPOIDetail = true
                     },
-                    onMapTapped: handleMapTap
+                    onWaypointSelected: { wp in
+                        waypointViewModel.selectedWaypoint = wp
+                        sheets.showWaypointDetail = true
+                    },
+                    onMapTapped: handleMapTap,
+                    onMapLongPressed: handleMapLongPress,
+                    onRoutePointDragged: { index, coord in
+                        routeViewModel.movePoint(at: index, to: coord)
+                    },
+                    onMeasurementPointDragged: { index, coord in
+                        measurementViewModel.movePoint(at: index, to: coord)
+                    },
+                    onSelectionCornerDragged: { index, coord in
+                        offlineViewModel.moveSelectionCorner(at: index, to: coord)
+                    }
                 )
                 .ignoresSafeArea()
 
                 MapControlsOverlay(
                     viewModel: mapViewModel,
-                    onMeasurementTapped: { showMeasurementSheet = true },
-                    weatherWidget: AnyView(
+                    onMeasurementTapped: { sheets.showMeasurementSheet = true },
+                    enabledOverlays: mapViewModel.enabledOverlays,
+                    weatherWidget: showWeatherWidget ? AnyView(
                         WeatherWidgetView(viewModel: weatherViewModel) {
-                            showWeatherSheet = true
+                            sheets.showWeatherSheet = true
                         }
-                    )
+                    ) : nil,
+                    showCompass: showCompass,
+                    showZoomControls: showZoomControls,
+                    showScaleBar: showScaleBar,
+                    hideMenuAndZoom: routeViewModel.isDrawing || measurementViewModel.isActive || offlineViewModel.isSelectingArea
                 )
-                .padding(.top)
 
                 if routeViewModel.isDrawing {
                     drawingToolbar
@@ -353,52 +491,67 @@ struct ContentView: View {
                     measurementToolbar
                 }
 
-                if offlineViewModel.isSelectingArea && !offlineViewModel.hasValidSelection {
-                    selectionHint
+                if offlineViewModel.isSelectingArea {
+                    selectionToolbar
                 }
             }
-            .sheet(isPresented: $showPOIDetail) {
+            .sheet(isPresented: $sheets.showPOIDetail) {
                 if let poi = poiViewModel.selectedPOI {
                     POIDetailSheet(poi: poi)
                         .presentationDetents([.medium])
                 }
             }
-            .sheet(isPresented: $showRouteDetail) {
+            .sheet(isPresented: $sheets.showRouteDetail) {
                 if let route = routeViewModel.selectedRoute {
                     RouteDetailSheet(viewModel: routeViewModel, route: route)
                         .presentationDetents([.medium, .large])
                 }
             }
-            .sheet(isPresented: $showDownloadArea) {
+            .sheet(isPresented: $sheets.showDownloadArea) {
                 DownloadAreaSheet(viewModel: offlineViewModel)
                     .presentationDetents([.medium, .large])
             }
-            .sheet(isPresented: $showWeatherSheet) {
+            .sheet(isPresented: $sheets.showWeatherSheet) {
                 WeatherSheet(viewModel: weatherViewModel)
                     .presentationDetents([.medium, .large])
             }
-            .sheet(isPresented: $showMeasurementSheet) {
+            .sheet(isPresented: $sheets.showMeasurementSheet) {
                 MeasurementSheet(viewModel: measurementViewModel)
-                    .presentationDetents([.medium])
-                    .interactiveDismissDisabled(measurementViewModel.isActive)
+                    .presentationDetents([.height(200), .medium])
+                    .presentationBackgroundInteraction(.enabled(upThrough: .height(200)))
             }
-            .sheet(isPresented: $showPreferences) {
+            .sheet(isPresented: $sheets.showPreferences) {
                 PreferencesSheet(mapViewModel: mapViewModel)
                     .presentationDetents([.medium, .large])
             }
-            .sheet(isPresented: $showInfo) {
+            .sheet(isPresented: $sheets.showInfo) {
                 InfoSheet()
                     .presentationDetents([.medium, .large])
             }
-        }
-        .alert(String(localized: "routes.namePrompt"), isPresented: $showRouteName) {
-            TextField(String(localized: "routes.namePlaceholder"), text: $newRouteName)
-            Button(String(localized: "common.save")) {
-                routeViewModel.finishDrawing(name: newRouteName)
-                newRouteName = ""
+            .sheet(isPresented: $sheets.showWaypointDetail) {
+                if let wp = waypointViewModel.selectedWaypoint {
+                    WaypointDetailSheet(
+                        viewModel: waypointViewModel,
+                        waypoint: wp,
+                        onEdit: { waypoint in
+                            sheets.showWaypointDetail = false
+                            sheets.editingWaypoint = waypoint
+                            sheets.showWaypointEdit = true
+                        }
+                    )
+                    .presentationDetents([.medium])
+                }
             }
-            Button(String(localized: "common.cancel"), role: .cancel) {
-                newRouteName = ""
+            .sheet(isPresented: $sheets.showWaypointEdit) {
+                WaypointEditSheet(
+                    viewModel: waypointViewModel,
+                    editingWaypoint: sheets.editingWaypoint
+                )
+                .presentationDetents([.medium])
+            }
+            .sheet(isPresented: $sheets.showRouteSave) {
+                RouteSaveSheet(viewModel: routeViewModel)
+                    .presentationDetents([.medium])
             }
         }
     }
@@ -409,42 +562,68 @@ struct ContentView: View {
         VStack {
             Spacer()
 
-            HStack(spacing: 16) {
-                Button(role: .destructive) {
-                    routeViewModel.cancelDrawing()
-                } label: {
-                    Label(String(localized: "common.cancel"), systemImage: "xmark")
+            VStack(spacing: 8) {
+                if routeViewModel.drawingCoordinates.count >= 2 {
+                    HStack(spacing: 6) {
+                        Image(systemName: "point.topleft.down.to.point.bottomright.curvepath")
+                            .font(.caption)
+                        Text(routeViewModel.formattedDrawingDistance)
+                            .font(.title3.monospacedDigit().bold())
+                            .foregroundStyle(Color.Trakke.brand)
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .background(.regularMaterial)
+                    .clipShape(Capsule())
+                } else {
+                    Text(String(localized: "route.drawingHint"))
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
                         .padding(.horizontal, 16)
-                        .padding(.vertical, 10)
+                        .padding(.vertical, 8)
                         .background(.regularMaterial)
                         .clipShape(Capsule())
                 }
 
-                Button {
-                    routeViewModel.undoLastPoint()
-                } label: {
-                    Label(String(localized: "route.undo"), systemImage: "arrow.uturn.backward")
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 10)
-                        .background(.regularMaterial)
-                        .clipShape(Capsule())
-                }
-                .disabled(routeViewModel.drawingCoordinates.isEmpty)
+                HStack(spacing: 16) {
+                    Button(role: .destructive) {
+                        routeViewModel.cancelDrawing()
+                    } label: {
+                        Label(String(localized: "common.cancel"), systemImage: "xmark")
+                            .foregroundStyle(Color.Trakke.red)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 10)
+                            .background(.regularMaterial)
+                            .clipShape(Capsule())
+                    }
 
-                Button {
-                    showRouteName = true
-                } label: {
-                    Label(String(localized: "common.done"), systemImage: "checkmark")
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 10)
-                        .background(Color.Trakke.brand)
-                        .foregroundStyle(.white)
-                        .clipShape(Capsule())
+                    Button {
+                        routeViewModel.undoLastPoint()
+                    } label: {
+                        Label(String(localized: "route.undo"), systemImage: "arrow.uturn.backward")
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 10)
+                            .background(.regularMaterial)
+                            .clipShape(Capsule())
+                    }
+                    .disabled(routeViewModel.drawingCoordinates.isEmpty)
+
+                    Button {
+                        sheets.showRouteSave = true
+                    } label: {
+                        Label(String(localized: "common.done"), systemImage: "checkmark")
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 10)
+                            .background(Color.Trakke.brand)
+                            .foregroundStyle(.white)
+                            .clipShape(Capsule())
+                    }
+                    .disabled(routeViewModel.drawingCoordinates.count < 2)
                 }
-                .disabled(routeViewModel.drawingCoordinates.count < 2)
             }
-            .padding(.bottom, 40)
+            .padding(.bottom, 16)
         }
+        .safeAreaPadding(.bottom)
     }
 
     // MARK: - Measurement Toolbar
@@ -455,9 +634,26 @@ struct ContentView: View {
 
             VStack(spacing: 8) {
                 if let result = measurementViewModel.formattedResult {
-                    Text(result)
-                        .font(.title3.monospacedDigit().bold())
-                        .foregroundStyle(Color.Trakke.brand)
+                    VStack(spacing: 2) {
+                        Text(measurementViewModel.mode == .distance
+                             ? String(localized: "measurement.distance")
+                             : String(localized: "measurement.area"))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Text(result)
+                            .font(.title3.monospacedDigit().bold())
+                            .foregroundStyle(Color.Trakke.brand)
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .background(.regularMaterial)
+                    .clipShape(Capsule())
+                } else {
+                    Text(measurementViewModel.mode == .distance
+                         ? String(localized: "measurement.distanceHint")
+                         : String(localized: "measurement.areaHint"))
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
                         .padding(.horizontal, 16)
                         .padding(.vertical, 8)
                         .background(.regularMaterial)
@@ -469,6 +665,7 @@ struct ContentView: View {
                         measurementViewModel.stop()
                     } label: {
                         Label(String(localized: "common.cancel"), systemImage: "xmark")
+                            .foregroundStyle(Color.Trakke.red)
                             .padding(.horizontal, 16)
                             .padding(.vertical, 10)
                             .background(.regularMaterial)
@@ -498,37 +695,64 @@ struct ContentView: View {
                     .disabled(measurementViewModel.points.isEmpty)
                 }
             }
-            .padding(.bottom, 40)
+            .padding(.bottom, 16)
         }
+        .safeAreaPadding(.bottom)
     }
 
-    // MARK: - Selection Hint
+    // MARK: - Selection Toolbar
 
-    private var selectionHint: some View {
+    private var selectionToolbar: some View {
         VStack {
-            HStack {
-                Text(offlineViewModel.selectionCorner1 == nil
-                     ? String(localized: "offline.tapFirstCorner")
-                     : String(localized: "offline.tapSecondCorner"))
-                    .font(.callout)
+            Spacer()
+
+            VStack(spacing: 8) {
+                if offlineViewModel.hasValidSelection {
+                    let count = offlineViewModel.estimatedTileCount
+                    HStack(spacing: 6) {
+                        Image(systemName: "square.grid.3x3")
+                            .font(.caption)
+                        Text(String(localized: "offline.tiles \(count)"))
+                            .font(.subheadline.monospacedDigit())
+                        Text("(\(offlineViewModel.estimatedSize))")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    .foregroundStyle(count > 20_000 ? Color.Trakke.red : .primary)
                     .padding(.horizontal, 16)
-                    .padding(.vertical, 10)
+                    .padding(.vertical, 8)
                     .background(.regularMaterial)
                     .clipShape(Capsule())
+                }
 
-                Button {
-                    offlineViewModel.cancelSelection()
-                } label: {
-                    Image(systemName: "xmark.circle.fill")
-                        .font(.title3)
-                        .foregroundStyle(.secondary)
-                        .accessibilityLabel(String(localized: "common.cancel"))
+                HStack(spacing: 16) {
+                    Button(role: .destructive) {
+                        offlineViewModel.cancelSelection()
+                    } label: {
+                        Label(String(localized: "common.cancel"), systemImage: "xmark")
+                            .foregroundStyle(Color.Trakke.red)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 10)
+                            .background(.regularMaterial)
+                            .clipShape(Capsule())
+                    }
+
+                    Button {
+                        sheets.showDownloadArea = true
+                    } label: {
+                        Label(String(localized: "common.done"), systemImage: "checkmark")
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 10)
+                            .background(Color.Trakke.brand)
+                            .foregroundStyle(.white)
+                            .clipShape(Capsule())
+                    }
+                    .disabled(!offlineViewModel.hasValidSelection)
                 }
             }
-            .padding(.top, 60)
-
-            Spacer()
+            .padding(.bottom, 16)
         }
+        .safeAreaPadding(.bottom)
     }
 
     // MARK: - iPad Search Components
@@ -562,6 +786,7 @@ struct ContentView: View {
             SearchResultRow(result: result)
                 .onTapGesture {
                     searchViewModel.selectResult(result)
+                    mapViewModel.searchPinCoordinate = result.coordinate
                     mapViewModel.centerOn(coordinate: result.coordinate, zoom: 14)
                 }
         }

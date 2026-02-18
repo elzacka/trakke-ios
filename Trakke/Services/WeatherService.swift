@@ -5,6 +5,8 @@ import CoreLocation
 
 struct WeatherData: Sendable {
     let temperature: Double
+    let temperatureMin: Double?
+    let temperatureMax: Double?
     let precipitation: Double
     let precipitationProbability: Double
     let windSpeed: Double
@@ -27,23 +29,31 @@ struct WeatherForecast: Sendable {
 
 actor WeatherService {
     private static let baseURL = "https://api.met.no/weatherapi/locationforecast/2.0/compact"
-    private static let userAgent = "Trakke-iOS/1.0 hei@tazk.no"
-    private static let cacheTTL: TimeInterval = 7200 // 2 hours
+    private static let userAgent = APIClient.userAgent
+    private static let fallbackTTL: TimeInterval = 7200 // 2 hours, used when Expires header is missing
     private static let timeout: TimeInterval = 15
 
-    private var cache: [String: (forecast: WeatherForecast, expiresAt: Date)] = [:]
+    private struct CachedForecast {
+        let forecast: WeatherForecast
+        let expiresAt: Date
+        let lastModified: String?
+    }
+
+    private var cache: [String: CachedForecast] = [:]
 
     func getForecast(lat: Double, lon: Double) async throws -> WeatherForecast {
         let truncLat = (lat * 10000).rounded() / 10000
         let truncLon = (lon * 10000).rounded() / 10000
         let cacheKey = "\(truncLat),\(truncLon)"
 
-        // Check cache
+        // Respect Expires header from previous response (MET ToS requirement)
         if let cached = cache[cacheKey], cached.expiresAt > Date() {
             return cached.forecast
         }
 
-        var components = URLComponents(string: Self.baseURL)!
+        guard var components = URLComponents(string: Self.baseURL) else {
+            throw APIError.invalidURL
+        }
         components.queryItems = [
             URLQueryItem(name: "lat", value: String(truncLat)),
             URLQueryItem(name: "lon", value: String(truncLon)),
@@ -55,14 +65,31 @@ actor WeatherService {
         request.setValue(Self.userAgent, forHTTPHeaderField: "User-Agent")
         request.timeoutInterval = Self.timeout
 
+        // Send If-Modified-Since if we have a cached Last-Modified (MET ToS requirement)
+        if let cached = cache[cacheKey], let lastModified = cached.lastModified {
+            request.setValue(lastModified, forHTTPHeaderField: "If-Modified-Since")
+        }
+
         do {
-            let (data, response) = try await URLSession.shared.data(for: request)
+            let (data, response) = try await APIClient.session.data(for: request)
             guard let httpResponse = response as? HTTPURLResponse else {
                 throw APIError.invalidResponse
             }
 
+            if httpResponse.statusCode == 304 {
+                // Not modified: refresh expiry from new Expires header, keep cached data
+                if let cached = cache[cacheKey] {
+                    let expires = Self.parseExpires(from: httpResponse)
+                    cache[cacheKey] = CachedForecast(
+                        forecast: cached.forecast,
+                        expiresAt: expires,
+                        lastModified: cached.lastModified
+                    )
+                    return cached.forecast
+                }
+            }
+
             if httpResponse.statusCode == 429 {
-                // Return stale cache if available
                 if let cached = cache[cacheKey] { return cached.forecast }
                 throw APIError.rateLimited
             }
@@ -74,15 +101,33 @@ actor WeatherService {
             let metResponse = try JSONDecoder().decode(MetApiResponse.self, from: data)
             let forecast = parseMetData(metResponse, lat: truncLat, lon: truncLon)
 
-            cache[cacheKey] = (forecast, Date().addingTimeInterval(Self.cacheTTL))
+            let expires = Self.parseExpires(from: httpResponse)
+            let lastModified = httpResponse.value(forHTTPHeaderField: "Last-Modified")
+            cache[cacheKey] = CachedForecast(
+                forecast: forecast,
+                expiresAt: expires,
+                lastModified: lastModified
+            )
             return forecast
         } catch let error as APIError {
             throw error
         } catch {
-            // Return stale cache on network error
             if let cached = cache[cacheKey] { return cached.forecast }
             throw error
         }
+    }
+
+    private static func parseExpires(from response: HTTPURLResponse) -> Date {
+        if let expiresString = response.value(forHTTPHeaderField: "Expires") {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss zzz"
+            formatter.locale = Locale(identifier: "en_US_POSIX")
+            formatter.timeZone = TimeZone(abbreviation: "GMT")
+            if let date = formatter.date(from: expiresString) {
+                return date
+            }
+        }
+        return Date().addingTimeInterval(fallbackTTL)
     }
 
     // MARK: - Wind Direction
@@ -113,6 +158,8 @@ actor WeatherService {
 
             let wd = WeatherData(
                 temperature: instant.air_temperature,
+                temperatureMin: nil,
+                temperatureMax: nil,
                 precipitation: precip,
                 precipitationProbability: precipProb,
                 windSpeed: instant.wind_speed,
@@ -127,7 +174,8 @@ actor WeatherService {
 
         // Current: closest to now
         let current = parsed.min(by: { abs($0.date.timeIntervalSince(now)) < abs($1.date.timeIntervalSince(now)) })?.data
-            ?? WeatherData(temperature: 0, precipitation: 0, precipitationProbability: 0,
+            ?? WeatherData(temperature: 0, temperatureMin: nil, temperatureMax: nil,
+                          precipitation: 0, precipitationProbability: 0,
                           windSpeed: 0, windDirection: 0, humidity: 0, cloudCoverage: 0,
                           symbol: "cloudy", time: now)
 
@@ -144,12 +192,31 @@ actor WeatherService {
         }
 
         let daily = dailyMap.sorted { $0.key < $1.key }.prefix(7).compactMap { _, points -> WeatherData? in
-            // Pick point closest to noon
-            points.min(by: {
+            // Pick point closest to noon for representative data
+            guard let noon = points.min(by: {
                 let h0 = calendar.component(.hour, from: $0.date)
                 let h1 = calendar.component(.hour, from: $1.date)
                 return abs(h0 - 12) < abs(h1 - 12)
-            })?.data
+            })?.data else { return nil }
+
+            // Compute min/max from all data points in this day
+            let temps = points.map(\.data.temperature)
+            let minTemp = temps.min()
+            let maxTemp = temps.max()
+
+            return WeatherData(
+                temperature: noon.temperature,
+                temperatureMin: minTemp,
+                temperatureMax: maxTemp,
+                precipitation: noon.precipitation,
+                precipitationProbability: noon.precipitationProbability,
+                windSpeed: noon.windSpeed,
+                windDirection: noon.windDirection,
+                humidity: noon.humidity,
+                cloudCoverage: noon.cloudCoverage,
+                symbol: noon.symbol,
+                time: noon.time
+            )
         }
 
         return WeatherForecast(

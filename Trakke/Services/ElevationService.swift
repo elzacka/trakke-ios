@@ -75,6 +75,15 @@ actor ElevationService {
         )
     }
 
+    func fetchElevation(coordinate: CLLocationCoordinate2D) async -> Double? {
+        do {
+            let elevations = try await fetchBatch([coordinate])
+            return elevations.first
+        } catch {
+            return nil
+        }
+    }
+
     // MARK: - Private
 
     private func fetchElevations(for coordinates: [CLLocationCoordinate2D]) async throws -> [Double] {
@@ -96,7 +105,9 @@ actor ElevationService {
         let punkterJSON = try JSONSerialization.data(withJSONObject: punkter)
         let punkterString = String(data: punkterJSON, encoding: .utf8) ?? "[]"
 
-        var components = URLComponents(string: Self.baseURL)!
+        guard var components = URLComponents(string: Self.baseURL) else {
+            throw APIError.invalidURL
+        }
         components.queryItems = [
             URLQueryItem(name: "koordsys", value: "4326"),
             URLQueryItem(name: "punkter", value: punkterString),
@@ -104,10 +115,7 @@ actor ElevationService {
 
         guard let url = components.url else { throw APIError.invalidURL }
 
-        var request = URLRequest(url: url)
-        request.timeoutInterval = Self.timeout
-
-        let (data, _) = try await URLSession.shared.data(for: request)
+        let data = try await APIClient.fetchData(url: url, timeout: Self.timeout)
         let response = try JSONDecoder().decode(HoydedataResponse.self, from: data)
 
         return response.punkter.map(\.z)

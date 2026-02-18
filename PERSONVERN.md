@@ -1,6 +1,6 @@
 # Personvernerklæring for Tråkke
 
-**Sist oppdatert:** 14. februar 2026
+**Sist oppdatert:** 18. februar 2026
 **Behandlingsansvarlig:** Tazk
 **Kontakt:** hei@tazk.no
 
@@ -12,7 +12,7 @@ Tråkke lagrer all data lokalt på enheten din. Appen samler ikke inn personoppl
 
 ## 1. Hva Tråkke gjør
 
-Tråkke er en kartapp for friluftsliv i Norge. Appen viser topografiske kart fra Kartverket, lar deg søke etter steder, lage ruter, lagre "veipunkter" og laste ned kart for bruk uten internett.
+Tråkke er en kartapp for friluftsliv i Norge. Appen viser topografiske kart fra Kartverket, lar deg søke etter steder, lage ruter, lagre veipunkter og laste ned kart for bruk uten internett. Appen har også kartlag for turruter og naturskog.
 
 ## 2. Hvilke data behandles
 
@@ -52,13 +52,16 @@ Appen kommuniserer med følgende tjenester for å gi deg kartdata, vær og annen
 | Tjeneste | Formål | Data som sendes | Land |
 |----------|--------|-----------------|------|
 | Kartverket (cache.kartverket.no) | Kartfliser | Kartkoordinater (zoom, x, y) | Norge |
+| Kartverket WMS (wms.geonorge.no) | Turruter-kartlag | Kartområde (bounding box) | Norge |
 | Geonorge Stedsnavn (ws.geonorge.no) | Stedsnavn-søk | Søketekst | Norge |
 | Geonorge Adresser (ws.geonorge.no) | Adressesøk | Søketekst | Norge |
 | Geonorge Høydedata (ws.geonorge.no) | Høydeprofiler | Koordinater langs ruten | Norge |
 | Meteorologisk institutt (api.met.no) | Værmelding | Omtrentlig posisjon (4 desimaler, ca. 11 m nøyaktighet) | Norge |
-| DSB (github.com/dsb-norge) | Tilfluktsrom | Ingen (statisk nedlasting) | Norge |
-| Overpass API (overpass-api.de) | Interessepunkter fra OpenStreetMap | Kartområde (bounding box) | Tyskland |
+| DSB (ogc.dsb.no) | Tilfluktsrom | Kartområde (bounding box) | Norge |
 | Riksantikvaren (api.ra.no) | Kulturminner | Kartområde (bounding box) | Norge |
+| Miljodirektoratet (image001.miljodirektoratet.no) | Naturskog-kartlag | Kartområde (bounding box) | Norge |
+
+Interessepunkter fra OpenStreetMap (huler, observasjonstårn, krigsminner, gapahuker) er forhåndslastet i appen og krever ingen nettverkskommunikasjon.
 
 Disse tjenestene mottar kun den tekniske informasjonen som er nødvendig for å levere data til appen. Ingen personopplysninger sendes.
 
@@ -95,7 +98,7 @@ Tråkke samler ikke inn personopplysninger og har ingen aldersgrense. Appen inne
 
 ## 8. Endringer
 
-Ved vesentlige endringer i denne erklæringen vil oppdatert versjon gjores tilgjengelig i appen og via GitHub. Datoen øverst i dokumentet viser når erklaringen ble oppdatert sist.
+Ved vesentlige endringer i denne erklæringen vil oppdatert versjon gjøres tilgjengelig i appen og via GitHub. Datoen øverst i dokumentet viser når erklæringen ble oppdatert sist.
 
 ## 9. Kontakt
 

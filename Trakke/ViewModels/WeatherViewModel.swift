@@ -7,10 +7,11 @@ final class WeatherViewModel {
     var forecast: WeatherForecast?
     var isLoading = false
     var error: String?
-    var selectedDayIndex: Int?
 
     private let service = WeatherService()
     private var lastFetchCoordinate: CLLocationCoordinate2D?
+    private var fetchTask: Task<Void, Never>?
+    private static let debounceInterval: Duration = .seconds(2)
 
     // MARK: - Fetch
 
@@ -21,18 +22,27 @@ final class WeatherViewModel {
             if distance < 1000, forecast != nil { return }
         }
 
-        lastFetchCoordinate = coordinate
-        isLoading = true
-        error = nil
+        // Debounce rapid viewport changes during panning
+        fetchTask?.cancel()
+        fetchTask = Task {
+            try? await Task.sleep(for: Self.debounceInterval)
+            guard !Task.isCancelled else { return }
 
-        Task {
+            self.lastFetchCoordinate = coordinate
+            self.isLoading = true
+            self.error = nil
+
             do {
-                let result = try await service.getForecast(lat: coordinate.latitude, lon: coordinate.longitude)
-                forecast = result
-                isLoading = false
+                let result = try await self.service.getForecast(lat: coordinate.latitude, lon: coordinate.longitude)
+                guard !Task.isCancelled else { return }
+                self.forecast = result
+                self.isLoading = false
+            } catch is CancellationError {
+                // Debounce cancelled, ignore
             } catch {
+                guard !Task.isCancelled else { return }
                 self.error = error.localizedDescription
-                isLoading = false
+                self.isLoading = false
             }
         }
     }
@@ -43,71 +53,37 @@ final class WeatherViewModel {
         fetchForecast(for: coord)
     }
 
-    // MARK: - Day Drill-Down
+    // MARK: - Norwegian Condition Text
 
-    var selectedDay: WeatherData? {
-        guard let index = selectedDayIndex,
-              let daily = forecast?.daily,
-              index < daily.count else { return nil }
-        return daily[index]
-    }
-
-    func selectDay(_ index: Int) {
-        selectedDayIndex = index
-    }
-
-    func clearDaySelection() {
-        selectedDayIndex = nil
-    }
-
-    // MARK: - Hourly for Selected Day
-
-    var hoursForSelectedDay: [WeatherData] {
-        guard let index = selectedDayIndex,
-              let daily = forecast?.daily,
-              index < daily.count,
-              let hourly = forecast?.hourly else { return [] }
-
-        let dayDate = daily[index].time
-        let calendar = Calendar.current
-        let dayStart = calendar.startOfDay(for: dayDate)
-        let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart)!
-
-        return hourly.filter { $0.time >= dayStart && $0.time < dayEnd }
-    }
-
-    // MARK: - Weather Symbol Mapping
-
-    nonisolated static func sfSymbol(for metSymbol: String) -> String {
+    nonisolated static func conditionText(for metSymbol: String) -> String {
         let base = metSymbol.replacingOccurrences(of: "_polartwilight", with: "")
 
         switch base {
-        case "clearsky_day": return "sun.max.fill"
-        case "clearsky_night": return "moon.stars.fill"
-        case "fair_day": return "sun.min.fill"
-        case "fair_night": return "moon.fill"
-        case "partlycloudy_day": return "cloud.sun.fill"
-        case "partlycloudy_night": return "cloud.moon.fill"
-        case "cloudy": return "cloud.fill"
-        case "fog": return "cloud.fog.fill"
-        case "lightrain", "rain": return "cloud.rain.fill"
-        case "heavyrain": return "cloud.heavyrain.fill"
-        case "lightrainshowers_day", "rainshowers_day": return "cloud.sun.rain.fill"
-        case "lightrainshowers_night", "rainshowers_night": return "cloud.moon.rain.fill"
-        case "heavyrainshowers_day": return "cloud.sun.rain.fill"
-        case "heavyrainshowers_night": return "cloud.moon.rain.fill"
-        case "sleet", "lightsleet", "heavysleet": return "cloud.sleet.fill"
-        case "sleetshowers_day", "lightsleetshowers_day": return "cloud.sun.sleet.fill"
-        case "sleetshowers_night", "lightsleetshowers_night": return "cloud.moon.sleet.fill"
-        case "snow", "lightsnow", "heavysnow": return "cloud.snow.fill"
-        case "snowshowers_day", "lightsnowshowers_day": return "cloud.sun.snow.fill"
-        case "snowshowers_night", "lightsnowshowers_night": return "cloud.moon.snow.fill"
-        case "rainandthunder", "lightrainandthunder", "heavyrainandthunder": return "cloud.bolt.rain.fill"
-        case "rainshowersandthunder_day", "lightrainshowersandthunder_day": return "cloud.sun.bolt.fill"
-        case "rainshowersandthunder_night", "lightrainshowersandthunder_night": return "cloud.moon.bolt.fill"
-        case "snowandthunder", "lightsnowandthunder", "heavysnowandthunder": return "cloud.bolt.fill"
-        case "sleetandthunder", "lightsleetandthunder", "heavysleetandthunder": return "cloud.bolt.fill"
-        default: return "cloud.fill"
+        case "clearsky_day", "clearsky_night": return "Klarvær"
+        case "fair_day", "fair_night": return "Lettskyet"
+        case "partlycloudy_day", "partlycloudy_night": return "Delvis skyet"
+        case "cloudy": return "Overskyet"
+        case "fog": return "Tåke"
+        case "lightrain": return "Lett regn"
+        case "rain": return "Regn"
+        case "heavyrain": return "Kraftig regn"
+        case "lightrainshowers_day", "lightrainshowers_night": return "Lette regnbyger"
+        case "rainshowers_day", "rainshowers_night": return "Regnbyger"
+        case "heavyrainshowers_day", "heavyrainshowers_night": return "Kraftige regnbyger"
+        case "sleet", "lightsleet": return "Sludd"
+        case "heavysleet": return "Kraftig sludd"
+        case "sleetshowers_day", "lightsleetshowers_day",
+             "sleetshowers_night", "lightsleetshowers_night": return "Sluddbyger"
+        case "snow", "lightsnow": return "Snø"
+        case "heavysnow": return "Kraftig snøfall"
+        case "snowshowers_day", "lightsnowshowers_day",
+             "snowshowers_night", "lightsnowshowers_night": return "Snøbyger"
+        case "rainandthunder", "lightrainandthunder", "heavyrainandthunder": return "Regn og torden"
+        case "rainshowersandthunder_day", "lightrainshowersandthunder_day",
+             "rainshowersandthunder_night", "lightrainshowersandthunder_night": return "Regnbyger og torden"
+        case "snowandthunder", "lightsnowandthunder", "heavysnowandthunder": return "Snø og torden"
+        case "sleetandthunder", "lightsleetandthunder", "heavysleetandthunder": return "Sludd og torden"
+        default: return "Overskyet"
         }
     }
 }

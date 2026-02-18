@@ -27,13 +27,14 @@ All external API connections are restricted to EU/EEA services:
 | Service | Host | Location | Data Transmitted |
 |---------|------|----------|-----------------|
 | Kartverket WMTS | cache.kartverket.no | Norway | Tile coordinates only |
+| Kartverket WMS (turruter) | wms.geonorge.no | Norway | Bounding box (overlay tiles) |
 | Geonorge APIs | ws.geonorge.no | Norway | Search queries, coordinate lookups |
 | MET Norway | api.met.no | Norway | Approximate coordinates (4 decimal truncation) |
-| DSB Shelters | github.com (dsb-norge) | EU | None (static download) |
-| Overpass API | overpass-api.de | Germany | Bounding box queries |
+| DSB Shelters | ogc.dsb.no | Norway | Bounding box queries |
 | Riksantikvaren | api.ra.no | Norway | Bounding box queries |
+| Miljodirektoratet (naturskog) | image001.miljodirektoratet.no | Norway | Bounding box (overlay tiles) |
 
-No data is sent to servers outside the EU/EEA.
+No data is sent to servers outside the EU/EEA. POI data from OpenStreetMap (caves, observation towers, war memorials, wilderness shelters) is pre-bundled in the app as static GeoJSON files and requires no network requests.
 
 ### Input Validation
 
@@ -63,7 +64,7 @@ No data is sent to servers outside the EU/EEA.
 
 | Version | Supported |
 |---------|-----------|
-| 0.1.x   | Current development |
+| 1.0.x   | Current release |
 
 ## Reporting a Vulnerability
 

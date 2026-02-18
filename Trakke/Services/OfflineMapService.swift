@@ -34,7 +34,7 @@ struct OfflineDownloadProgress: Sendable {
 
 // MARK: - Pack Context
 
-struct OfflinePackContext: Codable {
+struct OfflinePackContext: Codable, Sendable {
     let id: String
     let name: String
     let layer: String
@@ -45,7 +45,7 @@ struct OfflinePackContext: Codable {
 @MainActor
 final class OfflineMapService {
     static let shared = OfflineMapService()
-    nonisolated(unsafe) private static let tileSizeEstimate: Int64 = 15_000 // ~15 KB per tile
+    nonisolated private static let tileSizeEstimate: Int64 = 15_000 // ~15 KB per tile
 
     private init() {}
 

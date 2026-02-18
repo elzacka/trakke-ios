@@ -4,7 +4,7 @@ import MGRS
 
 // MARK: - Coordinate Format
 
-enum CoordinateFormat: String, CaseIterable, Identifiable, Codable {
+enum CoordinateFormat: String, CaseIterable, Identifiable, Codable, Sendable {
     case dd
     case dms
     case ddm
@@ -26,7 +26,7 @@ enum CoordinateFormat: String, CaseIterable, Identifiable, Codable {
 
 // MARK: - Formatted Coordinate
 
-struct FormattedCoordinate {
+struct FormattedCoordinate: Sendable {
     let display: String
     let copyText: String
 }
@@ -427,7 +427,7 @@ enum CoordinateService {
             - (35 * e2 * e2 * e2 / 3072) * sin(6 * latRad)
         )
 
-        var easting = k0 * n * (
+        let easting = k0 * n * (
             aCoef
             + (1 - t + c) * aCoef * aCoef * aCoef / 6
             + (5 - 18 * t + t * t + 72 * c - 58 * ep2) * aCoef * aCoef * aCoef * aCoef * aCoef / 120

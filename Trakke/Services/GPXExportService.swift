@@ -4,7 +4,7 @@ enum GPXExportService {
     static func exportRoute(_ route: Route, waypoints: [Waypoint] = []) -> String {
         var gpx = """
         <?xml version="1.0" encoding="UTF-8"?>
-        <gpx version="1.1" creator="Trakke iOS"
+        <gpx version="1.1" creator="Trakke"
           xmlns="http://www.topografix.com/GPX/1/1"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
@@ -50,13 +50,50 @@ enum GPXExportService {
         return gpx
     }
 
+    static func exportWaypoints(_ waypoints: [Waypoint], name: String = "Mine steder") -> String {
+        var gpx = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <gpx version="1.1" creator="Trakke"
+          xmlns="http://www.topografix.com/GPX/1/1"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+          <metadata>
+            <name>\(escapeXML(name))</name>
+            <time>\(iso8601(Date()))</time>
+          </metadata>
+        """
+
+        let sorted = waypoints.sorted {
+            $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
+        }
+
+        for wp in sorted {
+            guard wp.coordinates.count >= 2 else { continue }
+            let lon = wp.coordinates[0]
+            let lat = wp.coordinates[1]
+            gpx += "\n  <wpt lat=\"\(lat)\" lon=\"\(lon)\">"
+            if let elevation = wp.elevation {
+                gpx += "\n    <ele>\(elevation)</ele>"
+            }
+            gpx += "\n    <time>\(iso8601(wp.createdAt))</time>"
+            gpx += "\n    <name>\(escapeXML(wp.name))</name>"
+            if let category = wp.category {
+                gpx += "\n    <type>\(escapeXML(category))</type>"
+            }
+            gpx += "\n  </wpt>"
+        }
+
+        gpx += "\n</gpx>\n"
+        return gpx
+    }
+
     static func sanitizeFilename(_ name: String) -> String {
         let cleaned = name
-            .replacingOccurrences(of: "[^a-zA-Z0-9\\-_]", with: "_", options: .regularExpression)
+            .replacingOccurrences(of: "[^a-zA-ZæøåÆØÅ0-9\\-_]", with: "_", options: .regularExpression)
             .replacingOccurrences(of: "_+", with: "_", options: .regularExpression)
             .lowercased()
             .trimmingCharacters(in: CharacterSet(charactersIn: "_"))
-        return (cleaned.isEmpty ? "route" : cleaned) + ".gpx"
+        return (cleaned.isEmpty ? "rute" : cleaned) + ".gpx"
     }
 
     static func writeToTemporaryFile(gpxString: String, filename: String) -> URL? {
@@ -82,6 +119,6 @@ enum GPXExportService {
     }
 
     private static func iso8601(_ date: Date) -> String {
-        ISO8601DateFormatter().string(from: date)
+        date.ISO8601Format()
     }
 }

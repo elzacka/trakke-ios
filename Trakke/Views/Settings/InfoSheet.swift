@@ -5,123 +5,149 @@ struct InfoSheet: View {
 
     var body: some View {
         NavigationStack {
-            List {
-                Section(String(localized: "info.dataSources")) {
-                    dataSourceGroup(
-                        title: String(localized: "info.maps"),
-                        items: [
-                            DataSourceItem(
-                                name: "Kartverket",
-                                detail: String(localized: "info.kartverket.detail"),
-                                license: "NLOD 2.0"
-                            ),
-                        ]
-                    )
+            ScrollView {
+                VStack(spacing: .Trakke.cardGap) {
+                    // MARK: - Data Sources
+                    CardSection(String(localized: "info.dataSources")) {
+                        dataSourceRow(
+                            name: "Kartverket",
+                            detail: String(localized: "info.kartverket.detail"),
+                            license: "NLOD 2.0"
+                        )
+                        Divider()
+                        dataSourceRow(
+                            name: "MET Norway",
+                            detail: String(localized: "info.met.detail"),
+                            license: "CC BY 4.0"
+                        )
+                        Divider()
+                        dataSourceRow(
+                            name: "DSB",
+                            detail: String(localized: "info.dsb.detail"),
+                            license: "NLOD"
+                        )
+                        Divider()
+                        dataSourceRow(
+                            name: "\u{00A9} OpenStreetMap contributors",
+                            detail: String(localized: "info.osm.detail"),
+                            license: "ODbL"
+                        )
+                        Divider()
+                        dataSourceRow(
+                            name: "Riksantikvaren",
+                            detail: String(localized: "info.ra.detail"),
+                            license: "NLOD"
+                        )
+                        Divider()
+                        dataSourceRow(
+                            name: "Milj\u{00F8}direktoratet",
+                            detail: String(localized: "info.miljodir.detail"),
+                            license: "NLOD 2.0"
+                        )
+                        Divider()
+                        dataSourceRow(
+                            name: "Yr/NRK",
+                            detail: String(localized: "info.yr.detail"),
+                            license: "CC BY 4.0"
+                        )
+                    }
 
-                    dataSourceGroup(
-                        title: String(localized: "info.weather"),
-                        items: [
-                            DataSourceItem(
-                                name: "MET Norway",
-                                detail: String(localized: "info.met.detail"),
-                                license: "NLOD 2.0"
-                            ),
-                        ]
-                    )
+                    // MARK: - Privacy
+                    CardSection(String(localized: "info.privacy")) {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text(String(localized: "info.privacy.noTracking"))
+                            Text(String(localized: "info.privacy.localData"))
+                            Text(String(localized: "info.privacy.euOnly"))
+                        }
+                        .font(Font.Trakke.caption)
+                        .foregroundStyle(Color.Trakke.textMuted)
+                        .padding(.vertical, 4)
+                    }
 
-                    dataSourceGroup(
-                        title: String(localized: "info.poi"),
-                        items: [
-                            DataSourceItem(
-                                name: "DSB",
-                                detail: String(localized: "info.dsb.detail"),
-                                license: "NLOD"
-                            ),
-                            DataSourceItem(
-                                name: "OpenStreetMap",
-                                detail: String(localized: "info.osm.detail"),
-                                license: "ODbL"
-                            ),
-                            DataSourceItem(
-                                name: "Riksantikvaren",
-                                detail: String(localized: "info.ra.detail"),
-                                license: "NLOD"
-                            ),
-                        ]
-                    )
+                    Link(destination: URL(string: "https://github.com/elzacka/trakke-ios/blob/main/PERSONVERN.md")!) {
+                        HStack(spacing: 4) {
+                            Text(String(localized: "info.privacy.policy"))
+                            Image(systemName: "arrow.up.right")
+                                .font(.caption2)
+                        }
+                        .font(.caption)
+                        .foregroundStyle(Color.Trakke.textSoft)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                    // MARK: - App Info
+                    CardSection(String(localized: "info.appInfo")) {
+                        infoRow(
+                            label: String(localized: "info.version"),
+                            value: appVersion
+                        )
+                        Divider().padding(.leading, 4)
+                        infoRow(
+                            label: String(localized: "info.developer"),
+                            value: "Tazk"
+                        )
+                    }
+
+                    Spacer(minLength: .Trakke.lg)
                 }
-
-                Section(String(localized: "info.privacy")) {
-                    Label {
-                        Text(String(localized: "info.privacy.noTracking"))
-                    } icon: {
-                        Image(systemName: "hand.raised.fill")
-                            .foregroundStyle(.green)
-                    }
-
-                    Label {
-                        Text(String(localized: "info.privacy.localData"))
-                    } icon: {
-                        Image(systemName: "iphone")
-                            .foregroundStyle(.blue)
-                    }
-
-                    Label {
-                        Text(String(localized: "info.privacy.euOnly"))
-                    } icon: {
-                        Image(systemName: "globe.europe.africa")
-                            .foregroundStyle(.orange)
-                    }
-                }
-
-                Section(String(localized: "info.appInfo")) {
-                    HStack {
-                        Text(String(localized: "info.version"))
-                        Spacer()
-                        Text(appVersion)
-                            .foregroundStyle(.secondary)
-                    }
-                }
+                .padding(.horizontal, .Trakke.sheetHorizontal)
             }
+            .background(Color(.systemGroupedBackground))
+            .tint(Color.Trakke.brand)
             .navigationTitle(String(localized: "info.title"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button(String(localized: "common.done")) { dismiss() }
+                    Button(String(localized: "common.close")) { dismiss() }
                 }
             }
         }
     }
 
-    // MARK: - Data Source Group
+    // MARK: - Data Source Row
 
-    private func dataSourceGroup(title: String, items: [DataSourceItem]) -> some View {
-        DisclosureGroup(title) {
-            ForEach(items, id: \.name) { item in
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(item.name)
-                        .font(.subheadline.bold())
-                    Text(item.detail)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    Text("Lisens: \(item.license)")
-                        .font(.caption2)
-                        .foregroundStyle(.tertiary)
-                }
-                .padding(.vertical, 2)
+    private func dataSourceRow(
+        name: String,
+        detail: String,
+        license: String
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            HStack {
+                Text(name)
+                    .font(.subheadline.weight(.medium))
+                Spacer()
+                Text(license)
+                    .font(.caption2)
+                    .foregroundStyle(Color.Trakke.textSoft)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+                    .background(Color.Trakke.brandTint)
+                    .clipShape(Capsule())
             }
+            Text(detail)
+                .font(.caption)
+                .foregroundStyle(Color.Trakke.textSoft)
         }
+        .padding(.vertical, 6)
+    }
+
+    // MARK: - Info Row
+
+    private func infoRow(label: String, value: String) -> some View {
+        HStack {
+            Text(label)
+                .font(.subheadline)
+            Spacer()
+            Text(value)
+                .font(.subheadline)
+                .foregroundStyle(Color.Trakke.textSoft)
+        }
+        .padding(.vertical, 6)
     }
 
     private var appVersion: String {
-        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.1.0"
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
         let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1"
         return "\(version) (\(build))"
     }
-}
-
-private struct DataSourceItem {
-    let name: String
-    let detail: String
-    let license: String
 }

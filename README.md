@@ -1,5 +1,7 @@
 # Tråkke - Norsk friluftslivsapp for iOS
 
+**Versjon 1.0.0** | iOS 26.0+ | Swift 6.2
+
 Tråkke er en kartapp for iPhone og iPad som bruker kartdata fra Kartverket. Appen er laget for turgåere og friluftsfolk i Norge, med fokus på personvern og offline-bruk.
 
 ## Funksjoner
@@ -10,6 +12,7 @@ Tråkke er en kartapp for iPhone og iPad som bruker kartdata fra Kartverket. App
 - **Offline kart** - last ned områder for bruk uten nett
 - **Ruter og veipunkter** - tegn, lagre og eksporter som GPX
 - **Interessepunkter** - tilfluktsrom, huler, observasjonstårn, krigsminner, gapahuker, kulturminner
+- **Kartlag** - turruter (Kartverket) og naturskog (Miljodirektoratet)
 - **Høydeprofiler** med data fra Kartverkets høydemodell
 - **Værmelding** fra Meteorologisk institutt
 - **Måleverktøy** for avstand og areal
@@ -17,7 +20,7 @@ Tråkke er en kartapp for iPhone og iPad som bruker kartdata fra Kartverket. App
 
 ## Krav
 
-- iOS 26.2 eller nyere
+- iOS 26.0 eller nyere
 - iPhone eller iPad
 - Xcode 26.2 (for utvikling)
 
@@ -49,7 +52,7 @@ xcodebuild -project Trakke.xcodeproj -scheme Trakke \
 | Komponent | Teknologi |
 |-----------|-----------|
 | Språk | Swift 6.2 |
-| UI | SwiftUI (iOS 26) |
+| UI | SwiftUI (iOS 26, Liquid Glass) |
 | Arkitektur | MVVM med @Observable |
 | Kart | MapLibre Native 6.23.0 |
 | Lagring | SwiftData |
@@ -63,8 +66,12 @@ Alle kartdata kommer fra Kartverket (kartverket.no). Appen bruker ikke kartdata 
 |---------|-------|
 | Topografisk (standard) | Kartverket WMTS |
 | Gråtone | Kartverket WMTS |
+| Turruter (overlay) | Kartverket WMS |
+| Naturskog (overlay) | Miljodirektoratet ArcGIS REST |
 
 ## Datakilder
+
+Alle tjenester er innenfor EU/EØS. Ingen autentisering kreves.
 
 | Data | Kilde | Land |
 |------|-------|------|
@@ -73,17 +80,11 @@ Alle kartdata kommer fra Kartverket (kartverket.no). Appen bruker ikke kartdata 
 | Adresser | Geonorge | Norge |
 | Høydedata | Geonorge | Norge |
 | Tilfluktsrom | DSB | Norge |
-| Vær | Meteorologisk institutt | Norge |
-| POI (OpenStreetMap) | Overpass API | Tyskland (EU) |
+| Vær | Meteorologisk institutt (CC BY 4.0) | Norge |
+| POI (OpenStreetMap) | Forhåndslastet fra Overpass API (ODbL) | Lokalt i appen |
 | Kulturminner | Riksantikvaren | Norge |
-
-## Dokumentasjon
-
-| Dokument | Innhold |
-|----------|---------|
-| [CLAUDE.md](CLAUDE.md) | Utviklerkontekst, arkitektur, kodemønster |
-| [SECURITY.md](SECURITY.md) | Sikkerhetspolicy og arkitektur |
-| [PERSONVERN.md](PERSONVERN.md) | Personvernerklæring (GDPR) |
+| Turruter | Kartverket WMS (NLOD 2.0) | Norge |
+| Naturskog | Miljodirektoratet ArcGIS REST (NLOD 2.0) | Norge |
 
 ## Personvern
 
@@ -91,10 +92,23 @@ Alle brukerdata lagres lokalt på enheten. Ingen sporing, ingen informasjonskaps
 
 Se [PERSONVERN.md](PERSONVERN.md) for fullstendig personvernerklæring.
 
+## Dokumentasjon
+
+| Dokument | Innhold |
+|----------|---------|
+| [PERSONVERN.md](PERSONVERN.md) | Personvernerklæring (GDPR) |
+| [SECURITY.md](SECURITY.md) | Sikkerhetspolicy og arkitektur |
+| [CLAUDE.md](CLAUDE.md) | Utviklerkontekst og arkitektur |
+
 ## Lisens
 
 MIT License
 
 ## Attribusjon
 
-(c) Kartverket - kartdata og tjenester
+- (c) Kartverket - kartdata, turruter og tjenester (NLOD 2.0)
+- Meteorologisk institutt - værdata (CC BY 4.0)
+- OpenStreetMap-bidragsytere - interessepunkter (ODbL)
+- Riksantikvaren - kulturminnedata (NLOD)
+- DSB - tilfluktsromdata (NLOD)
+- Miljodirektoratet - naturskogdata (NLOD 2.0)
