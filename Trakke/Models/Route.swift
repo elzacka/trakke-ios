@@ -12,6 +12,7 @@ final class Route {
     var elevationLoss: Double?
     var difficulty: String?
     var color: String?
+    var isVisible: Bool = true
     var createdAt: Date
     var updatedAt: Date
 
@@ -22,7 +23,7 @@ final class Route {
         difficulty: String? = nil,
         color: String? = nil
     ) {
-        self.id = "route-\(Int(Date().timeIntervalSince1970))-\(String(Int.random(in: 0...999999), radix: 36))"
+        self.id = UUID().uuidString
         self.name = name
         self.coordinates = coordinates
         self.waypointIDs = waypointIDs

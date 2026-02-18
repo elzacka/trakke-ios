@@ -10,6 +10,7 @@ final class Waypoint {
     var elevation: Double?
     var icon: String?
     var color: String?
+    var isVisible: Bool
     var createdAt: Date
     var updatedAt: Date
 
@@ -17,15 +18,18 @@ final class Waypoint {
         name: String,
         coordinates: [Double],
         category: String? = nil,
+        elevation: Double? = nil,
         icon: String? = nil,
         color: String? = nil
     ) {
-        self.id = "wp-\(Int(Date().timeIntervalSince1970))-\(String(Int.random(in: 0...999999), radix: 36))"
+        self.id = UUID().uuidString
         self.name = name
         self.coordinates = coordinates
         self.category = category
+        self.elevation = elevation
         self.icon = icon
         self.color = color
+        self.isVisible = true
         self.createdAt = Date()
         self.updatedAt = Date()
     }

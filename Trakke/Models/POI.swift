@@ -26,12 +26,12 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
 
     var iconName: String {
         switch self {
-        case .shelters: return "shield.fill"
-        case .caves: return "mountain.2.fill"
-        case .observationTowers: return "binoculars.fill"
-        case .warMemorials: return "building.columns.fill"
-        case .wildernessShelters: return "house.lodge.fill"
-        case .kulturminner: return "building.2.fill"
+        case .shelters: return "POITilfluktsrom"
+        case .caves: return "POICave"
+        case .observationTowers: return "POIObservationTower"
+        case .warMemorials: return "POIMonument"
+        case .wildernessShelters: return "POIShelter"
+        case .kulturminner: return "POIHistoric"
         }
     }
 
@@ -54,6 +54,30 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
         case .warMemorials: return 9
         case .wildernessShelters: return 10
         case .kulturminner: return 6
+        }
+    }
+
+    var sourceName: String {
+        switch self {
+        case .shelters: return "DSB"
+        case .caves, .observationTowers, .warMemorials, .wildernessShelters:
+            return "\u{00A9} OpenStreetMap contributors"
+        case .kulturminner: return "Riksantikvaren"
+        }
+    }
+
+    var sourceLicense: String {
+        switch self {
+        case .shelters: return "NLOD 2.0"
+        case .caves, .observationTowers, .warMemorials, .wildernessShelters: return "ODbL"
+        case .kulturminner: return "NLOD 2.0"
+        }
+    }
+
+    var isBundled: Bool {
+        switch self {
+        case .caves, .observationTowers, .warMemorials, .wildernessShelters: return true
+        case .shelters, .kulturminner: return false
         }
     }
 }
@@ -95,6 +119,11 @@ struct ViewportBounds: Sendable {
             east: min(east + lonSpan, 180),
             west: max(west - lonSpan, -180)
         )
+    }
+
+    func contains(_ coordinate: CLLocationCoordinate2D) -> Bool {
+        coordinate.latitude >= south && coordinate.latitude <= north &&
+        coordinate.longitude >= west && coordinate.longitude <= east
     }
 
     var cacheKey: String {

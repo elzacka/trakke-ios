@@ -7,9 +7,6 @@ struct ElevationProfileView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(String(localized: "elevation.profile"))
-                .font(.headline)
-
             if let stats {
                 statsRow(stats)
             }

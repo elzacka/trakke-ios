@@ -6,10 +6,8 @@ import CoreLocation
 actor POIService {
     private var cache: [String: CacheEntry] = [:]
     private static let cacheTTL: TimeInterval = 1800 // 30 minutes
-    private static let maxCacheEntries = 100
+    private static let maxCacheEntries = 50
     private static let poiFetchTimeout: TimeInterval = 25
-
-    private static let userAgent = "Trakke-iOS/0.1.0 hei@tazk.no"
 
     struct CacheEntry {
         let pois: [POI]
@@ -27,6 +25,13 @@ actor POIService {
         guard bounds.isValid else { return [] }
 
         let buffered = bounds.buffered()
+
+        // Bundled categories are handled synchronously -- no network needed
+        if category.isBundled {
+            return await BundledPOIService.pois(for: category, in: buffered)
+        }
+
+        // Live categories use network + cache
         let key = "\(category.rawValue)-\(buffered.cacheKey)-z\(Int(zoom))"
 
         if let cached = cache[key], Date().timeIntervalSince(cached.timestamp) < Self.cacheTTL {
@@ -34,25 +39,25 @@ actor POIService {
         }
 
         do {
+            try Task.checkCancellation()
+
             let pois: [POI]
             switch category {
             case .shelters:
                 pois = try await fetchShelters(bounds: buffered)
-            case .caves:
-                pois = try await fetchOverpass(category: .caves, bounds: buffered)
-            case .observationTowers:
-                pois = try await fetchOverpass(category: .observationTowers, bounds: buffered)
-            case .warMemorials:
-                pois = try await fetchOverpass(category: .warMemorials, bounds: buffered)
-            case .wildernessShelters:
-                pois = try await fetchOverpass(category: .wildernessShelters, bounds: buffered)
             case .kulturminner:
                 pois = try await fetchKulturminner(bounds: buffered)
+            default:
+                return []
             }
 
             cache[key] = CacheEntry(pois: pois, timestamp: Date())
             cleanCache()
             return pois
+        } catch is CancellationError {
+            return cache[key]?.pois ?? []
+        } catch let urlError as URLError where urlError.code == .cancelled {
+            return cache[key]?.pois ?? []
         } catch {
             #if DEBUG
             print("POI fetch error (\(category.rawValue)): \(error)")
@@ -68,7 +73,7 @@ actor POIService {
     // MARK: - DSB Shelters (WFS/GML)
 
     private func fetchShelters(bounds: ViewportBounds) async throws -> [POI] {
-        var components = URLComponents(string: "https://ogc.dsb.no/wfs.ashx")!
+        guard var components = URLComponents(string: "https://ogc.dsb.no/wfs.ashx") else { return [] }
         components.queryItems = [
             URLQueryItem(name: "SERVICE", value: "WFS"),
             URLQueryItem(name: "VERSION", value: "1.1.0"),
@@ -79,11 +84,7 @@ actor POIService {
         ]
 
         guard let url = components.url else { return [] }
-        var request = URLRequest(url: url)
-        request.timeoutInterval = Self.poiFetchTimeout
-        request.setValue(Self.userAgent, forHTTPHeaderField: "User-Agent")
-
-        let (data, _) = try await URLSession.shared.data(for: request)
+        let data = try await APIClient.fetchData(url: url, timeout: Self.poiFetchTimeout)
         return parseShelterGML(data)
     }
 
@@ -95,154 +96,12 @@ actor POIService {
         return parser.pois
     }
 
-    // MARK: - Overpass API
-
-    private func fetchOverpass(category: POICategory, bounds: ViewportBounds) async throws -> [POI] {
-        let bbox = "\(bounds.south),\(bounds.west),\(bounds.north),\(bounds.east)"
-        let query = overpassQuery(for: category, bbox: bbox)
-
-        let url = URL(string: "https://overpass-api.de/api/interpreter")!
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.timeoutInterval = Self.poiFetchTimeout
-        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        request.setValue(Self.userAgent, forHTTPHeaderField: "User-Agent")
-        request.httpBody = "data=\(query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? query)".data(using: .utf8)
-
-        let (data, _) = try await URLSession.shared.data(for: request)
-        let response = try JSONDecoder().decode(OverpassResponse.self, from: data)
-        return parseOverpassResponse(response, category: category)
-    }
-
-    private func overpassQuery(for category: POICategory, bbox: String) -> String {
-        let timeout = "[out:json][timeout:25];"
-        let output = "out body;>;out skel qt;"
-
-        switch category {
-        case .caves:
-            return "\(timeout)(node[\"natural\"=\"cave_entrance\"](\(bbox)););\(output)"
-        case .observationTowers:
-            return "\(timeout)(node[\"man_made\"=\"tower\"][\"tower:type\"=\"observation\"](\(bbox));way[\"man_made\"=\"tower\"][\"tower:type\"=\"observation\"](\(bbox)););\(output)"
-        case .warMemorials:
-            return """
-            \(timeout)(node["historic"="fort"](\(bbox));way["historic"="fort"](\(bbox));\
-            node["military"="bunker"](\(bbox));way["military"="bunker"](\(bbox));\
-            node["historic"="bunker"](\(bbox));way["historic"="bunker"](\(bbox));\
-            node["historic"="battlefield"](\(bbox)););\(output)
-            """
-        case .wildernessShelters:
-            return """
-            \(timeout)(node["amenity"="shelter"]["shelter_type"="basic_hut"](\(bbox));\
-            way["amenity"="shelter"]["shelter_type"="basic_hut"](\(bbox));\
-            node["amenity"="shelter"]["shelter_type"="weather_shelter"](\(bbox));\
-            way["amenity"="shelter"]["shelter_type"="weather_shelter"](\(bbox));\
-            node["amenity"="shelter"]["shelter_type"="rock_shelter"](\(bbox));\
-            way["amenity"="shelter"]["shelter_type"="rock_shelter"](\(bbox));\
-            node["amenity"="shelter"]["shelter_type"="lavvu"](\(bbox));\
-            way["amenity"="shelter"]["shelter_type"="lavvu"](\(bbox));\
-            node["amenity"="shelter"][!"shelter_type"](\(bbox));\
-            way["amenity"="shelter"][!"shelter_type"](\(bbox)););\(output)
-            """
-        default:
-            return ""
-        }
-    }
-
-    private func parseOverpassResponse(_ response: OverpassResponse, category: POICategory) -> [POI] {
-        // Build node coordinate lookup for way centroid calculation
-        var nodeMap: [Int: (lat: Double, lon: Double)] = [:]
-        for element in response.elements where element.type == "node" {
-            if let lat = element.lat, let lon = element.lon {
-                nodeMap[element.id] = (lat, lon)
-            }
-        }
-
-        var seen = Set<Int>()
-        var pois: [POI] = []
-
-        for element in response.elements {
-            guard !seen.contains(element.id) else { continue }
-            guard element.tags != nil else { continue }
-            seen.insert(element.id)
-
-            var lat: Double?
-            var lon: Double?
-
-            if element.type == "node" {
-                lat = element.lat
-                lon = element.lon
-            } else if element.type == "way", let nodes = element.nodes {
-                // Calculate centroid
-                let coords = nodes.compactMap { nodeMap[$0] }
-                guard !coords.isEmpty else { continue }
-                lat = coords.map(\.lat).reduce(0, +) / Double(coords.count)
-                lon = coords.map(\.lon).reduce(0, +) / Double(coords.count)
-            }
-
-            guard let finalLat = lat, let finalLon = lon else { continue }
-
-            let tags = element.tags ?? [:]
-            let poi = makeOverpassPOI(
-                id: element.id,
-                category: category,
-                tags: tags,
-                lat: finalLat,
-                lon: finalLon
-            )
-            pois.append(poi)
-        }
-
-        return pois
-    }
-
-    private func makeOverpassPOI(
-        id: Int,
-        category: POICategory,
-        tags: [String: String],
-        lat: Double,
-        lon: Double
-    ) -> POI {
-        let prefix: String
-        switch category {
-        case .caves: prefix = "cave"
-        case .observationTowers: prefix = "tower"
-        case .warMemorials: prefix = "memorial"
-        case .wildernessShelters: prefix = "wilderness-shelter"
-        default: prefix = category.rawValue
-        }
-
-        let name = tags["name"] ?? category.displayName
-
-        var details: [String: String] = [:]
-        switch category {
-        case .caves:
-            if let desc = tags["description"] { details["description"] = desc }
-        case .observationTowers:
-            if let height = tags["height"] { details["height"] = height }
-            if let op = tags["operator"] { details["operator"] = op }
-        case .warMemorials:
-            if let inscription = tags["inscription"] { details["inscription"] = inscription }
-            if let period = tags["memorial:period"] { details["period"] = period }
-        case .wildernessShelters:
-            if let shelterType = tags["shelter_type"] { details["shelterType"] = shelterType }
-            if let desc = tags["description"] { details["description"] = desc }
-        default:
-            break
-        }
-
-        return POI(
-            id: "\(prefix)-\(id)",
-            category: category,
-            name: name,
-            coordinate: CLLocationCoordinate2D(latitude: lat, longitude: lon),
-            details: details
-        )
-    }
-
     // MARK: - Riksantikvaren (GeoJSON)
 
     private func fetchKulturminner(bounds: ViewportBounds) async throws -> [POI] {
-        var components = URLComponents(string: "https://api.ra.no/brukerminner/collections/brukerminner/items")!
+        guard var components = URLComponents(string: "https://api.ra.no/brukerminner/collections/brukerminner/items") else {
+            return []
+        }
         components.queryItems = [
             URLQueryItem(name: "f", value: "json"),
             URLQueryItem(name: "bbox", value: "\(bounds.west),\(bounds.south),\(bounds.east),\(bounds.north)"),
@@ -250,12 +109,11 @@ actor POIService {
         ]
 
         guard let url = components.url else { return [] }
-        var request = URLRequest(url: url)
-        request.timeoutInterval = Self.poiFetchTimeout
-        request.setValue("application/geo+json", forHTTPHeaderField: "Accept")
-        request.setValue(Self.userAgent, forHTTPHeaderField: "User-Agent")
-
-        let (data, _) = try await URLSession.shared.data(for: request)
+        let data = try await APIClient.fetchData(
+            url: url,
+            timeout: Self.poiFetchTimeout,
+            additionalHeaders: ["Accept": "application/geo+json"]
+        )
         let response = try JSONDecoder().decode(KulturminnerResponse.self, from: data)
         return response.features.compactMap { feature -> POI? in
             guard feature.geometry.type == "Point",
@@ -298,31 +156,52 @@ actor POIService {
     }
 }
 
-// MARK: - Overpass Response Types
+// MARK: - Fault-Tolerant Decoding
 
-private struct OverpassResponse: Decodable {
-    let elements: [OverpassElement]
-}
-
-private struct OverpassElement: Decodable {
-    let type: String
-    let id: Int
-    let lat: Double?
-    let lon: Double?
-    let nodes: [Int]?
-    let tags: [String: String]?
+private struct SafeDecodable<T: Decodable>: Decodable {
+    let value: T?
+    init(from decoder: Decoder) throws {
+        value = try? T(from: decoder)
+    }
 }
 
 // MARK: - Riksantikvaren Response Types
 
 private struct KulturminnerResponse: Decodable {
     let features: [KulturminnerFeature]
+
+    private enum CodingKeys: String, CodingKey {
+        case features
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let safe = try container.decode([SafeDecodable<KulturminnerFeature>].self, forKey: .features)
+        features = safe.compactMap(\.value)
+    }
 }
 
 private struct KulturminnerFeature: Decodable {
     let id: String?
     let geometry: KulturminnerGeometry
     let properties: KulturminnerProperties
+
+    private enum CodingKeys: String, CodingKey {
+        case id, geometry, properties
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        if let stringId = try? container.decode(String.self, forKey: .id) {
+            id = stringId
+        } else if let intId = try? container.decode(Int.self, forKey: .id) {
+            id = String(intId)
+        } else {
+            id = nil
+        }
+        geometry = try container.decode(KulturminnerGeometry.self, forKey: .geometry)
+        properties = try container.decode(KulturminnerProperties.self, forKey: .properties)
+    }
 }
 
 private struct KulturminnerGeometry: Decodable {

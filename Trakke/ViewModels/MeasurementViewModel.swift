@@ -1,7 +1,7 @@
 import Foundation
 import CoreLocation
 
-enum MeasurementMode: String {
+enum MeasurementMode: String, Sendable {
     case distance
     case area
 }
@@ -64,6 +64,11 @@ final class MeasurementViewModel {
     func undoLastPoint() {
         guard !points.isEmpty else { return }
         points.removeLast()
+    }
+
+    func movePoint(at index: Int, to coordinate: CLLocationCoordinate2D) {
+        guard points.indices.contains(index) else { return }
+        points[index] = coordinate
     }
 
     func clearAll() {

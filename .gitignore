@@ -45,6 +45,11 @@ Thumbs.db
 
 # AI developer context
 CLAUDE.md
+Fix_this.md
+POI Audit Report.md
+
+# Obsidian
+.obsidian/
 
 # Fastlane
 fastlane/report.xml

@@ -26,6 +26,19 @@ enum Haversine {
         return total
     }
 
+    /// Overload for [[lon, lat]] coordinate arrays (used by Route model)
+    static func totalDistance(coordinates: [[Double]]) -> Double {
+        guard coordinates.count >= 2 else { return 0 }
+        var total = 0.0
+        for i in 1..<coordinates.count {
+            guard coordinates[i - 1].count >= 2, coordinates[i].count >= 2 else { continue }
+            let c1 = CLLocationCoordinate2D(latitude: coordinates[i - 1][1], longitude: coordinates[i - 1][0])
+            let c2 = CLLocationCoordinate2D(latitude: coordinates[i][1], longitude: coordinates[i][0])
+            total += distance(from: c1, to: c2)
+        }
+        return total
+    }
+
     static func cumulativeDistances(coordinates: [CLLocationCoordinate2D]) -> [Double] {
         guard !coordinates.isEmpty else { return [] }
         var distances = [0.0]
@@ -53,8 +66,7 @@ enum Haversine {
         }
 
         // Always include the last point
-        if let last = coordinates.last {
-            let sampledLast = sampled.last!
+        if let last = coordinates.last, let sampledLast = sampled.last {
             if sampledLast.latitude != last.latitude || sampledLast.longitude != last.longitude {
                 sampled.append(last)
             }

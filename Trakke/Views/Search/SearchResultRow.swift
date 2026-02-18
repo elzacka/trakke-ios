@@ -6,7 +6,7 @@ struct SearchResultRow: View {
     var body: some View {
         HStack(spacing: 12) {
             Image(systemName: iconName)
-                .foregroundStyle(iconColor)
+                .foregroundStyle(Color.Trakke.textSoft)
                 .frame(width: 28, height: 28)
 
             VStack(alignment: .leading, spacing: 2) {
@@ -37,17 +37,6 @@ struct SearchResultRow: View {
             return "house"
         case .coordinates:
             return "location.circle"
-        }
-    }
-
-    private var iconColor: Color {
-        switch result.type {
-        case .place:
-            return .orange
-        case .address:
-            return .blue
-        case .coordinates:
-            return .green
         }
     }
 
