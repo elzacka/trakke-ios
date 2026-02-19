@@ -3,14 +3,23 @@ import SwiftUI
 
 // MARK: - MapView Subclass
 
-/// Overrides `automaticallyAdjustsContentInset` to return false from the start.
-/// MLNMapView's init reads the deprecated UIViewController.automaticallyAdjustsScrollViewInsets
-/// when this property is true (the default). By overriding via Objective-C dynamic dispatch,
-/// the check is skipped even during super.init, preventing the console warning.
+/// Prevents MapLibre from falling back to the deprecated
+/// UIViewController.automaticallyAdjustsScrollViewInsets during layout.
+/// Calling the base class setter after init populates the internal
+/// _automaticallyAdjustContentInsetHolder ivar with @NO. This makes
+/// MapLibre's layout skip the deprecated VC property check entirely.
+/// Note: MapLibre 6.23.0 emits a one-time NSLog warning during init
+/// via dispatch_once -- this is hardcoded in commonInitWithOptions: and
+/// cannot be suppressed from consumer code.
 private class TrakkeMLNMapView: MLNMapView {
-    override var automaticallyAdjustsContentInset: Bool {
-        get { false }
-        set { }
+    override init(frame: CGRect, styleURL: URL?) {
+        super.init(frame: frame, styleURL: styleURL)
+        self.automaticallyAdjustsContentInset = false
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) is not supported")
     }
 }
 
@@ -280,7 +289,7 @@ struct TrakkeMapView: UIViewRepresentable {
 
     // MARK: - Coordinator
 
-    class Coordinator: NSObject, @preconcurrency MLNMapViewDelegate, UIGestureRecognizerDelegate {
+    @MainActor class Coordinator: NSObject, @preconcurrency MLNMapViewDelegate, UIGestureRecognizerDelegate {
         let viewModel: MapViewModel
         let onViewportChanged: ((ViewportBounds, Double) -> Void)?
         let onPOISelected: ((POI) -> Void)?
@@ -303,9 +312,15 @@ struct TrakkeMapView: UIViewRepresentable {
         private var isDraggingSelection = false
         private var draggingCornerIndex: Int?
 
+        // Reusable haptic generators (avoids creating new instances per gesture)
+        private let lightHaptic = UIImpactFeedbackGenerator(style: .light)
+        private let mediumHaptic = UIImpactFeedbackGenerator(style: .medium)
+
         private var currentPOIIds: Set<String> = []
         private var currentWaypointIds: Set<String> = []
         private var currentRouteIds: Set<String> = []
+        private var poiAnnotationMap: [String: POIAnnotation] = [:]
+        private var waypointAnnotationMap: [String: WaypointAnnotation] = [:]
         private var drawingPolyline: MLNPolyline?
         private var drawingAnnotations: [RoutePointAnnotation] = []
         private var selectionPolygon: MLNPolygon?
@@ -345,7 +360,7 @@ struct TrakkeMapView: UIViewRepresentable {
                   let mapView = gesture.view as? MLNMapView else { return }
             let point = gesture.location(in: mapView)
             let coordinate = mapView.convert(point, toCoordinateFrom: mapView)
-            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            lightHaptic.impactOccurred()
             onMapTapped?(coordinate)
         }
 
@@ -355,7 +370,7 @@ struct TrakkeMapView: UIViewRepresentable {
                   let mapView = gesture.view as? MLNMapView else { return }
             let point = gesture.location(in: mapView)
             let coordinate = mapView.convert(point, toCoordinateFrom: mapView)
-            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+            mediumHaptic.impactOccurred()
             onMapLongPressed?(coordinate)
         }
 
@@ -409,7 +424,7 @@ struct TrakkeMapView: UIViewRepresentable {
             switch gesture.state {
             case .began:
                 isDraggingSelection = true
-                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                mediumHaptic.impactOccurred()
 
             case .changed:
                 // Directly update the annotation's coordinate and rebuild the rectangle.
@@ -506,7 +521,11 @@ struct TrakkeMapView: UIViewRepresentable {
             let source = MLNRasterTileSource(
                 identifier: overlay.sourceID,
                 tileURLTemplates: [overlay.tileURL],
-                options: [.tileSize: 256]
+                options: [
+                    .tileSize: 256,
+                    .minimumZoomLevel: overlay.isNaturskog ? 8 : 5,
+                    .maximumZoomLevel: 18,
+                ]
             )
             style.addSource(source)
 
@@ -563,7 +582,7 @@ struct TrakkeMapView: UIViewRepresentable {
         ) {
             // Selection corners are handled by handleCornerPan, not MapLibre's drag system.
             if dragState == .starting {
-                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                mediumHaptic.impactOccurred()
             }
 
             guard let annotation = annotationView.annotation else { return }
@@ -653,10 +672,10 @@ struct TrakkeMapView: UIViewRepresentable {
             strokeColorForShapeAnnotation annotation: MLNShape
         ) -> UIColor {
             if annotation === drawingPolyline {
-                return UIColor(hex: "#3e4533")
+                return UIColor.Trakke.brand
             }
             if annotation === selectionPolygon || annotation === selectionPolyline {
-                return UIColor(hex: "#3e4533")
+                return UIColor.Trakke.brand
             }
             if annotation === measurementPolyline || annotation === measurementPolygon {
                 return .systemOrange
@@ -664,7 +683,7 @@ struct TrakkeMapView: UIViewRepresentable {
             if let polyline = annotation as? MLNPolyline, let colorHex = polyline.title {
                 return UIColor(hex: colorHex)
             }
-            return UIColor(hex: "#3e4533")
+            return UIColor.Trakke.brand
         }
 
         func mapView(
@@ -691,9 +710,9 @@ struct TrakkeMapView: UIViewRepresentable {
             _ mapView: MLNMapView,
             fillColorForPolygonAnnotation annotation: MLNPolygon
         ) -> UIColor {
-            if annotation === selectionPolygon { return UIColor(hex: "#3e4533") }
+            if annotation === selectionPolygon { return UIColor.Trakke.brand }
             if annotation === measurementPolygon { return .systemOrange }
-            return UIColor(hex: "#3e4533")
+            return UIColor.Trakke.brand
         }
 
         // MARK: - POI Annotations
@@ -702,14 +721,26 @@ struct TrakkeMapView: UIViewRepresentable {
             let newIds = Set(pois.map(\.id))
             guard newIds != currentPOIIds else { return }
 
-            let existing = mapView.annotations?.compactMap { $0 as? POIAnnotation } ?? []
-            if !existing.isEmpty {
-                mapView.removeAnnotations(existing)
+            let toRemoveIds = currentPOIIds.subtracting(newIds)
+            let toAddIds = newIds.subtracting(currentPOIIds)
+
+            if !toRemoveIds.isEmpty {
+                let toRemove = toRemoveIds.compactMap { poiAnnotationMap[$0] }
+                if !toRemove.isEmpty {
+                    mapView.removeAnnotations(toRemove)
+                }
+                for id in toRemoveIds {
+                    poiAnnotationMap.removeValue(forKey: id)
+                }
             }
 
-            let annotations = pois.map { POIAnnotation(poi: $0) }
-            if !annotations.isEmpty {
+            if !toAddIds.isEmpty {
+                let poisToAdd = pois.filter { toAddIds.contains($0.id) }
+                let annotations = poisToAdd.map { POIAnnotation(poi: $0) }
                 mapView.addAnnotations(annotations)
+                for annotation in annotations {
+                    poiAnnotationMap[annotation.poi.id] = annotation
+                }
             }
 
             currentPOIIds = newIds
@@ -721,14 +752,26 @@ struct TrakkeMapView: UIViewRepresentable {
             let newIds = Set(waypoints.map(\.id))
             guard newIds != currentWaypointIds else { return }
 
-            let existing = mapView.annotations?.compactMap { $0 as? WaypointAnnotation } ?? []
-            if !existing.isEmpty {
-                mapView.removeAnnotations(existing)
+            let toRemoveIds = currentWaypointIds.subtracting(newIds)
+            let toAddIds = newIds.subtracting(currentWaypointIds)
+
+            if !toRemoveIds.isEmpty {
+                let toRemove = toRemoveIds.compactMap { waypointAnnotationMap[$0] }
+                if !toRemove.isEmpty {
+                    mapView.removeAnnotations(toRemove)
+                }
+                for id in toRemoveIds {
+                    waypointAnnotationMap.removeValue(forKey: id)
+                }
             }
 
-            let annotations = waypoints.map { WaypointAnnotation(waypoint: $0) }
-            if !annotations.isEmpty {
+            if !toAddIds.isEmpty {
+                let waypointsToAdd = waypoints.filter { toAddIds.contains($0.id) }
+                let annotations = waypointsToAdd.map { WaypointAnnotation(waypoint: $0) }
                 mapView.addAnnotations(annotations)
+                for annotation in annotations {
+                    waypointAnnotationMap[annotation.waypoint.id] = annotation
+                }
             }
 
             currentWaypointIds = newIds
@@ -1020,7 +1063,7 @@ struct TrakkeMapView: UIViewRepresentable {
 
                 let config = UIImage.SymbolConfiguration(pointSize: 28, weight: .medium)
                 let image = UIImage(systemName: "mappin.circle.fill", withConfiguration: config)?
-                    .withTintColor(UIColor(hex: "#3e4533"), renderingMode: .alwaysOriginal)
+                    .withTintColor(UIColor.Trakke.brand, renderingMode: .alwaysOriginal)
                 let imageView = UIImageView(image: image)
                 imageView.contentMode = .scaleAspectFit
                 imageView.frame = CGRect(x: 0, y: 0, width: width, height: height)
@@ -1047,7 +1090,7 @@ struct TrakkeMapView: UIViewRepresentable {
                 view?.isDraggable = true
 
                 let dot = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
-                dot.backgroundColor = UIColor(hex: "#3e4533")
+                dot.backgroundColor = UIColor.Trakke.brand
                 dot.layer.cornerRadius = 10
                 dot.layer.borderWidth = 2
                 dot.layer.borderColor = UIColor.white.cgColor
@@ -1095,7 +1138,7 @@ struct TrakkeMapView: UIViewRepresentable {
                 // in real-time, which causes the rectangle lines to disconnect.
 
                 let dot = UIView(frame: CGRect(x: 0, y: 0, width: 24, height: 24))
-                dot.backgroundColor = UIColor(hex: "#3e4533")
+                dot.backgroundColor = UIColor.Trakke.brand
                 dot.layer.cornerRadius = 12
                 dot.layer.borderWidth = 3
                 dot.layer.borderColor = UIColor.white.cgColor
@@ -1129,7 +1172,7 @@ struct TrakkeMapView: UIViewRepresentable {
 
                 let config = UIImage.SymbolConfiguration(pointSize: 34, weight: .medium)
                 let image = UIImage(systemName: "mappin.circle.fill", withConfiguration: config)?
-                    .withTintColor(UIColor(hex: "#3e4533"), renderingMode: .alwaysOriginal)
+                    .withTintColor(UIColor.Trakke.brand, renderingMode: .alwaysOriginal)
                 let imageView = UIImageView(image: image)
                 imageView.contentMode = .scaleAspectFit
                 imageView.frame = CGRect(x: 0, y: 0, width: width, height: height)
@@ -1142,24 +1185,5 @@ struct TrakkeMapView: UIViewRepresentable {
 
             return view
         }
-    }
-}
-
-// MARK: - UIColor Hex Extension
-
-private extension UIColor {
-    convenience init(hex: String) {
-        var hexString = hex.trimmingCharacters(in: .whitespacesAndNewlines)
-        if hexString.hasPrefix("#") { hexString.removeFirst() }
-
-        var rgb: UInt64 = 0
-        Scanner(string: hexString).scanHexInt64(&rgb)
-
-        self.init(
-            red: CGFloat((rgb >> 16) & 0xFF) / 255.0,
-            green: CGFloat((rgb >> 8) & 0xFF) / 255.0,
-            blue: CGFloat(rgb & 0xFF) / 255.0,
-            alpha: 1.0
-        )
     }
 }

@@ -40,7 +40,7 @@ final class WaypointViewModel {
             category: trimmedCategory?.isEmpty == true ? nil : trimmedCategory
         )
         context.insert(wp)
-        do { try context.save() } catch { logger.error("Failed to save waypoint data: \(error)") }
+        do { try context.save() } catch { logger.error("Failed to save waypoint data: \(error, privacy: .private)") }
         loadWaypoints()
 
         Task {
@@ -53,21 +53,21 @@ final class WaypointViewModel {
         waypoint.name = name
         waypoint.category = trimmedCategory?.isEmpty == true ? nil : trimmedCategory
         waypoint.updatedAt = Date()
-        do { try modelContext?.save() } catch { logger.error("Failed to save waypoint data: \(error)") }
+        do { try modelContext?.save() } catch { logger.error("Failed to save waypoint data: \(error, privacy: .private)") }
         loadWaypoints()
     }
 
     func deleteWaypoint(_ waypoint: Waypoint) {
         guard let context = modelContext else { return }
         context.delete(waypoint)
-        do { try context.save() } catch { logger.error("Failed to save waypoint data: \(error)") }
+        do { try context.save() } catch { logger.error("Failed to save waypoint data: \(error, privacy: .private)") }
         loadWaypoints()
     }
 
     func toggleVisibility(_ waypoint: Waypoint) {
         waypoint.isVisible.toggle()
         waypoint.updatedAt = Date()
-        do { try modelContext?.save() } catch { logger.error("Failed to save waypoint data: \(error)") }
+        do { try modelContext?.save() } catch { logger.error("Failed to save waypoint data: \(error, privacy: .private)") }
         loadWaypoints()
     }
 
@@ -82,7 +82,7 @@ final class WaypointViewModel {
             wp.isVisible = visible
             wp.updatedAt = Date()
         }
-        do { try modelContext?.save() } catch { logger.error("Failed to save waypoint data: \(error)") }
+        do { try modelContext?.save() } catch { logger.error("Failed to save waypoint data: \(error, privacy: .private)") }
         loadWaypoints()
     }
 
@@ -142,7 +142,7 @@ final class WaypointViewModel {
         if let elevation = await elevationService.fetchElevation(coordinate: coord) {
             waypoint.elevation = elevation
             waypoint.updatedAt = Date()
-            do { try modelContext?.save() } catch { logger.error("Failed to save waypoint data: \(error)") }
+            do { try modelContext?.save() } catch { logger.error("Failed to save waypoint data: \(error, privacy: .private)") }
             loadWaypoints()
         }
     }
@@ -186,7 +186,7 @@ final class WaypointViewModel {
                 context.insert(wp)
                 count += 1
             }
-            do { try context.save() } catch { logger.error("Failed to save waypoint data: \(error)") }
+            do { try context.save() } catch { logger.error("Failed to save waypoint data: \(error, privacy: .private)") }
             loadWaypoints()
             importMessage = String(localized: "waypoints.importSuccess \(count)")
         } catch {

@@ -9,7 +9,7 @@ struct MeasurementSheet: View {
             VStack(spacing: .Trakke.md) {
                 Text(String(localized: "measurement.selectMode"))
                     .font(Font.Trakke.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.Trakke.textSoft)
                     .frame(maxWidth: .infinity, alignment: .leading)
 
                 HStack(spacing: .Trakke.md) {

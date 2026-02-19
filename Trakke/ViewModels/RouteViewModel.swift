@@ -40,14 +40,14 @@ final class RouteViewModel {
     func deleteRoute(_ route: Route) {
         guard let context = modelContext else { return }
         context.delete(route)
-        do { try context.save() } catch { logger.error("Failed to save after deleting route: \(error)") }
+        do { try context.save() } catch { logger.error("Failed to save after deleting route: \(error, privacy: .private)") }
         loadRoutes()
     }
 
     func toggleVisibility(_ route: Route) {
         route.isVisible.toggle()
         route.updatedAt = Date()
-        do { try modelContext?.save() } catch { logger.error("Failed to save route visibility: \(error)") }
+        do { try modelContext?.save() } catch { logger.error("Failed to save route visibility: \(error, privacy: .private)") }
         loadRoutes()
     }
 
@@ -115,7 +115,7 @@ final class RouteViewModel {
         route.color = color ?? Self.routeColors[routes.count % Self.routeColors.count]
 
         context.insert(route)
-        do { try context.save() } catch { logger.error("Failed to save new route: \(error)") }
+        do { try context.save() } catch { logger.error("Failed to save new route: \(error, privacy: .private)") }
 
         isDrawing = false
         drawingCoordinates = []
@@ -146,7 +146,7 @@ final class RouteViewModel {
                 route.elevationGain = Double(stats.gain)
                 route.elevationLoss = Double(stats.loss)
                 route.updatedAt = Date()
-                do { try self.modelContext?.save() } catch { logger.error("Failed to save elevation data: \(error)") }
+                do { try self.modelContext?.save() } catch { logger.error("Failed to save elevation data: \(error, privacy: .private)") }
             } catch {
                 #if DEBUG
                 print("Elevation fetch error: \(error)")
@@ -162,6 +162,36 @@ final class RouteViewModel {
         let gpxString = GPXExportService.exportRoute(route)
         let filename = GPXExportService.sanitizeFilename(route.name)
         return GPXExportService.writeToTemporaryFile(gpxString: gpxString, filename: filename)
+    }
+
+    // MARK: - GPX Import
+
+    var importMessage: String?
+
+    func importGPX(from url: URL) {
+        guard let context = modelContext else { return }
+        do {
+            let imported = try GPXImportService.parseRoutes(from: url)
+            guard !imported.isEmpty else {
+                importMessage = String(localized: "routes.importEmpty")
+                return
+            }
+            for importedRoute in imported {
+                let distance = Haversine.totalDistance(coordinates: importedRoute.coordinates)
+                let route = Route(name: importedRoute.name)
+                route.coordinates = importedRoute.coordinates
+                route.distance = distance
+                route.color = Self.routeColors[routes.count % Self.routeColors.count]
+                context.insert(route)
+            }
+            try context.save()
+            loadRoutes()
+            let count = imported.count
+            importMessage = String(localized: "routes.imported \(count)")
+        } catch {
+            importMessage = String(localized: "routes.importError")
+            logger.error("GPX route import failed: \(error, privacy: .private)")
+        }
     }
 
     // MARK: - Distance Formatting

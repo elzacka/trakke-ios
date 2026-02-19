@@ -30,13 +30,17 @@ enum APIError: Error, LocalizedError {
 }
 
 enum APIClient {
-    static let userAgent = "Trakke-iOS/1.0.0 hei@tazk.no"
+    static let userAgent = "Trakke-iOS/1.1.0 hei@tazk.no"
 
     static let session: URLSession = {
         let config = URLSessionConfiguration.default
         config.timeoutIntervalForRequest = 15
         config.timeoutIntervalForResource = 60
         config.waitsForConnectivity = true
+        config.urlCache = URLCache(
+            memoryCapacity: 20 * 1024 * 1024,  // 20 MB
+            diskCapacity: 100 * 1024 * 1024     // 100 MB
+        )
         config.httpAdditionalHeaders = [
             "Accept-Encoding": "gzip, deflate, br",
         ]
@@ -57,8 +61,8 @@ enum APIClient {
         }
     }
 
-    /// Fetch raw data with User-Agent, timeout, and HTTP status validation.
-    /// Use this for non-JSON responses (XML, GML, etc.).
+    /// Fetch raw data with User-Agent, timeout, HTTP status validation, and single retry.
+    /// Retries once after 1s for timeouts, connection loss, and 5xx server errors.
     static func fetchData(
         url: URL,
         timeout: TimeInterval? = nil,
@@ -73,27 +77,44 @@ enum APIClient {
             request.setValue(value, forHTTPHeaderField: key)
         }
 
-        let (data, response): (Data, URLResponse)
-        do {
-            (data, response) = try await session.data(for: request)
-        } catch let error as URLError where error.code == .timedOut {
-            throw APIError.timeout
-        } catch {
-            throw APIError.networkError(error)
+        var lastError: Error?
+        for attempt in 0...1 {
+            if attempt > 0 {
+                try await Task.sleep(for: .seconds(1))
+            }
+
+            let data: Data
+            let response: URLResponse
+            do {
+                (data, response) = try await session.data(for: request)
+            } catch let error as URLError where error.code == .timedOut {
+                lastError = APIError.timeout
+                continue
+            } catch let error as URLError where error.code == .networkConnectionLost {
+                lastError = APIError.networkError(error)
+                continue
+            } catch {
+                throw APIError.networkError(error)
+            }
+
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw APIError.invalidResponse
+            }
+
+            switch httpResponse.statusCode {
+            case 200...299:
+                return data
+            case 429:
+                throw APIError.rateLimited
+            case 500...599:
+                lastError = APIError.httpError(statusCode: httpResponse.statusCode)
+                continue
+            default:
+                throw APIError.httpError(statusCode: httpResponse.statusCode)
+            }
         }
 
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw APIError.invalidResponse
-        }
-
-        switch httpResponse.statusCode {
-        case 200...299:
-            return data
-        case 429:
-            throw APIError.rateLimited
-        default:
-            throw APIError.httpError(statusCode: httpResponse.statusCode)
-        }
+        throw lastError ?? APIError.networkError(URLError(.unknown))
     }
 
     static func buildURL(

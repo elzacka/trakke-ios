@@ -5,20 +5,10 @@ struct TrakkeButtonStyle: ButtonStyle {
     let variant: Variant
 
     func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .font(.subheadline.weight(.medium))
-            .foregroundStyle(foregroundColor)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 14)
-            .padding(.horizontal, .Trakke.cardPadH)
-            .background(backgroundColor)
-            .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))
-            .opacity(configuration.isPressed ? 0.85 : 1)
-            .scaleEffect(configuration.isPressed ? 0.98 : 1)
-            .animation(.easeOut(duration: 0.15), value: configuration.isPressed)
+        TrakkeButtonBody(configuration: configuration, variant: variant)
     }
 
-    private var foregroundColor: Color {
+    fileprivate static func foregroundColor(for variant: Variant) -> Color {
         switch variant {
         case .primary: .white
         case .secondary: Color.Trakke.brand
@@ -26,12 +16,32 @@ struct TrakkeButtonStyle: ButtonStyle {
         }
     }
 
-    private var backgroundColor: Color {
+    fileprivate static func backgroundColor(for variant: Variant) -> Color {
         switch variant {
         case .primary: Color.Trakke.brand
         case .secondary: Color(.secondarySystemGroupedBackground)
         case .danger: Color(.secondarySystemGroupedBackground)
         }
+    }
+}
+
+private struct TrakkeButtonBody: View {
+    let configuration: ButtonStyleConfiguration
+    let variant: TrakkeButtonStyle.Variant
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        configuration.label
+            .font(.subheadline.weight(.medium))
+            .foregroundStyle(TrakkeButtonStyle.foregroundColor(for: variant))
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 14)
+            .padding(.horizontal, .Trakke.cardPadH)
+            .background(TrakkeButtonStyle.backgroundColor(for: variant))
+            .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))
+            .opacity(configuration.isPressed ? 0.85 : 1)
+            .scaleEffect((!reduceMotion && configuration.isPressed) ? 0.98 : 1)
+            .animation(reduceMotion ? nil : .easeOut(duration: 0.15), value: configuration.isPressed)
     }
 }
 

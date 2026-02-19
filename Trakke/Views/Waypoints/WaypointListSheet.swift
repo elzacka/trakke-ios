@@ -6,18 +6,20 @@ struct WaypointListSheet: View {
     var onWaypointSelected: ((Waypoint) -> Void)?
     @Environment(\.dismiss) private var dismiss
     @State private var showFileImporter = false
-    @State private var showShareSheet = false
-    @State private var gpxURL: URL?
+    @State private var shareURL: ShareableURL?
     @State private var expandedCategories: Set<String> = []
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         NavigationStack {
             Group {
                 if viewModel.waypoints.isEmpty {
                     EmptyStateView(
-                        icon: "mappin",
                         title: String(localized: "waypoints.empty.title"),
-                        subtitle: String(localized: "waypoints.empty.subtitle")
+                        subtitle: String(localized: "waypoints.empty.subtitle"),
+                        actionLabel: String(localized: "waypoints.importGPX"),
+                        actionIcon: "square.and.arrow.up",
+                        action: { showFileImporter = true }
                     )
                 } else {
                     waypointList
@@ -42,10 +44,8 @@ struct WaypointListSheet: View {
                     viewModel.importGPX(from: url)
                 }
             }
-            .sheet(isPresented: $showShareSheet) {
-                if let url = gpxURL {
-                    ShareSheet(activityItems: [url])
-                }
+            .sheet(item: $shareURL) { item in
+                ShareSheet(activityItems: [item.url])
             }
             .overlay(alignment: .bottom) {
                 if viewModel.importMessage != nil {
@@ -79,9 +79,8 @@ struct WaypointListSheet: View {
                 // Actions: Export first, Import second
                 VStack(spacing: .Trakke.sm) {
                     Button {
-                        gpxURL = viewModel.exportAllGPX()
-                        if gpxURL != nil {
-                            showShareSheet = true
+                        if let url = viewModel.exportAllGPX() {
+                            shareURL = ShareableURL(url: url)
                         }
                     } label: {
                         Label(String(localized: "waypoints.exportAll"), systemImage: "square.and.arrow.down")
@@ -112,7 +111,7 @@ struct WaypointListSheet: View {
     private func collapsibleCategory(title: String, category: String?, items: [Waypoint]) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             Button {
-                withAnimation(.easeInOut(duration: 0.25)) {
+                withAnimation(reduceMotion ? .none : .easeInOut(duration: 0.25)) {
                     if expandedCategories.contains(title) {
                         expandedCategories.remove(title)
                     } else {

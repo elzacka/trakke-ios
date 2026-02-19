@@ -25,12 +25,12 @@ struct WeatherWidgetView: View {
                 } else if viewModel.error != nil {
                     Image(systemName: "cloud.slash")
                         .font(.system(size: 14))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Color.Trakke.textSoft)
                         .frame(width: .Trakke.touchMin, height: .Trakke.touchMin)
                 } else {
                     Image(systemName: "cloud")
                         .font(.system(size: 14))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Color.Trakke.textSoft)
                         .frame(width: .Trakke.touchMin, height: .Trakke.touchMin)
                 }
             }

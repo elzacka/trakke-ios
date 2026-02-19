@@ -19,9 +19,10 @@ struct CardSection<Content: View>: View {
                     .padding(.bottom, .Trakke.sm)
             }
 
-            VStack(spacing: 0) {
+            VStack(alignment: .leading, spacing: 0) {
                 content()
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, .Trakke.cardPadH)
             .padding(.vertical, .Trakke.cardPadV)
             .background(Color(.secondarySystemGroupedBackground))

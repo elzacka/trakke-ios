@@ -52,6 +52,21 @@ struct InfoSheet: View {
                         )
                     }
 
+                    // MARK: - Open Source
+                    CardSection(String(localized: "info.openSource")) {
+                        dataSourceRow(
+                            name: "MapLibre",
+                            detail: String(localized: "info.maplibre.detail"),
+                            license: "BSD / ISC"
+                        )
+                        Divider()
+                        dataSourceRow(
+                            name: "NGA",
+                            detail: String(localized: "info.nga.detail"),
+                            license: "MIT"
+                        )
+                    }
+
                     // MARK: - Privacy
                     CardSection(String(localized: "info.privacy")) {
                         VStack(alignment: .leading, spacing: 8) {
@@ -64,16 +79,27 @@ struct InfoSheet: View {
                         .padding(.vertical, 4)
                     }
 
-                    Link(destination: URL(string: "https://github.com/elzacka/trakke-ios/blob/main/PERSONVERN.md")!) {
-                        HStack(spacing: 4) {
-                            Text(String(localized: "info.privacy.policy"))
-                            Image(systemName: "arrow.up.right")
-                                .font(.caption2)
+                    HStack {
+                        Link(destination: URL(string: "https://github.com/elzacka/trakke-ios/blob/main/PERSONVERN.md")!) {
+                            HStack(spacing: 4) {
+                                Text(String(localized: "info.privacy.policy"))
+                                Image(systemName: "arrow.up.right")
+                                    .font(.caption2)
+                            }
                         }
-                        .font(.caption)
-                        .foregroundStyle(Color.Trakke.textSoft)
+
+                        Link(destination: URL(string: "https://github.com/elzacka/trakke-ios")!) {
+                            HStack(spacing: 4) {
+                                Text(String(localized: "info.sourceCode"))
+                                Image(systemName: "arrow.up.right")
+                                    .font(.caption2)
+                            }
+                        }
+
+                        Spacer()
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .font(.caption)
+                    .foregroundStyle(Color.Trakke.textSoft)
 
                     // MARK: - App Info
                     CardSection(String(localized: "info.appInfo")) {

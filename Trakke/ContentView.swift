@@ -12,6 +12,7 @@ struct ContentView: View {
     @State private var weatherViewModel = WeatherViewModel()
     @State private var measurementViewModel = MeasurementViewModel()
     @State private var sheets = SheetCoordinator()
+    @State private var connectivityMonitor = ConnectivityMonitor()
     @AppStorage("showWeatherWidget") private var showWeatherWidget = false
     @AppStorage("showCompass") private var showCompass = true
     @AppStorage("showZoomControls") private var showZoomControls = false
@@ -19,29 +20,26 @@ struct ContentView: View {
     @AppStorage("enableRotation") private var enableRotation = true
     @AppStorage("overlayTurrutebasen") private var overlayTurrutebasen = false
     @AppStorage("overlayNaturskog") private var overlayNaturskog = false
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @AppStorage("naturskogLayerType") private var naturskogLayerType = OverlayLayer.naturskogSannsynlighet.rawValue
     @Environment(\.modelContext) private var modelContext
 
     var body: some View {
-        Group {
-            if horizontalSizeClass == .regular {
-                iPadLayout
-            } else {
-                iPhoneLayout
-            }
-        }
+        mainLayout
         .onAppear {
             routeViewModel.setModelContext(modelContext)
             routeViewModel.loadRoutes()
             waypointViewModel.setModelContext(modelContext)
             waypointViewModel.loadWaypoints()
             offlineViewModel.startObserving()
+            connectivityMonitor.start()
             syncOverlays()
         }
         .onChange(of: overlayTurrutebasen) { syncOverlays() }
         .onChange(of: overlayNaturskog) { syncOverlays() }
+        .onChange(of: naturskogLayerType) { syncOverlays() }
         .onDisappear {
             offlineViewModel.stopObserving()
+            connectivityMonitor.stop()
         }
         .onChange(of: searchViewModel.query) {
             mapViewModel.searchPinCoordinate = nil
@@ -53,7 +51,9 @@ struct ContentView: View {
     private func syncOverlays() {
         var overlays = Set<OverlayLayer>()
         if overlayTurrutebasen { overlays.insert(.turrutebasen) }
-        if overlayNaturskog { overlays.insert(.naturskog) }
+        if overlayNaturskog, let layer = OverlayLayer(rawValue: naturskogLayerType), layer.isNaturskog {
+            overlays.insert(layer)
+        }
         mapViewModel.enabledOverlays = overlays
     }
 
@@ -91,9 +91,9 @@ struct ContentView: View {
         weatherViewModel.fetchForecast(for: center)
     }
 
-    // MARK: - iPhone Layout
+    // MARK: - Main Layout
 
-    private var iPhoneLayout: some View {
+    private var mainLayout: some View {
         ZStack {
             TrakkeMapView(
                 viewModel: mapViewModel,
@@ -138,11 +138,7 @@ struct ContentView: View {
                 onSearchTapped: { sheets.showSearchSheet = true },
                 onCategoryTapped: { sheets.showCategoryPicker = true },
                 onRouteTapped: {
-                    if routeViewModel.routes.isEmpty {
-                        routeViewModel.startDrawing()
-                    } else {
-                        sheets.showRouteList = true
-                    }
+                    sheets.showRouteList = true
                 },
                 onMyPlacesTapped: { sheets.showWaypointList = true },
                 onOfflineTapped: {
@@ -168,7 +164,8 @@ struct ContentView: View {
                 showCompass: showCompass,
                 showZoomControls: showZoomControls,
                 showScaleBar: showScaleBar,
-                hideMenuAndZoom: routeViewModel.isDrawing || measurementViewModel.isActive || offlineViewModel.isSelectingArea
+                hideMenuAndZoom: routeViewModel.isDrawing || measurementViewModel.isActive || offlineViewModel.isSelectingArea,
+                isConnected: connectivityMonitor.isConnected
             )
 
             if routeViewModel.isDrawing {
@@ -181,6 +178,20 @@ struct ContentView: View {
 
             if offlineViewModel.isSelectingArea {
                 selectionToolbar
+            }
+
+            if mapViewModel.showLocationPrimer {
+                Color.black.opacity(0.15)
+                    .ignoresSafeArea()
+                    .onTapGesture {
+                        mapViewModel.dismissLocationPrimer()
+                    }
+
+                LocationPrimerView(
+                    onAllow: { mapViewModel.confirmLocationPermission() },
+                    onDismiss: { mapViewModel.dismissLocationPrimer() }
+                )
+                .transition(.opacity)
             }
         }
         .tint(Color.Trakke.brand)
@@ -292,270 +303,6 @@ struct ContentView: View {
         }
     }
 
-    // MARK: - iPad Layout
-
-    private var iPadLayout: some View {
-        NavigationSplitView {
-            List {
-                Section(String(localized: "search.title")) {
-                    searchField
-                    searchResults
-                }
-
-                Section(String(localized: "routes.title")) {
-                    ForEach(routeViewModel.routes, id: \.id) { route in
-                        Button {
-                            routeViewModel.selectRoute(route)
-                            sheets.showRouteDetail = true
-                        } label: {
-                            HStack(spacing: 8) {
-                                Circle()
-                                    .fill(Color(hex: route.color ?? "#3e4533"))
-                                    .frame(width: 10, height: 10)
-                                Text(route.name)
-                                    .foregroundStyle(.primary)
-                            }
-                        }
-                    }
-
-                    Button {
-                        routeViewModel.startDrawing()
-                    } label: {
-                        Label(String(localized: "routes.new"), systemImage: "plus")
-                    }
-                }
-
-                Section(String(localized: "waypoints.title")) {
-                    ForEach(waypointViewModel.waypoints, id: \.id) { waypoint in
-                        Button {
-                            waypointViewModel.selectedWaypoint = waypoint
-                            sheets.showWaypointDetail = true
-                        } label: {
-                            HStack(spacing: 8) {
-                                Image(systemName: "mappin")
-                                    .font(.caption)
-                                    .foregroundStyle(Color.Trakke.brand)
-                                Text(waypoint.name)
-                                    .foregroundStyle(.primary)
-                            }
-                        }
-                    }
-                }
-
-                Section(String(localized: "offline.title")) {
-                    ForEach(offlineViewModel.packs) { pack in
-                        HStack {
-                            Text(pack.name)
-                            Spacer()
-                            if pack.progress.isComplete {
-                                Image(systemName: "checkmark.circle.fill")
-                                    .foregroundStyle(Color.Trakke.brand)
-                                    .font(.caption)
-                            } else {
-                                ProgressView(value: pack.progress.percentage, total: 100)
-                                    .frame(width: 60)
-                            }
-                        }
-                    }
-
-                    Button {
-                        offlineViewModel.startSelection(
-                            center: mapViewModel.currentCenter,
-                            zoom: mapViewModel.currentZoom
-                        )
-                    } label: {
-                        Label(String(localized: "offline.download"), systemImage: "plus")
-                    }
-                }
-
-                Section(String(localized: "weather.title")) {
-                    if let forecast = weatherViewModel.forecast {
-                        Button { sheets.showWeatherSheet = true } label: {
-                            HStack(spacing: 8) {
-                                Image(forecast.current.symbol)
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 24, height: 24)
-                                Text("\(Int(forecast.current.temperature.rounded()))°")
-                                    .font(.headline)
-                                    .foregroundStyle(.primary)
-                                Text(String(format: "%.1f m/s", forecast.current.windSpeed))
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
-                    } else if weatherViewModel.isLoading {
-                        ProgressView()
-                    }
-                }
-
-                Section(String(localized: "categories.title")) {
-                    ForEach(POICategory.allCases.sorted { $0.displayName.localizedCompare($1.displayName) == .orderedAscending }) { category in
-                        Button {
-                            poiViewModel.toggleCategory(category)
-                        } label: {
-                            HStack(spacing: 12) {
-                                Image(category.iconName)
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 20, height: 20)
-                                    .foregroundStyle(Color(hex: category.color))
-                                    .frame(width: 28)
-                                Text(category.displayName)
-                                    .foregroundStyle(.primary)
-                                Spacer()
-                                if poiViewModel.enabledCategories.contains(category) {
-                                    Image(systemName: "checkmark")
-                                        .foregroundStyle(Color.Trakke.brand)
-                                }
-                            }
-                        }
-                    }
-                }
-
-                Section(String(localized: "settings.baseLayer")) {
-                    MapLayerPicker(selectedLayer: $mapViewModel.baseLayer)
-                }
-
-                Section {
-                    Button { sheets.showPreferences = true } label: {
-                        Label(String(localized: "settings.title"), systemImage: "gearshape")
-                    }
-                    Button { sheets.showInfo = true } label: {
-                        Label(String(localized: "info.title"), systemImage: "info.circle")
-                    }
-                }
-            }
-            .navigationTitle("Tråkke")
-            .tint(Color.Trakke.brand)
-        } detail: {
-            ZStack {
-                TrakkeMapView(
-                    viewModel: mapViewModel,
-                    pois: poiViewModel.pois,
-                    routes: routeViewModel.visibleRoutes,
-                    waypoints: waypointViewModel.visibleWaypoints,
-                    drawingCoordinates: routeViewModel.drawingCoordinates,
-                    isDrawing: routeViewModel.isDrawing,
-                    selectionCorner1: offlineViewModel.selectionCorner1,
-                    selectionCorner2: offlineViewModel.selectionCorner2,
-                    measurementCoordinates: measurementViewModel.points,
-                    measurementMode: measurementViewModel.mode,
-                    searchPinCoordinate: mapViewModel.searchPinCoordinate,
-                    enabledOverlays: mapViewModel.enabledOverlays,
-                    showWeatherWidget: showWeatherWidget,
-                    enableRotation: enableRotation,
-                    onViewportChanged: handleViewportChanged,
-                    onPOISelected: { poi in
-                        poiViewModel.selectPOI(poi)
-                        sheets.showPOIDetail = true
-                    },
-                    onWaypointSelected: { wp in
-                        waypointViewModel.selectedWaypoint = wp
-                        sheets.showWaypointDetail = true
-                    },
-                    onMapTapped: handleMapTap,
-                    onMapLongPressed: handleMapLongPress,
-                    onRoutePointDragged: { index, coord in
-                        routeViewModel.movePoint(at: index, to: coord)
-                    },
-                    onMeasurementPointDragged: { index, coord in
-                        measurementViewModel.movePoint(at: index, to: coord)
-                    },
-                    onSelectionCornerDragged: { index, coord in
-                        offlineViewModel.moveSelectionCorner(at: index, to: coord)
-                    }
-                )
-                .ignoresSafeArea()
-
-                MapControlsOverlay(
-                    viewModel: mapViewModel,
-                    onMeasurementTapped: { sheets.showMeasurementSheet = true },
-                    enabledOverlays: mapViewModel.enabledOverlays,
-                    weatherWidget: showWeatherWidget ? AnyView(
-                        WeatherWidgetView(viewModel: weatherViewModel) {
-                            sheets.showWeatherSheet = true
-                        }
-                    ) : nil,
-                    showCompass: showCompass,
-                    showZoomControls: showZoomControls,
-                    showScaleBar: showScaleBar,
-                    hideMenuAndZoom: routeViewModel.isDrawing || measurementViewModel.isActive || offlineViewModel.isSelectingArea
-                )
-
-                if routeViewModel.isDrawing {
-                    drawingToolbar
-                }
-
-                if measurementViewModel.isActive {
-                    measurementToolbar
-                }
-
-                if offlineViewModel.isSelectingArea {
-                    selectionToolbar
-                }
-            }
-            .sheet(isPresented: $sheets.showPOIDetail) {
-                if let poi = poiViewModel.selectedPOI {
-                    POIDetailSheet(poi: poi)
-                        .presentationDetents([.medium])
-                }
-            }
-            .sheet(isPresented: $sheets.showRouteDetail) {
-                if let route = routeViewModel.selectedRoute {
-                    RouteDetailSheet(viewModel: routeViewModel, route: route)
-                        .presentationDetents([.medium, .large])
-                }
-            }
-            .sheet(isPresented: $sheets.showDownloadArea) {
-                DownloadAreaSheet(viewModel: offlineViewModel)
-                    .presentationDetents([.medium, .large])
-            }
-            .sheet(isPresented: $sheets.showWeatherSheet) {
-                WeatherSheet(viewModel: weatherViewModel)
-                    .presentationDetents([.medium, .large])
-            }
-            .sheet(isPresented: $sheets.showMeasurementSheet) {
-                MeasurementSheet(viewModel: measurementViewModel)
-                    .presentationDetents([.height(200), .medium])
-                    .presentationBackgroundInteraction(.enabled(upThrough: .height(200)))
-            }
-            .sheet(isPresented: $sheets.showPreferences) {
-                PreferencesSheet(mapViewModel: mapViewModel)
-                    .presentationDetents([.medium, .large])
-            }
-            .sheet(isPresented: $sheets.showInfo) {
-                InfoSheet()
-                    .presentationDetents([.medium, .large])
-            }
-            .sheet(isPresented: $sheets.showWaypointDetail) {
-                if let wp = waypointViewModel.selectedWaypoint {
-                    WaypointDetailSheet(
-                        viewModel: waypointViewModel,
-                        waypoint: wp,
-                        onEdit: { waypoint in
-                            sheets.showWaypointDetail = false
-                            sheets.editingWaypoint = waypoint
-                            sheets.showWaypointEdit = true
-                        }
-                    )
-                    .presentationDetents([.medium])
-                }
-            }
-            .sheet(isPresented: $sheets.showWaypointEdit) {
-                WaypointEditSheet(
-                    viewModel: waypointViewModel,
-                    editingWaypoint: sheets.editingWaypoint
-                )
-                .presentationDetents([.medium])
-            }
-            .sheet(isPresented: $sheets.showRouteSave) {
-                RouteSaveSheet(viewModel: routeViewModel)
-                    .presentationDetents([.medium])
-            }
-        }
-    }
-
     // MARK: - Drawing Toolbar
 
     private var drawingToolbar: some View {
@@ -578,7 +325,7 @@ struct ContentView: View {
                 } else {
                     Text(String(localized: "route.drawingHint"))
                         .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Color.Trakke.textSoft)
                         .padding(.horizontal, 16)
                         .padding(.vertical, 8)
                         .background(.regularMaterial)
@@ -639,7 +386,7 @@ struct ContentView: View {
                              ? String(localized: "measurement.distance")
                              : String(localized: "measurement.area"))
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Color.Trakke.textSoft)
                         Text(result)
                             .font(.title3.monospacedDigit().bold())
                             .foregroundStyle(Color.Trakke.brand)
@@ -653,7 +400,7 @@ struct ContentView: View {
                          ? String(localized: "measurement.distanceHint")
                          : String(localized: "measurement.areaHint"))
                         .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Color.Trakke.textSoft)
                         .padding(.horizontal, 16)
                         .padding(.vertical, 8)
                         .background(.regularMaterial)
@@ -716,7 +463,7 @@ struct ContentView: View {
                             .font(.subheadline.monospacedDigit())
                         Text("(\(offlineViewModel.estimatedSize))")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Color.Trakke.textSoft)
                     }
                     .foregroundStyle(count > 20_000 ? Color.Trakke.red : .primary)
                     .padding(.horizontal, 16)
@@ -755,42 +502,6 @@ struct ContentView: View {
         .safeAreaPadding(.bottom)
     }
 
-    // MARK: - iPad Search Components
-
-    private var searchField: some View {
-        HStack {
-            Image(systemName: "magnifyingglass")
-                .foregroundStyle(.secondary)
-
-            TextField(String(localized: "search.placeholder"), text: Binding(
-                get: { searchViewModel.query },
-                set: { searchViewModel.updateQuery($0) }
-            ))
-            .textFieldStyle(.plain)
-            .autocorrectionDisabled()
-            .textInputAutocapitalization(.never)
-
-            if !searchViewModel.query.isEmpty {
-                Button {
-                    searchViewModel.clearSearch()
-                } label: {
-                    Image(systemName: "xmark.circle.fill")
-                        .foregroundStyle(.secondary)
-                }
-            }
-        }
-    }
-
-    private var searchResults: some View {
-        ForEach(searchViewModel.results) { result in
-            SearchResultRow(result: result)
-                .onTapGesture {
-                    searchViewModel.selectResult(result)
-                    mapViewModel.searchPinCoordinate = result.coordinate
-                    mapViewModel.centerOn(coordinate: result.coordinate, zoom: 14)
-                }
-        }
-    }
 }
 
 #Preview {

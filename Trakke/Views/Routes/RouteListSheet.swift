@@ -1,19 +1,23 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct RouteListSheet: View {
     @Bindable var viewModel: RouteViewModel
     var onRouteSelected: ((Route) -> Void)?
     var onNewRoute: (() -> Void)?
     @Environment(\.dismiss) private var dismiss
+    @State private var showFileImporter = false
 
     var body: some View {
         NavigationStack {
             Group {
                 if viewModel.routes.isEmpty {
                     EmptyStateView(
-                        icon: "point.topleft.down.to.point.bottomright.curvepath",
                         title: String(localized: "routes.empty.title"),
-                        subtitle: String(localized: "routes.empty.subtitle")
+                        subtitle: String(localized: "routes.empty.subtitle"),
+                        actionLabel: String(localized: "routes.importGPX"),
+                        actionIcon: "square.and.arrow.up",
+                        action: { showFileImporter = true }
                     )
                 } else {
                     routeList
@@ -37,6 +41,20 @@ struct RouteListSheet: View {
                     Button(String(localized: "common.close")) {
                         dismiss()
                     }
+                }
+            }
+            .fileImporter(
+                isPresented: $showFileImporter,
+                allowedContentTypes: [.gpx],
+                allowsMultipleSelection: false
+            ) { result in
+                if case .success(let urls) = result, let url = urls.first {
+                    viewModel.importGPX(from: url)
+                }
+            }
+            .overlay(alignment: .bottom) {
+                if viewModel.importMessage != nil {
+                    importBanner
                 }
             }
         }
@@ -75,6 +93,16 @@ struct RouteListSheet: View {
                             }
                         }
                     }
+                }
+
+                VStack(spacing: .Trakke.sm) {
+                    Button {
+                        showFileImporter = true
+                    } label: {
+                        Label(String(localized: "routes.importGPX"), systemImage: "square.and.arrow.up")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .buttonStyle(.trakkeSecondary)
                 }
 
                 Spacer(minLength: .Trakke.lg)
@@ -123,4 +151,23 @@ struct RouteListSheet: View {
         .opacity(route.isVisible ? 1 : 0.45)
     }
 
+    // MARK: - Import Banner
+
+    private var importBanner: some View {
+        Text(viewModel.importMessage ?? "")
+            .font(Font.Trakke.caption)
+            .foregroundStyle(.white)
+            .padding(.horizontal, .Trakke.lg)
+            .padding(.vertical, .Trakke.sm)
+            .background(Color.Trakke.brand)
+            .clipShape(Capsule())
+            .padding(.bottom, .Trakke.lg)
+            .transition(.move(edge: .bottom).combined(with: .opacity))
+            .task {
+                try? await Task.sleep(for: .seconds(3))
+                withAnimation {
+                    viewModel.importMessage = nil
+                }
+            }
+    }
 }

@@ -213,6 +213,10 @@ struct WeatherSheet: View {
     private func dayDetailView(dayIndex: Int, forecast: WeatherForecast) -> some View {
         let day = forecast.daily[dayIndex]
         let hours = hoursForDay(dayIndex, forecast: forecast)
+        let isToday = Calendar.current.isDateInToday(day.time)
+        let summaryTitle = isToday
+            ? String(localized: "weather.current")
+            : String(localized: "weather.daySummary")
 
         return ScrollView {
             VStack(spacing: 24) {
@@ -221,7 +225,7 @@ struct WeatherSheet: View {
                         currentWeatherCard(day)
                     }
                 } else {
-                    CardSection(String(localized: "weather.current")) {
+                    CardSection(summaryTitle) {
                         currentWeatherCard(day)
                     }
 

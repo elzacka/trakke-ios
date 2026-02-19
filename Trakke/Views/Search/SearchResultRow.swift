@@ -17,7 +17,7 @@ struct SearchResultRow: View {
                 if let subtext = result.subtext {
                     Text(subtext)
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Color.Trakke.textSoft)
                         .lineLimit(1)
                 }
             }

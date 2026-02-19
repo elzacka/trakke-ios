@@ -29,7 +29,7 @@ struct SearchSheet: View {
     private var searchField: some View {
         HStack {
             Image(systemName: "magnifyingglass")
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.Trakke.textSoft)
 
             TextField(String(localized: "search.placeholder"), text: Binding(
                 get: { viewModel.query },
@@ -70,11 +70,18 @@ struct SearchSheet: View {
                         .padding()
                     Spacer()
                 }
+            } else if let error = viewModel.error {
+                VStack {
+                    Spacer()
+                    Text(error)
+                        .foregroundStyle(Color.Trakke.textSoft)
+                    Spacer()
+                }
             } else if viewModel.results.isEmpty && !viewModel.query.isEmpty && viewModel.query.count >= 2 {
                 VStack {
                     Spacer()
                     Text(String(localized: "search.noResults"))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Color.Trakke.textSoft)
                     Spacer()
                 }
             } else {
