@@ -56,7 +56,7 @@ targets:
         INFOPLIST_KEY_CFBundleDisplayName: "Tråkke"
         INFOPLIST_KEY_LSApplicationCategoryType: "public.app-category.navigation"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
-        TARGETED_DEVICE_FAMILY: "1"
+        TARGETED_DEVICE_FAMILY: "1,2"
         SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: false
         SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: false
         DEVELOPMENT_TEAM: 8NW62A7PRA
@@ -81,7 +81,7 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: no.tazk.trakke.tests
-        TARGETED_DEVICE_FAMILY: "1"
+        TARGETED_DEVICE_FAMILY: "1,2"
         GENERATE_INFOPLIST_FILE: YES
 
   TrakkeUITests:
@@ -94,5 +94,5 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: no.tazk.trakke.uitests
-        TARGETED_DEVICE_FAMILY: "1"
+        TARGETED_DEVICE_FAMILY: "1,2"
         GENERATE_INFOPLIST_FILE: YES
