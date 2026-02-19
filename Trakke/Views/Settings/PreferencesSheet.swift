@@ -10,6 +10,7 @@ struct PreferencesSheet: View {
     @AppStorage("enableRotation") private var enableRotation = true
     @AppStorage("overlayTurrutebasen") private var overlayTurrutebasen = false
     @AppStorage("overlayNaturskog") private var overlayNaturskog = false
+    @AppStorage("naturskogLayerType") private var naturskogLayerType = OverlayLayer.naturskogSannsynlighet.rawValue
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -36,9 +37,36 @@ struct PreferencesSheet: View {
                             )
                             Divider()
                             settingsToggle(
-                                label: OverlayLayer.naturskog.displayName,
+                                label: String(localized: "map.overlay.naturskog"),
                                 isOn: $overlayNaturskog
                             )
+                            if overlayNaturskog {
+                                VStack(spacing: 0) {
+                                    ForEach(Array(OverlayLayer.naturskogLayers.enumerated()), id: \.element) { index, layer in
+                                        if index > 0 {
+                                            Divider().padding(.leading, 20)
+                                        }
+                                        Button {
+                                            naturskogLayerType = layer.rawValue
+                                        } label: {
+                                            HStack {
+                                                Text(layer.displayName)
+                                                    .font(.subheadline)
+                                                    .foregroundStyle(.primary)
+                                                Spacer()
+                                                if naturskogLayerType == layer.rawValue {
+                                                    Image(systemName: "checkmark")
+                                                        .font(.subheadline.weight(.semibold))
+                                                        .foregroundStyle(Color.Trakke.brand)
+                                                }
+                                            }
+                                            .padding(.vertical, 6)
+                                        }
+                                    }
+                                }
+                                .padding(.leading, 20)
+                                .padding(.top, 4)
+                            }
                         }
                     }
 
@@ -115,6 +143,7 @@ struct PreferencesSheet: View {
                             enableRotation = true
                             overlayTurrutebasen = false
                             overlayNaturskog = false
+                            naturskogLayerType = OverlayLayer.naturskogSannsynlighet.rawValue
                             mapViewModel.baseLayer = .topo
                         }
                     } label: {

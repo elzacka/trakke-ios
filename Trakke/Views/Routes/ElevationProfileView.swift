@@ -72,13 +72,13 @@ struct ElevationProfileView: View {
             HStack(spacing: 4) {
                 Image(systemName: icon)
                     .font(.caption2)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.Trakke.textSoft)
                 Text(value)
                     .fontWeight(.medium)
                     .monospacedDigit()
             }
             Text(label)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.Trakke.textSoft)
                 .font(.caption2)
         }
     }

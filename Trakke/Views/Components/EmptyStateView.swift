@@ -1,35 +1,49 @@
 import SwiftUI
 
 struct EmptyStateView: View {
-    let icon: String
+    var icon: String?
     let title: String
     let subtitle: String
     var actionLabel: String?
+    var actionIcon: String?
     var action: (() -> Void)?
 
     var body: some View {
-        VStack(spacing: .Trakke.md) {
-            Image(systemName: icon)
-                .font(.system(size: 36, weight: .light))
-                .foregroundStyle(Color.Trakke.textSoft)
+        VStack(spacing: 0) {
+            Spacer()
 
-            Text(title)
-                .font(Font.Trakke.bodyMedium)
-                .foregroundStyle(Color.Trakke.textMuted)
+            // Text group: tightly coupled title + subtitle
+            VStack(spacing: .Trakke.sm) {
+                if let icon {
+                    Image(systemName: icon)
+                        .font(.system(size: 36, weight: .light))
+                        .foregroundStyle(Color.Trakke.textSoft)
+                        .padding(.bottom, .Trakke.xs)
+                }
 
-            Text(subtitle)
-                .font(Font.Trakke.caption)
-                .foregroundStyle(Color.Trakke.textSoft)
-                .multilineTextAlignment(.center)
-
-            if let actionLabel, let action {
-                Button(actionLabel, action: action)
+                Text(title)
                     .font(Font.Trakke.bodyMedium)
-                    .foregroundStyle(Color.Trakke.brand)
-                    .padding(.top, .Trakke.xs)
+                    .foregroundStyle(Color.Trakke.textMuted)
+
+                Text(subtitle)
+                    .font(Font.Trakke.caption)
+                    .foregroundStyle(Color.Trakke.textSoft)
+                    .multilineTextAlignment(.center)
             }
+
+            // Action button: clear separation from text group
+            if let actionLabel, let action {
+                Button(action: action) {
+                    Label(actionLabel, systemImage: actionIcon ?? "square.and.arrow.up")
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .buttonStyle(.trakkeSecondary)
+                .padding(.top, .Trakke.cardGap)
+            }
+
+            Spacer()
+            Spacer()
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding(.horizontal, 40)
+        .padding(.horizontal, .Trakke.sheetHorizontal)
     }
 }

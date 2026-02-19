@@ -1,6 +1,6 @@
 # Personvernerklæring for Tråkke
 
-**Sist oppdatert:** 18. februar 2026
+**Sist oppdatert:** 19. februar 2026
 **Behandlingsansvarlig:** Tazk
 **Kontakt:** hei@tazk.no
 
@@ -18,7 +18,7 @@ Tråkke er en kartapp for friluftsliv i Norge. Appen viser topografiske kart fra
 
 ### 2.1 Data som lagres på enheten din
 
-Tråkke lagrer følgende lokalt på iPhonen eller iPaden din via SwiftData:
+Tråkke lagrer følgende lokalt på iPhonen din via SwiftData:
 
 - **Ruter og veipunkter** som du oppretter
 - **Kartinnstillinger** (valgt kartlag, koordinatformat, preferanser)
@@ -29,7 +29,7 @@ Disse dataene forlater aldri enheten din og sendes ikke til appens servere/syste
 
 ### 2.2 Posisjon
 
-Appen ber om tilgang til posisjonen din kun når du aktivt velger å vise den på kartet. Posisjonen brukes bare til:
+Appen ber om tilgang til posisjonen din kun når du aktivt velger å vise den på kartet. Før du får iOS-dialogen, viser appen en kort forklaring på hvorfor posisjonstilgang er nyttig. Du kan avvise uten at iOS-dialogen vises. Posisjonen brukes bare til:
 
 - Å vise hvor du er på kartet
 - Å hente værmelding for posisjonen din
@@ -59,9 +59,9 @@ Appen kommuniserer med følgende tjenester for å gi deg kartdata, vær og annen
 | Meteorologisk institutt (api.met.no) | Værmelding | Omtrentlig posisjon (4 desimaler, ca. 11 m nøyaktighet) | Norge |
 | DSB (ogc.dsb.no) | Tilfluktsrom | Kartområde (bounding box) | Norge |
 | Riksantikvaren (api.ra.no) | Kulturminner | Kartområde (bounding box) | Norge |
-| Miljodirektoratet (image001.miljodirektoratet.no) | Naturskog-kartlag | Kartområde (bounding box) | Norge |
+| Miljødirektoratet (image001.miljodirektoratet.no) | Naturskog-kartlag | Kartområde (bounding box) | Norge |
 
-Interessepunkter fra OpenStreetMap (huler, observasjonstårn, krigsminner, gapahuker) er forhåndslastet i appen og krever ingen nettverkskommunikasjon.
+Interessepunkter fra OpenStreetMap (huler, observasjonstårn, krigsminner, gapahuker/vindskjul) er forhåndslastet i appen og krever ingen nettverkskommunikasjon.
 
 Disse tjenestene mottar kun den tekniske informasjonen som er nødvendig for å levere data til appen. Ingen personopplysninger sendes.
 
@@ -88,7 +88,8 @@ Siden Tråkke ikke samler inn personopplysninger, er de fleste rettigheter autom
 ## 6. Datasikkerhet
 
 - All kommunikasjon med eksterne tjenester skjer over HTTPS (kryptert)
-- Data lagres lokalt på enheten og er beskyttet av sikkerhetsfunksjoner i iOS (enhetspassord, biometri)
+- Data lagres lokalt på enheten med NSFileProtectionComplete og er beskyttet av sikkerhetsfunksjoner i iOS (enhetspassord, biometri)
+- GPX-import validerer filstørrelse (maks 50 MB) og blokkerer ondsinnet XML (XXE-beskyttelse)
 - Ingen data sendes til skytjenester
 - Appen krever ingen brukerkontoer eller passord
 

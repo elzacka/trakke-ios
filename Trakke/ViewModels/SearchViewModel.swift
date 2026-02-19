@@ -7,6 +7,7 @@ final class SearchViewModel {
     var query = ""
     var results: [SearchResult] = []
     var isSearching = false
+    var error: String?
     var selectedResult: SearchResult?
     var coordinateFormat: CoordinateFormat = .dd
 
@@ -17,6 +18,7 @@ final class SearchViewModel {
     func updateQuery(_ newQuery: String) {
         query = newQuery
         searchTask?.cancel()
+        error = nil
 
         let trimmed = newQuery.trimmingCharacters(in: .whitespacesAndNewlines)
         if trimmed.count < 2 {
@@ -38,10 +40,16 @@ final class SearchViewModel {
                 return
             }
 
-            let searchResults = await service.search(query: trimmed)
-            guard !Task.isCancelled else { return }
-
-            self.results = searchResults
+            do {
+                let searchResults = try await service.search(query: trimmed)
+                guard !Task.isCancelled else { return }
+                self.results = searchResults
+                self.error = nil
+            } catch {
+                guard !Task.isCancelled else { return }
+                self.results = []
+                self.error = String(localized: "search.error")
+            }
             self.isSearching = false
         }
     }
@@ -54,6 +62,7 @@ final class SearchViewModel {
         query = ""
         results = []
         isSearching = false
+        error = nil
         selectedResult = nil
         searchTask?.cancel()
     }

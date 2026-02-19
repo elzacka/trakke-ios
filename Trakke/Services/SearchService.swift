@@ -108,15 +108,15 @@ actor SearchService {
     private static let addressSearchMultiplier = 3
     private static let searchTimeout: TimeInterval = 10
 
-    func search(query: String) async -> [SearchResult] {
+    func search(query: String) async throws -> [SearchResult] {
         let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
         guard trimmed.count >= 2 else { return [] }
 
         async let places = searchPlaces(query: trimmed)
         async let addresses = searchAddresses(query: trimmed)
 
-        let placeResults = await places
-        let addressResults = await addresses
+        let placeResults = try await places
+        let addressResults = try await addresses
 
         var combined = placeResults.prefix(6) + addressResults.prefix(3)
         combined.sort { $0.score > $1.score }
@@ -126,7 +126,7 @@ actor SearchService {
 
     // MARK: - Place Search
 
-    private func searchPlaces(query: String) async -> [SearchResult] {
+    private func searchPlaces(query: String) async throws -> [SearchResult] {
         guard let url = APIClient.buildURL(
             base: Self.stednavnBase,
             path: Self.stednavnPath,
@@ -139,11 +139,11 @@ actor SearchService {
             ]
         ) else { return [] }
 
-        guard let response = try? await APIClient.fetch(
+        let response = try await APIClient.fetch(
             StednavnResponse.self,
             url: url,
             timeout: Self.searchTimeout
-        ) else { return [] }
+        )
 
         let queryLower = query.lowercased()
 
@@ -226,7 +226,7 @@ actor SearchService {
 
     // MARK: - Address Search
 
-    private func searchAddresses(query: String) async -> [SearchResult] {
+    private func searchAddresses(query: String) async throws -> [SearchResult] {
         guard query.count >= 3 else { return [] }
 
         let limit = 5 * Self.addressSearchMultiplier
@@ -242,11 +242,11 @@ actor SearchService {
             ]
         ) else { return [] }
 
-        guard let response = try? await APIClient.fetch(
+        let response = try await APIClient.fetch(
             AdresseResponse.self,
             url: url,
             timeout: Self.searchTimeout
-        ) else { return [] }
+        )
 
         let queryLower = query.lowercased()
         let (houseNumber, houseLetter, streetName) = parseAddressQuery(queryLower)

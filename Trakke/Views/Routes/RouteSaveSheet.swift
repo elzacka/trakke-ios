@@ -71,7 +71,7 @@ struct RouteSaveSheet: View {
             VStack(alignment: .leading, spacing: 8) {
                 Text(String(localized: "route.color"))
                     .font(.subheadline)
-                HStack(spacing: 12) {
+                HStack(spacing: 8) {
                     ForEach(RouteViewModel.routeColors, id: \.self) { color in
                         Circle()
                             .fill(Color(hex: color))
@@ -80,7 +80,10 @@ struct RouteSaveSheet: View {
                                 Circle()
                                     .strokeBorder(.primary, lineWidth: selectedColor == color ? 2 : 0)
                             )
+                            .frame(minWidth: .Trakke.touchMin, minHeight: .Trakke.touchMin)
+                            .contentShape(Circle())
                             .onTapGesture { selectedColor = color }
+                            .accessibilityHidden(true)
                     }
                 }
             }

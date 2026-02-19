@@ -13,6 +13,7 @@ Tråkke follows Secure by Design principles aligned with the CIS (Center for Int
 - **Local-first storage:** All user data (routes, waypoints, preferences) stays on-device via SwiftData
 - **No cloud sync:** User data is never transmitted to external servers
 - **Minimal permissions:** Only Location When In Use (no background tracking)
+- **Connectivity monitoring:** Network framework (NWPathMonitor) used only for connected/disconnected status; no interface types, SSIDs, or identifying network data is read
 
 ### Transport Security
 
@@ -32,7 +33,7 @@ All external API connections are restricted to EU/EEA services:
 | MET Norway | api.met.no | Norway | Approximate coordinates (4 decimal truncation) |
 | DSB Shelters | ogc.dsb.no | Norway | Bounding box queries |
 | Riksantikvaren | api.ra.no | Norway | Bounding box queries |
-| Miljodirektoratet (naturskog) | image001.miljodirektoratet.no | Norway | Bounding box (overlay tiles) |
+| Miljødirektoratet (naturskog) | image001.miljodirektoratet.no | Norway | Bounding box (overlay tiles) |
 
 No data is sent to servers outside the EU/EEA. POI data from OpenStreetMap (caves, observation towers, war memorials, wilderness shelters) is pre-bundled in the app as static GeoJSON files and requires no network requests.
 
@@ -41,16 +42,23 @@ No data is sent to servers outside the EU/EEA. POI data from OpenStreetMap (cave
 - All API responses are decoded through Swift `Codable` with strict type checking
 - Coordinate inputs are validated against geographic bounds
 - Search inputs are sanitized before API calls
+- GPX import: XXE prevention (`shouldResolveExternalEntities = false`), 50 MB file size limit
 - No dynamic code execution or `eval` equivalents
+
+### Data Protection
+
+- SwiftData store protected with `NSFileProtectionComplete` (encrypted at rest, locked when device is locked)
+- Logger output uses `privacy: .private` for all user data interpolations
+- ModelContainer crash recovery: corrupted store is deleted and recreated rather than crashing
 
 ### Dependency Management
 
-- **4 external SPM dependencies**, all open-source with active maintenance:
+- **3 external SPM dependencies**, all open-source with active maintenance:
   - MapLibre Native (BSD-2-Clause)
-  - MapLibreSwiftUI (BSD-2-Clause)
+  - MapLibreSwiftUI (ISC)
   - NGA mgrs-ios (MIT)
-  - NGA projections-ios (MIT)
 - Dependencies are pinned to specific versions via `Package.resolved`
+- These 3 direct dependencies resolve to 9 total packages via SPM (including NGA utility libraries and Mockable for testing macros). All are open-source.
 - No closed-source SDKs
 
 ### Privacy as Security
@@ -59,12 +67,14 @@ No data is sent to servers outside the EU/EEA. POI data from OpenStreetMap (cave
 - No personal data collection beyond device-local storage
 - No cookies, tokens, or session identifiers sent to external services
 - Location data is never stored remotely or shared with third parties
+- Location permission uses a pre-permission primer card (LocationPrimerView) before the system dialog, explaining why access is needed. The app remains fully functional without location access.
 
 ## Supported Versions
 
 | Version | Supported |
 |---------|-----------|
-| 1.0.x   | Current release |
+| 1.1.x   | Current release |
+| 1.0.x   | Security fixes only |
 
 ## Reporting a Vulnerability
 

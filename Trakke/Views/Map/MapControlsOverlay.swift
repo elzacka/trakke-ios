@@ -17,8 +17,10 @@ struct MapControlsOverlay: View {
     var showZoomControls = false
     var showScaleBar = false
     var hideMenuAndZoom = false
+    var isConnected = true
 
     @State private var isMenuOpen = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var menuItems: [(icon: String, label: String, action: () -> Void)] {
         [
@@ -40,10 +42,17 @@ struct MapControlsOverlay: View {
             if isMenuOpen {
                 Color.black.opacity(0.15)
                     .ignoresSafeArea()
-                    .onTapGesture { withAnimation(.spring(duration: 0.3)) { isMenuOpen = false } }
+                    .onTapGesture {
+                        withAnimation(reduceMotion ? .none : .spring(duration: 0.3)) { isMenuOpen = false }
+                    }
             }
 
             VStack {
+                if !isConnected {
+                    offlineChip
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                }
+
                 HStack {
                     Spacer()
                     VStack(alignment: .trailing, spacing: .Trakke.sm) {
@@ -59,6 +68,7 @@ struct MapControlsOverlay: View {
             }
             .padding(.horizontal, .Trakke.xxl)
             .padding(.top, .Trakke.sm)
+            .animation(reduceMotion ? .none : .easeInOut(duration: 0.3), value: isConnected)
 
             VStack {
                 Spacer()
@@ -97,7 +107,7 @@ struct MapControlsOverlay: View {
 
     private var fabButton: some View {
         Button {
-            withAnimation(.spring(duration: 0.3)) {
+            withAnimation(reduceMotion ? .none : .spring(duration: 0.3)) {
                 isMenuOpen.toggle()
             }
         } label: {
@@ -128,7 +138,7 @@ struct MapControlsOverlay: View {
             ForEach(Array(menuItems.enumerated()), id: \.offset) { index, item in
                 fabMenuItem(icon: item.icon, label: item.label) {
                     item.action()
-                    withAnimation(.spring(duration: 0.3)) { isMenuOpen = false }
+                    withAnimation(reduceMotion ? .none : .spring(duration: 0.3)) { isMenuOpen = false }
                 }
                 .transition(.asymmetric(
                     insertion: .move(edge: .bottom).combined(with: .opacity),
@@ -265,7 +275,7 @@ struct MapControlsOverlay: View {
         let text = parts.joined(separator: " | ")
         return Text(text)
             .font(Font.Trakke.captionSoft)
-            .foregroundStyle(.secondary)
+            .foregroundStyle(Color.Trakke.textSoft)
             .padding(.horizontal, .Trakke.sm)
             .padding(.vertical, .Trakke.xs)
             .background(.ultraThinMaterial)
@@ -288,5 +298,22 @@ struct MapControlsOverlay: View {
                 .trakkeControlShadow()
         }
         .accessibilityLabel(String(localized: "map.controls.compass"))
+    }
+
+    // MARK: - Offline Chip
+
+    private var offlineChip: some View {
+        HStack(spacing: .Trakke.xs) {
+            Image(systemName: "wifi.slash")
+                .font(.caption2)
+            Text(String(localized: "connectivity.offline"))
+                .font(Font.Trakke.caption)
+        }
+        .foregroundStyle(Color.Trakke.textSoft)
+        .padding(.horizontal, .Trakke.md)
+        .padding(.vertical, .Trakke.sm)
+        .background(.regularMaterial)
+        .clipShape(Capsule())
+        .trakkeControlShadow()
     }
 }

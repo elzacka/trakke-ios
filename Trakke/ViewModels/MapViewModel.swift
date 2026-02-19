@@ -13,6 +13,7 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
     var currentHeading: Double = 0
     var shouldResetHeading = false
     var searchPinCoordinate: CLLocationCoordinate2D?
+    var showLocationPrimer = false
     var currentCenter = CLLocationCoordinate2D(
         latitude: MapConstants.defaultCenter.latitude,
         longitude: MapConstants.defaultCenter.longitude
@@ -41,7 +42,11 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
 
     func startTrackingLocation() {
         guard locationAuthStatus == .authorizedWhenInUse || locationAuthStatus == .authorizedAlways else {
-            requestLocationPermission()
+            if locationAuthStatus == .notDetermined {
+                showLocationPrimer = true
+            } else {
+                requestLocationPermission()
+            }
             return
         }
         isTrackingUser = true
@@ -61,6 +66,15 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
         currentCenter = location.coordinate
         isTrackingUser = true
         locationManager.startUpdatingLocation()
+    }
+
+    func confirmLocationPermission() {
+        showLocationPrimer = false
+        requestLocationPermission()
+    }
+
+    func dismissLocationPrimer() {
+        showLocationPrimer = false
     }
 
     func centerOn(coordinate: CLLocationCoordinate2D, zoom: Double? = nil) {

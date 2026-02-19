@@ -50,7 +50,7 @@ final class OfflineViewModel {
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            MainActor.assumeIsolated {
+            Task { @MainActor in
                 self?.loadPacks()
             }
         }
@@ -65,7 +65,7 @@ final class OfflineViewModel {
                 print("Offline error: \(error)")
             }
             #endif
-            MainActor.assumeIsolated {
+            Task { @MainActor in
                 self?.loadPacks()
             }
         }
@@ -74,9 +74,11 @@ final class OfflineViewModel {
     func stopObserving() {
         if let observer = progressObserver {
             NotificationCenter.default.removeObserver(observer)
+            progressObserver = nil
         }
         if let observer = errorObserver {
             NotificationCenter.default.removeObserver(observer)
+            errorObserver = nil
         }
     }
 

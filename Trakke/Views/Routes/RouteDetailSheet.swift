@@ -4,8 +4,7 @@ struct RouteDetailSheet: View {
     @Bindable var viewModel: RouteViewModel
     let route: Route
     @Environment(\.dismiss) private var dismiss
-    @State private var showShareSheet = false
-    @State private var gpxURL: URL?
+    @State private var shareURL: ShareableURL?
 
     var body: some View {
         NavigationStack {
@@ -31,10 +30,8 @@ struct RouteDetailSheet: View {
                     }
                 }
             }
-            .sheet(isPresented: $showShareSheet) {
-                if let url = gpxURL {
-                    ShareSheet(activityItems: [url])
-                }
+            .sheet(item: $shareURL) { item in
+                ShareSheet(activityItems: [item.url])
             }
         }
     }
@@ -43,20 +40,14 @@ struct RouteDetailSheet: View {
 
     private var routeInfoCard: some View {
         CardSection(String(localized: "route.info")) {
-            HStack(spacing: .Trakke.md) {
-                Circle()
-                    .fill(Color(hex: route.color ?? "#3e4533"))
-                    .frame(width: .Trakke.lg, height: .Trakke.lg)
-
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(route.name)
-                        .font(Font.Trakke.bodyMedium)
-                    Text(viewModel.formattedDistance(route.distance))
-                        .font(Font.Trakke.caption)
-                        .foregroundStyle(Color.Trakke.textSoft)
-                }
+            VStack(alignment: .leading, spacing: 2) {
+                Text(route.name)
+                    .font(Font.Trakke.bodyMedium)
+                Text(viewModel.formattedDistance(route.distance))
+                    .font(Font.Trakke.caption)
+                    .foregroundStyle(Color.Trakke.textSoft)
             }
-            .padding(.vertical, 2)
+            .padding(.vertical, .Trakke.xs)
 
             if let gain = route.elevationGain, gain > 0 {
                 Divider().padding(.leading, .Trakke.dividerLeading)
@@ -134,9 +125,8 @@ struct RouteDetailSheet: View {
     private var actionsCard: some View {
         VStack(spacing: .Trakke.sm) {
             Button {
-                gpxURL = viewModel.exportGPX(for: route)
-                if gpxURL != nil {
-                    showShareSheet = true
+                if let url = viewModel.exportGPX(for: route) {
+                    shareURL = ShareableURL(url: url)
                 }
             } label: {
                 Label(String(localized: "gpx.export"), systemImage: "square.and.arrow.down")
@@ -167,6 +157,13 @@ struct RouteDetailSheet: View {
         .padding(.vertical, .Trakke.xs)
     }
 
+}
+
+// MARK: - Shareable URL
+
+struct ShareableURL: Identifiable {
+    let id = UUID()
+    let url: URL
 }
 
 // MARK: - Share Sheet
