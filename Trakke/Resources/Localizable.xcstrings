@@ -1889,9 +1889,21 @@
       "extractionState" : "manual",
       "localizations" : {
         "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Importerte %lld steder"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Importerte %lld sted"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Importerte %lld steder"
+                }
+              }
+            }
           }
         }
       }
@@ -2131,7 +2143,7 @@
       "localizations" : {
         "nb" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "z%1$@-%2$@"
           }
         }

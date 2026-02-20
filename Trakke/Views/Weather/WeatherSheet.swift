@@ -138,7 +138,7 @@ struct WeatherSheet: View {
     private func weatherStat(icon: String, value: String, label: String) -> some View {
         VStack(spacing: 4) {
             Image(systemName: icon)
-                .font(.system(size: 14))
+                .font(.footnote)
                 .foregroundStyle(Color.Trakke.textSoft)
             Text(value)
                 .font(.subheadline.monospacedDigit())

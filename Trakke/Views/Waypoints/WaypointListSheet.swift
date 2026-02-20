@@ -132,9 +132,11 @@ struct WaypointListSheet: View {
                         .rotationEffect(expandedCategories.contains(title) ? .degrees(90) : .degrees(0))
                 }
                 .padding(.horizontal, .Trakke.xs)
+                .frame(minHeight: 44)
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
+            .accessibilityAddTraits(expandedCategories.contains(title) ? .isSelected : [])
 
             if expandedCategories.contains(title) {
                 VStack(spacing: 0) {
@@ -240,10 +242,10 @@ struct WaypointListSheet: View {
             .background(Color.Trakke.brand)
             .clipShape(Capsule())
             .padding(.bottom, .Trakke.lg)
-            .transition(.move(edge: .bottom).combined(with: .opacity))
+            .transition(reduceMotion ? .opacity : .move(edge: .bottom).combined(with: .opacity))
             .task {
                 try? await Task.sleep(for: .seconds(3))
-                withAnimation {
+                withAnimation(reduceMotion ? nil : .default) {
                     viewModel.importMessage = nil
                 }
             }

@@ -6,6 +6,7 @@ struct RouteListSheet: View {
     var onRouteSelected: ((Route) -> Void)?
     var onNewRoute: (() -> Void)?
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var showFileImporter = false
 
     var body: some View {
@@ -162,10 +163,10 @@ struct RouteListSheet: View {
             .background(Color.Trakke.brand)
             .clipShape(Capsule())
             .padding(.bottom, .Trakke.lg)
-            .transition(.move(edge: .bottom).combined(with: .opacity))
+            .transition(reduceMotion ? .opacity : .move(edge: .bottom).combined(with: .opacity))
             .task {
                 try? await Task.sleep(for: .seconds(3))
-                withAnimation {
+                withAnimation(reduceMotion ? nil : .default) {
                     viewModel.importMessage = nil
                 }
             }

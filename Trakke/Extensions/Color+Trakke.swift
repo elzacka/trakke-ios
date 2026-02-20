@@ -32,12 +32,12 @@ extension Color {
         // MARK: Text
         static let text = Color(hex: "1a1d1b")
         static let textMuted = Color(hex: "4a4f47")
-        static let textSoft = Color(hex: "6b7066")
+        static let textSoft = Color(hex: "5e635a")
         static let textInverse = Color(hex: "ffffff")
 
         // MARK: Functional
         static let blue = Color(hex: "1e6ce0")
-        static let red = Color(hex: "d0443e")
+        static let red = Color(hex: "c23a34")
         static let green = Color(hex: "2e9e5b")
         static let yellow = Color(hex: "d4a012")
 
