@@ -45,5 +45,6 @@ struct EmptyStateView: View {
             Spacer()
         }
         .padding(.horizontal, .Trakke.sheetHorizontal)
+        .frame(maxWidth: 500)
     }
 }

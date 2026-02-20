@@ -5,19 +5,23 @@ import Observation
 @Observable
 final class ConnectivityMonitor {
     var isConnected = true
-    private let monitor = NWPathMonitor()
+    private var monitor: NWPathMonitor?
     private let queue = DispatchQueue(label: "no.tazk.trakke.connectivity")
 
     func start() {
-        monitor.pathUpdateHandler = { [weak self] path in
+        stop()
+        let newMonitor = NWPathMonitor()
+        newMonitor.pathUpdateHandler = { [weak self] path in
             Task { @MainActor in
                 self?.isConnected = (path.status == .satisfied)
             }
         }
-        monitor.start(queue: queue)
+        newMonitor.start(queue: queue)
+        monitor = newMonitor
     }
 
     func stop() {
-        monitor.cancel()
+        monitor?.cancel()
+        monitor = nil
     }
 }

@@ -117,6 +117,7 @@ struct InfoSheet: View {
                     Spacer(minLength: .Trakke.lg)
                 }
                 .padding(.horizontal, .Trakke.sheetHorizontal)
+                .padding(.top, .Trakke.sheetTop)
             }
             .background(Color(.systemGroupedBackground))
             .tint(Color.Trakke.brand)

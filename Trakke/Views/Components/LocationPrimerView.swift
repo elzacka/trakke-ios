@@ -48,6 +48,7 @@ struct LocationPrimerView: View {
         .background(Color(.secondarySystemGroupedBackground))
         .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.xl))
         .trakkeCardShadow()
+        .frame(maxWidth: 400)
         .padding(.horizontal, .Trakke.xxl)
     }
 }

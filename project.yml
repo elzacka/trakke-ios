@@ -23,7 +23,7 @@ settings:
   base:
     SWIFT_VERSION: "6.2"
     MARKETING_VERSION: "1.1.0"
-    CURRENT_PROJECT_VERSION: 2
+    CURRENT_PROJECT_VERSION: 3
     SWIFT_STRICT_CONCURRENCY: complete
     SWIFT_COMPILATION_MODE: wholemodule
     COMPILATION_CACHING: YES
@@ -82,6 +82,9 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: no.tazk.trakke.tests
         TARGETED_DEVICE_FAMILY: "1,2"
+        SUPPORTS_MACCATALYST: false
+        SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: false
+        SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: false
         GENERATE_INFOPLIST_FILE: YES
 
   TrakkeUITests:
@@ -95,4 +98,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: no.tazk.trakke.uitests
         TARGETED_DEVICE_FAMILY: "1,2"
+        SUPPORTS_MACCATALYST: false
+        SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: false
+        SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: false
         GENERATE_INFOPLIST_FILE: YES

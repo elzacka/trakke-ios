@@ -22,21 +22,20 @@ struct DownloadAreaSheet: View {
             .navigationTitle(String(localized: "offline.download"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    HStack(spacing: 16) {
-                        Button(String(localized: "common.cancel")) {
-                            viewModel.cancelSelection()
-                            dismiss()
-                        }
-                        .foregroundStyle(Color.Trakke.textSoft)
-
-                        Button(String(localized: "offline.startDownload")) {
-                            viewModel.startDownload()
-                            dismiss()
-                        }
-                        .fontWeight(.semibold)
-                        .disabled(!canDownload)
+                ToolbarItem(placement: .topBarLeading) {
+                    Button(String(localized: "common.cancel")) {
+                        viewModel.cancelSelection()
+                        dismiss()
                     }
+                    .foregroundStyle(Color.Trakke.textSoft)
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(String(localized: "offline.startDownload")) {
+                        viewModel.startDownload()
+                        dismiss()
+                    }
+                    .fontWeight(.semibold)
+                    .disabled(!canDownload)
                 }
             }
         }

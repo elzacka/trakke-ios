@@ -1,6 +1,6 @@
 # Personvernerklæring for Tråkke
 
-**Sist oppdatert:** 19. februar 2026
+**Sist oppdatert:** 20. februar 2026
 **Behandlingsansvarlig:** Tazk
 **Kontakt:** hei@tazk.no
 
@@ -18,7 +18,7 @@ Tråkke er en kartapp for friluftsliv i Norge. Appen viser topografiske kart fra
 
 ### 2.1 Data som lagres på enheten din
 
-Tråkke lagrer følgende lokalt på iPhonen din via SwiftData:
+Tråkke lagrer følgende lokalt på enheten din via SwiftData:
 
 - **Ruter og veipunkter** som du oppretter
 - **Kartinnstillinger** (valgt kartlag, koordinatformat, preferanser)
@@ -63,7 +63,7 @@ Appen kommuniserer med følgende tjenester for å gi deg kartdata, vær og annen
 
 Interessepunkter fra OpenStreetMap (huler, observasjonstårn, krigsminner, gapahuker/vindskjul) er forhåndslastet i appen og krever ingen nettverkskommunikasjon.
 
-Disse tjenestene mottar kun den tekniske informasjonen som er nødvendig for å levere data til appen. Ingen personopplysninger sendes.
+Disse tjenestene mottar kun den tekniske informasjonen som er nødvendig for å levere data til appen. I tillegg sender appen en User-Agent-header med appens navn, versjon og utviklerens e-postadresse (hei@tazk.no) ved alle API-forespørsler. Dette er påkrevd av flere av tjenestene for identifikasjon, og inneholder ingen brukerdata.
 
 ### IP-adresse
 
@@ -89,7 +89,8 @@ Siden Tråkke ikke samler inn personopplysninger, er de fleste rettigheter autom
 
 - All kommunikasjon med eksterne tjenester skjer over HTTPS (kryptert)
 - Data lagres lokalt på enheten med NSFileProtectionComplete og er beskyttet av sikkerhetsfunksjoner i iOS (enhetspassord, biometri)
-- GPX-import validerer filstørrelse (maks 50 MB) og blokkerer ondsinnet XML (XXE-beskyttelse)
+- GPX-import validerer filstørrelse (maks 50 MB), blokkerer ondsinnet XML (XXE-beskyttelse) og avviser ugyldige koordinatverdier
+- XML-parsing av tilfluktsromdata (GML) har samme XXE-beskyttelse
 - Ingen data sendes til skytjenester
 - Appen krever ingen brukerkontoer eller passord
 

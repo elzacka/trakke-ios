@@ -49,6 +49,8 @@ struct POIDetailSheet: View {
                                 Image(systemName: "doc.on.doc")
                                     .font(.subheadline)
                                     .foregroundStyle(Color.Trakke.brand)
+                                    .frame(minWidth: 44, minHeight: 44)
+                                    .contentShape(Rectangle())
                             }
                             .accessibilityLabel(String(localized: "common.copy"))
                         }

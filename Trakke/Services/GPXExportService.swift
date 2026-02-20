@@ -19,6 +19,7 @@ enum GPXExportService {
             guard wp.coordinates.count >= 2 else { continue }
             let lon = wp.coordinates[0]
             let lat = wp.coordinates[1]
+            guard lon.isFinite, lat.isFinite else { continue }
             gpx += "\n  <wpt lat=\"\(lat)\" lon=\"\(lon)\">"
             if let elevation = wp.elevation {
                 gpx += "\n    <ele>\(elevation)</ele>"
@@ -40,6 +41,7 @@ enum GPXExportService {
             guard coord.count >= 2 else { continue }
             let lon = coord[0]
             let lat = coord[1]
+            guard lon.isFinite, lat.isFinite else { continue }
             gpx += "\n      <trkpt lat=\"\(lat)\" lon=\"\(lon)\"></trkpt>"
         }
 
@@ -71,6 +73,7 @@ enum GPXExportService {
             guard wp.coordinates.count >= 2 else { continue }
             let lon = wp.coordinates[0]
             let lat = wp.coordinates[1]
+            guard lon.isFinite, lat.isFinite else { continue }
             gpx += "\n  <wpt lat=\"\(lat)\" lon=\"\(lon)\">"
             if let elevation = wp.elevation {
                 gpx += "\n    <ele>\(elevation)</ele>"

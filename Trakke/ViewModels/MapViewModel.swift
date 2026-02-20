@@ -44,13 +44,18 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
         guard locationAuthStatus == .authorizedWhenInUse || locationAuthStatus == .authorizedAlways else {
             if locationAuthStatus == .notDetermined {
                 showLocationPrimer = true
-            } else {
-                requestLocationPermission()
+            } else if locationAuthStatus == .denied || locationAuthStatus == .restricted {
+                openAppSettings()
             }
             return
         }
         isTrackingUser = true
         locationManager.startUpdatingLocation()
+    }
+
+    private func openAppSettings() {
+        guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+        UIApplication.shared.open(url)
     }
 
     func stopTrackingLocation() {

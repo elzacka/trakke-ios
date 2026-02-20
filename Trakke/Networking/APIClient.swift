@@ -30,7 +30,10 @@ enum APIError: Error, LocalizedError {
 }
 
 enum APIClient {
-    static let userAgent = "Trakke-iOS/1.1.0 hei@tazk.no"
+    static let userAgent: String = {
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
+        return "Trakke-iOS/\(version) hei@tazk.no"
+    }()
 
     static let session: URLSession = {
         let config = URLSessionConfiguration.default

@@ -27,16 +27,6 @@ struct WaypointDetailSheet: View {
             .navigationTitle(waypoint.name)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Image(systemName: "chevron.left")
-                            .font(.system(size: 17, weight: .medium))
-                            .foregroundStyle(Color.Trakke.brand)
-                    }
-                    .accessibilityLabel(String(localized: "common.back"))
-                }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(String(localized: "common.close")) {
                         dismiss()
@@ -116,6 +106,8 @@ struct WaypointDetailSheet: View {
                         Image(systemName: "doc.on.doc")
                             .font(.subheadline)
                             .foregroundStyle(Color.Trakke.brand)
+                            .frame(minWidth: 44, minHeight: 44)
+                            .contentShape(Rectangle())
                     }
                     .accessibilityLabel(String(localized: "common.copy"))
                 }

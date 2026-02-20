@@ -176,12 +176,12 @@ final class RouteViewModel {
                 importMessage = String(localized: "routes.importEmpty")
                 return
             }
-            for importedRoute in imported {
+            for (i, importedRoute) in imported.enumerated() {
                 let distance = Haversine.totalDistance(coordinates: importedRoute.coordinates)
                 let route = Route(name: importedRoute.name)
                 route.coordinates = importedRoute.coordinates
                 route.distance = distance
-                route.color = Self.routeColors[routes.count % Self.routeColors.count]
+                route.color = Self.routeColors[(routes.count + i) % Self.routeColors.count]
                 context.insert(route)
             }
             try context.save()
@@ -198,9 +198,6 @@ final class RouteViewModel {
 
     func formattedDistance(_ meters: Double?) -> String {
         guard let meters, meters > 0 else { return "--" }
-        if meters >= 1000 {
-            return String(format: "%.1f km", meters / 1000)
-        }
-        return String(format: "%.0f m", meters)
+        return MeasurementService.formatDistance(meters)
     }
 }

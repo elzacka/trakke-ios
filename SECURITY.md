@@ -41,8 +41,11 @@ No data is sent to servers outside the EU/EEA. POI data from OpenStreetMap (cave
 
 - All API responses are decoded through Swift `Codable` with strict type checking
 - Coordinate inputs are validated against geographic bounds
+- Coordinate values are guarded with `.isFinite` checks in all GPX import and export paths to reject NaN/Inf values
 - Search inputs are sanitized before API calls
-- GPX import: XXE prevention (`shouldResolveExternalEntities = false`), 50 MB file size limit
+- XXE prevention (`shouldResolveExternalEntities = false`) on all XML parsers: GPX import (GPXImportService) and GML shelter parsing (POIService/ShelterGMLParser)
+- GPX import enforces a 50 MB file size limit
+- Weather cache evicts expired entries and is capped at 10 entries to prevent unbounded memory growth
 - No dynamic code execution or `eval` equivalents
 
 ### Data Protection
@@ -60,6 +63,10 @@ No data is sent to servers outside the EU/EEA. POI data from OpenStreetMap (cave
 - Dependencies are pinned to specific versions via `Package.resolved`
 - These 3 direct dependencies resolve to 9 total packages via SPM (including NGA utility libraries and Mockable for testing macros). All are open-source.
 - No closed-source SDKs
+
+### Information Disclosure
+
+- All API requests include a User-Agent header: `Trakke-iOS/{version} hei@tazk.no` (version read dynamically from bundle). This is required by several Norwegian public APIs for identification. The header contains the app name, version, and developer contact email -- no user data.
 
 ### Privacy as Security
 

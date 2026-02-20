@@ -129,5 +129,14 @@ private struct HoydedataResponse: Decodable {
 
     struct HoydedataPunkt: Decodable {
         let z: Double
+
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            z = (try? container.decode(Double.self, forKey: .z)) ?? 0
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case z
+        }
     }
 }
