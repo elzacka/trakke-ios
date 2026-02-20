@@ -4,6 +4,7 @@ import Charts
 struct ElevationProfileView: View {
     let points: [ElevationPoint]
     let stats: ElevationStats?
+    @Environment(\.horizontalSizeClass) private var sizeClass
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -38,7 +39,7 @@ struct ElevationProfileView: View {
         }
         .chartXAxisLabel(String(localized: "elevation.distanceKm"))
         .chartYAxisLabel("m")
-        .frame(height: 160)
+        .frame(height: sizeClass == .regular ? 240 : 160)
     }
 
     private func statsRow(_ stats: ElevationStats) -> some View {

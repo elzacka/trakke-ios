@@ -4,8 +4,11 @@ struct SplashScreen: View {
     @State private var opacity: Double = 0
     @State private var scale: Double = 0.95
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.horizontalSizeClass) private var sizeClass
 
-    private let logoSize: CGFloat = 96
+    private var logoSize: CGFloat {
+        sizeClass == .regular ? 144 : 96
+    }
 
     var body: some View {
         ZStack {

@@ -2,7 +2,7 @@
 
 **Versjon 1.1.0** | iOS 26.0+ | Swift 6.2
 
-Tråkke er en kartapp for iPhone som bruker kartdata fra Kartverket. Appen er laget for turgåere og friluftsfolk i Norge, med fokus på personvern og offline-bruk.
+Tråkke er en kartapp for iPhone og iPad som bruker kartdata fra Kartverket. Appen er laget for turgåere og friluftsfolk i Norge, med fokus på personvern og offline-bruk.
 
 ## Funksjoner
 
@@ -10,7 +10,7 @@ Tråkke er en kartapp for iPhone som bruker kartdata fra Kartverket. Appen er la
 - **GPS-posisjon** med sanntidsvisning på kartet
 - **Stedsnavn- og adressesøk** via Kartverket
 - **Offline kart** - last ned områder for bruk uten nett
-- **Ruter og veipunkter** - tegn, lagre og eksporter som GPX
+- **Ruter og veipunkter** - tegn, lagre, importer og eksporter som GPX
 - **Interessepunkter** - tilfluktsrom, huler, observasjonstårn, krigsminner, gapahuker/vindskjul, kulturminner
 - **Kartlag** - turruter (Kartverket) og naturskog (Miljødirektoratet)
 - **Høydeprofiler** med data fra Kartverkets høydemodell
@@ -21,7 +21,7 @@ Tråkke er en kartapp for iPhone som bruker kartdata fra Kartverket. Appen er la
 ## Krav
 
 - iOS 26.0 eller nyere
-- iPhone
+- iPhone eller iPad
 - Xcode 26.2 (for utvikling)
 
 ## Kom i gang (utvikling)

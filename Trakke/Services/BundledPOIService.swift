@@ -42,7 +42,6 @@ enum BundledPOIService {
         guard let filename = filenames[category] else { return [] }
 
         guard let url = Bundle.main.url(forResource: filename, withExtension: "geojson", subdirectory: "POIData") else {
-            // Try without subdirectory (XcodeGen may flatten resources)
             guard let url = Bundle.main.url(forResource: filename, withExtension: "geojson") else {
                 #if DEBUG
                 print("BundledPOI: \(filename).geojson not found in bundle")
@@ -55,7 +54,7 @@ enum BundledPOIService {
         return decodePOIs(from: url, category: category)
     }
 
-    private static func decodePOIs(from url: URL, category: POICategory) -> [POI] {
+    private nonisolated static func decodePOIs(from url: URL, category: POICategory) -> [POI] {
         guard let data = try? Data(contentsOf: url) else { return [] }
 
         guard let collection = try? JSONDecoder().decode(BundledFeatureCollection.self, from: data) else {

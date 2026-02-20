@@ -39,6 +39,7 @@ private struct TrakkeButtonBody: View {
             .padding(.horizontal, .Trakke.cardPadH)
             .background(TrakkeButtonStyle.backgroundColor(for: variant))
             .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))
+            .frame(maxWidth: 400)
             .opacity(configuration.isPressed ? 0.85 : 1)
             .scaleEffect((!reduceMotion && configuration.isPressed) ? 0.98 : 1)
             .animation(reduceMotion ? nil : .easeOut(duration: 0.15), value: configuration.isPressed)

@@ -39,6 +39,8 @@ actor WeatherService {
         let lastModified: String?
     }
 
+    private static let maxCacheEntries = 10
+
     private var cache: [String: CachedForecast] = [:]
 
     func getForecast(lat: Double, lon: Double) async throws -> WeatherForecast {
@@ -108,6 +110,7 @@ actor WeatherService {
                 expiresAt: expires,
                 lastModified: lastModified
             )
+            evictStaleCacheEntries()
             return forecast
         } catch let error as APIError {
             throw error
@@ -128,6 +131,18 @@ actor WeatherService {
             }
         }
         return Date().addingTimeInterval(fallbackTTL)
+    }
+
+    private func evictStaleCacheEntries() {
+        let now = Date()
+        cache = cache.filter { $0.value.expiresAt > now }
+        if cache.count > Self.maxCacheEntries {
+            let sorted = cache.sorted { $0.value.expiresAt < $1.value.expiresAt }
+            let toRemove = cache.count - Self.maxCacheEntries
+            for entry in sorted.prefix(toRemove) {
+                cache.removeValue(forKey: entry.key)
+            }
+        }
     }
 
     // MARK: - Wind Direction

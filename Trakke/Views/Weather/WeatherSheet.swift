@@ -98,7 +98,7 @@ struct WeatherSheet: View {
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text("\(Int(data.temperature.rounded()))°")
-                        .font(.system(size: 44, weight: .light, design: .rounded))
+                        .font(.system(.largeTitle, design: .rounded, weight: .light))
                         .foregroundStyle(Color.Trakke.text)
 
                     Text(WeatherViewModel.conditionText(for: data.symbol))
@@ -201,9 +201,6 @@ struct WeatherSheet: View {
                     .foregroundStyle(Color.Trakke.textSoft)
             }
 
-            Image(systemName: "chevron.right")
-                .font(.caption2)
-                .foregroundStyle(Color.Trakke.textSoft)
         }
         .padding(.vertical, 10)
     }

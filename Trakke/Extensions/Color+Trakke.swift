@@ -32,7 +32,7 @@ extension Color {
         // MARK: Text
         static let text = Color(hex: "1a1d1b")
         static let textMuted = Color(hex: "4a4f47")
-        static let textSoft = Color(hex: "7c8278")
+        static let textSoft = Color(hex: "6b7066")
         static let textInverse = Color(hex: "ffffff")
 
         // MARK: Functional

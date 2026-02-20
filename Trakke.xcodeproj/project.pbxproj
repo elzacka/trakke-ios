@@ -135,6 +135,7 @@
 		D63D63EB20C96AF5968E3630 /* BundledPOIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E6E4C26D5FE9797521FAE65 /* BundledPOIService.swift */; };
 		D65FF08B3B67A8222B2B7AAC /* Levenshtein.swift in Sources */ = {isa = PBXBuildFile; fileRef = B461F0109B3D0DC2B15E78F6 /* Levenshtein.swift */; };
 		D6F80FCC419F4FF3D5850F38 /* lightrain.svg in Resources */ = {isa = PBXBuildFile; fileRef = B30DEA9123729BC53C0866B1 /* lightrain.svg */; };
+		D72680AB64E51746CD4A1269 /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 808E75F58FCD02C57629BE59 /* ShareSheet.swift */; };
 		D93E5AAF99E9E852878F6594 /* TrakkeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B03F9398DB7A9AE8052F970 /* TrakkeApp.swift */; };
 		D9BAFBF64307433147F829DA /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A197CF679D956441DF290BEE /* MapViewModel.swift */; };
 		DD00102E934AC08C405ED14C /* PreferencesSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B8F3AC8A627B4366EF12E29 /* PreferencesSheet.swift */; };
@@ -263,6 +264,7 @@
 		7F8EFCBC89CFE52F72821E90 /* lightrainandthunder.svg */ = {isa = PBXFileReference; path = lightrainandthunder.svg; sourceTree = "<group>"; };
 		7FE74A8C165B99B8F2441A21 /* OfflineViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineViewModel.swift; sourceTree = "<group>"; };
 		80744533CAD21157C5E8236A /* lightssleetshowersandthunder_day.svg */ = {isa = PBXFileReference; path = lightssleetshowersandthunder_day.svg; sourceTree = "<group>"; };
+		808E75F58FCD02C57629BE59 /* ShareSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSheet.swift; sourceTree = "<group>"; };
 		814385A08952040A6DEBD441 /* fog.svg */ = {isa = PBXFileReference; path = fog.svg; sourceTree = "<group>"; };
 		8189D635686A4CDE4596B117 /* heavysnowshowers_polartwilight.svg */ = {isa = PBXFileReference; path = heavysnowshowers_polartwilight.svg; sourceTree = "<group>"; };
 		819A5E924F30A97BE68BEB3B /* MeasurementService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementService.swift; sourceTree = "<group>"; };
@@ -621,6 +623,7 @@
 				8370F4AA2E1940D89D1CBA2C /* CardSection.swift */,
 				F0100C1D0198B9660EA1B145 /* EmptyStateView.swift */,
 				06E26EE05C9FC796FD7D4D17 /* LocationPrimerView.swift */,
+				808E75F58FCD02C57629BE59 /* ShareSheet.swift */,
 				7C7CC07ECBFFF2A606A4FD1D /* TrakkeButtonStyle.swift */,
 			);
 			path = Components;
@@ -992,6 +995,7 @@
 				3993ED3E7C59EF2E48FD0121 /* SearchService.swift in Sources */,
 				D3ACC6AEE46BAE0878A98F34 /* SearchSheet.swift in Sources */,
 				F5B76961FC8F9649F633D278 /* SearchViewModel.swift in Sources */,
+				D72680AB64E51746CD4A1269 /* ShareSheet.swift in Sources */,
 				2E414FF596D70D2B13BC7844 /* SheetCoordinator.swift in Sources */,
 				7389FF3205A3511191485F7E /* Spacing+Trakke.swift in Sources */,
 				A7B1322334BB010438B1468A /* SplashScreen.swift in Sources */,
@@ -1055,6 +1059,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = no.tazk.trakke.tests;
 				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Trakke.app/Trakke";
 			};
@@ -1095,7 +1102,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COMPILATION_CACHING = YES;
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -1183,7 +1190,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COMPILATION_CACHING = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -1228,6 +1235,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = no.tazk.trakke.uitests;
 				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = Trakke;
 			};
@@ -1245,6 +1255,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = no.tazk.trakke.tests;
 				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Trakke.app/Trakke";
 			};
@@ -1287,6 +1300,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = no.tazk.trakke.uitests;
 				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = Trakke;
 			};

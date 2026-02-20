@@ -14,17 +14,9 @@ import os
 /// willSend is called from MapLibre's network thread; only the request parameter is mutated.
 private final class MapLibreHeaderSanitizer: NSObject, MLNNetworkConfigurationDelegate, @unchecked Sendable {
     func willSend(_ request: NSMutableURLRequest) -> NSMutableURLRequest {
-        if let ua = request.value(forHTTPHeaderField: "User-Agent"),
-           let ascii = ua.data(using: .ascii) {
-            // Already ASCII-safe
-            _ = ascii
-        } else if let ua = request.value(forHTTPHeaderField: "User-Agent") {
-            // Contains non-ASCII; transliterate to ASCII
-            let safe = ua.applyingTransform(.toLatin, reverse: false)
-                .flatMap { $0.applyingTransform(.stripDiacritics, reverse: false) }
-                ?? ua.unicodeScalars.filter { $0.isASCII }.map { String($0) }.joined()
-            request.setValue(safe, forHTTPHeaderField: "User-Agent")
-        }
+        // Replace MapLibre's auto-generated User-Agent with our standard one
+        // (includes version + contact email, ASCII-safe)
+        request.setValue(APIClient.userAgent, forHTTPHeaderField: "User-Agent")
         return request
     }
 }

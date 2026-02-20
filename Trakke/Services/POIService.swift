@@ -91,6 +91,7 @@ actor POIService {
     private func parseShelterGML(_ data: Data) -> [POI] {
         let parser = ShelterGMLParser()
         let xmlParser = XMLParser(data: data)
+        xmlParser.shouldResolveExternalEntities = false
         xmlParser.delegate = parser
         xmlParser.parse()
         return parser.pois

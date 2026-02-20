@@ -72,7 +72,7 @@ struct RouteSaveSheet: View {
                 Text(String(localized: "route.color"))
                     .font(.subheadline)
                 HStack(spacing: 8) {
-                    ForEach(RouteViewModel.routeColors, id: \.self) { color in
+                    ForEach(Array(RouteViewModel.routeColors.enumerated()), id: \.element) { index, color in
                         Circle()
                             .fill(Color(hex: color))
                             .frame(width: 28, height: 28)
@@ -83,7 +83,8 @@ struct RouteSaveSheet: View {
                             .frame(minWidth: .Trakke.touchMin, minHeight: .Trakke.touchMin)
                             .contentShape(Circle())
                             .onTapGesture { selectedColor = color }
-                            .accessibilityHidden(true)
+                            .accessibilityLabel(String(localized: "route.color") + " \(index + 1)")
+                            .accessibilityAddTraits(selectedColor == color ? .isSelected : [])
                     }
                 }
             }
