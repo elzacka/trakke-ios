@@ -18,7 +18,7 @@ struct WeatherWidgetView: View {
                             .scaledToFit()
                             .frame(width: .Trakke.xxl, height: .Trakke.xxl)
                         Text("\(Int(forecast.current.temperature.rounded()))°")
-                            .font(.system(size: 13, weight: .semibold, design: .rounded).monospacedDigit())
+                            .font(.system(.caption, design: .rounded, weight: .semibold).monospacedDigit())
                             .foregroundStyle(Color.Trakke.text)
                     }
                     .frame(width: .Trakke.touchMin, height: .Trakke.touchMin)

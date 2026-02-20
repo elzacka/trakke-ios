@@ -60,8 +60,10 @@ struct PreferencesSheet: View {
                                                         .foregroundStyle(Color.Trakke.brand)
                                                 }
                                             }
-                                            .padding(.vertical, 6)
+                                            .frame(minHeight: 44)
+                                            .contentShape(Rectangle())
                                         }
+                                        .accessibilityAddTraits(naturskogLayerType == layer.rawValue ? .isSelected : [])
                                     }
                                 }
                                 .padding(.leading, 20)
@@ -126,8 +128,10 @@ struct PreferencesSheet: View {
                                                 .foregroundStyle(Color.Trakke.brand)
                                         }
                                     }
-                                    .padding(.vertical, 8)
+                                    .frame(minHeight: 44)
+                                    .contentShape(Rectangle())
                                 }
+                                .accessibilityAddTraits(coordinateFormat == format ? .isSelected : [])
                             }
                         }
                     }

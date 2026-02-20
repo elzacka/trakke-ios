@@ -39,8 +39,10 @@ struct CategoryPickerSheet: View {
                                             .foregroundStyle(Color.Trakke.brand)
                                     }
                                 }
-                                .padding(.vertical, 6)
+                                .frame(minHeight: 44)
+                                .contentShape(Rectangle())
                             }
+                            .accessibilityAddTraits(viewModel.enabledCategories.contains(category) ? .isSelected : [])
                         }
                     }
 

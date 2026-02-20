@@ -128,6 +128,8 @@ struct DownloadManagerSheet: View {
                     Image(systemName: "trash")
                         .font(.caption)
                         .foregroundStyle(Color.Trakke.red)
+                        .frame(minWidth: 44, minHeight: 44)
+                        .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(String(localized: "common.delete"))
