@@ -10,5 +10,7 @@
 	<true/>
 	<key>destination</key>
 	<string>upload</string>
+	<key>signingStyle</key>
+	<string>automatic</string>
 </dict>
 </plist>
