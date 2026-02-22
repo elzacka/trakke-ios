@@ -89,7 +89,8 @@ No data is sent to servers outside the EU/EEA. The Valhalla routing server (FOSS
 
 | Version | Supported |
 |---------|-----------|
-| 1.1.x   | Current release |
+| 1.2.x   | Current release |
+| 1.1.x   | Security fixes only |
 | 1.0.x   | Security fixes only |
 
 ## Reporting a Vulnerability

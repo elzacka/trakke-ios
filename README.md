@@ -1,6 +1,6 @@
 # Tråkke - Norsk friluftslivsapp for iOS
 
-**Versjon 1.1.0** | iOS 26.0+ | Swift 6.2
+**Versjon 1.2.0** | iOS 26.0+ | Swift 6.2
 
 Tråkke er en kartapp for iPhone og iPad som bruker kartdata fra Kartverket. Appen er laget for turgåere og friluftsfolk i Norge, med fokus på personvern og offline-bruk.
 
