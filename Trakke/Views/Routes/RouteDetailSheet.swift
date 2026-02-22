@@ -3,6 +3,7 @@ import SwiftUI
 struct RouteDetailSheet: View {
     @Bindable var viewModel: RouteViewModel
     let route: Route
+    var onNavigate: ((Route) -> Void)?
     @Environment(\.dismiss) private var dismiss
     @State private var shareURL: ShareableURL?
 
@@ -45,7 +46,7 @@ struct RouteDetailSheet: View {
                     .font(Font.Trakke.bodyMedium)
                 Text(viewModel.formattedDistance(route.distance))
                     .font(Font.Trakke.caption)
-                    .foregroundStyle(Color.Trakke.textSoft)
+                    .foregroundStyle(Color.Trakke.textTertiary)
             }
             .padding(.vertical, .Trakke.xs)
 
@@ -101,7 +102,7 @@ struct RouteDetailSheet: View {
                     ProgressView()
                     Text(String(localized: "elevation.loading"))
                         .font(Font.Trakke.caption)
-                        .foregroundStyle(Color.Trakke.textSoft)
+                        .foregroundStyle(Color.Trakke.textTertiary)
                         .padding(.leading, .Trakke.sm)
                 }
                 .padding(.vertical, .Trakke.xs)
@@ -114,7 +115,7 @@ struct RouteDetailSheet: View {
             } else {
                 Text(String(localized: "elevation.unavailable"))
                     .font(Font.Trakke.caption)
-                    .foregroundStyle(Color.Trakke.textSoft)
+                    .foregroundStyle(Color.Trakke.textTertiary)
                     .padding(.vertical, .Trakke.xs)
             }
         }
@@ -124,6 +125,16 @@ struct RouteDetailSheet: View {
 
     private var actionsCard: some View {
         VStack(spacing: .Trakke.sm) {
+            if route.coordinates.count >= 2 {
+                Button {
+                    onNavigate?(route)
+                } label: {
+                    Label(String(localized: "navigation.start"), systemImage: "location.north.fill")
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .buttonStyle(.trakkePrimary)
+            }
+
             Button {
                 if let url = viewModel.exportGPX(for: route) {
                     shareURL = ShareableURL(url: url)
@@ -151,8 +162,8 @@ struct RouteDetailSheet: View {
                 .font(Font.Trakke.bodyRegular)
             Spacer()
             Text(value)
-                .font(.subheadline.monospacedDigit())
-                .foregroundStyle(Color.Trakke.textSoft)
+                .font(Font.Trakke.bodyRegular.monospacedDigit())
+                .foregroundStyle(Color.Trakke.textTertiary)
         }
         .padding(.vertical, .Trakke.xs)
     }

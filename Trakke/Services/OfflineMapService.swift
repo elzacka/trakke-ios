@@ -141,6 +141,13 @@ final class OfflineMapService {
         }
     }
 
+    func deleteAllPacks() {
+        guard let packs = MLNOfflineStorage.shared.packs else { return }
+        for pack in packs {
+            MLNOfflineStorage.shared.removePack(pack) { _ in }
+        }
+    }
+
     func pausePack(_ info: OfflinePackInfo) {
         findPack(id: info.id)?.suspend()
     }

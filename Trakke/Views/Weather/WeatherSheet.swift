@@ -40,7 +40,7 @@ struct WeatherSheet: View {
 
     private func forecastContent(_ forecast: WeatherForecast) -> some View {
         ScrollView {
-            VStack(spacing: 24) {
+            VStack(spacing: .Trakke.cardGap) {
                 // Current conditions
                 CardSection(String(localized: "weather.current")) {
                     currentWeatherCard(forecast.current)
@@ -61,7 +61,7 @@ struct WeatherSheet: View {
                 }
 
                 // Attribution (CC BY 4.0 required by MET Norway ToS)
-                VStack(spacing: 4) {
+                VStack(spacing: .Trakke.xs) {
                     HStack {
                         Text("MET Norway")
                         Spacer()
@@ -72,10 +72,10 @@ struct WeatherSheet: View {
                         Spacer()
                     }
                 }
-                .font(.caption)
-                .foregroundStyle(Color.Trakke.textSoft)
-                .padding(.horizontal, 4)
-                .padding(.bottom, 16)
+                .font(Font.Trakke.caption)
+                .foregroundStyle(Color.Trakke.textTertiary)
+                .padding(.horizontal, .Trakke.xs)
+                .padding(.bottom, .Trakke.lg)
             }
             .padding(.horizontal, .Trakke.sheetHorizontal)
             .padding(.top, .Trakke.sheetTop)
@@ -89,12 +89,13 @@ struct WeatherSheet: View {
     // MARK: - Current Weather Card
 
     private func currentWeatherCard(_ data: WeatherData) -> some View {
-        VStack(spacing: 16) {
-            HStack(spacing: 14) {
+        VStack(spacing: .Trakke.lg) {
+            HStack(spacing: .Trakke.lg) {
                 Image(data.symbol)
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 48, height: 48)
+                    .frame(width: .Trakke.touchComfortable, height: .Trakke.touchComfortable)
+                    .accessibilityHidden(true)
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text("\(Int(data.temperature.rounded()))°")
@@ -102,8 +103,8 @@ struct WeatherSheet: View {
                         .foregroundStyle(Color.Trakke.text)
 
                     Text(WeatherViewModel.conditionText(for: data.symbol))
-                        .font(.subheadline)
-                        .foregroundStyle(Color.Trakke.textMuted)
+                        .font(Font.Trakke.bodyRegular)
+                        .foregroundStyle(Color.Trakke.textSecondary)
                 }
 
                 Spacer()
@@ -115,7 +116,7 @@ struct WeatherSheet: View {
                 GridItem(.flexible()),
                 GridItem(.flexible()),
                 GridItem(.flexible()),
-            ], spacing: 8) {
+            ], spacing: .Trakke.sm) {
                 weatherStat(
                     icon: "wind",
                     value: String(format: "%.1f m/s", data.windSpeed),
@@ -136,25 +137,25 @@ struct WeatherSheet: View {
     }
 
     private func weatherStat(icon: String, value: String, label: String) -> some View {
-        VStack(spacing: 4) {
+        VStack(spacing: .Trakke.xs) {
             Image(systemName: icon)
                 .font(.footnote)
-                .foregroundStyle(Color.Trakke.textSoft)
+                .foregroundStyle(Color.Trakke.textTertiary)
             Text(value)
-                .font(.subheadline.monospacedDigit())
+                .font(Font.Trakke.bodyRegular.monospacedDigit())
                 .foregroundStyle(Color.Trakke.text)
             Text(label)
-                .font(.caption2)
-                .foregroundStyle(Color.Trakke.textSoft)
+                .font(Font.Trakke.captionSoft)
+                .foregroundStyle(Color.Trakke.textTertiary)
         }
     }
 
     // MARK: - Daily Row
 
     private func dailyRow(_ day: WeatherData) -> some View {
-        HStack(spacing: 10) {
+        HStack(spacing: .Trakke.md) {
             Text(formatDayName(day.time))
-                .font(.subheadline)
+                .font(Font.Trakke.bodyRegular)
                 .foregroundStyle(Color.Trakke.text)
                 .frame(width: 62, alignment: .leading)
 
@@ -162,47 +163,62 @@ struct WeatherSheet: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 28, height: 28)
+                .accessibilityHidden(true)
 
             if let min = day.temperatureMin, let max = day.temperatureMax {
                 HStack(spacing: 0) {
                     Text("\(Int(min.rounded()))°")
-                        .foregroundStyle(Color.Trakke.textSoft)
+                        .foregroundStyle(Color.Trakke.textTertiary)
                         .frame(width: 40, alignment: .trailing)
                     Text("/")
-                        .font(.subheadline)
-                        .foregroundStyle(Color.Trakke.textSoft)
+                        .font(Font.Trakke.bodyRegular)
+                        .foregroundStyle(Color.Trakke.textTertiary)
                     Text("\(Int(max.rounded()))°")
                         .foregroundStyle(Color.Trakke.text)
                         .frame(width: 40, alignment: .leading)
                 }
-                .font(.subheadline.monospacedDigit())
+                .font(Font.Trakke.bodyRegular.monospacedDigit())
             } else {
                 Text("\(Int(day.temperature.rounded()))°")
-                    .font(.subheadline.monospacedDigit())
+                    .font(Font.Trakke.bodyRegular.monospacedDigit())
                     .foregroundStyle(Color.Trakke.text)
                     .frame(width: 82, alignment: .center)
             }
 
             Spacer()
 
-            HStack(spacing: 6) {
+            HStack(spacing: .Trakke.sm) {
                 if day.precipitationProbability > 0 {
                     HStack(spacing: 2) {
                         Image(systemName: "drop")
-                            .font(.caption2)
+                            .font(Font.Trakke.captionSoft)
                         Text(String(format: "%.0f%%", day.precipitationProbability))
                     }
-                    .font(.caption)
-                    .foregroundStyle(Color.Trakke.textMuted)
+                    .font(Font.Trakke.caption)
+                    .foregroundStyle(Color.Trakke.textSecondary)
                 }
 
                 Text(String(format: "%.0f m/s", day.windSpeed))
-                    .font(.caption)
-                    .foregroundStyle(Color.Trakke.textSoft)
+                    .font(Font.Trakke.caption)
+                    .foregroundStyle(Color.Trakke.textTertiary)
             }
 
         }
-        .padding(.vertical, 10)
+        .padding(.vertical, .Trakke.md)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(dailyAccessibilityLabel(day))
+    }
+
+    private func dailyAccessibilityLabel(_ day: WeatherData) -> String {
+        let dayName = formatDayName(day.time)
+        let condition = WeatherViewModel.conditionText(for: day.symbol)
+        let temp: String
+        if let min = day.temperatureMin, let max = day.temperatureMax {
+            temp = "\(Int(min.rounded()))° / \(Int(max.rounded()))°"
+        } else {
+            temp = "\(Int(day.temperature.rounded()))°"
+        }
+        return "\(dayName), \(condition), \(temp)"
     }
 
     // MARK: - Day Detail
@@ -216,7 +232,7 @@ struct WeatherSheet: View {
             : String(localized: "weather.daySummary")
 
         return ScrollView {
-            VStack(spacing: 24) {
+            VStack(spacing: .Trakke.cardGap) {
                 if hours.isEmpty {
                     CardSection(String(localized: "weather.daySummary")) {
                         currentWeatherCard(day)
@@ -261,8 +277,8 @@ struct WeatherSheet: View {
     private func hourlyRow(_ hour: WeatherData) -> some View {
         HStack(spacing: 0) {
             Text(formatHour(hour.time))
-                .font(.subheadline.monospacedDigit())
-                .foregroundStyle(Color.Trakke.textMuted)
+                .font(Font.Trakke.bodyRegular.monospacedDigit())
+                .foregroundStyle(Color.Trakke.textSecondary)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             Image(hour.symbol)
@@ -270,30 +286,32 @@ struct WeatherSheet: View {
                 .scaledToFit()
                 .frame(width: 28, height: 28)
                 .frame(maxWidth: .infinity)
+                .accessibilityHidden(true)
 
             Text("\(Int(hour.temperature.rounded()))°")
-                .font(.subheadline.monospacedDigit())
+                .font(Font.Trakke.bodyRegular.monospacedDigit())
                 .foregroundStyle(Color.Trakke.text)
                 .frame(maxWidth: .infinity)
 
-            HStack(spacing: 4) {
+            HStack(spacing: .Trakke.xs) {
                 if hour.precipitation > 0 {
                     HStack(spacing: 2) {
                         Image(systemName: "drop.fill")
-                            .font(.caption2)
+                            .font(Font.Trakke.captionSoft)
                         Text(String(format: "%.1f mm", hour.precipitation))
                     }
-                    .font(.caption)
-                    .foregroundStyle(Color.Trakke.textMuted)
+                    .font(Font.Trakke.caption)
+                    .foregroundStyle(Color.Trakke.textSecondary)
                 }
 
                 Text(String(format: "%.0f m/s", hour.windSpeed))
-                    .font(.caption)
-                    .foregroundStyle(Color.Trakke.textSoft)
+                    .font(Font.Trakke.caption)
+                    .foregroundStyle(Color.Trakke.textTertiary)
             }
             .frame(maxWidth: .infinity, alignment: .trailing)
         }
-        .padding(.vertical, 8)
+        .padding(.vertical, .Trakke.sm)
+        .accessibilityElement(children: .combine)
     }
 
     // MARK: - Formatters

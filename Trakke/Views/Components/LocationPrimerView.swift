@@ -3,12 +3,11 @@ import SwiftUI
 struct LocationPrimerView: View {
     let onAllow: () -> Void
     let onDismiss: () -> Void
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         VStack(spacing: .Trakke.lg) {
             Image(systemName: "location")
-                .font(.title)
+                .font(Font.Trakke.title)
                 .foregroundStyle(Color.Trakke.brand)
 
             VStack(spacing: .Trakke.sm) {
@@ -17,7 +16,7 @@ struct LocationPrimerView: View {
 
                 Text(String(localized: "location.primer.body"))
                     .font(Font.Trakke.caption)
-                    .foregroundStyle(Color.Trakke.textSoft)
+                    .foregroundStyle(Color.Trakke.textTertiary)
                     .multilineTextAlignment(.center)
             }
 
@@ -39,7 +38,7 @@ struct LocationPrimerView: View {
                 } label: {
                     Text(String(localized: "location.primer.notNow"))
                         .font(Font.Trakke.caption)
-                        .foregroundStyle(Color.Trakke.textSoft)
+                        .foregroundStyle(Color.Trakke.textTertiary)
                 }
                 .frame(minHeight: .Trakke.touchMin)
             }

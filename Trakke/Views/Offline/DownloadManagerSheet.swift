@@ -67,21 +67,21 @@ struct DownloadManagerSheet: View {
         ScrollView {
             VStack(spacing: .Trakke.cardGap) {
                 // Info about how offline maps work
-                HStack(spacing: 8) {
+                HStack(spacing: .Trakke.sm) {
                     Image(systemName: "info.circle")
-                        .font(.caption)
-                        .foregroundStyle(Color.Trakke.textSoft)
+                        .font(Font.Trakke.caption)
+                        .foregroundStyle(Color.Trakke.textTertiary)
                     Text(String(localized: "offline.autoUseHint"))
-                        .font(.caption)
-                        .foregroundStyle(Color.Trakke.textSoft)
+                        .font(Font.Trakke.caption)
+                        .foregroundStyle(Color.Trakke.textTertiary)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 4)
+                .padding(.horizontal, .Trakke.xs)
 
                 CardSection(String(localized: "offline.packs")) {
                     ForEach(Array(viewModel.packs.enumerated()), id: \.element.id) { index, pack in
                         if index > 0 {
-                            Divider().padding(.leading, 4)
+                            Divider().padding(.leading, .Trakke.dividerLeading)
                         }
                         packRow(pack)
                     }
@@ -90,15 +90,15 @@ struct DownloadManagerSheet: View {
                 // Storage info
                 HStack {
                     Text(String(localized: "offline.totalStorage"))
-                        .foregroundStyle(Color.Trakke.textSoft)
+                        .foregroundStyle(Color.Trakke.textTertiary)
                     Spacer()
                     let totalBytes = viewModel.packs.reduce(Int64(0)) { $0 + Int64($1.progress.completedBytes) }
                     Text(OfflineMapService.formatBytes(totalBytes))
                         .monospacedDigit()
-                        .foregroundStyle(Color.Trakke.textSoft)
+                        .foregroundStyle(Color.Trakke.textTertiary)
                 }
-                .font(.caption)
-                .padding(.horizontal, 4)
+                .font(Font.Trakke.caption)
+                .padding(.horizontal, .Trakke.xs)
 
                 Spacer(minLength: .Trakke.lg)
             }
@@ -109,14 +109,14 @@ struct DownloadManagerSheet: View {
     }
 
     private func packRow(_ pack: OfflinePackInfo) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: .Trakke.rowVertical) {
             HStack {
                 Text(pack.name)
-                    .font(.subheadline.weight(.medium))
+                    .font(Font.Trakke.bodyMedium)
                 Spacer()
                 Text(layerDisplayName(pack.layer))
-                    .font(.caption2)
-                    .foregroundStyle(Color.Trakke.textSoft)
+                    .font(Font.Trakke.captionSoft)
+                    .foregroundStyle(Color.Trakke.textTertiary)
                     .padding(.horizontal, 6)
                     .padding(.vertical, 2)
                     .background(Color.Trakke.brandTint)
@@ -126,9 +126,9 @@ struct DownloadManagerSheet: View {
                     packToDelete = pack
                 } label: {
                     Image(systemName: "trash")
-                        .font(.caption)
+                        .font(Font.Trakke.caption)
                         .foregroundStyle(Color.Trakke.red)
-                        .frame(minWidth: 44, minHeight: 44)
+                        .frame(minWidth: .Trakke.touchMin, minHeight: .Trakke.touchMin)
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
@@ -137,14 +137,14 @@ struct DownloadManagerSheet: View {
 
             HStack {
                 Text("z\(pack.minZoom)-\(pack.maxZoom)")
-                    .font(.caption.monospacedDigit())
-                    .foregroundStyle(Color.Trakke.textSoft)
+                    .font(Font.Trakke.caption.monospacedDigit())
+                    .foregroundStyle(Color.Trakke.textTertiary)
 
                 Spacer()
 
                 Text(OfflineMapService.formatBytes(Int64(pack.progress.completedBytes)))
-                    .font(.caption.monospacedDigit())
-                    .foregroundStyle(Color.Trakke.textSoft)
+                    .font(Font.Trakke.caption.monospacedDigit())
+                    .foregroundStyle(Color.Trakke.textTertiary)
             }
 
             if !pack.progress.isComplete {
@@ -152,20 +152,20 @@ struct DownloadManagerSheet: View {
                     .tint(Color.Trakke.brand)
 
                 Text(String(format: "%.0f%%", pack.progress.percentage))
-                    .font(.caption2.monospacedDigit())
-                    .foregroundStyle(Color.Trakke.textSoft)
+                    .font(Font.Trakke.captionSoft.monospacedDigit())
+                    .foregroundStyle(Color.Trakke.textTertiary)
             } else {
-                HStack(spacing: 4) {
+                HStack(spacing: .Trakke.xs) {
                     Image(systemName: "checkmark.circle.fill")
-                        .font(.caption)
+                        .font(Font.Trakke.caption)
                         .foregroundStyle(Color.Trakke.brand)
                     Text(String(localized: "offline.complete"))
-                        .font(.caption)
-                        .foregroundStyle(Color.Trakke.textSoft)
+                        .font(Font.Trakke.caption)
+                        .foregroundStyle(Color.Trakke.textTertiary)
                 }
             }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, .Trakke.xs)
     }
 
     private func layerDisplayName(_ layer: String) -> String {

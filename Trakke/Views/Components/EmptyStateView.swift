@@ -16,18 +16,18 @@ struct EmptyStateView: View {
             VStack(spacing: .Trakke.sm) {
                 if let icon {
                     Image(systemName: icon)
-                        .font(.system(size: 36, weight: .light))
-                        .foregroundStyle(Color.Trakke.textSoft)
+                        .font(Font.Trakke.title)
+                        .foregroundStyle(Color.Trakke.textTertiary)
                         .padding(.bottom, .Trakke.xs)
                 }
 
                 Text(title)
                     .font(Font.Trakke.bodyMedium)
-                    .foregroundStyle(Color.Trakke.textMuted)
+                    .foregroundStyle(Color.Trakke.textSecondary)
 
                 Text(subtitle)
                     .font(Font.Trakke.caption)
-                    .foregroundStyle(Color.Trakke.textSoft)
+                    .foregroundStyle(Color.Trakke.textTertiary)
                     .multilineTextAlignment(.center)
             }
 

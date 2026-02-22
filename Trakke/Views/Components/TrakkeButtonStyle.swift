@@ -32,7 +32,7 @@ private struct TrakkeButtonBody: View {
 
     var body: some View {
         configuration.label
-            .font(.subheadline.weight(.medium))
+            .font(Font.Trakke.bodyMedium)
             .foregroundStyle(TrakkeButtonStyle.foregroundColor(for: variant))
             .frame(maxWidth: .infinity)
             .padding(.vertical, 14)

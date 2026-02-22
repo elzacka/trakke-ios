@@ -150,7 +150,7 @@ actor WeatherService {
     static let windDirections = ["N", "NO", "O", "SO", "S", "SV", "V", "NV"]
 
     nonisolated static func windDirectionName(_ degrees: Double) -> String {
-        let index = Int((degrees / 45).rounded()) % 8
+        let index = ((Int((degrees / 45).rounded()) % 8) + 8) % 8
         return windDirections[index]
     }
 

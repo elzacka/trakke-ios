@@ -33,7 +33,7 @@ enum BundledPOIService {
 
     private static let filenames: [POICategory: String] = [
         .caves: "caves",
-        .observationTowers: "observation_towers",
+        .viewpoints: "viewpoints",
         .warMemorials: "war_memorials",
         .wildernessShelters: "wilderness_shelters",
     ]

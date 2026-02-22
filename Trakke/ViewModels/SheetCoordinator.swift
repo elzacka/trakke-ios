@@ -21,6 +21,7 @@ final class SheetCoordinator {
     var showMeasurementSheet = false
     var showPreferences = false
     var showInfo = false
+    var showNavigationStart = false
 
     func dismissAll() {
         showSearchSheet = false
@@ -39,5 +40,6 @@ final class SheetCoordinator {
         showMeasurementSheet = false
         showPreferences = false
         showInfo = false
+        showNavigationStart = false
     }
 }

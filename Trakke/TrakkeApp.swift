@@ -46,6 +46,21 @@ struct TrakkeApp: App {
             try? fileManager.createDirectory(at: appSupportURL, withIntermediateDirectories: true)
         }
 
+        // Pre-create MapLibre's cache directory so it exists before MLNMapView init.
+        // MapLibre creates this itself if missing, but pre-creating is a defensive measure.
+        // Note: The "fopen failed for data file" console messages come from an Apple system
+        // framework (likely CoreText font cache), not MapLibre. They are harmless
+        // simulator-only noise that does not appear on real devices.
+        let mapLibreCacheDir = appSupportURL
+            .appendingPathComponent("no.tazk.trakke")
+            .appendingPathComponent(".mapbox")
+        if !fileManager.fileExists(atPath: mapLibreCacheDir.path) {
+            try? fileManager.createDirectory(
+                at: mapLibreCacheDir,
+                withIntermediateDirectories: true
+            )
+        }
+
         // Protect the entire Application Support directory so all files
         // (including .store-wal and .store-shm) inherit NSFileProtectionComplete
         do {
@@ -94,6 +109,7 @@ struct TrakkeApp: App {
                     configurations: config
                 )
                 logger.info("SwiftData recovery successful -- created fresh store")
+                UserDefaults.standard.set(true, forKey: "dbRecoveryOccurred")
             } catch {
                 fatalError("Failed to create SwiftData ModelContainer after recovery attempt")
             }

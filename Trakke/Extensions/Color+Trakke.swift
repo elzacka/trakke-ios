@@ -14,46 +14,45 @@ extension Color {
         )
     }
 
-    // MARK: - Tråkke Design System
+    // MARK: - Trakke Design System
 
     enum Trakke {
         // MARK: Brand
         static let brand = Color(hex: "3e4533")
-        static let brandSoft = Color(hex: "606756")
         static let brandTint = Color(hex: "e9ece6")
 
         // MARK: Neutrals
         static let background = Color(hex: "fafaf7")
         static let surface = Color(hex: "ffffff")
-        static let surfaceSubtle = Color(hex: "f2f3f0")
-        static let border = Color(hex: "e4e5e1")
-        static let borderStrong = Color(hex: "c9ccc5")
 
         // MARK: Text
         static let text = Color(hex: "1a1d1b")
-        static let textMuted = Color(hex: "4a4f47")
-        static let textSoft = Color(hex: "5e635a")
+        static let textSecondary = Color(hex: "4a4f47")
+        static let textTertiary = Color(hex: "4e534a")
         static let textInverse = Color(hex: "ffffff")
 
         // MARK: Functional
-        static let blue = Color(hex: "1e6ce0")
         static let red = Color(hex: "c23a34")
         static let green = Color(hex: "2e9e5b")
-        static let yellow = Color(hex: "d4a012")
+        static let yellow = Color(hex: "8a6c00")
+
+        // MARK: Semantic
+        static let warning = Color(hex: "b45309")
+        static let measurement = Color(hex: "d97706")
 
         // MARK: POI Categories
-        static let poiShelter = Color(hex: "fbbf24")
+        static let poiShelter = Color(hex: "b58900")
         static let poiCave = Color(hex: "8b4513")
-        static let poiTower = Color(hex: "4a5568")
-        static let poiWarMemorial = Color(hex: "6b7280")
+        static let poiViewpoint = Color(hex: "4a7c8a")
+        static let poiWarMemorial = Color(hex: "7b4a6b")
         static let poiWildernessShelter = Color(hex: "b45309")
-        static let poiCulturalHeritage = Color(hex: "8b7355")
+        static let poiCulturalHeritage = Color(hex: "6b5b8a")
 
-        // MARK: Future POI (configured but not yet active in PWA)
-        static let poiParking = Color(hex: "60a5fa")
-        static let poiAlpineHut = Color(hex: "f59e0b")
-        static let poiViewpoint = Color(hex: "10b981")
-        static let poiMemorial = Color(hex: "6b7280")
+        // MARK: Route Palette
+        static let routeColors: [String] = [
+            "#3e4533", "#e74c3c", "#795548", "#2ecc71",
+            "#f39c12", "#9b59b6", "#1abc9c", "#e67e22",
+        ]
     }
 }
 
@@ -62,6 +61,16 @@ extension Color {
 extension UIColor {
     enum Trakke {
         static let brand = UIColor(red: 0x3E / 255.0, green: 0x45 / 255.0, blue: 0x33 / 255.0, alpha: 1)
+        static let warning = UIColor(hex: "b45309")
+        static let measurement = UIColor(hex: "d97706")
+
+        // POI Categories
+        static let poiShelter = UIColor(hex: "b58900")
+        static let poiCave = UIColor(hex: "8b4513")
+        static let poiViewpoint = UIColor(hex: "4a7c8a")
+        static let poiWarMemorial = UIColor(hex: "7b4a6b")
+        static let poiWildernessShelter = UIColor(hex: "b45309")
+        static let poiCulturalHeritage = UIColor(hex: "6b5b8a")
     }
 
     convenience init(hex: String) {

@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 
 struct PreferencesSheet: View {
     @Bindable var mapViewModel: MapViewModel
@@ -12,6 +13,9 @@ struct PreferencesSheet: View {
     @AppStorage("overlayNaturskog") private var overlayNaturskog = false
     @AppStorage("naturskogLayerType") private var naturskogLayerType = OverlayLayer.naturskogSannsynlighet.rawValue
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var showDeleteAllConfirmation = false
 
     var body: some View {
         NavigationStack {
@@ -44,30 +48,30 @@ struct PreferencesSheet: View {
                                 VStack(spacing: 0) {
                                     ForEach(Array(OverlayLayer.naturskogLayers.enumerated()), id: \.element) { index, layer in
                                         if index > 0 {
-                                            Divider().padding(.leading, 20)
+                                            Divider().padding(.leading, .Trakke.sheetHorizontal)
                                         }
                                         Button {
                                             naturskogLayerType = layer.rawValue
                                         } label: {
                                             HStack {
                                                 Text(layer.displayName)
-                                                    .font(.subheadline)
-                                                    .foregroundStyle(.primary)
+                                                    .font(Font.Trakke.bodyRegular)
+                                                    .foregroundStyle(Color.Trakke.text)
                                                 Spacer()
                                                 if naturskogLayerType == layer.rawValue {
                                                     Image(systemName: "checkmark")
-                                                        .font(.subheadline.weight(.semibold))
+                                                        .font(Font.Trakke.bodyMedium)
                                                         .foregroundStyle(Color.Trakke.brand)
                                                 }
                                             }
-                                            .frame(minHeight: 44)
+                                            .frame(minHeight: .Trakke.touchMin)
                                             .contentShape(Rectangle())
                                         }
                                         .accessibilityAddTraits(naturskogLayerType == layer.rawValue ? .isSelected : [])
                                     }
                                 }
-                                .padding(.leading, 20)
-                                .padding(.top, 4)
+                                .padding(.leading, .Trakke.sheetHorizontal)
+                                .padding(.top, .Trakke.xs)
                             }
                         }
                     }
@@ -107,7 +111,7 @@ struct PreferencesSheet: View {
                         VStack(spacing: 0) {
                             ForEach(Array(CoordinateFormat.allCases.enumerated()), id: \.element) { index, format in
                                 if index > 0 {
-                                    Divider().padding(.leading, 4)
+                                    Divider().padding(.leading, .Trakke.dividerLeading)
                                 }
                                 Button {
                                     coordinateFormat = format
@@ -115,20 +119,20 @@ struct PreferencesSheet: View {
                                     HStack {
                                         VStack(alignment: .leading, spacing: 2) {
                                             Text(format.displayName)
-                                                .font(.subheadline.weight(.medium))
-                                                .foregroundStyle(.primary)
+                                                .font(Font.Trakke.bodyMedium)
+                                                .foregroundStyle(Color.Trakke.text)
                                             Text(format.formatDescription)
-                                                .font(.caption)
-                                                .foregroundStyle(Color.Trakke.textSoft)
+                                                .font(Font.Trakke.caption)
+                                                .foregroundStyle(Color.Trakke.textTertiary)
                                         }
                                         Spacer()
                                         if coordinateFormat == format {
                                             Image(systemName: "checkmark")
-                                                .font(.subheadline.weight(.semibold))
+                                                .font(Font.Trakke.bodyMedium)
                                                 .foregroundStyle(Color.Trakke.brand)
                                         }
                                     }
-                                    .frame(minHeight: 44)
+                                    .frame(minHeight: .Trakke.touchMin)
                                     .contentShape(Rectangle())
                                 }
                                 .accessibilityAddTraits(coordinateFormat == format ? .isSelected : [])
@@ -138,7 +142,7 @@ struct PreferencesSheet: View {
 
                     // MARK: - Reset
                     Button {
-                        withAnimation {
+                        withAnimation(reduceMotion ? .none : .default) {
                             coordinateFormat = .dd
                             showWeatherWidget = false
                             showCompass = true
@@ -152,8 +156,29 @@ struct PreferencesSheet: View {
                         }
                     } label: {
                         Text(String(localized: "settings.resetDefaults"))
+                            .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     .buttonStyle(.trakkeDanger)
+
+                    // MARK: - Delete All Data (GDPR Art. 17)
+                    Button {
+                        showDeleteAllConfirmation = true
+                    } label: {
+                        Label(String(localized: "settings.deleteAllData"), systemImage: "trash")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .buttonStyle(.trakkeDanger)
+                    .confirmationDialog(
+                        String(localized: "settings.deleteAllData.title"),
+                        isPresented: $showDeleteAllConfirmation,
+                        titleVisibility: .visible
+                    ) {
+                        Button(String(localized: "settings.deleteAllData.confirm"), role: .destructive) {
+                            deleteAllData()
+                        }
+                    } message: {
+                        Text(String(localized: "settings.deleteAllData.message"))
+                    }
 
                     Spacer(minLength: .Trakke.lg)
                 }
@@ -172,6 +197,45 @@ struct PreferencesSheet: View {
         }
     }
 
+    // MARK: - Delete All Data
+
+    private func deleteAllData() {
+        // Delete all SwiftData records
+        try? modelContext.delete(model: Route.self)
+        try? modelContext.delete(model: Waypoint.self)
+        try? modelContext.save()
+
+        // Delete offline map packs
+        OfflineMapService.shared.deleteAllPacks()
+
+        // Clear in-memory service caches
+        BundledPOIService.clearCache()
+
+        // Reset all preferences to defaults
+        coordinateFormat = .dd
+        showWeatherWidget = false
+        showCompass = true
+        showZoomControls = false
+        showScaleBar = false
+        enableRotation = true
+        overlayTurrutebasen = false
+        overlayNaturskog = false
+        naturskogLayerType = OverlayLayer.naturskogSannsynlighet.rawValue
+        mapViewModel.baseLayer = .topo
+
+        // Clean up temp directory
+        let tempDir = FileManager.default.temporaryDirectory
+        if let files = try? FileManager.default.contentsOfDirectory(
+            at: tempDir, includingPropertiesForKeys: nil
+        ) {
+            for file in files where file.pathExtension == "gpx" {
+                try? FileManager.default.removeItem(at: file)
+            }
+        }
+
+        dismiss()
+    }
+
     // MARK: - Toggle Row
 
     private func settingsToggle(
@@ -180,10 +244,10 @@ struct PreferencesSheet: View {
     ) -> some View {
         Toggle(isOn: isOn) {
             Text(label)
-                .font(.subheadline)
+                .font(Font.Trakke.bodyRegular)
         }
         .tint(Color.Trakke.brand)
-        .padding(.vertical, 4)
+        .padding(.vertical, .Trakke.xs)
     }
 }
 

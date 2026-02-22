@@ -14,12 +14,12 @@ struct CategoryPickerSheet: View {
                         }
                         ForEach(Array(sorted.enumerated()), id: \.element) { index, category in
                             if index > 0 {
-                                Divider().padding(.leading, 4)
+                                Divider().padding(.leading, .Trakke.dividerLeading)
                             }
                             Button {
                                 viewModel.toggleCategory(category)
                             } label: {
-                                HStack(spacing: 12) {
+                                HStack(spacing: .Trakke.md) {
                                     Image(category.iconName)
                                         .resizable()
                                         .scaledToFit()
@@ -28,18 +28,18 @@ struct CategoryPickerSheet: View {
                                         .frame(width: 28, height: 28)
 
                                     Text(category.displayName)
-                                        .font(.subheadline)
-                                        .foregroundStyle(.primary)
+                                        .font(Font.Trakke.bodyRegular)
+                                        .foregroundStyle(Color.Trakke.text)
 
                                     Spacer()
 
                                     if viewModel.enabledCategories.contains(category) {
                                         Image(systemName: "checkmark")
-                                            .font(.subheadline.weight(.semibold))
+                                            .font(Font.Trakke.bodyMedium)
                                             .foregroundStyle(Color.Trakke.brand)
                                     }
                                 }
-                                .frame(minHeight: 44)
+                                .frame(minHeight: .Trakke.touchMin)
                                 .contentShape(Rectangle())
                             }
                             .accessibilityAddTraits(viewModel.enabledCategories.contains(category) ? .isSelected : [])

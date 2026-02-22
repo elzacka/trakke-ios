@@ -121,6 +121,28 @@
         }
       }
     },
+    "common.ok" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        }
+      }
+    },
+    "error.saveFailed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kunne ikke lagre endringene. Pr\u00F8v igjen."
+          }
+        }
+      }
+    },
     "common.save" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -380,7 +402,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Interessepunkter via Overpass API"
+            "value" : "Interessepunkter og ruteberegning"
           }
         }
       }
@@ -469,6 +491,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Informasjon"
+          }
+        }
+      }
+    },
+    "info.valhalla.detail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ruteberegning for turstier (FOSSGIS e.V.)"
           }
         }
       }
@@ -1169,6 +1202,39 @@
         }
       }
     },
+    "poi.detail.type" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Type"
+          }
+        }
+      }
+    },
+    "poi.detail.elevation" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoyde over havet"
+          }
+        }
+      }
+    },
+    "poi.detail.direction" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utsiktsretning"
+          }
+        }
+      }
+    },
     "poi.details" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1235,13 +1301,13 @@
         }
       }
     },
-    "poi.observasjonstarn" : {
+    "poi.utsiktspunkter" : {
       "extractionState" : "manual",
       "localizations" : {
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Observasjonstårn"
+            "value" : "Utsiktspunkter"
           }
         }
       }
@@ -1352,6 +1418,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Angre"
+          }
+        }
+      }
+    },
+    "routing.error.decoding" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kunne ikke lese rutedata"
+          }
+        }
+      }
+    },
+    "routing.error.noRoute" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fant ingen rute"
+          }
+        }
+      }
+    },
+    "routing.error.offline" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingen nettverkstilgang"
+          }
+        }
+      }
+    },
+    "routing.error.rateLimited" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "For mange foresp\u00F8rsler, pr\u00F8v igjen om litt"
+          }
+        }
+      }
+    },
+    "routing.error.server %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serverfeil (%lld)"
+          }
+        }
+      }
+    },
+    "routing.error.timeout" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidsavbrudd, pr\u00F8v igjen"
           }
         }
       }
@@ -1683,6 +1815,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kartlag"
+          }
+        }
+      }
+    },
+    "settings.dbRecovery.message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Databasen ble skadet og m\u00e5tte tilbakestilles. Ruter og veipunkter m\u00e5 importeres p\u00e5 nytt."
+          }
+        }
+      }
+    },
+    "settings.dbRecovery.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data tilbakestilt"
+          }
+        }
+      }
+    },
+    "settings.deleteAllData" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slett alle data"
+          }
+        }
+      }
+    },
+    "settings.deleteAllData.confirm" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slett alt"
+          }
+        }
+      }
+    },
+    "settings.deleteAllData.message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle ruter, veipunkter og nedlastede kart slettes permanent. Innstillinger tilbakestilles. Denne handlingen kan ikke angres."
+          }
+        }
+      }
+    },
+    "settings.deleteAllData.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slett alle data?"
           }
         }
       }
@@ -2145,6 +2343,358 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "z%1$@-%2$@"
+          }
+        }
+      }
+    },
+    "map.longPressTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Handling"
+          }
+        }
+      }
+    },
+    "navigation.arrived" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fremme!"
+          }
+        }
+      }
+    },
+    "navigation.bearing" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retning"
+          }
+        }
+      }
+    },
+    "navigation.cameraMode.courseUp" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kurs opp"
+          }
+        }
+      }
+    },
+    "navigation.cameraMode.northUp" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nord opp"
+          }
+        }
+      }
+    },
+    "navigation.compassBearing" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kompasspeiling"
+          }
+        }
+      }
+    },
+    "navigation.compassDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retningspil mot m\u00E5let (ingen nettilgang n\u00F8dvendig)"
+          }
+        }
+      }
+    },
+    "navigation.computing" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beregner rute\u2009..."
+          }
+        }
+      }
+    },
+    "navigation.computeRoute" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beregn tursti-rute"
+          }
+        }
+      }
+    },
+    "navigation.computeRouteDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beregner beste tursti fra din posisjon"
+          }
+        }
+      }
+    },
+    "navigation.distance" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avstand"
+          }
+        }
+      }
+    },
+    "navigation.elevationRemaining" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stigning igjen"
+          }
+        }
+      }
+    },
+    "navigation.gpsLost" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GPS-signal tapt"
+          }
+        }
+      }
+    },
+    "navigation.gpsReduced" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Redusert GPS"
+          }
+        }
+      }
+    },
+    "navigation.navigateHere" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naviger hit"
+          }
+        }
+      }
+    },
+    "navigation.offlineHint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frakoblet \u2013 kun kompasspeiling tilgjengelig"
+          }
+        }
+      }
+    },
+    "navigation.offTrack %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du er %lld m fra ruten"
+          }
+        }
+      }
+    },
+    "navigation.remaining" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gjenstår"
+          }
+        }
+      }
+    },
+    "navigation.reverse" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Snu ruten"
+          }
+        }
+      }
+    },
+    "navigation.routeAttribution" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rute: \u00A9 OpenStreetMap-bidragsytere"
+          }
+        }
+      }
+    },
+    "navigation.start" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naviger"
+          }
+        }
+      }
+    },
+    "navigation.stop" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avslutt"
+          }
+        }
+      }
+    },
+    "navigation.stopConfirmTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avslutte navigeringen?"
+          }
+        }
+      }
+    },
+    "navigation.stopNavigation" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avslutt navigering"
+          }
+        }
+      }
+    },
+    "navigation.progress" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fremgang langs ruten"
+          }
+        }
+      }
+    },
+    "navigation.routeErrorTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kunne ikke beregne rute"
+          }
+        }
+      }
+    },
+    "navigation.routeErrorGeneric" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pr\u00F8v igjen eller bruk kompasspeiling."
+          }
+        }
+      }
+    },
+    "navigation.straightLine" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rettlinjet avstand"
+          }
+        }
+      }
+    },
+    "navigation.switchToCompass" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bytt til kompass"
+          }
+        }
+      }
+    },
+    "navigation.switchToRoute" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bytt til rute"
+          }
+        }
+      }
+    },
+    "navigation.timeRemaining" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tid igjen"
+          }
+        }
+      }
+    },
+    "waypoints.addWaypoint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Legg til veipunkt"
           }
         }
       }

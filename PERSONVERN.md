@@ -1,6 +1,6 @@
 # Personvernerklæring for Tråkke
 
-**Sist oppdatert:** 20. februar 2026
+**Sist oppdatert:** 22. februar 2026
 **Behandlingsansvarlig:** Tazk
 **Kontakt:** hei@tazk.no
 
@@ -12,7 +12,7 @@ Tråkke lagrer all data lokalt på enheten din. Appen samler ikke inn personoppl
 
 ## 1. Hva Tråkke gjør
 
-Tråkke er en kartapp for friluftsliv i Norge. Appen viser topografiske kart fra Kartverket, lar deg søke etter steder, lage ruter, lagre veipunkter og laste ned kart for bruk uten internett. Appen har også kartlag for turruter og naturskog.
+Tråkke er en kartapp for friluftsliv i Norge. Appen viser topografiske kart fra Kartverket, lar deg søke etter steder, lage ruter, lagre veipunkter, navigere til mål og laste ned kart for bruk uten internett. Appen har også kartlag for turruter og naturskog.
 
 ## 2. Hvilke data behandles
 
@@ -33,6 +33,8 @@ Appen ber om tilgang til posisjonen din kun når du aktivt velger å vise den p�
 
 - Å vise hvor du er på kartet
 - Å hente værmelding for posisjonen din
+- Å beregne en turrute til et valgt mål (koordinatene sendes til ruteberegningstjenesten)
+- Å navigere med kompassretning til et mål (kun lokalt på enheten)
 
 Posisjonsdata lagres ikke og sendes ikke videre, bortsett fra som beskrevet i punkt 3.
 
@@ -60,8 +62,11 @@ Appen kommuniserer med følgende tjenester for å gi deg kartdata, vær og annen
 | DSB (ogc.dsb.no) | Tilfluktsrom | Kartområde (bounding box) | Norge |
 | Riksantikvaren (api.ra.no) | Kulturminner | Kartområde (bounding box) | Norge |
 | Miljødirektoratet (image001.miljodirektoratet.no) | Naturskog-kartlag | Kartområde (bounding box) | Norge |
+| FOSSGIS Valhalla (valhalla1.openstreetmap.de) | Ruteberegning | Start- og målkoordinater | Tyskland (EU) |
 
-Interessepunkter fra OpenStreetMap (huler, observasjonstårn, krigsminner, gapahuker/vindskjul) er forhåndslastet i appen og krever ingen nettverkskommunikasjon.
+Interessepunkter fra OpenStreetMap (huler, utsiktspunkter, krigsminner, gapahuker/vindskjul) er forhåndslastet i appen og krever ingen nettverkskommunikasjon.
+
+Ruteberegningstjenesten (Valhalla) mottar kun start- og målkoordinater for å beregne en turrute. Ingen brukeridentitet, enhets-ID eller øktinformasjon sendes.
 
 Disse tjenestene mottar kun den tekniske informasjonen som er nødvendig for å levere data til appen. I tillegg sender appen en User-Agent-header med appens navn, versjon og utviklerens e-postadresse (hei@tazk.no) ved alle API-forespørsler. Dette er påkrevd av flere av tjenestene for identifikasjon, og inneholder ingen brukerdata.
 
@@ -81,7 +86,7 @@ Behandlingen av data i Tråkke er basert på:
 Siden Tråkke ikke samler inn personopplysninger, er de fleste rettigheter automatisk ivaretatt:
 
 - **Innsyn:** Alle data er synlig i appen din.
-- **Sletting:** Slett appen for å fjerne alle data. Du kan også slette enkeltdata (ruter, veipunkter, nedlastede kart) direkte i appen.
+- **Sletting:** Slett appen for å fjerne alle data. Du kan også slette enkeltdata (ruter, veipunkter, nedlastede kart) direkte i appen, eller bruke «Slett alle data» i innstillingene for å slette alt på en gang.
 - **Dataportabilitet:** Ruter kan eksporteres som GPX-filer.
 - **Begrenset behandling:** Du kan bruke appen uten å gi posisjonstilgang.
 
