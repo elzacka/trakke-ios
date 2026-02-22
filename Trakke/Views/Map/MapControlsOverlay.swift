@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct MapControlsOverlay: View {
+struct MapControlsOverlay<WeatherContent: View>: View {
     @Bindable var viewModel: MapViewModel
     var onSearchTapped: (() -> Void)?
     var onCategoryTapped: (() -> Void)?
@@ -12,7 +12,7 @@ struct MapControlsOverlay: View {
     var onSettingsTapped: (() -> Void)?
     var onInfoTapped: (() -> Void)?
     var enabledOverlays: Set<OverlayLayer> = []
-    var weatherWidget: AnyView?
+    var weatherContent: WeatherContent
     var showCompass = false
     var showZoomControls = false
     var showScaleBar = false
@@ -59,9 +59,7 @@ struct MapControlsOverlay: View {
                         if showCompass {
                             compassButton
                         }
-                        if let weatherWidget {
-                            weatherWidget
-                        }
+                        weatherContent
                     }
                 }
                 Spacer()
@@ -114,7 +112,7 @@ struct MapControlsOverlay: View {
             Group {
                 if isMenuOpen {
                     Image(systemName: "xmark")
-                        .font(.system(size: 22, weight: .semibold))
+                        .font(.title3.weight(.semibold))
                 } else {
                     Image("ForestIcon")
                         .resizable()
@@ -163,6 +161,7 @@ struct MapControlsOverlay: View {
                     .font(.system(size: .Trakke.lg, weight: .medium))
                     .foregroundStyle(Color.Trakke.brand)
                     .frame(width: .Trakke.xxl)
+                    .accessibilityHidden(true)
 
                 Text(label)
                     .font(Font.Trakke.bodyMedium)
@@ -175,7 +174,7 @@ struct MapControlsOverlay: View {
             .background(.regularMaterial)
             .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))
         }
-        .frame(minWidth: 180, maxWidth: 240)
+        .frame(minWidth: 200, maxWidth: 260)
     }
 
     // MARK: - Zoom Controls
@@ -216,21 +215,21 @@ struct MapControlsOverlay: View {
         let scale = scaleInfo
         return HStack(spacing: .Trakke.xs) {
             Rectangle()
-                .fill(Color.primary.opacity(0.7))
+                .fill(Color.Trakke.text.opacity(0.7))
                 .frame(width: scale.widthPt, height: 2)
                 .overlay(alignment: .leading) {
                     Rectangle()
-                        .fill(Color.primary.opacity(0.7))
+                        .fill(Color.Trakke.text.opacity(0.7))
                         .frame(width: 1, height: 6)
                 }
                 .overlay(alignment: .trailing) {
                     Rectangle()
-                        .fill(Color.primary.opacity(0.7))
+                        .fill(Color.Trakke.text.opacity(0.7))
                         .frame(width: 1, height: 6)
                 }
             Text(scale.label)
                 .font(Font.Trakke.captionSoft)
-                .foregroundStyle(.primary)
+                .foregroundStyle(Color.Trakke.text)
         }
         .padding(.horizontal, .Trakke.sm)
         .padding(.vertical, .Trakke.xs)
@@ -275,7 +274,7 @@ struct MapControlsOverlay: View {
         let text = parts.joined(separator: " | ")
         return Text(text)
             .font(Font.Trakke.captionSoft)
-            .foregroundStyle(Color.Trakke.textSoft)
+            .foregroundStyle(Color.Trakke.textTertiary)
             .padding(.horizontal, .Trakke.sm)
             .padding(.vertical, .Trakke.xs)
             .background(.ultraThinMaterial)
@@ -289,7 +288,7 @@ struct MapControlsOverlay: View {
             viewModel.shouldResetHeading = true
         } label: {
             Image(systemName: "location.north.fill")
-                .font(.system(size: 18, weight: .medium))
+                .font(Font.Trakke.bodyMedium)
                 .foregroundStyle(Color.Trakke.text)
                 .rotationEffect(.degrees(-viewModel.currentHeading))
                 .frame(width: .Trakke.touchMin, height: .Trakke.touchMin)
@@ -305,11 +304,11 @@ struct MapControlsOverlay: View {
     private var offlineChip: some View {
         HStack(spacing: .Trakke.xs) {
             Image(systemName: "wifi.slash")
-                .font(.caption2)
+                .font(Font.Trakke.captionSoft)
             Text(String(localized: "connectivity.offline"))
                 .font(Font.Trakke.caption)
         }
-        .foregroundStyle(Color.Trakke.textSoft)
+        .foregroundStyle(Color.Trakke.textTertiary)
         .padding(.horizontal, .Trakke.md)
         .padding(.vertical, .Trakke.sm)
         .background(.regularMaterial)

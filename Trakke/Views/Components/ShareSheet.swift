@@ -11,6 +11,7 @@ struct ShareableURL: Identifiable {
 
 struct ShareSheet: UIViewControllerRepresentable {
     let activityItems: [Any]
+    var onDismiss: (() -> Void)?
 
     func makeUIViewController(context: Context) -> UIActivityViewController {
         let controller = UIActivityViewController(
@@ -20,6 +21,17 @@ struct ShareSheet: UIViewControllerRepresentable {
         // iPad requires a popover anchor; nil on iPhone (no-op).
         controller.popoverPresentationController?.permittedArrowDirections = []
         controller.popoverPresentationController?.sourceView = controller.view
+
+        controller.completionWithItemsHandler = { _, _, _, _ in
+            // Clean up temp files after share sheet dismissal
+            for item in activityItems {
+                if let url = item as? URL, url.path.hasPrefix(FileManager.default.temporaryDirectory.path) {
+                    try? FileManager.default.removeItem(at: url)
+                }
+            }
+            onDismiss?()
+        }
+
         return controller
     }
 

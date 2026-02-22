@@ -1,7 +1,9 @@
 import SwiftUI
+import CoreLocation
 
 struct POIDetailSheet: View {
     let poi: POI
+    var onNavigate: ((CLLocationCoordinate2D) -> Void)?
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -10,22 +12,22 @@ struct POIDetailSheet: View {
                 VStack(alignment: .leading, spacing: .Trakke.cardGap) {
                     // MARK: - Category
                     Text(poi.category.displayName)
-                        .font(.subheadline)
-                        .foregroundStyle(Color.Trakke.textSoft)
+                        .font(Font.Trakke.bodyRegular)
+                        .foregroundStyle(Color.Trakke.textTertiary)
 
                     // MARK: - Details
                     if !poi.details.isEmpty {
                         CardSection(String(localized: "poi.details")) {
                             ForEach(Array(sortedDetails.enumerated()), id: \.element.key) { index, detail in
                                 if index > 0 {
-                                    Divider().padding(.leading, 4)
+                                    Divider().padding(.leading, .Trakke.dividerLeading)
                                 }
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text(localizedDetailKey(detail.key))
-                                        .font(.caption)
-                                        .foregroundStyle(Color.Trakke.textSoft)
-                                    Text(detail.value)
-                                        .font(.subheadline)
+                                        .font(Font.Trakke.caption)
+                                        .foregroundStyle(Color.Trakke.textTertiary)
+                                    Text(localizedDetailValue(key: detail.key, value: detail.value))
+                                        .font(Font.Trakke.bodyRegular)
                                 }
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding(.vertical, .Trakke.rowVertical)
@@ -41,15 +43,15 @@ struct POIDetailSheet: View {
                         )
                         HStack {
                             Text(formatted.display)
-                                .font(.subheadline.monospacedDigit())
+                                .font(Font.Trakke.bodyRegular.monospacedDigit())
                             Spacer()
                             Button {
                                 UIPasteboard.general.string = formatted.copyText
                             } label: {
                                 Image(systemName: "doc.on.doc")
-                                    .font(.subheadline)
+                                    .font(Font.Trakke.bodyRegular)
                                     .foregroundStyle(Color.Trakke.brand)
-                                    .frame(minWidth: 44, minHeight: 44)
+                                    .frame(minWidth: .Trakke.touchMin, minHeight: .Trakke.touchMin)
                                     .contentShape(Rectangle())
                             }
                             .accessibilityLabel(String(localized: "common.copy"))
@@ -64,27 +66,36 @@ struct POIDetailSheet: View {
                             Link(destination: url) {
                                 HStack {
                                     Text(String(localized: "poi.moreInfo"))
-                                        .font(.subheadline)
+                                        .font(Font.Trakke.bodyRegular)
                                     Spacer()
                                     Image(systemName: "arrow.up.right")
-                                        .font(.caption2)
-                                        .foregroundStyle(Color.Trakke.textSoft)
+                                        .font(Font.Trakke.captionSoft)
+                                        .foregroundStyle(Color.Trakke.textTertiary)
                                 }
                                 .padding(.vertical, 2)
                             }
                         }
                     }
 
+                    // MARK: - Navigate
+                    Button {
+                        onNavigate?(poi.coordinate)
+                    } label: {
+                        Label(String(localized: "navigation.navigateHere"), systemImage: "location.north.fill")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .buttonStyle(.trakkePrimary)
+
                     // MARK: - Data Source Attribution
-                    HStack(spacing: 4) {
+                    HStack(spacing: .Trakke.xs) {
                         Text(String(localized: "poi.source"))
                         Text(poi.category.sourceName)
                         Text("(\(poi.category.sourceLicense))")
                     }
-                    .font(.caption)
-                    .foregroundStyle(Color.Trakke.textSoft)
+                    .font(Font.Trakke.caption)
+                    .foregroundStyle(Color.Trakke.textTertiary)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, 4)
+                    .padding(.horizontal, .Trakke.xs)
 
                     Spacer(minLength: .Trakke.lg)
                 }
@@ -133,9 +144,25 @@ struct POIDetailSheet: View {
         case "period": return String(localized: "poi.detail.period")
         case "shelterType": return String(localized: "poi.detail.shelterType")
         case "subtype": return String(localized: "poi.detail.subtype")
+        case "elevation": return String(localized: "poi.detail.elevation")
+        case "direction": return String(localized: "poi.detail.direction")
+        case "type": return String(localized: "poi.detail.type")
         case "municipality": return String(localized: "poi.detail.municipality")
         case "county": return String(localized: "poi.detail.county")
         default: return key
+        }
+    }
+
+    private func localizedDetailValue(key: String, value: String) -> String {
+        guard key == "type" || key == "subtype" else { return value }
+        switch value {
+        case "observation_tower": return "Utsiktstårn"
+        case "bird_hide": return "Fugletårn"
+        case "watchtower": return "Vakttårn"
+        case "bunker": return "Bunker"
+        case "fort": return "Festning"
+        case "battlefield": return "Slagmark"
+        default: return value
         }
     }
 }

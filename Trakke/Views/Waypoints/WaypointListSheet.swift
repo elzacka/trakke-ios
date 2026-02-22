@@ -15,6 +15,7 @@ struct WaypointListSheet: View {
             Group {
                 if viewModel.waypoints.isEmpty {
                     EmptyStateView(
+                        icon: "mappin",
                         title: String(localized: "waypoints.empty.title"),
                         subtitle: String(localized: "waypoints.empty.subtitle"),
                         actionLabel: String(localized: "waypoints.importGPX"),
@@ -122,13 +123,13 @@ struct WaypointListSheet: View {
                 HStack {
                     Text(title.uppercased())
                         .font(Font.Trakke.sectionHeader)
-                        .foregroundStyle(Color.Trakke.textSoft)
+                        .foregroundStyle(Color.Trakke.textTertiary)
 
                     Spacer()
 
                     Image(systemName: "chevron.right")
-                        .font(.caption2.weight(.semibold))
-                        .foregroundStyle(Color.Trakke.textSoft)
+                        .font(Font.Trakke.captionSoft.weight(.semibold))
+                        .foregroundStyle(Color.Trakke.textTertiary)
                         .rotationEffect(expandedCategories.contains(title) ? .degrees(90) : .degrees(0))
                 }
                 .padding(.horizontal, .Trakke.xs)
@@ -180,18 +181,31 @@ struct WaypointListSheet: View {
                 if let elevation = waypoint.elevation {
                     Text("\(Int(elevation)) moh.")
                         .font(Font.Trakke.caption)
-                        .foregroundStyle(Color.Trakke.textSoft)
+                        .foregroundStyle(Color.Trakke.textTertiary)
                 }
             }
 
             Spacer()
 
             Image(systemName: waypoint.isVisible ? "chevron.right" : "eye.slash")
-                .font(.caption2)
-                .foregroundStyle(Color.Trakke.textSoft)
+                .font(Font.Trakke.captionSoft)
+                .foregroundStyle(Color.Trakke.textTertiary)
         }
         .padding(.vertical, .Trakke.rowVertical)
         .opacity(waypoint.isVisible ? 1 : 0.45)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(waypointAccessibilityLabel(waypoint))
+    }
+
+    private func waypointAccessibilityLabel(_ waypoint: Waypoint) -> String {
+        var parts = [waypoint.name]
+        if let elevation = waypoint.elevation {
+            parts.append("\(Int(elevation)) moh.")
+        }
+        if !waypoint.isVisible {
+            parts.append(String(localized: "waypoints.hiddenFromMap"))
+        }
+        return parts.joined(separator: ", ")
     }
 
     // MARK: - Category Visibility Toggle

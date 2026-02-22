@@ -1,6 +1,7 @@
 import Testing
 import Foundation
 import CoreLocation
+import SwiftData
 @testable import Trakke
 
 // MARK: - Model Tests
@@ -306,6 +307,17 @@ import CoreLocation
     #expect(WeatherService.windDirectionName(360) == "N")
 }
 
+@Test func weatherWindDirectionNegativeDegrees() {
+    // Negative degrees should wrap correctly via ((index % 8) + 8) % 8
+    #expect(WeatherService.windDirectionName(-45) == "NV")   // -45 = 315
+    #expect(WeatherService.windDirectionName(-90) == "V")    // -90 = 270
+    #expect(WeatherService.windDirectionName(-180) == "S")   // -180 = 180
+    #expect(WeatherService.windDirectionName(-270) == "O")   // -270 = 90
+    #expect(WeatherService.windDirectionName(-360) == "N")   // -360 = 0
+    #expect(WeatherService.windDirectionName(-22) == "N")    // Near-zero negative
+    #expect(WeatherService.windDirectionName(-23) == "NV")   // Just past boundary
+}
+
 // MARK: - GPX Import Tests
 
 @Test func gpxImportValidWaypoints() throws {
@@ -430,6 +442,106 @@ import CoreLocation
 
     #expect(waypoints.count == 1)
     #expect(waypoints[0].name == "Waypoint")
+}
+
+// MARK: - GPX Route Import Tests
+
+@Test func gpxImportRouteFromTrk() throws {
+    let gpx = """
+    <?xml version="1.0" encoding="UTF-8"?>
+    <gpx version="1.1" creator="Test">
+      <trk>
+        <name>Besseggen</name>
+        <trkseg>
+          <trkpt lat="61.5000" lon="8.8000"></trkpt>
+          <trkpt lat="61.5010" lon="8.8010"></trkpt>
+          <trkpt lat="61.5020" lon="8.8020"></trkpt>
+        </trkseg>
+      </trk>
+    </gpx>
+    """
+    let url = writeGPXToTemp(gpx, filename: "test_trk_route.gpx")
+    let routes = try GPXImportService.parseRoutes(from: url)
+
+    #expect(routes.count == 1)
+    #expect(routes[0].name == "Besseggen")
+    #expect(routes[0].coordinates.count == 3)
+    // Coordinates stored as [lon, lat]
+    #expect(abs(routes[0].coordinates[0][0] - 8.8000) < 0.0001)
+    #expect(abs(routes[0].coordinates[0][1] - 61.5000) < 0.0001)
+}
+
+@Test func gpxImportRouteFromRte() throws {
+    // <rte>/<rtept> format (alternative to <trk>/<trkseg>/<trkpt>)
+    let gpx = """
+    <?xml version="1.0" encoding="UTF-8"?>
+    <gpx version="1.1" creator="Test">
+      <rte>
+        <name>Preikestolen</name>
+        <rtept lat="58.9863" lon="6.1905"></rtept>
+        <rtept lat="58.9870" lon="6.1910"></rtept>
+        <rtept lat="58.9880" lon="6.1920"></rtept>
+      </rte>
+    </gpx>
+    """
+    let url = writeGPXToTemp(gpx, filename: "test_rte_route.gpx")
+    let routes = try GPXImportService.parseRoutes(from: url)
+
+    #expect(routes.count == 1)
+    #expect(routes[0].name == "Preikestolen")
+    #expect(routes[0].coordinates.count == 3)
+    #expect(abs(routes[0].coordinates[0][0] - 6.1905) < 0.0001)
+    #expect(abs(routes[0].coordinates[0][1] - 58.9863) < 0.0001)
+}
+
+@Test func gpxImportRouteTooFewPoints() throws {
+    // A route with fewer than 2 points should be skipped
+    let gpx = """
+    <?xml version="1.0" encoding="UTF-8"?>
+    <gpx version="1.1" creator="Test">
+      <trk>
+        <name>Kort</name>
+        <trkseg>
+          <trkpt lat="60.0" lon="10.0"></trkpt>
+        </trkseg>
+      </trk>
+      <rte>
+        <name>Ogsaa kort</name>
+        <rtept lat="61.0" lon="11.0"></rtept>
+      </rte>
+    </gpx>
+    """
+    let url = writeGPXToTemp(gpx, filename: "test_short_routes.gpx")
+    let routes = try GPXImportService.parseRoutes(from: url)
+
+    #expect(routes.isEmpty)
+}
+
+@Test func gpxImportMixedTrkAndRte() throws {
+    // File with both <trk> and <rte> elements
+    let gpx = """
+    <?xml version="1.0" encoding="UTF-8"?>
+    <gpx version="1.1" creator="Test">
+      <trk>
+        <name>Spor</name>
+        <trkseg>
+          <trkpt lat="60.0" lon="10.0"></trkpt>
+          <trkpt lat="60.1" lon="10.1"></trkpt>
+        </trkseg>
+      </trk>
+      <rte>
+        <name>Rute</name>
+        <rtept lat="61.0" lon="11.0"></rtept>
+        <rtept lat="61.1" lon="11.1"></rtept>
+      </rte>
+    </gpx>
+    """
+    let url = writeGPXToTemp(gpx, filename: "test_mixed_routes.gpx")
+    let routes = try GPXImportService.parseRoutes(from: url)
+
+    #expect(routes.count == 2)
+    #expect(routes[0].name == "Spor")
+    #expect(routes[1].name == "Rute")
 }
 
 // MARK: - GPX Export Waypoints Tests
@@ -1060,6 +1172,41 @@ func kartverketStyleJSON(layer: BaseLayer) {
     let nearCoord = CLLocationCoordinate2D(latitude: 59.9140, longitude: 10.7523)
     await vm.fetchForecast(for: nearCoord)
     // No crash or error means debounce logic works
+}
+
+// MARK: - SwiftData Migration Tests
+
+@Test func migrationPlanConfiguration() {
+    // Verify migration plan has both schema versions in correct order
+    let schemas = TrakkeMigrationPlan.schemas
+    #expect(schemas.count == 2)
+    #expect(String(describing: schemas[0]) == String(describing: SchemaV1.self))
+    #expect(String(describing: schemas[1]) == String(describing: SchemaV2.self))
+
+    // Verify there is exactly one migration stage
+    #expect(TrakkeMigrationPlan.stages.count == 1)
+}
+
+@Test func schemaV1HasRemovedModels() {
+    // SchemaV1 includes the now-removed Project and DownloadedArea models
+    let models = SchemaV1.models
+    #expect(models.count == 4) // Route, Waypoint, Project, DownloadedArea
+}
+
+@Test func schemaV2OnlyHasActiveModels() {
+    // SchemaV2 should only contain Route and Waypoint
+    let models = SchemaV2.models
+    #expect(models.count == 2)
+}
+
+@Test func swiftDataContainerCreation() throws {
+    // Verify a ModelContainer can be created with the current schema
+    let config = ModelConfiguration(isStoredInMemoryOnly: true)
+    let container = try ModelContainer(
+        for: Route.self, Waypoint.self,
+        configurations: config
+    )
+    #expect(container.schema.entities.count >= 2)
 }
 
 // MARK: - Helpers

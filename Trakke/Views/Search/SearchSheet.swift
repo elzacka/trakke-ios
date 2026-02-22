@@ -29,7 +29,7 @@ struct SearchSheet: View {
     private var searchField: some View {
         HStack {
             Image(systemName: "magnifyingglass")
-                .foregroundStyle(Color.Trakke.textSoft)
+                .foregroundStyle(Color.Trakke.textTertiary)
 
             TextField(String(localized: "search.placeholder"), text: Binding(
                 get: { viewModel.query },
@@ -45,7 +45,7 @@ struct SearchSheet: View {
                 } label: {
                     Image(systemName: "xmark.circle.fill")
                         .foregroundStyle(Color.Trakke.brand)
-                        .frame(minWidth: 44, minHeight: 44)
+                        .frame(minWidth: .Trakke.touchMin, minHeight: .Trakke.touchMin)
                         .contentShape(Rectangle())
                 }
                 .accessibilityLabel(String(localized: "search.clear"))
@@ -76,14 +76,14 @@ struct SearchSheet: View {
                 VStack {
                     Spacer()
                     Text(error)
-                        .foregroundStyle(Color.Trakke.textSoft)
+                        .foregroundStyle(Color.Trakke.textTertiary)
                     Spacer()
                 }
             } else if viewModel.results.isEmpty && !viewModel.query.isEmpty && viewModel.query.count >= 2 {
                 VStack {
                     Spacer()
                     Text(String(localized: "search.noResults"))
-                        .foregroundStyle(Color.Trakke.textSoft)
+                        .foregroundStyle(Color.Trakke.textTertiary)
                     Spacer()
                 }
             } else {

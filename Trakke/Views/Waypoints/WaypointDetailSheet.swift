@@ -5,6 +5,7 @@ struct WaypointDetailSheet: View {
     @Bindable var viewModel: WaypointViewModel
     let waypoint: Waypoint
     var onEdit: ((Waypoint) -> Void)?
+    var onNavigate: ((CLLocationCoordinate2D) -> Void)?
     @Environment(\.dismiss) private var dismiss
     @AppStorage("coordinateFormat") private var coordinateFormat: CoordinateFormat = .dd
     @State private var showDeleteConfirmation = false
@@ -46,7 +47,7 @@ struct WaypointDetailSheet: View {
                 if let category = waypoint.category, !category.isEmpty {
                     Text(category)
                         .font(Font.Trakke.caption)
-                        .foregroundStyle(Color.Trakke.textSoft)
+                        .foregroundStyle(Color.Trakke.textTertiary)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -59,8 +60,8 @@ struct WaypointDetailSheet: View {
                         .font(Font.Trakke.bodyRegular)
                     Spacer()
                     Text("\(Int(elevation)) moh.")
-                        .font(.subheadline.monospacedDigit())
-                        .foregroundStyle(Color.Trakke.textSoft)
+                        .font(Font.Trakke.bodyRegular.monospacedDigit())
+                        .foregroundStyle(Color.Trakke.textTertiary)
                 }
                 .padding(.vertical, .Trakke.xs)
             }
@@ -98,15 +99,15 @@ struct WaypointDetailSheet: View {
                 )
                 HStack {
                     Text(formatted.display)
-                        .font(.subheadline.monospacedDigit())
+                        .font(Font.Trakke.bodyRegular.monospacedDigit())
                     Spacer()
                     Button {
                         UIPasteboard.general.string = formatted.copyText
                     } label: {
                         Image(systemName: "doc.on.doc")
-                            .font(.subheadline)
+                            .font(Font.Trakke.bodyRegular)
                             .foregroundStyle(Color.Trakke.brand)
-                            .frame(minWidth: 44, minHeight: 44)
+                            .frame(minWidth: .Trakke.touchMin, minHeight: .Trakke.touchMin)
                             .contentShape(Rectangle())
                     }
                     .accessibilityLabel(String(localized: "common.copy"))
@@ -119,6 +120,20 @@ struct WaypointDetailSheet: View {
 
     private var actionsCard: some View {
         VStack(spacing: .Trakke.sm) {
+            if waypoint.coordinates.count >= 2 {
+                Button {
+                    let coord = CLLocationCoordinate2D(
+                        latitude: waypoint.coordinates[1],
+                        longitude: waypoint.coordinates[0]
+                    )
+                    onNavigate?(coord)
+                } label: {
+                    Label(String(localized: "navigation.navigateHere"), systemImage: "location.north.fill")
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .buttonStyle(.trakkePrimary)
+            }
+
             Button {
                 onEdit?(waypoint)
             } label: {

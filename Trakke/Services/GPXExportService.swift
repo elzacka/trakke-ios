@@ -104,6 +104,10 @@ enum GPXExportService {
         let fileURL = tempDir.appendingPathComponent(filename)
         do {
             try gpxString.write(to: fileURL, atomically: true, encoding: .utf8)
+            try FileManager.default.setAttributes(
+                [.protectionKey: FileProtectionType.complete],
+                ofItemAtPath: fileURL.path
+            )
             return fileURL
         } catch {
             return nil

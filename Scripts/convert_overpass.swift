@@ -69,22 +69,28 @@ let categories: [CategoryConfig] = [
         }
     ),
     CategoryConfig(
-        inputFile: "towers_raw.json",
-        outputFile: "observation_towers.geojson",
-        idPrefix: "tower",
-        defaultName: "Utsiktstårn",
+        inputFile: "viewpoints_raw.json",
+        outputFile: "viewpoints.geojson",
+        idPrefix: "viewpoint",
+        defaultName: "Utsiktspunkt",
         propertyExtractor: { tags in
             var props: [String: String] = [:]
             if let name = tags["name"] { props["name"] = name }
-            if let height = tags["height"] { props["height"] = height }
-            if let op = tags["operator"] { props["operator"] = op }
-            // Determine subtype for display
+            if let ele = tags["ele"] { props["elevation"] = ele }
+            if let dir = tags["direction"] { props["direction"] = dir }
+            if let desc = tags["description"] { props["description"] = desc }
+            // Determine type for towers/hides absorbed into viewpoints
             if tags["leisure"] == "bird_hide" {
-                props["subtype"] = "bird_hide"
+                props["type"] = "bird_hide"
                 if props["name"] == nil { props["name"] = "Fugletårn" }
             } else if tags["tower:type"] == "watchtower" {
-                props["subtype"] = "watchtower"
+                props["type"] = "watchtower"
                 if props["name"] == nil { props["name"] = "Vakttårn" }
+            } else if tags["tower:type"] == "observation" || tags["man_made"] == "tower" {
+                props["type"] = "observation_tower"
+                if props["name"] == nil { props["name"] = "Utsiktstårn" }
+                if let height = tags["height"] { props["height"] = height }
+                if let op = tags["operator"] { props["operator"] = op }
             }
             return props
         }

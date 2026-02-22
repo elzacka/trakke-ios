@@ -25,7 +25,11 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Tråkke bruker posisjonen din for å vise hvor du er på kartet og gi deg relevante værmeldinger.</string>
+	<string>Tråkke bruker posisjonen din for å vise hvor du er på kartet og navigere langs ruter. Under navigering brukes posisjonen i bakgrunnen for å gi deg retningsanvisninger. Posisjonen din brukes også for relevante værmeldinger.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+	</array>
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIColorName</key>

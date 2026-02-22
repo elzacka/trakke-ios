@@ -297,7 +297,7 @@ actor SearchService {
             letter = String(query[letterRange])
         }
 
-        let streetEnd = query.index(numberRange.lowerBound, offsetBy: 0)
+        let streetEnd = numberRange.lowerBound
         let street = String(query[query.startIndex..<streetEnd]).trimmingCharacters(in: .whitespaces)
 
         return (number, letter, street)

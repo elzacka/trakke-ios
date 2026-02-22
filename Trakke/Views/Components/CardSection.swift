@@ -14,7 +14,7 @@ struct CardSection<Content: View>: View {
             if !title.isEmpty {
                 Text(title.uppercased())
                     .font(Font.Trakke.sectionHeader)
-                    .foregroundStyle(Color.Trakke.textSoft)
+                    .foregroundStyle(Color.Trakke.textTertiary)
                     .padding(.horizontal, .Trakke.xs)
                     .padding(.bottom, .Trakke.sm)
             }

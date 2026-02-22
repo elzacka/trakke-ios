@@ -4,9 +4,9 @@ struct SearchResultRow: View {
     let result: SearchResult
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: .Trakke.md) {
             Image(systemName: iconName)
-                .foregroundStyle(Color.Trakke.textSoft)
+                .foregroundStyle(Color.Trakke.textTertiary)
                 .frame(width: 28, height: 28)
 
             VStack(alignment: .leading, spacing: 2) {
@@ -16,8 +16,8 @@ struct SearchResultRow: View {
 
                 if let subtext = result.subtext {
                     Text(subtext)
-                        .font(.caption)
-                        .foregroundStyle(Color.Trakke.textSoft)
+                        .font(Font.Trakke.caption)
+                        .foregroundStyle(Color.Trakke.textTertiary)
                         .lineLimit(1)
                 }
             }

@@ -16,8 +16,20 @@ struct InfoSheet: View {
                         )
                         Divider()
                         dataSourceRow(
+                            name: "Milj\u{00F8}direktoratet",
+                            detail: String(localized: "info.miljodir.detail"),
+                            license: "NLOD 2.0"
+                        )
+                        Divider()
+                        dataSourceRow(
                             name: "MET Norway",
                             detail: String(localized: "info.met.detail"),
+                            license: "CC BY 4.0"
+                        )
+                        Divider()
+                        dataSourceRow(
+                            name: "Yr/NRK",
+                            detail: String(localized: "info.yr.detail"),
                             license: "CC BY 4.0"
                         )
                         Divider()
@@ -28,27 +40,15 @@ struct InfoSheet: View {
                         )
                         Divider()
                         dataSourceRow(
-                            name: "\u{00A9} OpenStreetMap contributors",
-                            detail: String(localized: "info.osm.detail"),
-                            license: "ODbL"
-                        )
-                        Divider()
-                        dataSourceRow(
                             name: "Riksantikvaren",
                             detail: String(localized: "info.ra.detail"),
                             license: "NLOD"
                         )
                         Divider()
                         dataSourceRow(
-                            name: "Milj\u{00F8}direktoratet",
-                            detail: String(localized: "info.miljodir.detail"),
-                            license: "NLOD 2.0"
-                        )
-                        Divider()
-                        dataSourceRow(
-                            name: "Yr/NRK",
-                            detail: String(localized: "info.yr.detail"),
-                            license: "CC BY 4.0"
+                            name: "\u{00A9} OpenStreetMap contributors",
+                            detail: String(localized: "info.osm.detail"),
+                            license: "ODbL"
                         )
                     }
 
@@ -61,6 +61,12 @@ struct InfoSheet: View {
                         )
                         Divider()
                         dataSourceRow(
+                            name: "FOSSGIS / Valhalla",
+                            detail: String(localized: "info.valhalla.detail"),
+                            license: "MIT"
+                        )
+                        Divider()
+                        dataSourceRow(
                             name: "NGA",
                             detail: String(localized: "info.nga.detail"),
                             license: "MIT"
@@ -69,37 +75,37 @@ struct InfoSheet: View {
 
                     // MARK: - Privacy
                     CardSection(String(localized: "info.privacy")) {
-                        VStack(alignment: .leading, spacing: 8) {
+                        VStack(alignment: .leading, spacing: .Trakke.sm) {
                             Text(String(localized: "info.privacy.noTracking"))
                             Text(String(localized: "info.privacy.localData"))
                             Text(String(localized: "info.privacy.euOnly"))
                         }
                         .font(Font.Trakke.caption)
-                        .foregroundStyle(Color.Trakke.textMuted)
-                        .padding(.vertical, 4)
+                        .foregroundStyle(Color.Trakke.textSecondary)
+                        .padding(.vertical, .Trakke.xs)
                     }
 
                     HStack {
                         Link(destination: URL(string: "https://github.com/elzacka/trakke-ios/blob/main/PERSONVERN.md")!) {
-                            HStack(spacing: 4) {
+                            HStack(spacing: .Trakke.xs) {
                                 Text(String(localized: "info.privacy.policy"))
                                 Image(systemName: "arrow.up.right")
-                                    .font(.caption2)
+                                    .font(Font.Trakke.captionSoft)
                             }
                         }
 
                         Link(destination: URL(string: "https://github.com/elzacka/trakke-ios")!) {
-                            HStack(spacing: 4) {
+                            HStack(spacing: .Trakke.xs) {
                                 Text(String(localized: "info.sourceCode"))
                                 Image(systemName: "arrow.up.right")
-                                    .font(.caption2)
+                                    .font(Font.Trakke.captionSoft)
                             }
                         }
 
                         Spacer()
                     }
-                    .font(.caption)
-                    .foregroundStyle(Color.Trakke.textSoft)
+                    .font(Font.Trakke.caption)
+                    .foregroundStyle(Color.Trakke.textTertiary)
 
                     // MARK: - App Info
                     CardSection(String(localized: "info.appInfo")) {
@@ -107,7 +113,7 @@ struct InfoSheet: View {
                             label: String(localized: "info.version"),
                             value: appVersion
                         )
-                        Divider().padding(.leading, 4)
+                        Divider().padding(.leading, .Trakke.dividerLeading)
                         infoRow(
                             label: String(localized: "info.developer"),
                             value: "Tazk"
@@ -141,21 +147,21 @@ struct InfoSheet: View {
         VStack(alignment: .leading, spacing: 2) {
             HStack {
                 Text(name)
-                    .font(.subheadline.weight(.medium))
+                    .font(Font.Trakke.bodyMedium)
                 Spacer()
                 Text(license)
-                    .font(.caption2)
-                    .foregroundStyle(Color.Trakke.textSoft)
+                    .font(Font.Trakke.captionSoft)
+                    .foregroundStyle(Color.Trakke.textTertiary)
                     .padding(.horizontal, 6)
                     .padding(.vertical, 2)
                     .background(Color.Trakke.brandTint)
                     .clipShape(Capsule())
             }
             Text(detail)
-                .font(.caption)
-                .foregroundStyle(Color.Trakke.textSoft)
+                .font(Font.Trakke.caption)
+                .foregroundStyle(Color.Trakke.textTertiary)
         }
-        .padding(.vertical, 6)
+        .padding(.vertical, .Trakke.rowVertical)
     }
 
     // MARK: - Info Row
@@ -163,13 +169,13 @@ struct InfoSheet: View {
     private func infoRow(label: String, value: String) -> some View {
         HStack {
             Text(label)
-                .font(.subheadline)
+                .font(Font.Trakke.bodyRegular)
             Spacer()
             Text(value)
-                .font(.subheadline)
-                .foregroundStyle(Color.Trakke.textSoft)
+                .font(Font.Trakke.bodyRegular)
+                .foregroundStyle(Color.Trakke.textTertiary)
         }
-        .padding(.vertical, 6)
+        .padding(.vertical, .Trakke.rowVertical)
     }
 
     private var appVersion: String {

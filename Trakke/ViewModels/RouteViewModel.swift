@@ -15,18 +15,24 @@ final class RouteViewModel {
     var elevationProfile: [ElevationPoint] = []
     var elevationStats: ElevationStats?
     var isLoadingElevation = false
+    var saveError: String?
 
-    // Route colors
-    static let routeColors = [
-        "#3e4533", "#e74c3c", "#3498db", "#2ecc71",
-        "#f39c12", "#9b59b6", "#1abc9c", "#e67e22",
-    ]
+    static let routeColors = Color.Trakke.routeColors
 
     private var modelContext: ModelContext?
     private let elevationService = ElevationService()
 
     func setModelContext(_ context: ModelContext) {
         modelContext = context
+    }
+
+    private func save(_ operation: String) {
+        do {
+            try modelContext?.save()
+        } catch {
+            logger.error("Failed to save (\(operation)): \(error, privacy: .private)")
+            saveError = String(localized: "error.saveFailed")
+        }
     }
 
     // MARK: - CRUD
@@ -40,14 +46,14 @@ final class RouteViewModel {
     func deleteRoute(_ route: Route) {
         guard let context = modelContext else { return }
         context.delete(route)
-        do { try context.save() } catch { logger.error("Failed to save after deleting route: \(error, privacy: .private)") }
+        save("delete route")
         loadRoutes()
     }
 
     func toggleVisibility(_ route: Route) {
         route.isVisible.toggle()
         route.updatedAt = Date()
-        do { try modelContext?.save() } catch { logger.error("Failed to save route visibility: \(error, privacy: .private)") }
+        save("toggle visibility")
         loadRoutes()
     }
 
@@ -115,7 +121,7 @@ final class RouteViewModel {
         route.color = color ?? Self.routeColors[routes.count % Self.routeColors.count]
 
         context.insert(route)
-        do { try context.save() } catch { logger.error("Failed to save new route: \(error, privacy: .private)") }
+        save("finish drawing")
 
         isDrawing = false
         drawingCoordinates = []
@@ -146,7 +152,7 @@ final class RouteViewModel {
                 route.elevationGain = Double(stats.gain)
                 route.elevationLoss = Double(stats.loss)
                 route.updatedAt = Date()
-                do { try self.modelContext?.save() } catch { logger.error("Failed to save elevation data: \(error, privacy: .private)") }
+                self.save("elevation data")
             } catch {
                 #if DEBUG
                 print("Elevation fetch error: \(error)")

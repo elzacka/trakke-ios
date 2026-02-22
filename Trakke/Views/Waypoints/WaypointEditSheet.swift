@@ -107,7 +107,7 @@ struct WaypointEditSheet: View {
                     } label: {
                         Text(suggestion)
                             .font(Font.Trakke.bodyRegular)
-                            .foregroundStyle(.primary)
+                            .foregroundStyle(Color.Trakke.text)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.vertical, .Trakke.xs)
                     }

@@ -27,7 +27,7 @@ struct RouteSaveSheet: View {
                     Button(String(localized: "common.cancel")) {
                         dismiss()
                     }
-                    .foregroundStyle(Color.Trakke.textSoft)
+                    .foregroundStyle(Color.Trakke.textTertiary)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(String(localized: "common.save")) {
@@ -47,13 +47,13 @@ struct RouteSaveSheet: View {
         CardSection(String(localized: "route.info")) {
             HStack {
                 Image(systemName: "point.topleft.down.to.point.bottomright.curvepath")
-                    .foregroundStyle(Color.Trakke.textSoft)
+                    .foregroundStyle(Color.Trakke.textTertiary)
                 Text(viewModel.formattedDrawingDistance)
-                    .font(.subheadline.monospacedDigit())
+                    .font(Font.Trakke.bodyRegular.monospacedDigit())
                 Spacer()
                 Text(String(localized: "route.pointCount \(viewModel.drawingCoordinates.count)"))
                     .font(Font.Trakke.caption)
-                    .foregroundStyle(Color.Trakke.textSoft)
+                    .foregroundStyle(Color.Trakke.textTertiary)
             }
         }
     }
@@ -63,15 +63,15 @@ struct RouteSaveSheet: View {
     private var detailsCard: some View {
         CardSection(String(localized: "route.details")) {
             TextField(String(localized: "routes.namePlaceholder"), text: $name)
-                .font(.subheadline)
-                .padding(.vertical, 6)
+                .font(Font.Trakke.bodyRegular)
+                .padding(.vertical, .Trakke.rowVertical)
 
             Divider()
 
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: .Trakke.sm) {
                 Text(String(localized: "route.color"))
-                    .font(.subheadline)
-                HStack(spacing: 8) {
+                    .font(Font.Trakke.bodyRegular)
+                HStack(spacing: .Trakke.sm) {
                     ForEach(Array(RouteViewModel.routeColors.enumerated()), id: \.element) { index, color in
                         Circle()
                             .fill(Color(hex: color))
@@ -88,7 +88,7 @@ struct RouteSaveSheet: View {
                     }
                 }
             }
-            .padding(.vertical, 6)
+            .padding(.vertical, .Trakke.rowVertical)
         }
     }
 }

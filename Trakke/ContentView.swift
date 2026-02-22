@@ -11,8 +11,17 @@ struct ContentView: View {
     @State private var offlineViewModel = OfflineViewModel()
     @State private var weatherViewModel = WeatherViewModel()
     @State private var measurementViewModel = MeasurementViewModel()
+    @State private var navigationViewModel = NavigationViewModel()
     @State private var sheets = SheetCoordinator()
     @State private var connectivityMonitor = ConnectivityMonitor()
+    @State private var navigationDestination: CLLocationCoordinate2D?
+    @State private var showLongPressOptions = false
+    @State private var longPressCoordinate: CLLocationCoordinate2D?
+    @State private var navigatingRouteId: String?
+    @State private var showRouteError = false
+    @State private var showStopConfirmation = false
+    @State private var showDbRecoveryAlert = false
+    @Environment(\.scenePhase) private var scenePhase
     @AppStorage("showWeatherWidget") private var showWeatherWidget = false
     @AppStorage("showCompass") private var showCompass = true
     @AppStorage("showZoomControls") private var showZoomControls = false
@@ -33,6 +42,10 @@ struct ContentView: View {
             offlineViewModel.startObserving()
             connectivityMonitor.start()
             syncOverlays()
+            if UserDefaults.standard.bool(forKey: "dbRecoveryOccurred") {
+                UserDefaults.standard.removeObject(forKey: "dbRecoveryOccurred")
+                showDbRecoveryAlert = true
+            }
         }
         .onChange(of: overlayTurrutebasen) { syncOverlays() }
         .onChange(of: overlayNaturskog) { syncOverlays() }
@@ -43,6 +56,19 @@ struct ContentView: View {
         }
         .onChange(of: searchViewModel.query) {
             mapViewModel.searchPinCoordinate = nil
+        }
+        .onChange(of: mapViewModel.locationAuthStatus) {
+            if navigationViewModel.isActive,
+               (mapViewModel.locationAuthStatus == .denied
+                || mapViewModel.locationAuthStatus == .restricted) {
+                stopNavigation()
+            }
+        }
+        .onChange(of: scenePhase) {
+            if scenePhase == .background, navigationViewModel.isActive {
+                // Ensure idle timer is restored if system terminates
+                UIApplication.shared.isIdleTimerDisabled = false
+            }
         }
     }
 
@@ -72,10 +98,10 @@ struct ContentView: View {
     private func handleMapLongPress(_ coordinate: CLLocationCoordinate2D) {
         guard !routeViewModel.isDrawing,
               !measurementViewModel.isActive,
-              !offlineViewModel.isSelectingArea else { return }
-        waypointViewModel.startPlacing(at: coordinate)
-        sheets.editingWaypoint = nil
-        sheets.showWaypointEdit = true
+              !offlineViewModel.isSelectingArea,
+              !navigationViewModel.isActive else { return }
+        longPressCoordinate = coordinate
+        showLongPressOptions = true
     }
 
     // MARK: - Viewport Handler
@@ -98,7 +124,7 @@ struct ContentView: View {
             TrakkeMapView(
                 viewModel: mapViewModel,
                 pois: poiViewModel.pois,
-                routes: routeViewModel.visibleRoutes,
+                routes: routeViewModel.visibleRoutes.filter { $0.id != navigatingRouteId },
                 waypoints: waypointViewModel.visibleWaypoints,
                 drawingCoordinates: routeViewModel.drawingCoordinates,
                 isDrawing: routeViewModel.isDrawing,
@@ -129,7 +155,14 @@ struct ContentView: View {
                 },
                 onSelectionCornerDragged: { index, coord in
                     offlineViewModel.moveSelectionCorner(at: index, to: coord)
-                }
+                },
+                navigationRouteCoordinates: navigationViewModel.routeCoordinates,
+                navigationSegmentIndex: navigationViewModel.snapResult?.segmentIndex ?? 0,
+                isNavigating: navigationViewModel.isActive,
+                navigationCameraMode: navigationViewModel.cameraMode,
+                userHeading: mapViewModel.userHeading,
+                compassDestination: navigationViewModel.destination,
+                navigationMode: navigationViewModel.mode
             )
             .ignoresSafeArea()
 
@@ -156,28 +189,96 @@ struct ContentView: View {
                 onSettingsTapped: { sheets.showPreferences = true },
                 onInfoTapped: { sheets.showInfo = true },
                 enabledOverlays: mapViewModel.enabledOverlays,
-                weatherWidget: showWeatherWidget ? AnyView(
-                    WeatherWidgetView(viewModel: weatherViewModel) {
-                        sheets.showWeatherSheet = true
+                weatherContent: Group {
+                    if showWeatherWidget {
+                        WeatherWidgetView(viewModel: weatherViewModel) {
+                            sheets.showWeatherSheet = true
+                        }
                     }
-                ) : nil,
+                },
                 showCompass: showCompass,
                 showZoomControls: showZoomControls,
                 showScaleBar: showScaleBar,
-                hideMenuAndZoom: routeViewModel.isDrawing || measurementViewModel.isActive || offlineViewModel.isSelectingArea,
+                hideMenuAndZoom: routeViewModel.isDrawing || measurementViewModel.isActive || offlineViewModel.isSelectingArea || navigationViewModel.isActive,
                 isConnected: connectivityMonitor.isConnected
             )
 
+            if navigationViewModel.isActive {
+                NavigationOverlayView(
+                    navigationVM: navigationViewModel,
+                    userHeading: mapViewModel.userHeading,
+                    isConnected: connectivityMonitor.isConnected,
+                    onStop: { showStopConfirmation = true },
+                    onSwitchToCompass: { navigationViewModel.switchToCompass() },
+                    onSwitchToRoute: {
+                        guard let userLoc = mapViewModel.userLocation,
+                              let dest = navigationViewModel.destination else { return }
+                        Task {
+                            let success = await navigationViewModel.startRouteNavigation(
+                                from: userLoc.coordinate, to: dest
+                            )
+                            if !success { stopNavigation(); showRouteError = true }
+                        }
+                    },
+                    onToggleCamera: { navigationViewModel.toggleCameraMode() }
+                )
+                .confirmationDialog(
+                    String(localized: "navigation.stopConfirmTitle"),
+                    isPresented: $showStopConfirmation,
+                    titleVisibility: .visible
+                ) {
+                    Button(String(localized: "navigation.stop"), role: .destructive) {
+                        stopNavigation()
+                    }
+                }
+            }
+
+            if navigationViewModel.isComputingRoute {
+                VStack {
+                    Spacer()
+                    HStack(spacing: 8) {
+                        ProgressView()
+                        Text(String(localized: "navigation.computing"))
+                            .font(Font.Trakke.bodyRegular)
+                    }
+                    .padding(.horizontal, .Trakke.lg)
+                    .padding(.vertical, .Trakke.sm)
+                    .background(.regularMaterial)
+                    .clipShape(Capsule())
+                    .padding(.bottom, .Trakke.lg)
+                }
+                .safeAreaPadding(.bottom)
+            }
+
             if routeViewModel.isDrawing {
-                drawingToolbar
+                DrawingToolbar(
+                    pointCount: routeViewModel.drawingCoordinates.count,
+                    formattedDistance: routeViewModel.formattedDrawingDistance,
+                    onCancel: { routeViewModel.cancelDrawing() },
+                    onUndo: { routeViewModel.undoLastPoint() },
+                    onDone: { sheets.showRouteSave = true }
+                )
             }
 
             if measurementViewModel.isActive {
-                measurementToolbar
+                MeasurementToolbar(
+                    mode: measurementViewModel.mode ?? .distance,
+                    formattedResult: measurementViewModel.formattedResult,
+                    hasPoints: !measurementViewModel.points.isEmpty,
+                    onCancel: { measurementViewModel.stop() },
+                    onUndo: { measurementViewModel.undoLastPoint() },
+                    onClear: { measurementViewModel.clearAll() }
+                )
             }
 
             if offlineViewModel.isSelectingArea {
-                selectionToolbar
+                SelectionToolbar(
+                    hasValidSelection: offlineViewModel.hasValidSelection,
+                    estimatedTileCount: offlineViewModel.estimatedTileCount,
+                    estimatedSize: offlineViewModel.estimatedSize,
+                    onCancel: { offlineViewModel.cancelSelection() },
+                    onDone: { sheets.showDownloadArea = true }
+                )
             }
 
             if mapViewModel.showLocationPrimer {
@@ -208,8 +309,15 @@ struct ContentView: View {
         }
         .sheet(isPresented: $sheets.showPOIDetail) {
             if let poi = poiViewModel.selectedPOI {
-                POIDetailSheet(poi: poi)
-                    .presentationDetents([.medium])
+                POIDetailSheet(
+                    poi: poi,
+                    onNavigate: { coordinate in
+                        sheets.showPOIDetail = false
+                        navigationDestination = coordinate
+                        sheets.showNavigationStart = true
+                    }
+                )
+                .presentationDetents([.medium, .large])
             }
         }
         .sheet(isPresented: $sheets.showRouteList) {
@@ -227,8 +335,15 @@ struct ContentView: View {
         }
         .sheet(isPresented: $sheets.showRouteDetail) {
             if let route = routeViewModel.selectedRoute {
-                RouteDetailSheet(viewModel: routeViewModel, route: route)
-                    .presentationDetents([.medium, .large])
+                RouteDetailSheet(
+                    viewModel: routeViewModel,
+                    route: route,
+                    onNavigate: { route in
+                        sheets.showRouteDetail = false
+                        startFollowingRoute(route)
+                    }
+                )
+                .presentationDetents([.medium, .large])
             }
         }
         .sheet(isPresented: $sheets.showOfflineManager) {
@@ -285,9 +400,14 @@ struct ContentView: View {
                         sheets.showWaypointDetail = false
                         sheets.editingWaypoint = waypoint
                         sheets.showWaypointEdit = true
+                    },
+                    onNavigate: { coordinate in
+                        sheets.showWaypointDetail = false
+                        navigationDestination = coordinate
+                        sheets.showNavigationStart = true
                     }
                 )
-                .presentationDetents([.medium])
+                .presentationDetents([.medium, .large])
             }
         }
         .sheet(isPresented: $sheets.showWaypointEdit) {
@@ -301,206 +421,121 @@ struct ContentView: View {
             RouteSaveSheet(viewModel: routeViewModel)
                 .presentationDetents([.medium])
         }
-    }
-
-    // MARK: - Drawing Toolbar
-
-    private var drawingToolbar: some View {
-        VStack {
-            Spacer()
-
-            VStack(spacing: 8) {
-                if routeViewModel.drawingCoordinates.count >= 2 {
-                    HStack(spacing: 6) {
-                        Image(systemName: "point.topleft.down.to.point.bottomright.curvepath")
-                            .font(.caption)
-                        Text(routeViewModel.formattedDrawingDistance)
-                            .font(.title3.monospacedDigit().bold())
-                            .foregroundStyle(Color.Trakke.brand)
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 8)
-                    .background(.regularMaterial)
-                    .clipShape(Capsule())
-                } else {
-                    Text(String(localized: "route.drawingHint"))
-                        .font(.subheadline)
-                        .foregroundStyle(Color.Trakke.textSoft)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 8)
-                        .background(.regularMaterial)
-                        .clipShape(Capsule())
-                }
-
-                HStack(spacing: 16) {
-                    Button(role: .destructive) {
-                        routeViewModel.cancelDrawing()
-                    } label: {
-                        Label(String(localized: "common.cancel"), systemImage: "xmark")
-                            .foregroundStyle(Color.Trakke.red)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 10)
-                            .background(.regularMaterial)
-                            .clipShape(Capsule())
-                    }
-
-                    Button {
-                        routeViewModel.undoLastPoint()
-                    } label: {
-                        Label(String(localized: "route.undo"), systemImage: "arrow.uturn.backward")
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 10)
-                            .background(.regularMaterial)
-                            .clipShape(Capsule())
-                    }
-                    .disabled(routeViewModel.drawingCoordinates.isEmpty)
-
-                    Button {
-                        sheets.showRouteSave = true
-                    } label: {
-                        Label(String(localized: "common.done"), systemImage: "checkmark")
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 10)
-                            .background(Color.Trakke.brand)
-                            .foregroundStyle(.white)
-                            .clipShape(Capsule())
-                    }
-                    .disabled(routeViewModel.drawingCoordinates.count < 2)
+        .sheet(isPresented: $sheets.showNavigationStart) {
+            if let dest = navigationDestination {
+                NavigationStartSheet(
+                    destination: dest,
+                    userLocation: mapViewModel.userLocation,
+                    isConnected: connectivityMonitor.isConnected,
+                    onRouteNavigation: { startRouteNavigation(to: dest) },
+                    onCompassNavigation: { startCompassNavigation(to: dest) }
+                )
+                .presentationDetents([.medium])
+            }
+        }
+        .alert(
+            String(localized: "navigation.routeErrorTitle"),
+            isPresented: $showRouteError
+        ) {
+            Button(String(localized: "common.ok")) {}
+        } message: {
+            Text(navigationViewModel.routeError ?? String(localized: "navigation.routeErrorGeneric"))
+        }
+        .alert(
+            String(localized: "settings.dbRecovery.title"),
+            isPresented: $showDbRecoveryAlert
+        ) {
+            Button(String(localized: "common.ok")) {}
+        } message: {
+            Text(String(localized: "settings.dbRecovery.message"))
+        }
+        .alert(
+            String(localized: "error.saveFailed"),
+            isPresented: Binding(
+                get: { routeViewModel.saveError != nil || waypointViewModel.saveError != nil },
+                set: { if !$0 { routeViewModel.saveError = nil; waypointViewModel.saveError = nil } }
+            )
+        ) {
+            Button(String(localized: "common.ok")) {}
+        }
+        .confirmationDialog(
+            String(localized: "map.longPressTitle"),
+            isPresented: $showLongPressOptions,
+            titleVisibility: .visible
+        ) {
+            Button(String(localized: "waypoints.addWaypoint")) {
+                if let coord = longPressCoordinate {
+                    waypointViewModel.startPlacing(at: coord)
+                    sheets.editingWaypoint = nil
+                    sheets.showWaypointEdit = true
                 }
             }
-            .padding(.bottom, 16)
-        }
-        .safeAreaPadding(.bottom)
-    }
-
-    // MARK: - Measurement Toolbar
-
-    private var measurementToolbar: some View {
-        VStack {
-            Spacer()
-
-            VStack(spacing: 8) {
-                if let result = measurementViewModel.formattedResult {
-                    VStack(spacing: 2) {
-                        Text(measurementViewModel.mode == .distance
-                             ? String(localized: "measurement.distance")
-                             : String(localized: "measurement.area"))
-                            .font(.caption)
-                            .foregroundStyle(Color.Trakke.textSoft)
-                        Text(result)
-                            .font(.title3.monospacedDigit().bold())
-                            .foregroundStyle(Color.Trakke.brand)
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 8)
-                    .background(.regularMaterial)
-                    .clipShape(Capsule())
-                } else {
-                    Text(measurementViewModel.mode == .distance
-                         ? String(localized: "measurement.distanceHint")
-                         : String(localized: "measurement.areaHint"))
-                        .font(.subheadline)
-                        .foregroundStyle(Color.Trakke.textSoft)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 8)
-                        .background(.regularMaterial)
-                        .clipShape(Capsule())
-                }
-
-                HStack(spacing: 16) {
-                    Button(role: .destructive) {
-                        measurementViewModel.stop()
-                    } label: {
-                        Label(String(localized: "common.cancel"), systemImage: "xmark")
-                            .foregroundStyle(Color.Trakke.red)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 10)
-                            .background(.regularMaterial)
-                            .clipShape(Capsule())
-                    }
-
-                    Button {
-                        measurementViewModel.undoLastPoint()
-                    } label: {
-                        Label(String(localized: "route.undo"), systemImage: "arrow.uturn.backward")
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 10)
-                            .background(.regularMaterial)
-                            .clipShape(Capsule())
-                    }
-                    .disabled(measurementViewModel.points.isEmpty)
-
-                    Button {
-                        measurementViewModel.clearAll()
-                    } label: {
-                        Label(String(localized: "measurement.clear"), systemImage: "trash")
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 10)
-                            .background(.regularMaterial)
-                            .clipShape(Capsule())
-                    }
-                    .disabled(measurementViewModel.points.isEmpty)
+            Button(String(localized: "navigation.navigateHere")) {
+                if let coord = longPressCoordinate {
+                    navigationDestination = coord
+                    sheets.showNavigationStart = true
                 }
             }
-            .padding(.bottom, 16)
         }
-        .safeAreaPadding(.bottom)
     }
 
-    // MARK: - Selection Toolbar
+    // MARK: - Navigation
 
-    private var selectionToolbar: some View {
-        VStack {
-            Spacer()
-
-            VStack(spacing: 8) {
-                if offlineViewModel.hasValidSelection {
-                    let count = offlineViewModel.estimatedTileCount
-                    HStack(spacing: 6) {
-                        Image(systemName: "square.grid.3x3")
-                            .font(.caption)
-                        Text(String(localized: "offline.tiles \(count)"))
-                            .font(.subheadline.monospacedDigit())
-                        Text("(\(offlineViewModel.estimatedSize))")
-                            .font(.caption)
-                            .foregroundStyle(Color.Trakke.textSoft)
-                    }
-                    .foregroundStyle(count > 20_000 ? Color.Trakke.red : .primary)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 8)
-                    .background(.regularMaterial)
-                    .clipShape(Capsule())
-                }
-
-                HStack(spacing: 16) {
-                    Button(role: .destructive) {
-                        offlineViewModel.cancelSelection()
-                    } label: {
-                        Label(String(localized: "common.cancel"), systemImage: "xmark")
-                            .foregroundStyle(Color.Trakke.red)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 10)
-                            .background(.regularMaterial)
-                            .clipShape(Capsule())
-                    }
-
-                    Button {
-                        sheets.showDownloadArea = true
-                    } label: {
-                        Label(String(localized: "common.done"), systemImage: "checkmark")
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 10)
-                            .background(Color.Trakke.brand)
-                            .foregroundStyle(.white)
-                            .clipShape(Capsule())
-                    }
-                    .disabled(!offlineViewModel.hasValidSelection)
-                }
+    private func startRouteNavigation(to destination: CLLocationCoordinate2D) {
+        guard let userLocation = mapViewModel.userLocation else { return }
+        mapViewModel.startNavigation()
+        mapViewModel.onLocationUpdate = { [weak navigationViewModel] location in
+            Task { @MainActor in
+                await navigationViewModel?.processLocationUpdate(location)
             }
-            .padding(.bottom, 16)
         }
-        .safeAreaPadding(.bottom)
+        Task {
+            let success = await navigationViewModel.startRouteNavigation(
+                from: userLocation.coordinate, to: destination
+            )
+            if success {
+                UIApplication.shared.isIdleTimerDisabled = true
+            } else {
+                // Route computation failed -- clean up half-started state
+                mapViewModel.stopNavigation()
+                showRouteError = true
+            }
+        }
     }
+
+    private func startCompassNavigation(to destination: CLLocationCoordinate2D) {
+        mapViewModel.startNavigation()
+        mapViewModel.onLocationUpdate = { [weak navigationViewModel] location in
+            Task { @MainActor in
+                await navigationViewModel?.processLocationUpdate(location)
+            }
+        }
+        navigationViewModel.startCompassNavigation(to: destination)
+        UIApplication.shared.isIdleTimerDisabled = true
+    }
+
+    private func startFollowingRoute(_ route: Route) {
+        navigatingRouteId = route.id
+        mapViewModel.startNavigation()
+        mapViewModel.onLocationUpdate = { [weak navigationViewModel] location in
+            Task { @MainActor in
+                await navigationViewModel?.processLocationUpdate(location)
+            }
+        }
+        navigationViewModel.startFollowingRoute(
+            route: route,
+            elevationProfile: routeViewModel.elevationProfile
+        )
+        UIApplication.shared.isIdleTimerDisabled = true
+    }
+
+    private func stopNavigation() {
+        navigationViewModel.stopNavigation()
+        mapViewModel.stopNavigation()
+        navigatingRouteId = nil
+        UIApplication.shared.isIdleTimerDisabled = false
+    }
+
 
 }
 

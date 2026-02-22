@@ -27,7 +27,7 @@ struct DownloadAreaSheet: View {
                         viewModel.cancelSelection()
                         dismiss()
                     }
-                    .foregroundStyle(Color.Trakke.textSoft)
+                    .foregroundStyle(Color.Trakke.textTertiary)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(String(localized: "offline.startDownload")) {
@@ -57,25 +57,25 @@ struct DownloadAreaSheet: View {
                     Image(systemName: "checkmark.circle.fill")
                         .foregroundStyle(Color.Trakke.brand)
                     Text(String(localized: "offline.areaSelected"))
-                        .font(.subheadline)
+                        .font(Font.Trakke.bodyRegular)
                 } else if viewModel.selectionCorner1 != nil {
                     Image(systemName: "hand.tap")
-                        .foregroundStyle(.orange)
+                        .foregroundStyle(Color.Trakke.warning)
                     Text(String(localized: "offline.tapSecondCorner"))
-                        .font(.subheadline)
+                        .font(Font.Trakke.bodyRegular)
                 } else {
                     Image(systemName: "hand.tap")
-                        .foregroundStyle(Color.Trakke.textSoft)
+                        .foregroundStyle(Color.Trakke.textTertiary)
                     Text(String(localized: "offline.tapFirstCorner"))
-                        .font(.subheadline)
+                        .font(Font.Trakke.bodyRegular)
                 }
                 Spacer()
             }
 
             Text(String(localized: "offline.selectAreaHint"))
-                .font(.caption)
-                .foregroundStyle(Color.Trakke.textSoft)
-                .padding(.top, 4)
+                .font(Font.Trakke.caption)
+                .foregroundStyle(Color.Trakke.textTertiary)
+                .padding(.top, .Trakke.xs)
         }
     }
 
@@ -85,14 +85,14 @@ struct DownloadAreaSheet: View {
         CardSection(String(localized: "offline.configuration")) {
             VStack(spacing: 0) {
                 TextField(String(localized: "offline.areaName"), text: $viewModel.downloadName)
-                    .font(.subheadline)
-                    .padding(.vertical, 6)
+                    .font(Font.Trakke.bodyRegular)
+                    .padding(.vertical, .Trakke.rowVertical)
 
                 Divider()
 
                 HStack {
                     Text(String(localized: "settings.baseLayer"))
-                        .font(.subheadline)
+                        .font(Font.Trakke.bodyRegular)
                     Spacer()
                     Picker(String(localized: "settings.baseLayer"), selection: $viewModel.downloadLayer) {
                         ForEach(BaseLayer.allCases) { layer in
@@ -102,29 +102,29 @@ struct DownloadAreaSheet: View {
                     .labelsHidden()
                     .pickerStyle(.menu)
                 }
-                .padding(.vertical, 6)
+                .padding(.vertical, .Trakke.rowVertical)
 
                 Divider()
 
                 HStack {
                     Text(String(localized: "offline.zoomRange"))
-                        .font(.subheadline)
+                        .font(Font.Trakke.bodyRegular)
                     Spacer()
                     Stepper("\(viewModel.downloadMinZoom)", value: $viewModel.downloadMinZoom, in: 3...viewModel.downloadMaxZoom)
                         .fixedSize()
                 }
-                .padding(.vertical, 4)
+                .padding(.vertical, .Trakke.xs)
 
                 Divider()
 
                 HStack {
                     Text(String(localized: "offline.zoomMax"))
-                        .font(.subheadline)
+                        .font(Font.Trakke.bodyRegular)
                     Spacer()
                     Stepper("\(viewModel.downloadMaxZoom)", value: $viewModel.downloadMaxZoom, in: viewModel.downloadMinZoom...18)
                         .fixedSize()
                 }
-                .padding(.vertical, 4)
+                .padding(.vertical, .Trakke.xs)
             }
         }
     }
@@ -136,37 +136,37 @@ struct DownloadAreaSheet: View {
             VStack(spacing: 0) {
                 HStack {
                     Text(String(localized: "offline.tileCount"))
-                        .font(.subheadline)
+                        .font(Font.Trakke.bodyRegular)
                     Spacer()
                     Text("\(viewModel.estimatedTileCount)")
-                        .font(.subheadline.monospacedDigit())
+                        .font(Font.Trakke.bodyRegular.monospacedDigit())
                         .foregroundStyle(viewModel.estimatedTileCount > 20_000 ? Color.Trakke.red : .primary)
                 }
-                .padding(.vertical, 4)
+                .padding(.vertical, .Trakke.xs)
 
                 Divider()
 
                 HStack {
                     Text(String(localized: "offline.estimatedSize"))
-                        .font(.subheadline)
+                        .font(Font.Trakke.bodyRegular)
                     Spacer()
                     Text(viewModel.estimatedSize)
-                        .font(.subheadline.monospacedDigit())
+                        .font(Font.Trakke.bodyRegular.monospacedDigit())
                 }
-                .padding(.vertical, 4)
+                .padding(.vertical, .Trakke.xs)
 
                 if viewModel.estimatedTileCount > 20_000 {
                     Divider()
                     Label(String(localized: "offline.tooManyTiles"), systemImage: "exclamationmark.triangle.fill")
-                        .font(.caption)
+                        .font(Font.Trakke.caption)
                         .foregroundStyle(Color.Trakke.red)
-                        .padding(.vertical, 4)
+                        .padding(.vertical, .Trakke.xs)
                 } else if viewModel.estimatedTileCount > 1_000 {
                     Divider()
                     Label(String(localized: "offline.largeDownload"), systemImage: "info.circle")
-                        .font(.caption)
-                        .foregroundStyle(.orange)
-                        .padding(.vertical, 4)
+                        .font(Font.Trakke.caption)
+                        .foregroundStyle(Color.Trakke.warning)
+                        .padding(.vertical, .Trakke.xs)
                 }
             }
         }
