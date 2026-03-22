@@ -99,46 +99,72 @@ actor POIService {
 
     // MARK: - Riksantikvaren (GeoJSON)
 
+    /// The Riksantikvaren API truncates responses at ~328 KB, producing invalid JSON
+    /// when too many features are returned. We fetch in pages of 100 (the safe maximum)
+    /// up to a maximum of 3 pages to balance coverage with network efficiency.
+    private static let kulturminnerPageSize = 100
+    private static let kulturminnerMaxPages = 3
+
     private func fetchKulturminner(bounds: ViewportBounds) async throws -> [POI] {
-        guard var components = URLComponents(string: "https://api.ra.no/brukerminner/collections/brukerminner/items") else {
-            return []
-        }
-        components.queryItems = [
-            URLQueryItem(name: "f", value: "json"),
-            URLQueryItem(name: "bbox", value: "\(bounds.west),\(bounds.south),\(bounds.east),\(bounds.north)"),
-            URLQueryItem(name: "limit", value: "1000"),
-        ]
+        var allPOIs: [POI] = []
+        var offset = 0
+        var hasMore = true
 
-        guard let url = components.url else { return [] }
-        let data = try await APIClient.fetchData(
-            url: url,
-            timeout: Self.poiFetchTimeout,
-            additionalHeaders: ["Accept": "application/geo+json"]
-        )
-        let response = try JSONDecoder().decode(KulturminnerResponse.self, from: data)
-        return response.features.compactMap { feature -> POI? in
-            guard feature.geometry.type == "Point",
-                  feature.geometry.coordinates.count >= 2 else { return nil }
+        for page in 0..<Self.kulturminnerMaxPages {
+            guard hasMore else { break }
+            if page > 0 {
+                try Task.checkCancellation()
+            }
 
-            let lon = feature.geometry.coordinates[0]
-            let lat = feature.geometry.coordinates[1]
+            guard var components = URLComponents(string: "https://api.ra.no/brukerminner/collections/brukerminner/items") else {
+                return allPOIs
+            }
+            components.queryItems = [
+                URLQueryItem(name: "f", value: "json"),
+                URLQueryItem(name: "bbox", value: "\(bounds.west),\(bounds.south),\(bounds.east),\(bounds.north)"),
+                URLQueryItem(name: "limit", value: "\(Self.kulturminnerPageSize)"),
+                URLQueryItem(name: "offset", value: "\(offset)"),
+            ]
 
-            let name = feature.properties.tittel ?? String(localized: "poi.kulturminner")
-
-            var details: [String: String] = [:]
-            if let desc = feature.properties.beskrivelse { details["description"] = desc }
-            if let kommune = feature.properties.kommune { details["municipality"] = kommune }
-            if let fylke = feature.properties.fylke { details["county"] = fylke }
-            if let link = feature.properties.linkkulturminnesok { details["link"] = link }
-
-            return POI(
-                id: feature.id ?? "kulturminner-\(lat)-\(lon)",
-                category: .kulturminner,
-                name: name,
-                coordinate: CLLocationCoordinate2D(latitude: lat, longitude: lon),
-                details: details
+            guard let url = components.url else { return allPOIs }
+            let data = try await APIClient.fetchData(
+                url: url,
+                timeout: Self.poiFetchTimeout,
+                additionalHeaders: ["Accept": "application/geo+json"]
             )
+            let response = try JSONDecoder().decode(KulturminnerResponse.self, from: data)
+            let pois = response.features.compactMap { feature -> POI? in
+                guard feature.geometry.type == "Point",
+                      feature.geometry.coordinates.count >= 2 else { return nil }
+
+                let lon = feature.geometry.coordinates[0]
+                let lat = feature.geometry.coordinates[1]
+
+                let name = feature.properties.tittel ?? String(localized: "poi.kulturminner")
+
+                var details: [String: String] = [:]
+                if let desc = feature.properties.beskrivelse { details["description"] = desc }
+                if let kommune = feature.properties.kommune { details["municipality"] = kommune }
+                if let fylke = feature.properties.fylke { details["county"] = fylke }
+                if let link = feature.properties.linkkulturminnesok { details["link"] = link }
+
+                return POI(
+                    id: feature.id ?? "kulturminner-\(lat)-\(lon)",
+                    category: .kulturminner,
+                    name: name,
+                    coordinate: CLLocationCoordinate2D(latitude: lat, longitude: lon),
+                    details: details
+                )
+            }
+
+            allPOIs.append(contentsOf: pois)
+            offset += Self.kulturminnerPageSize
+
+            // Stop if this page returned fewer items than requested (last page)
+            hasMore = pois.count >= Self.kulturminnerPageSize
         }
+
+        return allPOIs
     }
 
     // MARK: - Cache Management

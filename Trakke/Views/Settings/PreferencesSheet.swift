@@ -10,6 +10,8 @@ struct PreferencesSheet: View {
     @AppStorage("showScaleBar") private var showScaleBar = false
     @AppStorage("enableRotation") private var enableRotation = true
     @AppStorage("overlayTurrutebasen") private var overlayTurrutebasen = false
+    @AppStorage("overlayHillshading") private var overlayHillshading = false
+    @AppStorage("overlayNaturvernomrader") private var overlayNaturvernomrader = false
     @AppStorage("overlayNaturskog") private var overlayNaturskog = false
     @AppStorage("naturskogLayerType") private var naturskogLayerType = OverlayLayer.naturskogSannsynlighet.rawValue
     @Environment(\.dismiss) private var dismiss
@@ -35,9 +37,37 @@ struct PreferencesSheet: View {
                     // MARK: - Overlay Layers
                     CardSection(String(localized: "settings.overlays")) {
                         VStack(spacing: 0) {
+                            // Terrain overlays
+                            Text(String(localized: "settings.overlays.terrain"))
+                                .font(Font.Trakke.caption)
+                                .foregroundStyle(Color.Trakke.textTertiary)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.bottom, .Trakke.xs)
+
+                            settingsToggle(
+                                label: OverlayLayer.hillshading.displayName,
+                                isOn: $overlayHillshading
+                            )
+
+                            Divider()
+                                .padding(.top, .Trakke.md)
+
+                            // Nature and travel overlays
+                            Text(String(localized: "settings.overlays.nature"))
+                                .font(Font.Trakke.caption)
+                                .foregroundStyle(Color.Trakke.textTertiary)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.top, .Trakke.md)
+                                .padding(.bottom, .Trakke.xs)
+
                             settingsToggle(
                                 label: OverlayLayer.turrutebasen.displayName,
                                 isOn: $overlayTurrutebasen
+                            )
+                            Divider()
+                            settingsToggle(
+                                label: OverlayLayer.naturvernomrader.displayName,
+                                isOn: $overlayNaturvernomrader
                             )
                             Divider()
                             settingsToggle(
@@ -150,6 +180,8 @@ struct PreferencesSheet: View {
                             showScaleBar = false
                             enableRotation = true
                             overlayTurrutebasen = false
+                            overlayHillshading = false
+                            overlayNaturvernomrader = false
                             overlayNaturskog = false
                             naturskogLayerType = OverlayLayer.naturskogSannsynlighet.rawValue
                             mapViewModel.baseLayer = .topo
@@ -219,6 +251,8 @@ struct PreferencesSheet: View {
         showScaleBar = false
         enableRotation = true
         overlayTurrutebasen = false
+        overlayHillshading = false
+        overlayNaturvernomrader = false
         overlayNaturskog = false
         naturskogLayerType = OverlayLayer.naturskogSannsynlighet.rawValue
         mapViewModel.baseLayer = .topo

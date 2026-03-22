@@ -19,6 +19,7 @@ extension Color {
     enum Trakke {
         // MARK: Brand
         static let brand = Color(hex: "3e4533")
+        static let brandDark = Color(hex: "2e3326")
         static let brandTint = Color(hex: "e9ece6")
 
         // MARK: Neutrals

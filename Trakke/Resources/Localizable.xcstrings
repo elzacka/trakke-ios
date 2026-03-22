@@ -248,7 +248,62 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Høydeprofil ikke tilgjengelig"
+            "value" : "H\u00f8ydeprofil ikke tilgjengelig"
+          }
+        }
+      }
+    },
+    "emergency.coordinates.accuracy %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "N\u00f8yaktighet: ca. %lld meter"
+          }
+        }
+      }
+    },
+    "emergency.coordinates.decimal" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desimalgrader"
+          }
+        }
+      }
+    },
+    "emergency.coordinates.instruction" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oppgi disse koordinatene til n\u00f8detaten n\u00e5r du ringer 112 eller 113. UTM-koordinater samsvarer med Kartverkets papirkart (1:50 000)."
+          }
+        }
+      }
+    },
+    "emergency.coordinates.noPosition" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingen GPS-posisjon tilgjengelig. S\u00f8rg for at posisjonstjenester er aktivert."
+          }
+        }
+      }
+    },
+    "emergency.coordinates.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "N\u00f8dkoordinat"
           }
         }
       }
@@ -380,7 +435,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Værvarsel og værdata"
+            "value" : "Vær"
           }
         }
       }
@@ -391,7 +446,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Naturskog-kartlag (WMS)"
+            "value" : "Naturskog"
           }
         }
       }
@@ -479,7 +534,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kulturminner (OGC API-Features)"
+            "value" : "Kulturminner"
           }
         }
       }
@@ -501,7 +556,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ruteberegning for turstier (FOSSGIS e.V.)"
+            "value" : "Ruteberegning for turstier"
           }
         }
       }
@@ -638,6 +693,28 @@
         }
       }
     },
+    "map.layer.toporaster" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turkart"
+          }
+        }
+      }
+    },
+    "map.overlay.hillshading" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fjellskygge"
+          }
+        }
+      }
+    },
     "map.overlay.naturskog" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -678,6 +755,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Naturskogssannsynlighet"
+          }
+        }
+      }
+    },
+    "map.overlay.naturvernomrader" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naturvernomr\u00e5der"
           }
         }
       }
@@ -1819,6 +1907,28 @@
         }
       }
     },
+    "settings.overlays.nature" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Natur og ferdsel"
+          }
+        }
+      }
+    },
+    "settings.overlays.terrain" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terreng"
+          }
+        }
+      }
+    },
     "settings.dbRecovery.message" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1947,6 +2057,83 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Innstillinger"
+          }
+        }
+      }
+    },
+    "sos.activate" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktiver SOS"
+          }
+        }
+      }
+    },
+    "sos.audio" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lydsignal"
+          }
+        }
+      }
+    },
+    "sos.callReminder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kombiner med \u00e5 ringe 112 hvis mulig. SOS-signalet er et supplement, ikke en erstatning for \u00e5 ringe n\u00f8detaten."
+          }
+        }
+      }
+    },
+    "sos.menu" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "N\u00f8dsignal"
+          }
+        }
+      }
+    },
+    "sos.description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sender internasjonalt n\u00f8dsignal (morse SOS) med lommelykten. Signalet fortsetter ogs\u00e5 n\u00e5r skjermen sl\u00e5s av."
+          }
+        }
+      }
+    },
+    "sos.signalActive" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SOS-signal aktivt"
+          }
+        }
+      }
+    },
+    "sos.stop" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stopp"
           }
         }
       }
