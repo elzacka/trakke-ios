@@ -22,6 +22,8 @@ final class SheetCoordinator {
     var showPreferences = false
     var showInfo = false
     var showNavigationStart = false
+    var showEmergencyCoordinates = false
+    var showSOS = false
 
     func dismissAll() {
         showSearchSheet = false
@@ -41,5 +43,7 @@ final class SheetCoordinator {
         showPreferences = false
         showInfo = false
         showNavigationStart = false
+        showEmergencyCoordinates = false
+        showSOS = false
     }
 }

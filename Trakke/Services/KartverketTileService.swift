@@ -3,6 +3,7 @@ import Foundation
 enum BaseLayer: String, CaseIterable, Identifiable, Sendable {
     case topo
     case grayscale
+    case toporaster
 
     var id: String { rawValue }
 
@@ -10,6 +11,7 @@ enum BaseLayer: String, CaseIterable, Identifiable, Sendable {
         switch self {
         case .topo: return String(localized: "map.layer.topo")
         case .grayscale: return String(localized: "map.layer.grayscale")
+        case .toporaster: return String(localized: "map.layer.toporaster")
         }
     }
 
@@ -19,6 +21,8 @@ enum BaseLayer: String, CaseIterable, Identifiable, Sendable {
             return "https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png"
         case .grayscale:
             return "https://cache.kartverket.no/v1/wmts/1.0.0/topograatone/default/webmercator/{z}/{y}/{x}.png"
+        case .toporaster:
+            return "https://cache.kartverket.no/v1/wmts/1.0.0/toporaster/default/webmercator/{z}/{y}/{x}.png"
         }
     }
 
@@ -33,6 +37,8 @@ enum BaseLayer: String, CaseIterable, Identifiable, Sendable {
 
 enum OverlayLayer: String, CaseIterable, Identifiable, Sendable {
     case turrutebasen
+    case hillshading
+    case naturvernomrader
     case naturskogFoer1940
     case naturskogSannsynlighet
     case naturskogNaerhet
@@ -50,6 +56,8 @@ enum OverlayLayer: String, CaseIterable, Identifiable, Sendable {
     var displayName: String {
         switch self {
         case .turrutebasen: return String(localized: "map.overlay.turrutebasen")
+        case .hillshading: return String(localized: "map.overlay.hillshading")
+        case .naturvernomrader: return String(localized: "map.overlay.naturvernomrader")
         case .naturskogFoer1940: return String(localized: "map.overlay.naturskog.foer1940")
         case .naturskogSannsynlighet: return String(localized: "map.overlay.naturskog.sannsynlighet")
         case .naturskogNaerhet: return String(localized: "map.overlay.naturskog.naerhet")
@@ -76,12 +84,43 @@ enum OverlayLayer: String, CaseIterable, Identifiable, Sendable {
         }
     }
 
+    /// Minimum zoom level for the overlay source.
+    var minZoom: Int {
+        switch self {
+        case .turrutebasen: return 5
+        case .hillshading: return 3
+        case .naturvernomrader: return 6
+        case .naturskogFoer1940, .naturskogSannsynlighet, .naturskogNaerhet: return 8
+        }
+    }
+
+    /// Raster opacity — hillshading is semi-transparent so the base map shows through.
+    var opacity: Double {
+        switch self {
+        case .hillshading: return 0.5
+        case .naturvernomrader: return 0.5
+        default: return 0.7
+        }
+    }
+
     var tileURL: String {
         switch self {
         case .turrutebasen:
             return "https://wms.geonorge.no/skwms1/wms.friluftsruter2"
                 + "?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap"
                 + "&LAYERS=Fotrute&STYLES=default&SRS=EPSG:3857"
+                + "&BBOX={bbox-epsg-3857}&WIDTH=256&HEIGHT=256"
+                + "&FORMAT=image/png&TRANSPARENT=true"
+        case .hillshading:
+            return "https://wms.geonorge.no/skwms1/wms.fjellskygge"
+                + "?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap"
+                + "&LAYERS=fjellskygge&STYLES=default&SRS=EPSG:3857"
+                + "&BBOX={bbox-epsg-3857}&WIDTH=256&HEIGHT=256"
+                + "&FORMAT=image/png&TRANSPARENT=true"
+        case .naturvernomrader:
+            return "https://kart.miljodirektoratet.no/arcgis/services/vern/mapserver/WMSServer"
+                + "?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap"
+                + "&LAYERS=naturvern_omrade&STYLES=&SRS=EPSG:3857"
                 + "&BBOX={bbox-epsg-3857}&WIDTH=256&HEIGHT=256"
                 + "&FORMAT=image/png&TRANSPARENT=true"
         case .naturskogFoer1940, .naturskogSannsynlighet, .naturskogNaerhet:
@@ -94,8 +133,9 @@ enum OverlayLayer: String, CaseIterable, Identifiable, Sendable {
 
     var attribution: String {
         switch self {
-        case .turrutebasen: return "\u{00A9} Kartverket"
-        case .naturskogFoer1940, .naturskogSannsynlighet, .naturskogNaerhet:
+        case .turrutebasen, .hillshading: return "\u{00A9} Kartverket"
+        case .naturvernomrader,
+             .naturskogFoer1940, .naturskogSannsynlighet, .naturskogNaerhet:
             return "\u{00A9} Milj\u{00F8}direktoratet"
         }
     }

@@ -11,6 +11,8 @@ struct MapControlsOverlay<WeatherContent: View>: View {
     var onMeasurementTapped: (() -> Void)?
     var onSettingsTapped: (() -> Void)?
     var onInfoTapped: (() -> Void)?
+    var onEmergencyCoordinatesTapped: (() -> Void)?
+    var onSOSTapped: (() -> Void)?
     var enabledOverlays: Set<OverlayLayer> = []
     var weatherContent: WeatherContent
     var showCompass = false
@@ -31,6 +33,8 @@ struct MapControlsOverlay<WeatherContent: View>: View {
             ("square.grid.2x2", String(localized: "categories.title"), { onCategoryTapped?() }),
             ("cloud.sun", String(localized: "weather.title"), { onWeatherTapped?() }),
             ("ruler", String(localized: "measurement.title"), { onMeasurementTapped?() }),
+            ("location.viewfinder", String(localized: "emergency.coordinates.title"), { onEmergencyCoordinatesTapped?() }),
+            ("sos", String(localized: "sos.menu"), { onSOSTapped?() }),
             ("arrow.down.circle", String(localized: "offline.title"), { onOfflineTapped?() }),
             ("gearshape", String(localized: "settings.title"), { onSettingsTapped?() }),
             ("info.circle", String(localized: "info.title"), { onInfoTapped?() }),

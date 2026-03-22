@@ -3,7 +3,7 @@ options:
   bundleIdPrefix: no.tazk
   deploymentTarget:
     iOS: "26.0"
-  xcodeVersion: "26.2"
+  xcodeVersion: "26.3"
   generateEmptyDirectories: true
   groupSortPosition: top
   developmentLanguage: nb
@@ -22,7 +22,7 @@ packages:
 settings:
   base:
     SWIFT_VERSION: "6.2"
-    MARKETING_VERSION: "1.2.0"
+    MARKETING_VERSION: "1.3.0"
     CURRENT_PROJECT_VERSION: 1
     SWIFT_STRICT_CONCURRENCY: complete
     SWIFT_COMPILATION_MODE: wholemodule

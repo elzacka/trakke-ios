@@ -563,14 +563,14 @@ struct TrakkeMapView: UIViewRepresentable {
                 tileURLTemplates: [overlay.tileURL],
                 options: [
                     .tileSize: 256,
-                    .minimumZoomLevel: overlay.isNaturskog ? 8 : 5,
+                    .minimumZoomLevel: overlay.minZoom,
                     .maximumZoomLevel: 18,
                 ]
             )
             style.addSource(source)
 
             let layer = MLNRasterStyleLayer(identifier: overlay.layerID, source: source)
-            layer.rasterOpacity = NSExpression(forConstantValue: 0.7)
+            layer.rasterOpacity = NSExpression(forConstantValue: overlay.opacity)
             style.addLayer(layer)
         }
 

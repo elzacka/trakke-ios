@@ -24,7 +24,7 @@ Tråkke er en kartapp for iPhone og iPad som bruker kartdata fra Kartverket. App
 
 - iOS 26.0 eller nyere
 - iPhone eller iPad
-- Xcode 26.2 (for utvikling)
+- Xcode 26.3 (for utvikling)
 
 ## Kom i gang (utvikling)
 

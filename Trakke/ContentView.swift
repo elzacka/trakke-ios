@@ -12,6 +12,7 @@ struct ContentView: View {
     @State private var weatherViewModel = WeatherViewModel()
     @State private var measurementViewModel = MeasurementViewModel()
     @State private var navigationViewModel = NavigationViewModel()
+    @State private var sosViewModel = SOSViewModel()
     @State private var sheets = SheetCoordinator()
     @State private var connectivityMonitor = ConnectivityMonitor()
     @State private var navigationDestination: CLLocationCoordinate2D?
@@ -28,6 +29,8 @@ struct ContentView: View {
     @AppStorage("showScaleBar") private var showScaleBar = false
     @AppStorage("enableRotation") private var enableRotation = true
     @AppStorage("overlayTurrutebasen") private var overlayTurrutebasen = false
+    @AppStorage("overlayHillshading") private var overlayHillshading = false
+    @AppStorage("overlayNaturvernomrader") private var overlayNaturvernomrader = false
     @AppStorage("overlayNaturskog") private var overlayNaturskog = false
     @AppStorage("naturskogLayerType") private var naturskogLayerType = OverlayLayer.naturskogSannsynlighet.rawValue
     @Environment(\.modelContext) private var modelContext
@@ -48,6 +51,8 @@ struct ContentView: View {
             }
         }
         .onChange(of: overlayTurrutebasen) { syncOverlays() }
+        .onChange(of: overlayHillshading) { syncOverlays() }
+        .onChange(of: overlayNaturvernomrader) { syncOverlays() }
         .onChange(of: overlayNaturskog) { syncOverlays() }
         .onChange(of: naturskogLayerType) { syncOverlays() }
         .onDisappear {
@@ -77,6 +82,8 @@ struct ContentView: View {
     private func syncOverlays() {
         var overlays = Set<OverlayLayer>()
         if overlayTurrutebasen { overlays.insert(.turrutebasen) }
+        if overlayHillshading { overlays.insert(.hillshading) }
+        if overlayNaturvernomrader { overlays.insert(.naturvernomrader) }
         if overlayNaturskog, let layer = OverlayLayer(rawValue: naturskogLayerType), layer.isNaturskog {
             overlays.insert(layer)
         }
@@ -188,6 +195,8 @@ struct ContentView: View {
                 onMeasurementTapped: { sheets.showMeasurementSheet = true },
                 onSettingsTapped: { sheets.showPreferences = true },
                 onInfoTapped: { sheets.showInfo = true },
+                onEmergencyCoordinatesTapped: { sheets.showEmergencyCoordinates = true },
+                onSOSTapped: { sheets.showSOS = true },
                 enabledOverlays: mapViewModel.enabledOverlays,
                 weatherContent: Group {
                     if showWeatherWidget {
@@ -432,6 +441,14 @@ struct ContentView: View {
                 )
                 .presentationDetents([.medium])
             }
+        }
+        .sheet(isPresented: $sheets.showEmergencyCoordinates) {
+            EmergencyCoordinatesSheet(userLocation: mapViewModel.userLocation)
+                .presentationDetents([.medium])
+        }
+        .sheet(isPresented: $sheets.showSOS, onDismiss: { sosViewModel.deactivate() }) {
+            SOSSheet(viewModel: sosViewModel)
+                .presentationDetents([.medium, .large])
         }
         .alert(
             String(localized: "navigation.routeErrorTitle"),

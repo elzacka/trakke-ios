@@ -53,7 +53,7 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
         case .viewpoints: return 11
         case .warMemorials: return 9
         case .wildernessShelters: return 10
-        case .kulturminner: return 6
+        case .kulturminner: return 10
         }
     }
 
@@ -61,7 +61,7 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
         switch self {
         case .shelters: return "DSB"
         case .caves, .viewpoints, .warMemorials, .wildernessShelters:
-            return "\u{00A9} OpenStreetMap contributors"
+            return "OpenStreetMap contributors"
         case .kulturminner: return "Riksantikvaren"
         }
     }

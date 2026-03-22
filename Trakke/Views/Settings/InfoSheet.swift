@@ -46,7 +46,7 @@ struct InfoSheet: View {
                         )
                         Divider()
                         dataSourceRow(
-                            name: "\u{00A9} OpenStreetMap contributors",
+                            name: "OpenStreetMap contributors",
                             detail: String(localized: "info.osm.detail"),
                             license: "ODbL"
                         )

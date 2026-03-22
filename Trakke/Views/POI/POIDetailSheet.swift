@@ -90,7 +90,6 @@ struct POIDetailSheet: View {
                     HStack(spacing: .Trakke.xs) {
                         Text(String(localized: "poi.source"))
                         Text(poi.category.sourceName)
-                        Text("(\(poi.category.sourceLicense))")
                     }
                     .font(Font.Trakke.caption)
                     .foregroundStyle(Color.Trakke.textTertiary)
