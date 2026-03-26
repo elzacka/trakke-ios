@@ -7,7 +7,7 @@ struct WaypointDetailSheet: View {
     var onEdit: ((Waypoint) -> Void)?
     var onNavigate: ((CLLocationCoordinate2D) -> Void)?
     @Environment(\.dismiss) private var dismiss
-    @AppStorage("coordinateFormat") private var coordinateFormat: CoordinateFormat = .dd
+    @AppStorage(AppStorageKeys.coordinateFormat) private var coordinateFormat: CoordinateFormat = .dd
     @State private var showDeleteConfirmation = false
 
     var body: some View {
@@ -41,7 +41,7 @@ struct WaypointDetailSheet: View {
 
     private var infoCard: some View {
         CardSection(String(localized: "waypoints.info")) {
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: .Trakke.labelGap) {
                 Text(waypoint.name)
                     .font(Font.Trakke.bodyMedium)
                 if let category = waypoint.category, !category.isEmpty {

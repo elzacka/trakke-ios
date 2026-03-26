@@ -34,13 +34,6 @@ struct MeasurementSheet: View {
             .tint(Color.Trakke.brand)
             .navigationTitle(String(localized: "measurement.title"))
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(String(localized: "common.close")) {
-                        dismiss()
-                    }
-                }
-            }
         }
     }
 
@@ -53,7 +46,7 @@ struct MeasurementSheet: View {
         } label: {
             VStack(spacing: .Trakke.rowVertical) {
                 Image(systemName: icon)
-                    .font(.title3)
+                    .font(Font.Trakke.bodyMedium)
                 Text(label)
                     .font(Font.Trakke.bodyRegular)
             }

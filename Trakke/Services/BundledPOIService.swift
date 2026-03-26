@@ -1,5 +1,6 @@
 import Foundation
 import CoreLocation
+import OSLog
 
 // MARK: - Bundled POI Service
 
@@ -11,8 +12,32 @@ enum BundledPOIService {
     private static var cache: [POICategory: [POI]] = [:]
 
     static func pois(for category: POICategory, in bounds: ViewportBounds) -> [POI] {
-        let all = loadIfNeeded(category)
+        let all = cache[category] ?? []
         return all.filter { bounds.contains($0.coordinate) }
+    }
+
+    /// Pre-load all bundled categories into the cache. Call once at app launch.
+    static func preloadAll() {
+        Task.detached(priority: .utility) {
+            let allCategories: [POICategory] = [.caves, .viewpoints, .warMemorials, .wildernessShelters]
+            for category in allCategories {
+                let pois = loadFromBundle(category)
+                await MainActor.run {
+                    cache[category] = pois
+                    Logger.poi.debug("BundledPOI: loaded \(pois.count, privacy: .public) \(category.rawValue, privacy: .public) from bundle")
+                }
+            }
+        }
+    }
+
+    /// Load a single category if not yet cached.
+    static func loadIfNeeded(_ category: POICategory) async {
+        if cache[category] != nil { return }
+        let pois = await Task.detached(priority: .utility) {
+            loadFromBundle(category)
+        }.value
+        cache[category] = pois
+        Logger.poi.debug("BundledPOI: loaded \(pois.count, privacy: .public) \(category.rawValue, privacy: .public) from bundle")
     }
 
     static func clearCache() {
@@ -21,31 +46,18 @@ enum BundledPOIService {
 
     // MARK: - Loading
 
-    private static func loadIfNeeded(_ category: POICategory) -> [POI] {
-        if let cached = cache[category] { return cached }
-        let pois = loadFromBundle(category)
-        cache[category] = pois
-        #if DEBUG
-        print("BundledPOI: loaded \(pois.count) \(category.rawValue) from bundle")
-        #endif
-        return pois
-    }
-
-    private static let filenames: [POICategory: String] = [
-        .caves: "caves",
-        .viewpoints: "viewpoints",
-        .warMemorials: "war_memorials",
-        .wildernessShelters: "wilderness_shelters",
-    ]
-
-    private static func loadFromBundle(_ category: POICategory) -> [POI] {
+    private nonisolated static func loadFromBundle(_ category: POICategory) -> [POI] {
+        let filenames: [POICategory: String] = [
+            .caves: "caves",
+            .viewpoints: "viewpoints",
+            .warMemorials: "war_memorials",
+            .wildernessShelters: "wilderness_shelters",
+        ]
         guard let filename = filenames[category] else { return [] }
 
         guard let url = Bundle.main.url(forResource: filename, withExtension: "geojson", subdirectory: "POIData") else {
             guard let url = Bundle.main.url(forResource: filename, withExtension: "geojson") else {
-                #if DEBUG
-                print("BundledPOI: \(filename).geojson not found in bundle")
-                #endif
+                Logger.poi.error("BundledPOI: \(filename, privacy: .public).geojson not found in bundle")
                 return []
             }
             return decodePOIs(from: url, category: category)
@@ -58,9 +70,7 @@ enum BundledPOIService {
         guard let data = try? Data(contentsOf: url) else { return [] }
 
         guard let collection = try? JSONDecoder().decode(BundledFeatureCollection.self, from: data) else {
-            #if DEBUG
-            print("BundledPOI: failed to decode \(url.lastPathComponent)")
-            #endif
+            Logger.poi.error("BundledPOI: failed to decode \(url.lastPathComponent, privacy: .public)")
             return []
         }
 
@@ -70,6 +80,7 @@ enum BundledPOIService {
 
             let lon = feature.geometry.coordinates[0]
             let lat = feature.geometry.coordinates[1]
+            guard lat.isFinite, lon.isFinite else { return nil }
 
             let name = feature.properties["name"] ?? category.displayName
 

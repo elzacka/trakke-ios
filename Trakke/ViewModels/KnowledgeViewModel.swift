@@ -1,0 +1,312 @@
+import SwiftUI
+import CoreLocation
+import OSLog
+
+@MainActor
+@Observable
+final class KnowledgeViewModel {
+    // MARK: - Catalog State
+
+    var availablePacks: [KnowledgePack] = []
+    var isLoadingCatalog = false
+    var catalogError: String?
+    var catalogLastUpdated: Date?
+
+    // MARK: - Installed Packs
+
+    var installedPacks: [InstalledPackInfo] = []
+
+    // MARK: - Download State
+
+    var activeDownloads: [String: DownloadProgress] = [:]
+
+    // MARK: - Query State (map annotations)
+
+    var enabledThemes: Set<KnowledgeTheme> = []
+    var entries: [KnowledgeEntry] = []
+    var selectedEntry: KnowledgeEntry?
+    var isQuerying = false
+
+    // MARK: - Article State
+
+    var articles: [KnowledgeArticle] = []
+
+    // MARK: - Private
+
+    private let catalogService = PackCatalogService()
+    private let downloadManager = PackDownloadManager()
+    private let queryService = PackQueryService()
+    private var queryTask: Task<Void, Never>?
+    private var downloadTasks: [String: Task<Void, Never>] = [:]
+    private var lastBounds: ViewportBounds?
+    private var lastZoom: Double = 0
+    private static let debounceInterval: Duration = .milliseconds(500)
+
+    // MARK: - Catalog
+
+    func loadCatalog() async {
+        isLoadingCatalog = true
+        catalogError = nil
+
+        do {
+            let catalog = try await catalogService.fetchCatalog()
+            availablePacks = catalog.packs
+            catalogLastUpdated = catalog.generatedAt
+        } catch {
+            catalogError = error.localizedDescription
+            Logger.knowledge.error("Catalog fetch error: \(error, privacy: .private)")
+        }
+
+        isLoadingCatalog = false
+    }
+
+    func refreshCatalog() async {
+        isLoadingCatalog = true
+        catalogError = nil
+
+        do {
+            let catalog = try await catalogService.fetchCatalog(forceRefresh: true)
+            availablePacks = catalog.packs
+            catalogLastUpdated = catalog.generatedAt
+        } catch {
+            catalogError = error.localizedDescription
+        }
+
+        isLoadingCatalog = false
+    }
+
+    // MARK: - Downloads
+
+    func downloadPack(_ pack: KnowledgePack) {
+        let manager = downloadManager
+        downloadTasks[pack.id] = Task {
+            let progressStream = await manager.download(pack: pack)
+            for await progress in progressStream {
+                guard !Task.isCancelled else { return }
+                self.activeDownloads[pack.id] = progress
+                if progress.isComplete {
+                    self.activeDownloads.removeValue(forKey: pack.id)
+                    self.downloadTasks.removeValue(forKey: pack.id)
+                    self.refreshInstalledPacks()
+
+                    // If the theme is enabled, reload entries
+                    if let theme = KnowledgeTheme(rawValue: pack.theme),
+                       self.enabledThemes.contains(theme),
+                       let bounds = self.lastBounds {
+                        self.loadTheme(theme, bounds: bounds, zoom: self.lastZoom)
+                    }
+                }
+            }
+        }
+    }
+
+    func cancelDownload(packId: String) {
+        downloadTasks[packId]?.cancel()
+        downloadTasks.removeValue(forKey: packId)
+        Task {
+            await downloadManager.cancelDownload(packId: packId)
+            activeDownloads.removeValue(forKey: packId)
+        }
+    }
+
+    func deletePack(_ info: InstalledPackInfo) {
+        Task {
+            // Close database connection first
+            await queryService.closeDatabase(for: info.id)
+            try? await downloadManager.deletePack(packId: info.id)
+            refreshInstalledPacks()
+
+            // Reload entries if relevant theme is enabled
+            if let theme = KnowledgeTheme(rawValue: info.theme),
+               enabledThemes.contains(theme),
+               let bounds = lastBounds {
+                loadTheme(theme, bounds: bounds, zoom: lastZoom)
+            }
+        }
+    }
+
+    func deleteAllPacks() {
+        downloadTasks.values.forEach { $0.cancel() }
+        downloadTasks.removeAll()
+        Task {
+            await queryService.closeAll()
+            try? await downloadManager.deleteAllPacks()
+            await catalogService.clearCache()
+            installedPacks = []
+            entries = []
+            articles = []
+            enabledThemes = []
+            activeDownloads = [:]
+        }
+    }
+
+    func refreshInstalledPacks() {
+        Task {
+            installedPacks = await downloadManager.installedPacks()
+        }
+    }
+
+    // MARK: - Theme Toggles
+
+    func toggleTheme(_ theme: KnowledgeTheme) {
+        if enabledThemes.contains(theme) {
+            enabledThemes.remove(theme)
+            entries.removeAll { $0.theme == theme.rawValue }
+        } else {
+            enabledThemes.insert(theme)
+            if let bounds = lastBounds {
+                loadTheme(theme, bounds: bounds, zoom: lastZoom)
+            }
+        }
+    }
+
+    private func loadTheme(_ theme: KnowledgeTheme, bounds: ViewportBounds, zoom: Double) {
+        let service = queryService
+        Task {
+            isQuerying = true
+            do {
+                let newEntries = try await service.entries(for: theme, in: bounds)
+                guard enabledThemes.contains(theme) else {
+                    isQuerying = false
+                    return
+                }
+                entries.removeAll { $0.theme == theme.rawValue }
+                entries.append(contentsOf: newEntries)
+            } catch {
+                Logger.knowledge.error("Knowledge query error (\(theme.rawValue, privacy: .public)): \(error, privacy: .private)")
+            }
+            isQuerying = false
+        }
+    }
+
+    // MARK: - Viewport Queries
+
+    func viewportChanged(bounds: ViewportBounds, zoom: Double) {
+        lastBounds = bounds
+        lastZoom = zoom
+
+        guard !enabledThemes.isEmpty else { return }
+
+        queryTask?.cancel()
+        let service = queryService
+        let themes = enabledThemes
+
+        queryTask = Task {
+            try? await Task.sleep(for: Self.debounceInterval)
+            guard !Task.isCancelled else { return }
+
+            self.isQuerying = true
+
+            for theme in themes {
+                guard !Task.isCancelled else { return }
+                guard zoom >= theme.minZoom else {
+                    self.entries.removeAll { $0.theme == theme.rawValue }
+                    continue
+                }
+
+                do {
+                    let result = try await service.entries(for: theme, in: bounds)
+                    guard !Task.isCancelled else { return }
+                    self.entries.removeAll { $0.theme == theme.rawValue }
+                    self.entries.append(contentsOf: result)
+                } catch {
+                    guard !Task.isCancelled else { return }
+                    Logger.knowledge.error("Knowledge viewport query error (\(theme.rawValue, privacy: .public)): \(error, privacy: .private)")
+                }
+            }
+
+            // Remove entries for disabled themes
+            self.entries.removeAll { entry in
+                guard let theme = KnowledgeTheme(rawValue: entry.theme) else { return true }
+                return !self.enabledThemes.contains(theme)
+            }
+
+            self.isQuerying = false
+        }
+    }
+
+    // MARK: - Articles
+
+    func loadArticles(category: ArticleCategory? = nil) async {
+        // Load bundled articles (always available, no download required)
+        var result = Self.loadBundledArticles()
+
+        // Also load articles from downloaded packs (if any have articles table)
+        do {
+            let packArticles = try await queryService.articles(for: category)
+            result.append(contentsOf: packArticles)
+        } catch {
+            Logger.knowledge.error("Pack article load error: \(error, privacy: .private)")
+        }
+
+        // Filter by category if requested
+        if let category {
+            result = result.filter { $0.category == category.rawValue }
+        }
+
+        articles = result.sorted { ($0.category, $0.sortOrder) < ($1.category, $1.sortOrder) }
+    }
+
+    // MARK: - Bundled Articles
+
+    static func loadBundledArticles() -> [KnowledgeArticle] {
+        guard let url = Bundle.main.url(forResource: "SurvivalArticles", withExtension: "json"),
+              let data = try? Data(contentsOf: url)
+        else { return [] }
+
+        struct BundledArticle: Decodable {
+            let id: Int64
+            let category: String
+            let title: String
+            let body: String
+            let source: String
+            let sourceURL: String?
+            let sortOrder: Int
+        }
+
+        let decoder = JSONDecoder()
+        guard let bundled = try? decoder.decode([BundledArticle].self, from: data) else { return [] }
+
+        return bundled.map { item in
+            KnowledgeArticle(
+                id: item.id,
+                theme: "survival",
+                category: item.category,
+                title: item.title,
+                body: item.body,
+                source: item.source,
+                sourceURL: item.sourceURL,
+                verifiedAt: Date(),
+                sortOrder: item.sortOrder
+            )
+        }
+    }
+
+    // MARK: - Selection
+
+    func selectEntry(_ entry: KnowledgeEntry) {
+        selectedEntry = entry
+    }
+
+    func clearSelection() {
+        selectedEntry = nil
+    }
+
+    // MARK: - Helpers
+
+    func isInstalled(packId: String) -> Bool {
+        installedPacks.contains { $0.id == packId }
+    }
+
+    func isDownloading(packId: String) -> Bool {
+        activeDownloads[packId] != nil
+    }
+
+    func packsForTheme(_ theme: KnowledgeTheme) -> [KnowledgePack] {
+        availablePacks.filter { $0.theme == theme.rawValue }
+    }
+
+    var installedPacksSize: Int64 {
+        installedPacks.reduce(0) { $0 + $1.fileSize }
+    }
+}

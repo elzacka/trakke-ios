@@ -335,7 +335,7 @@ import SwiftData
       </wpt>
     </gpx>
     """
-    let url = writeGPXToTemp(gpx, filename: "test_valid.gpx")
+    let url = try writeGPXToTemp(gpx, filename: "test_valid.gpx")
     let waypoints = try GPXImportService.parseWaypoints(from: url)
 
     #expect(waypoints.count == 2)
@@ -362,7 +362,7 @@ import SwiftData
       </wpt>
     </gpx>
     """
-    let url = writeGPXToTemp(gpx, filename: "test_noname.gpx")
+    let url = try writeGPXToTemp(gpx, filename: "test_noname.gpx")
     let waypoints = try GPXImportService.parseWaypoints(from: url)
 
     #expect(waypoints.count == 1)
@@ -384,7 +384,7 @@ import SwiftData
       </wpt>
     </gpx>
     """
-    let url = writeGPXToTemp(gpx, filename: "test_nocoords.gpx")
+    let url = try writeGPXToTemp(gpx, filename: "test_nocoords.gpx")
     let waypoints = try GPXImportService.parseWaypoints(from: url)
 
     #expect(waypoints.count == 1)
@@ -397,7 +397,7 @@ import SwiftData
     <gpx version="1.1" creator="Test">
     </gpx>
     """
-    let url = writeGPXToTemp(gpx, filename: "test_empty.gpx")
+    let url = try writeGPXToTemp(gpx, filename: "test_empty.gpx")
     let waypoints = try GPXImportService.parseWaypoints(from: url)
 
     #expect(waypoints.isEmpty)
@@ -413,7 +413,7 @@ import SwiftData
       </wpt>
     </gpx>
     """
-    let url = writeGPXToTemp(gpx, filename: "test_norwegian.gpx")
+    let url = try writeGPXToTemp(gpx, filename: "test_norwegian.gpx")
     let waypoints = try GPXImportService.parseWaypoints(from: url)
 
     #expect(waypoints.count == 1)
@@ -437,7 +437,7 @@ import SwiftData
       </trk>
     </gpx>
     """
-    let url = writeGPXToTemp(gpx, filename: "test_with_track.gpx")
+    let url = try writeGPXToTemp(gpx, filename: "test_with_track.gpx")
     let waypoints = try GPXImportService.parseWaypoints(from: url)
 
     #expect(waypoints.count == 1)
@@ -460,7 +460,7 @@ import SwiftData
       </trk>
     </gpx>
     """
-    let url = writeGPXToTemp(gpx, filename: "test_trk_route.gpx")
+    let url = try writeGPXToTemp(gpx, filename: "test_trk_route.gpx")
     let routes = try GPXImportService.parseRoutes(from: url)
 
     #expect(routes.count == 1)
@@ -484,7 +484,7 @@ import SwiftData
       </rte>
     </gpx>
     """
-    let url = writeGPXToTemp(gpx, filename: "test_rte_route.gpx")
+    let url = try writeGPXToTemp(gpx, filename: "test_rte_route.gpx")
     let routes = try GPXImportService.parseRoutes(from: url)
 
     #expect(routes.count == 1)
@@ -511,7 +511,7 @@ import SwiftData
       </rte>
     </gpx>
     """
-    let url = writeGPXToTemp(gpx, filename: "test_short_routes.gpx")
+    let url = try writeGPXToTemp(gpx, filename: "test_short_routes.gpx")
     let routes = try GPXImportService.parseRoutes(from: url)
 
     #expect(routes.isEmpty)
@@ -536,7 +536,7 @@ import SwiftData
       </rte>
     </gpx>
     """
-    let url = writeGPXToTemp(gpx, filename: "test_mixed_routes.gpx")
+    let url = try writeGPXToTemp(gpx, filename: "test_mixed_routes.gpx")
     let routes = try GPXImportService.parseRoutes(from: url)
 
     #expect(routes.count == 2)
@@ -1177,14 +1177,15 @@ func kartverketStyleJSON(layer: BaseLayer) {
 // MARK: - SwiftData Migration Tests
 
 @Test func migrationPlanConfiguration() {
-    // Verify migration plan has both schema versions in correct order
+    // Verify migration plan has all three schema versions in correct order
     let schemas = TrakkeMigrationPlan.schemas
-    #expect(schemas.count == 2)
+    #expect(schemas.count == 3)
     #expect(String(describing: schemas[0]) == String(describing: SchemaV1.self))
     #expect(String(describing: schemas[1]) == String(describing: SchemaV2.self))
+    #expect(String(describing: schemas[2]) == String(describing: SchemaV3.self))
 
-    // Verify there is exactly one migration stage
-    #expect(TrakkeMigrationPlan.stages.count == 1)
+    // Verify there are two migration stages (V1->V2, V2->V3)
+    #expect(TrakkeMigrationPlan.stages.count == 2)
 }
 
 @Test func schemaV1HasRemovedModels() {
@@ -1199,20 +1200,130 @@ func kartverketStyleJSON(layer: BaseLayer) {
     #expect(models.count == 2)
 }
 
+@Test func schemaV3ModelTypesAreExactlyThree() {
+    // V2->V3 adds Activity; the live schema must contain exactly Route, Waypoint, Activity
+    let models = SchemaV3.models
+    #expect(models.count == 3)
+    let names = Set(models.map { String(describing: $0) })
+    #expect(names.contains("Route"))
+    #expect(names.contains("Waypoint"))
+    #expect(names.contains("Activity"))
+}
+
+@Test func migrationPlanCurrentSchemaIsV3() {
+    // The last schema in the plan is the version clients run on after all migrations
+    let schemas = TrakkeMigrationPlan.schemas
+    guard let last = schemas.last else {
+        Issue.record("Migration plan has no schemas")
+        return
+    }
+    #expect(String(describing: last) == String(describing: SchemaV3.self))
+}
+
+@Test func migrationStageDirectionsAreCorrect() {
+    // Confirm stage ordering matches the schema list so migrations apply in sequence
+    let schemas = TrakkeMigrationPlan.schemas
+    #expect(schemas.count == 3)
+    // Stage 0: V1 -> V2 (remove Project + DownloadedArea)
+    #expect(String(describing: schemas[0]) == String(describing: SchemaV1.self))
+    #expect(String(describing: schemas[1]) == String(describing: SchemaV2.self))
+    // Stage 1: V2 -> V3 (add Activity)
+    #expect(String(describing: schemas[1]) == String(describing: SchemaV2.self))
+    #expect(String(describing: schemas[2]) == String(describing: SchemaV3.self))
+    // Both stages present — one per hop
+    #expect(TrakkeMigrationPlan.stages.count == 2)
+}
+
 @Test func swiftDataContainerCreation() throws {
-    // Verify a ModelContainer can be created with the current schema
+    // Verify a ModelContainer can be created with the current (V3) schema
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
     let container = try ModelContainer(
-        for: Route.self, Waypoint.self,
+        for: Route.self, Waypoint.self, Activity.self,
         configurations: config
     )
-    #expect(container.schema.entities.count >= 2)
+    #expect(container.schema.entities.count >= 3)
+}
+
+// MARK: - SOS Service Tests
+
+@Test func sosPatternHasThreeGroups() {
+    // SOS Morse pattern encodes three letters: S (3 dots), O (3 dashes), S (3 dots).
+    // Groups are separated by inter-letter gaps (value -3).
+    let pattern = SOSService.sosPattern
+    #expect(!pattern.isEmpty)
+
+    // Split on inter-letter gaps (-3) to isolate the three letter groups
+    var groups: [[Int]] = []
+    var current: [Int] = []
+    for element in pattern {
+        if element == -3 {
+            if !current.isEmpty {
+                groups.append(current)
+                current = []
+            }
+        } else {
+            current.append(element)
+        }
+    }
+    if !current.isEmpty {
+        groups.append(current)
+    }
+
+    #expect(groups.count == 3, "Expected S-O-S (3 letter groups), got \(groups.count)")
+}
+
+@Test func sosPatternSLetterIsDots() {
+    // S in Morse is three dots (value 1, separated by inter-element gaps -1)
+    let pattern = SOSService.sosPattern
+
+    // First group: elements before the first -3 inter-letter gap
+    var sGroup: [Int] = []
+    for element in pattern {
+        if element == -3 { break }
+        sGroup.append(element)
+    }
+
+    // Signal elements (positive values) should all be 1 (dot duration)
+    let signals = sGroup.filter { $0 > 0 }
+    #expect(signals.count == 3, "S should have 3 dots, got \(signals.count)")
+    #expect(signals.allSatisfy { $0 == 1 }, "S dots should all have unit duration 1")
+}
+
+@Test func sosPatternOLetterIsDashes() {
+    // O in Morse is three dashes (value 3, separated by inter-element gaps -1)
+    let pattern = SOSService.sosPattern
+
+    // Isolate the second group (O) by splitting on -3
+    var groups: [[Int]] = []
+    var current: [Int] = []
+    for element in pattern {
+        if element == -3 {
+            if !current.isEmpty { groups.append(current); current = [] }
+        } else {
+            current.append(element)
+        }
+    }
+    if !current.isEmpty { groups.append(current) }
+
+    guard groups.count >= 2 else {
+        Issue.record("Pattern does not have enough groups")
+        return
+    }
+    let oGroup = groups[1]
+    let signals = oGroup.filter { $0 > 0 }
+    #expect(signals.count == 3, "O should have 3 dashes, got \(signals.count)")
+    #expect(signals.allSatisfy { $0 == 3 }, "O dashes should all have unit duration 3")
+}
+
+@Test func sosPatternEndsWithInterWordGap() {
+    // The pattern must end with an inter-word gap (-7) so the loop pauses before repeating
+    #expect(SOSService.sosPattern.last == -7, "Pattern must end with inter-word gap (-7)")
 }
 
 // MARK: - Helpers
 
-private func writeGPXToTemp(_ content: String, filename: String) -> URL {
+private func writeGPXToTemp(_ content: String, filename: String) throws -> URL {
     let url = FileManager.default.temporaryDirectory.appendingPathComponent(filename)
-    try! content.write(to: url, atomically: true, encoding: .utf8)
+    try content.write(to: url, atomically: true, encoding: .utf8)
     return url
 }

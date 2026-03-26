@@ -186,10 +186,14 @@ enum KartverketTileService {
     }
 
     static func styleURL(for layer: BaseLayer) -> URL {
-        let data = styleJSON(for: layer)
         let fileName = "kartverket-style-\(layer.rawValue).json"
-        let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
-        try? data.write(to: fileURL)
+        let cacheDir = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first
+            ?? FileManager.default.temporaryDirectory
+        let fileURL = cacheDir.appendingPathComponent(fileName)
+        if !FileManager.default.fileExists(atPath: fileURL.path) {
+            let data = styleJSON(for: layer)
+            try? data.write(to: fileURL, options: .atomic)
+        }
         return fileURL
     }
 }

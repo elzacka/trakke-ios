@@ -14,16 +14,17 @@ struct MeasurementToolbar: View {
 
             VStack(spacing: .Trakke.sm) {
                 if let result = formattedResult {
-                    VStack(spacing: 2) {
+                    VStack(spacing: .Trakke.labelGap) {
                         Text(mode == .distance
                              ? String(localized: "measurement.distance")
                              : String(localized: "measurement.area"))
                             .font(Font.Trakke.caption)
                             .foregroundStyle(Color.Trakke.textTertiary)
                         Text(result)
-                            .font(.title3.monospacedDigit().bold())
+                            .font(Font.Trakke.numeralLarge)
                             .foregroundStyle(Color.Trakke.brand)
                     }
+                    .accessibilityElement(children: .combine)
                     .padding(.horizontal, .Trakke.lg)
                     .padding(.vertical, .Trakke.sm)
                     .background(.regularMaterial)
@@ -47,32 +48,38 @@ struct MeasurementToolbar: View {
                         Label(String(localized: "common.cancel"), systemImage: "xmark")
                             .foregroundStyle(Color.Trakke.red)
                             .padding(.horizontal, .Trakke.lg)
-                            .padding(.vertical, 10)
+                            .padding(.vertical, .Trakke.sm)
+                            .frame(minHeight: .Trakke.touchMin)
                             .background(.regularMaterial)
                             .clipShape(Capsule())
                     }
+                    .accessibilityLabel(String(localized: "common.cancel"))
 
                     Button {
                         onUndo()
                     } label: {
                         Label(String(localized: "route.undo"), systemImage: "arrow.uturn.backward")
                             .padding(.horizontal, .Trakke.lg)
-                            .padding(.vertical, 10)
+                            .padding(.vertical, .Trakke.sm)
+                            .frame(minHeight: .Trakke.touchMin)
                             .background(.regularMaterial)
                             .clipShape(Capsule())
                     }
                     .disabled(!hasPoints)
+                    .accessibilityLabel(String(localized: "route.undo"))
 
                     Button {
                         onClear()
                     } label: {
                         Label(String(localized: "measurement.clear"), systemImage: "trash")
                             .padding(.horizontal, .Trakke.lg)
-                            .padding(.vertical, 10)
+                            .padding(.vertical, .Trakke.sm)
+                            .frame(minHeight: .Trakke.touchMin)
                             .background(.regularMaterial)
                             .clipShape(Capsule())
                     }
                     .disabled(!hasPoints)
+                    .accessibilityLabel(String(localized: "measurement.clear"))
                 }
             }
             .padding(.bottom, .Trakke.lg)

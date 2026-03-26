@@ -78,7 +78,7 @@ struct ElevationProfileView: View {
     }
 
     private func statItem(icon: String, label: String, value: String) -> some View {
-        VStack(spacing: 2) {
+        VStack(spacing: .Trakke.labelGap) {
             HStack(spacing: .Trakke.xs) {
                 Image(systemName: icon)
                     .font(Font.Trakke.captionSoft)

@@ -99,7 +99,11 @@ private let outdoorTypes = Set(["fjell", "vann", "dal", "bre", "fjord", "øy"])
 
 // MARK: - Search Service
 
-actor SearchService {
+protocol SearchFetching: Sendable {
+    func search(query: String) async throws -> [SearchResult]
+}
+
+actor SearchService: SearchFetching {
     private static let stednavnBase = "https://ws.geonorge.no"
     private static let stednavnPath = "/stedsnavn/v1/navn"
     private static let adresseBase = "https://ws.geonorge.no"
@@ -107,6 +111,8 @@ actor SearchService {
     private static let placeSearchLimit = 30
     private static let addressSearchMultiplier = 3
     private static let searchTimeout: TimeInterval = 10
+    private static let addressQueryRegex = try! NSRegularExpression(pattern: #"\b(\d+)([a-z]?)$"#)
+    private static let addressNumberRegex = try! NSRegularExpression(pattern: #"\b(\d+)([a-z]?)(?:\s|$)"#)
 
     func search(query: String) async throws -> [SearchResult] {
         let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -284,9 +290,7 @@ actor SearchService {
     }
 
     private func parseAddressQuery(_ query: String) -> (houseNumber: String?, houseLetter: String?, streetName: String) {
-        let pattern = #"\b(\d+)([a-z]?)$"#
-        guard let regex = try? NSRegularExpression(pattern: pattern),
-              let match = regex.firstMatch(in: query, range: NSRange(query.startIndex..., in: query)),
+        guard let match = Self.addressQueryRegex.firstMatch(in: query, range: NSRange(query.startIndex..., in: query)),
               let numberRange = Range(match.range(at: 1), in: query) else {
             return (nil, nil, query.trimmingCharacters(in: .whitespaces))
         }
@@ -327,9 +331,7 @@ actor SearchService {
 
         // House number matching
         if let houseNumber {
-            let addressPattern = #"\b(\d+)([a-z]?)(?:\s|$)"#
-            if let regex = try? NSRegularExpression(pattern: addressPattern),
-               let match = regex.firstMatch(in: addressLower, range: NSRange(addressLower.startIndex..., in: addressLower)),
+            if let match = Self.addressNumberRegex.firstMatch(in: addressLower, range: NSRange(addressLower.startIndex..., in: addressLower)),
                let addrNumRange = Range(match.range(at: 1), in: addressLower) {
                 let addrNumber = String(addressLower[addrNumRange])
 

@@ -1,11 +1,20 @@
 import SwiftUI
 
 struct InfoSheet: View {
-    @Environment(\.dismiss) private var dismiss
+    var isEmbedded = false
 
     var body: some View {
-        NavigationStack {
-            ScrollView {
+        if isEmbedded {
+            infoContent
+        } else {
+            NavigationStack {
+                infoContent
+            }
+        }
+    }
+
+    private var infoContent: some View {
+        ScrollView {
                 VStack(spacing: .Trakke.cardGap) {
                     // MARK: - Data Sources
                     CardSection(String(localized: "info.dataSources")) {
@@ -129,12 +138,6 @@ struct InfoSheet: View {
             .tint(Color.Trakke.brand)
             .navigationTitle(String(localized: "info.title"))
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(String(localized: "common.close")) { dismiss() }
-                }
-            }
-        }
     }
 
     // MARK: - Data Source Row
@@ -144,7 +147,7 @@ struct InfoSheet: View {
         detail: String,
         license: String
     ) -> some View {
-        VStack(alignment: .leading, spacing: 2) {
+        VStack(alignment: .leading, spacing: .Trakke.labelGap) {
             HStack {
                 Text(name)
                     .font(Font.Trakke.bodyMedium)

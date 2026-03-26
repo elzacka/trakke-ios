@@ -89,12 +89,12 @@ struct NavigationOverlayView: View {
                 Divider()
                 HStack(spacing: .Trakke.sm) {
                     Image(systemName: turnIcon(instruction.type))
-                        .font(.title3)
+                        .font(Font.Trakke.bodyMedium)
                         .foregroundStyle(Color.Trakke.brand)
                         .frame(width: 32)
                         .accessibilityHidden(true)
 
-                    VStack(alignment: .leading, spacing: 2) {
+                    VStack(alignment: .leading, spacing: .Trakke.labelGap) {
                         Text(instruction.text)
                             .font(Font.Trakke.bodyMedium)
                             .lineLimit(3)
@@ -138,7 +138,7 @@ struct NavigationOverlayView: View {
 
             VStack(spacing: .Trakke.xs) {
                 Text(formatDistance(navigationVM.compassDistance))
-                    .font(.title2.monospacedDigit().bold())
+                    .font(Font.Trakke.numeralXLarge)
                     .foregroundStyle(Color.Trakke.brand)
 
                 Text(bearingText(navigationVM.compassBearing))
@@ -264,7 +264,7 @@ struct NavigationOverlayView: View {
     // MARK: - Helpers
 
     private func statCell(label: String, value: String) -> some View {
-        VStack(spacing: 2) {
+        VStack(spacing: .Trakke.labelGap) {
             Text(label)
                 .font(Font.Trakke.captionSoft)
                 .foregroundStyle(Color.Trakke.textTertiary)

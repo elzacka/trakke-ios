@@ -1,6 +1,6 @@
 # Personvernerklæring for Tråkke
 
-**Sist oppdatert:** 22. februar 2026
+**Sist oppdatert:** 26. mars 2026
 **Behandlingsansvarlig:** Tazk
 **Kontakt:** hei@tazk.no
 
@@ -12,7 +12,19 @@ Tråkke lagrer all data lokalt på enheten din. Appen samler ikke inn personoppl
 
 ## 1. Hva Tråkke gjør
 
-Tråkke er en kartapp for friluftsliv i Norge. Appen viser topografiske kart fra Kartverket, lar deg søke etter steder, lage ruter, lagre veipunkter, navigere til mål og laste ned kart for bruk uten internett. Appen har også kartlag for turruter og naturskog.
+Tråkke er en kartapp for friluftsliv i Norge. Med appen kan du:
+
+- Vise topografiske kart fra Kartverket
+- Søke etter steder og adresser
+- Lage ruter og lagre veipunkter
+- Navigere til mål med ruteberegning eller kompassretning
+- Laste ned kart for bruk uten internett
+- Registrere turer med GPS-sporing (avstand, høydemeter, varighet)
+- Lese overlevelsesartikler og friluftslivstips (tilgjengelig uten nett)
+- Se vanntemperatur (havtemperatur og badevannstemperatur)
+- Se soloppgang, solnedgang og gjenværende dagslys
+- Vise nødkoordinater i flere formater og sende SOS-signal med lommelykten
+- Vise kartlag for turruter, naturskog og naturvernområder
 
 ## 2. Hvilke data behandles
 
@@ -21,8 +33,10 @@ Tråkke er en kartapp for friluftsliv i Norge. Appen viser topografiske kart fra
 Tråkke lagrer følgende lokalt på enheten din via SwiftData:
 
 - **Ruter og veipunkter** som du oppretter
+- **Turdata** (GPS-spor, avstand, høydemeter) fra registrerte turer
 - **Kartinnstillinger** (valgt kartlag, koordinatformat, preferanser)
 - **Nedlastede kartområder** for offline-bruk
+- **Kunnskapspakker** som du laster ned for offline-bruk (lagret som lokale databaser)
 - **Midlertidige værdata** (buffer i opptil 2 timer)
 
 Disse dataene forlater aldri enheten din og sendes ikke til appens servere/systemer eller noen andre.
@@ -35,6 +49,7 @@ Appen ber om tilgang til posisjonen din kun når du aktivt velger å vise den p�
 - Å hente værmelding for posisjonen din
 - Å beregne en turrute til et valgt mål (koordinatene sendes til ruteberegningstjenesten)
 - Å navigere med kompassretning til et mål (kun lokalt på enheten)
+- Å registrere GPS-spor under turregistrering (koordinater lagres kun lokalt på enheten)
 
 Posisjonsdata lagres ikke og sendes ikke videre, bortsett fra som beskrevet i punkt 3.
 
@@ -49,7 +64,7 @@ Posisjonsdata lagres ikke og sendes ikke videre, bortsett fra som beskrevet i pu
 
 ## 3. Eksterne tjenester
 
-Appen kommuniserer med følgende tjenester for å gi deg kartdata, vær og annen funksjonalitet. Alle tjenester er innenfor EU/EØS.
+Appen kommuniserer med følgende tjenester for å gi deg kartdata, vær og annen funksjonalitet. Alle tjenester er innenfor EU/EØS, med unntak av GitHub som kun brukes til nedlasting av kunnskapspakker uten brukerdata.
 
 | Tjeneste | Formål | Data som sendes | Land |
 |----------|--------|-----------------|------|
@@ -62,11 +77,16 @@ Appen kommuniserer med følgende tjenester for å gi deg kartdata, vær og annen
 | DSB (ogc.dsb.no) | Tilfluktsrom | Kartområde (bounding box) | Norge |
 | Riksantikvaren (api.ra.no) | Kulturminner | Kartområde (bounding box) | Norge |
 | Miljødirektoratet (image001.miljodirektoratet.no) | Naturskog-kartlag | Kartområde (bounding box) | Norge |
+| Meteorologisk institutt Oceanforecast (api.met.no) | Havtemperatur | Omtrentlig posisjon | Norge |
+| Havvarsel-Frost (havvarsel-frost.met.no) | Badevannstemperatur | Omtrentlig posisjon | Norge |
 | FOSSGIS Valhalla (valhalla1.openstreetmap.de) | Ruteberegning | Start- og målkoordinater | Tyskland (EU) |
+| GitHub Releases (github.com) | Kunnskapspakker | Ingen brukerdata | USA* |
 
 Interessepunkter fra OpenStreetMap (huler, utsiktspunkter, krigsminner, gapahuker/vindskjul) er forhåndslastet i appen og krever ingen nettverkskommunikasjon.
 
 Ruteberegningstjenesten (Valhalla) mottar kun start- og målkoordinater for å beregne en turrute. Ingen brukeridentitet, enhets-ID eller øktinformasjon sendes.
+
+*GitHub Releases brukes kun for å laste ned forhåndsbygde kunnskapspakker. Ingen brukerdata, innlogging eller identifikasjon sendes. GitHub er underlagt standardvilkår for åpent innhold.
 
 Disse tjenestene mottar kun den tekniske informasjonen som er nødvendig for å levere data til appen. I tillegg sender appen en User-Agent-header med appens navn, versjon og utviklerens e-postadresse (hei@tazk.no) ved alle API-forespørsler. Dette er påkrevd av flere av tjenestene for identifikasjon, og inneholder ingen brukerdata.
 
@@ -86,8 +106,8 @@ Behandlingen av data i Tråkke er basert på:
 Siden Tråkke ikke samler inn personopplysninger, er de fleste rettigheter automatisk ivaretatt:
 
 - **Innsyn:** Alle data er synlig i appen din.
-- **Sletting:** Slett appen for å fjerne alle data. Du kan også slette enkeltdata (ruter, veipunkter, nedlastede kart) direkte i appen, eller bruke «Slett alle data» i innstillingene for å slette alt på en gang.
-- **Dataportabilitet:** Ruter kan eksporteres som GPX-filer.
+- **Sletting:** Slett appen for å fjerne alle data. Du kan også slette enkeltdata (ruter, veipunkter, turer, nedlastede kart) direkte i appen, eller bruke «Slett alle data» i innstillingene for å slette alt på en gang -- inkludert turdata og kunnskapspakker.
+- **Dataportabilitet:** Ruter kan eksporteres som GPX-filer. Turdata (registrerte turer) kan sees og slettes direkte i appen.
 - **Begrenset behandling:** Du kan bruke appen uten å gi posisjonstilgang.
 
 ## 6. Datasikkerhet
@@ -97,6 +117,9 @@ Siden Tråkke ikke samler inn personopplysninger, er de fleste rettigheter autom
 - GPX-import validerer filstørrelse (maks 50 MB), blokkerer ondsinnet XML (XXE-beskyttelse) og avviser ugyldige koordinatverdier
 - XML-parsing av tilfluktsromdata (GML) har samme XXE-beskyttelse
 - Ingen data sendes til skytjenester
+- Kunnskapspakker lagres lokalt som skrivebeskyttede databaser med filbeskyttelse
+- Turdata (GPS-spor) lagres kun lokalt og sendes aldri til eksterne tjenester
+- Nedlastede pakker verifiseres med SHA256-sjekksum før installasjon
 - Appen krever ingen brukerkontoer eller passord
 
 ## 7. Barn

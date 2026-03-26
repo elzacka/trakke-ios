@@ -34,10 +34,12 @@ actor ElevationService {
         let elevations = try await fetchElevations(for: sampled)
         let distances = Haversine.cumulativeDistances(coordinates: sampled)
 
-        return zip(zip(sampled, elevations), distances).map { pair, dist in
-            ElevationPoint(
+        // Filter out points where the elevation lookup returned nil (e.g. sea/outside coverage)
+        return zip(zip(sampled, elevations), distances).compactMap { pair, dist in
+            guard let elevation = pair.1 else { return nil }
+            return ElevationPoint(
                 coordinate: pair.0,
-                elevation: pair.1,
+                elevation: elevation,
                 distance: dist
             )
         }
@@ -78,7 +80,7 @@ actor ElevationService {
     func fetchElevation(coordinate: CLLocationCoordinate2D) async -> Double? {
         do {
             let elevations = try await fetchBatch([coordinate])
-            return elevations.first
+            return elevations.first ?? nil
         } catch {
             return nil
         }
@@ -86,20 +88,45 @@ actor ElevationService {
 
     // MARK: - Private
 
-    private func fetchElevations(for coordinates: [CLLocationCoordinate2D]) async throws -> [Double] {
-        var allElevations: [Double] = []
+    private static let maxConcurrentBatches = 4
 
-        for batchStart in stride(from: 0, to: coordinates.count, by: Self.batchSize) {
+    private func fetchElevations(for coordinates: [CLLocationCoordinate2D]) async throws -> [Double?] {
+        // Split into batches
+        var batches: [(index: Int, coords: [CLLocationCoordinate2D])] = []
+        for (i, batchStart) in stride(from: 0, to: coordinates.count, by: Self.batchSize).enumerated() {
             let batchEnd = min(batchStart + Self.batchSize, coordinates.count)
-            let batch = Array(coordinates[batchStart..<batchEnd])
-            let elevations = try await fetchBatch(batch)
-            allElevations.append(contentsOf: elevations)
+            batches.append((i, Array(coordinates[batchStart..<batchEnd])))
         }
 
-        return allElevations
+        // Fetch batches concurrently with a concurrency limit
+        var results: [(index: Int, elevations: [Double?])] = []
+
+        try await withThrowingTaskGroup(of: (Int, [Double?]).self) { group in
+            var submitted = 0
+
+            for batch in batches {
+                if submitted >= Self.maxConcurrentBatches {
+                    if let result = try await group.next() {
+                        results.append((index: result.0, elevations: result.1))
+                    }
+                }
+                group.addTask {
+                    let elevations = try await self.fetchBatch(batch.coords)
+                    return (batch.index, elevations)
+                }
+                submitted += 1
+            }
+
+            for try await result in group {
+                results.append((index: result.0, elevations: result.1))
+            }
+        }
+
+        // Reassemble in original order
+        return results.sorted { $0.index < $1.index }.flatMap(\.elevations)
     }
 
-    private func fetchBatch(_ coordinates: [CLLocationCoordinate2D]) async throws -> [Double] {
+    private func fetchBatch(_ coordinates: [CLLocationCoordinate2D]) async throws -> [Double?] {
         // Format as [[lon, lat], [lon, lat], ...]
         let punkter = coordinates.map { [Double]([($0.longitude * 1000000).rounded() / 1000000, ($0.latitude * 1000000).rounded() / 1000000]) }
         let punkterJSON = try JSONSerialization.data(withJSONObject: punkter)
@@ -128,11 +155,12 @@ private struct HoydedataResponse: Decodable {
     let punkter: [HoydedataPunkt]
 
     struct HoydedataPunkt: Decodable {
-        let z: Double
+        // nil when the point falls outside coverage (e.g. sea, outside Norway)
+        let z: Double?
 
         init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            z = (try? container.decode(Double.self, forKey: .z)) ?? 0
+            z = try? container.decode(Double.self, forKey: .z)
         }
 
         private enum CodingKeys: String, CodingKey {

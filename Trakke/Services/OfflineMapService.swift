@@ -1,4 +1,5 @@
 import Foundation
+import OSLog
 @preconcurrency import MapLibre
 
 // MARK: - Offline Pack Info
@@ -109,9 +110,7 @@ final class OfflineMapService {
 
         MLNOfflineStorage.shared.addPack(for: region, withContext: contextData) { pack, error in
             if let error {
-                #if DEBUG
-                print("Offline pack error: \(error)")
-                #endif
+                Logger.offline.error("Offline pack error: \(error, privacy: .private)")
                 return
             }
             pack?.resume()
@@ -131,9 +130,7 @@ final class OfflineMapService {
             if let ctx = decodeContext(pack.context), ctx.id == info.id {
                 MLNOfflineStorage.shared.removePack(pack) { error in
                     if let error {
-                        #if DEBUG
-                        print("Delete pack error: \(error)")
-                        #endif
+                        Logger.offline.error("Delete pack error: \(error, privacy: .private)")
                     }
                 }
                 return

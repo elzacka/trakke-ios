@@ -7,9 +7,20 @@ final class WeatherViewModel {
     var forecast: WeatherForecast?
     var isLoading = false
     var error: String?
+    var daylight: SolarCalculator.DaylightInfo?
+    var waterTemperature: WaterTemperatureResult?
 
-    private let service = WeatherService()
+    private let service: any WeatherFetching
+    private let waterService: any WaterTemperatureFetching
     private var lastFetchCoordinate: CLLocationCoordinate2D?
+
+    init(
+        service: any WeatherFetching = WeatherService(),
+        waterService: any WaterTemperatureFetching = WaterTemperatureService()
+    ) {
+        self.service = service
+        self.waterService = waterService
+    }
     private var fetchTask: Task<Void, Never>?
     private static let debounceInterval: Duration = .seconds(2)
 
@@ -31,11 +42,19 @@ final class WeatherViewModel {
             self.lastFetchCoordinate = coordinate
             self.isLoading = true
             self.error = nil
+            self.daylight = SolarCalculator.calculate(for: coordinate)
 
             do {
-                let result = try await self.service.getForecast(lat: coordinate.latitude, lon: coordinate.longitude)
+                async let weatherResult = self.service.getForecast(lat: coordinate.latitude, lon: coordinate.longitude)
+                async let waterResult = self.waterService.getWaterTemperature(lat: coordinate.latitude, lon: coordinate.longitude)
+
+                let weather = try await weatherResult
                 guard !Task.isCancelled else { return }
-                self.forecast = result
+                self.forecast = weather
+
+                // Water temperature is best-effort — never block weather display
+                self.waterTemperature = try? await waterResult
+
                 self.isLoading = false
             } catch is CancellationError {
                 // Debounce cancelled, ignore

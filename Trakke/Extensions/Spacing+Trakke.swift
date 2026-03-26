@@ -16,6 +16,7 @@ extension CGFloat {
         static let cardPadV: CGFloat = 12
         static let cardGap: CGFloat = 24
         static let rowVertical: CGFloat = 6
+        static let labelGap: CGFloat = 2
         static let dividerLeading: CGFloat = 4
 
         // Touch targets (WCAG)

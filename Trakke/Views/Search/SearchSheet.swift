@@ -16,13 +16,6 @@ struct SearchSheet: View {
             .tint(Color.Trakke.brand)
             .navigationTitle(String(localized: "search.title"))
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(String(localized: "common.close")) {
-                        dismiss()
-                    }
-                }
-            }
         }
     }
 
@@ -52,7 +45,7 @@ struct SearchSheet: View {
             }
         }
         .padding(.horizontal, .Trakke.md)
-        .padding(.vertical, 10)
+        .padding(.vertical, .Trakke.sm)
         .background(Color(.secondarySystemGroupedBackground))
         .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))
         .overlay(

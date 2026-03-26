@@ -27,7 +27,11 @@ struct WeatherForecast: Sendable {
 
 // MARK: - Weather Service
 
-actor WeatherService {
+protocol WeatherFetching: Sendable {
+    func getForecast(lat: Double, lon: Double) async throws -> WeatherForecast
+}
+
+actor WeatherService: WeatherFetching {
     private static let baseURL = "https://api.met.no/weatherapi/locationforecast/2.0/compact"
     private static let userAgent = APIClient.userAgent
     private static let fallbackTTL: TimeInterval = 7200 // 2 hours, used when Expires header is missing
@@ -120,15 +124,18 @@ actor WeatherService {
         }
     }
 
+    private static let expiresFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss zzz"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(abbreviation: "GMT")
+        return formatter
+    }()
+
     private static func parseExpires(from response: HTTPURLResponse) -> Date {
-        if let expiresString = response.value(forHTTPHeaderField: "Expires") {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss zzz"
-            formatter.locale = Locale(identifier: "en_US_POSIX")
-            formatter.timeZone = TimeZone(abbreviation: "GMT")
-            if let date = formatter.date(from: expiresString) {
-                return date
-            }
+        if let expiresString = response.value(forHTTPHeaderField: "Expires"),
+           let date = expiresFormatter.date(from: expiresString) {
+            return date
         }
         return Date().addingTimeInterval(fallbackTTL)
     }
@@ -156,13 +163,14 @@ actor WeatherService {
 
     // MARK: - Parsing
 
+    private nonisolated(unsafe) static let iso8601Formatter = ISO8601DateFormatter()
+
     private func parseMetData(_ response: MetApiResponse, lat: Double, lon: Double) -> WeatherForecast {
         let timeseries = response.properties.timeseries
         let now = Date()
-        let formatter = ISO8601DateFormatter()
 
         let parsed: [(date: Date, data: WeatherData)] = timeseries.compactMap { point in
-            guard let date = formatter.date(from: point.time) else { return nil }
+            guard let date = Self.iso8601Formatter.date(from: point.time) else { return nil }
             let instant = point.data.instant.details
             let next1h = point.data.next_1_hours
             let next6h = point.data.next_6_hours
