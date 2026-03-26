@@ -11,8 +11,12 @@ final class SearchViewModel {
     var selectedResult: SearchResult?
     var coordinateFormat: CoordinateFormat = .dd
 
-    private let searchService = SearchService()
+    private let searchService: any SearchFetching
     private var searchTask: Task<Void, Never>?
+
+    init(searchService: any SearchFetching = SearchService()) {
+        self.searchService = searchService
+    }
     private static let debounceInterval: Duration = .milliseconds(300)
 
     func updateQuery(_ newQuery: String) {

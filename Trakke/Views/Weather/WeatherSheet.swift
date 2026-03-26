@@ -2,7 +2,6 @@ import SwiftUI
 
 struct WeatherSheet: View {
     @Bindable var viewModel: WeatherViewModel
-    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         NavigationStack {
@@ -28,11 +27,6 @@ struct WeatherSheet: View {
             .tint(Color.Trakke.brand)
             .navigationTitle(String(localized: "weather.title"))
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(String(localized: "common.close")) { dismiss() }
-                }
-            }
         }
     }
 
@@ -44,6 +38,17 @@ struct WeatherSheet: View {
                 // Current conditions
                 CardSection(String(localized: "weather.current")) {
                     currentWeatherCard(forecast.current)
+                }
+
+                // Sunrise / sunset
+                if let daylight = viewModel.daylight {
+                    daylightCard(daylight)
+                }
+
+                // Water temperature
+                if let water = viewModel.waterTemperature,
+                   water.oceanTemperature != nil || !water.bathingSpots.isEmpty {
+                    waterTemperatureCard(water)
                 }
 
                 // 7-day forecast
@@ -61,9 +66,14 @@ struct WeatherSheet: View {
                 }
 
                 // Attribution (CC BY 4.0 required by MET Norway ToS)
-                VStack(spacing: .Trakke.xs) {
+                VStack(alignment: .leading, spacing: .Trakke.xs) {
+                    if forecast.fetchedAt.timeIntervalSinceNow < -3600 {
+                        Label(String(localized: "weather.mayBeOutdated"), systemImage: "exclamationmark.triangle")
+                            .font(Font.Trakke.caption)
+                            .foregroundStyle(Color.Trakke.warning)
+                    }
                     HStack {
-                        Text("MET Norway")
+                        Text(String(localized: "weather.metAttribution"))
                         Spacer()
                         Text(String(localized: "weather.updated \(formatHour(forecast.fetchedAt))"))
                     }
@@ -97,9 +107,9 @@ struct WeatherSheet: View {
                     .frame(width: .Trakke.touchComfortable, height: .Trakke.touchComfortable)
                     .accessibilityHidden(true)
 
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: .Trakke.labelGap) {
                     Text("\(Int(data.temperature.rounded()))°")
-                        .font(.system(.largeTitle, design: .rounded, weight: .light))
+                        .font(Font.Trakke.temperature)
                         .foregroundStyle(Color.Trakke.text)
 
                     Text(WeatherViewModel.conditionText(for: data.symbol))
@@ -139,7 +149,7 @@ struct WeatherSheet: View {
     private func weatherStat(icon: String, value: String, label: String) -> some View {
         VStack(spacing: .Trakke.xs) {
             Image(systemName: icon)
-                .font(.footnote)
+                .font(Font.Trakke.captionSoft)
                 .foregroundStyle(Color.Trakke.textTertiary)
             Text(value)
                 .font(Font.Trakke.bodyRegular.monospacedDigit())
@@ -150,14 +160,104 @@ struct WeatherSheet: View {
         }
     }
 
+    // MARK: - Daylight Card
+
+    private func daylightCard(_ daylight: SolarCalculator.DaylightInfo) -> some View {
+        CardSection(String(localized: "weather.daylight")) {
+            HStack(spacing: 0) {
+                daylightStat(
+                    icon: "sunrise.fill",
+                    value: daylight.sunriseFormatted,
+                    label: String(localized: "weather.sunrise")
+                )
+                .frame(maxWidth: .infinity)
+
+                daylightStat(
+                    icon: "sunset.fill",
+                    value: daylight.sunsetFormatted,
+                    label: String(localized: "weather.sunset")
+                )
+                .frame(maxWidth: .infinity)
+            }
+        }
+    }
+
+    private func daylightStat(icon: String, value: String, label: String) -> some View {
+        VStack(spacing: .Trakke.xs) {
+            Image(systemName: icon)
+                .font(Font.Trakke.captionSoft)
+                .foregroundStyle(Color.Trakke.textTertiary)
+            Text(value)
+                .font(Font.Trakke.bodyRegular.monospacedDigit())
+                .foregroundStyle(Color.Trakke.text)
+            Text(label)
+                .font(Font.Trakke.captionSoft)
+                .foregroundStyle(Color.Trakke.textTertiary)
+        }
+    }
+
+    // MARK: - Water Temperature Card
+
+    private func waterTemperatureCard(_ water: WaterTemperatureResult) -> some View {
+        CardSection(String(localized: "weather.waterTemperature")) {
+            VStack(spacing: 0) {
+                // Ocean temperature (MET Oceanforecast)
+                if let ocean = water.oceanTemperature {
+                    HStack(spacing: .Trakke.md) {
+                        Image(systemName: "water.waves")
+                            .font(Font.Trakke.captionSoft)
+                            .foregroundStyle(Color.Trakke.textTertiary)
+                            .frame(width: 24)
+
+                        Text(String(localized: "weather.seaTemperature"))
+                            .font(Font.Trakke.bodyRegular)
+                            .foregroundStyle(Color.Trakke.text)
+
+                        Spacer()
+
+                        Text(String(format: "%.1f°", ocean.temperature))
+                            .font(Font.Trakke.bodyRegular.monospacedDigit())
+                            .foregroundStyle(Color.Trakke.text)
+                    }
+                    .padding(.vertical, .Trakke.xs)
+                }
+
+                // Bathing spots (Havvarsel-Frost)
+                ForEach(Array(water.bathingSpots.enumerated()), id: \.offset) { index, spot in
+                    if water.oceanTemperature != nil || index > 0 {
+                        Divider().padding(.leading, .Trakke.dividerLeading)
+                    }
+                    HStack(spacing: .Trakke.md) {
+                        Image(systemName: "figure.open.water.swim")
+                            .font(Font.Trakke.captionSoft)
+                            .foregroundStyle(Color.Trakke.textTertiary)
+                            .frame(width: 24)
+
+                        Text(spot.name ?? String(localized: "weather.bathingSpot"))
+                            .font(Font.Trakke.bodyRegular)
+                            .foregroundStyle(Color.Trakke.text)
+                            .lineLimit(1)
+
+                        Spacer()
+
+                        Text(String(format: "%.1f°", spot.temperature))
+                            .font(Font.Trakke.bodyRegular.monospacedDigit())
+                            .foregroundStyle(Color.Trakke.text)
+                    }
+                    .padding(.vertical, .Trakke.xs)
+                }
+            }
+        }
+    }
+
     // MARK: - Daily Row
 
     private func dailyRow(_ day: WeatherData) -> some View {
-        HStack(spacing: .Trakke.md) {
+        HStack(spacing: .Trakke.sm) {
             Text(formatDayName(day.time))
                 .font(Font.Trakke.bodyRegular)
                 .foregroundStyle(Color.Trakke.text)
-                .frame(width: 62, alignment: .leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
 
             Image(day.symbol)
                 .resizable()
@@ -169,27 +269,23 @@ struct WeatherSheet: View {
                 HStack(spacing: 0) {
                     Text("\(Int(min.rounded()))°")
                         .foregroundStyle(Color.Trakke.textTertiary)
-                        .frame(width: 40, alignment: .trailing)
                     Text("/")
-                        .font(Font.Trakke.bodyRegular)
                         .foregroundStyle(Color.Trakke.textTertiary)
                     Text("\(Int(max.rounded()))°")
                         .foregroundStyle(Color.Trakke.text)
-                        .frame(width: 40, alignment: .leading)
                 }
                 .font(Font.Trakke.bodyRegular.monospacedDigit())
+                .frame(maxWidth: .infinity)
             } else {
                 Text("\(Int(day.temperature.rounded()))°")
                     .font(Font.Trakke.bodyRegular.monospacedDigit())
                     .foregroundStyle(Color.Trakke.text)
-                    .frame(width: 82, alignment: .center)
+                    .frame(maxWidth: .infinity)
             }
-
-            Spacer()
 
             HStack(spacing: .Trakke.sm) {
                 if day.precipitationProbability > 0 {
-                    HStack(spacing: 2) {
+                    HStack(spacing: .Trakke.labelGap) {
                         Image(systemName: "drop")
                             .font(Font.Trakke.captionSoft)
                         Text(String(format: "%.0f%%", day.precipitationProbability))
@@ -202,7 +298,7 @@ struct WeatherSheet: View {
                     .font(Font.Trakke.caption)
                     .foregroundStyle(Color.Trakke.textTertiary)
             }
-
+            .frame(maxWidth: .infinity, alignment: .trailing)
         }
         .padding(.vertical, .Trakke.md)
         .accessibilityElement(children: .combine)
@@ -295,7 +391,7 @@ struct WeatherSheet: View {
 
             HStack(spacing: .Trakke.xs) {
                 if hour.precipitation > 0 {
-                    HStack(spacing: 2) {
+                    HStack(spacing: .Trakke.labelGap) {
                         Image(systemName: "drop.fill")
                             .font(Font.Trakke.captionSoft)
                         Text(String(format: "%.1f mm", hour.precipitation))

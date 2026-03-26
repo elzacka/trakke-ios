@@ -9,9 +9,9 @@ struct SearchResultRow: View {
                 .foregroundStyle(Color.Trakke.textTertiary)
                 .frame(width: 28, height: 28)
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: .Trakke.labelGap) {
                 Text(result.displayName)
-                    .font(.body)
+                    .font(Font.Trakke.bodyRegular)
                     .lineLimit(1)
 
                 if let subtext = result.subtext {

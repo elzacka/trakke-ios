@@ -26,16 +26,10 @@ struct WaypointListSheet: View {
                     waypointList
                 }
             }
+            .tint(Color.Trakke.brand)
             .background(Color(.systemGroupedBackground))
             .navigationTitle(String(localized: "waypoints.title"))
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(String(localized: "common.close")) {
-                        dismiss()
-                    }
-                }
-            }
             .fileImporter(
                 isPresented: $showFileImporter,
                 allowedContentTypes: [.gpx],
@@ -173,10 +167,10 @@ struct WaypointListSheet: View {
 
     private func waypointRow(_ waypoint: Waypoint) -> some View {
         HStack {
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: .Trakke.labelGap) {
                 Text(waypoint.name)
                     .font(Font.Trakke.bodyMedium)
-                    .foregroundStyle(Color.Trakke.brand)
+                    .foregroundStyle(Color.Trakke.text)
 
                 if let elevation = waypoint.elevation {
                     Text("\(Int(elevation)) moh.")

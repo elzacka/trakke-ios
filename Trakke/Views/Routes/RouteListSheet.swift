@@ -5,59 +5,68 @@ struct RouteListSheet: View {
     @Bindable var viewModel: RouteViewModel
     var onRouteSelected: ((Route) -> Void)?
     var onNewRoute: (() -> Void)?
+    var isEmbedded = false
+    var dismissSheet: (() -> Void)?
     @Environment(\.dismiss) private var dismiss
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var showFileImporter = false
 
+    private func dismissFully() {
+        if let dismissSheet { dismissSheet() } else { dismiss() }
+    }
+
     var body: some View {
-        NavigationStack {
-            Group {
-                if viewModel.routes.isEmpty {
-                    EmptyStateView(
-                        icon: "point.topleft.down.to.point.bottomright.curvepath",
-                        title: String(localized: "routes.empty.title"),
-                        subtitle: String(localized: "routes.empty.subtitle"),
-                        actionLabel: String(localized: "routes.importGPX"),
-                        actionIcon: "square.and.arrow.up",
-                        action: { showFileImporter = true }
-                    )
-                } else {
-                    routeList
-                }
+        if isEmbedded {
+            routeContent
+        } else {
+            NavigationStack {
+                routeContent
             }
-            .background(Color(.systemGroupedBackground))
-            .tint(Color.Trakke.brand)
-            .navigationTitle(String(localized: "routes.title"))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        onNewRoute?()
-                        dismiss()
-                    } label: {
-                        Image(systemName: "plus")
-                    }
-                    .accessibilityLabel(String(localized: "routes.new"))
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(String(localized: "common.close")) {
-                        dismiss()
-                    }
-                }
+        }
+    }
+
+    private var routeContent: some View {
+        Group {
+            if viewModel.routes.isEmpty {
+                EmptyStateView(
+                    icon: "point.topleft.down.to.point.bottomright.curvepath",
+                    title: String(localized: "routes.empty.title"),
+                    subtitle: String(localized: "routes.empty.subtitle"),
+                    actionLabel: String(localized: "routes.importGPX"),
+                    actionIcon: "square.and.arrow.up",
+                    action: { showFileImporter = true }
+                )
+            } else {
+                routeList
             }
-            .fileImporter(
-                isPresented: $showFileImporter,
-                allowedContentTypes: [.gpx],
-                allowsMultipleSelection: false
-            ) { result in
-                if case .success(let urls) = result, let url = urls.first {
-                    viewModel.importGPX(from: url)
+        }
+        .background(Color(.systemGroupedBackground))
+        .tint(Color.Trakke.brand)
+        .navigationTitle(String(localized: "routes.title"))
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    onNewRoute?()
+                    dismissFully()
+                } label: {
+                    Image(systemName: "plus")
                 }
+                .accessibilityLabel(String(localized: "routes.new"))
             }
-            .overlay(alignment: .bottom) {
-                if viewModel.importMessage != nil {
-                    importBanner
-                }
+        }
+        .fileImporter(
+            isPresented: $showFileImporter,
+            allowedContentTypes: [.gpx],
+            allowsMultipleSelection: false
+        ) { result in
+            if case .success(let urls) = result, let url = urls.first {
+                viewModel.importGPX(from: url)
+            }
+        }
+        .overlay(alignment: .bottom) {
+            if viewModel.importMessage != nil {
+                importBanner
             }
         }
     }
@@ -72,7 +81,7 @@ struct RouteListSheet: View {
                         }
                         Button {
                             onRouteSelected?(route)
-                            dismiss()
+                            dismissFully()
                         } label: {
                             routeRow(route)
                         }
@@ -121,7 +130,7 @@ struct RouteListSheet: View {
                 .fill(Color(hex: route.color ?? "#3e4533"))
                 .frame(width: 12, height: 12)
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: .Trakke.labelGap) {
                 Text(route.name)
                     .font(Font.Trakke.bodyMedium)
                     .foregroundStyle(Color.Trakke.text)
@@ -132,7 +141,7 @@ struct RouteListSheet: View {
                         .foregroundStyle(Color.Trakke.textTertiary)
 
                     if let gain = route.elevationGain, gain > 0 {
-                        HStack(spacing: 2) {
+                        HStack(spacing: .Trakke.labelGap) {
                             Image(systemName: "arrow.up.right")
                                 .font(Font.Trakke.captionSoft)
                             Text("\(Int(gain)) m")

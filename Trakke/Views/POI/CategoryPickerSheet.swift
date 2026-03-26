@@ -55,13 +55,6 @@ struct CategoryPickerSheet: View {
             .navigationTitle(String(localized: "categories.title"))
             .navigationBarTitleDisplayMode(.inline)
             .tint(Color.Trakke.brand)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(String(localized: "common.close")) {
-                        dismiss()
-                    }
-                }
-            }
         }
     }
 

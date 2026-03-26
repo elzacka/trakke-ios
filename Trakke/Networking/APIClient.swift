@@ -1,12 +1,12 @@
 import Foundation
 
-enum APIError: Error, LocalizedError {
+enum APIError: Error, LocalizedError, Sendable {
     case invalidURL
     case invalidResponse
     case httpError(statusCode: Int)
     case rateLimited
-    case decodingError(Error)
-    case networkError(Error)
+    case decodingError(String)
+    case networkError(String)
     case timeout
 
     var errorDescription: String? {
@@ -19,10 +19,10 @@ enum APIError: Error, LocalizedError {
             return "HTTP-feil: \(code)"
         case .rateLimited:
             return "For mange forsøk"
-        case .decodingError(let error):
-            return "Dekodingsfeil: \(error.localizedDescription)"
-        case .networkError(let error):
-            return "Nettverksfeil: \(error.localizedDescription)"
+        case .decodingError(let description):
+            return "Dekodingsfeil: \(description)"
+        case .networkError(let description):
+            return "Nettverksfeil: \(description)"
         case .timeout:
             return "Tidsavbrudd"
         }
@@ -60,7 +60,7 @@ enum APIClient {
             let decoder = JSONDecoder()
             return try decoder.decode(T.self, from: data)
         } catch {
-            throw APIError.decodingError(error)
+            throw APIError.decodingError(error.localizedDescription)
         }
     }
 
@@ -94,10 +94,10 @@ enum APIClient {
                 lastError = APIError.timeout
                 continue
             } catch let error as URLError where error.code == .networkConnectionLost {
-                lastError = APIError.networkError(error)
+                lastError = APIError.networkError(error.localizedDescription)
                 continue
             } catch {
-                throw APIError.networkError(error)
+                throw APIError.networkError(error.localizedDescription)
             }
 
             guard let httpResponse = response as? HTTPURLResponse else {
@@ -117,7 +117,7 @@ enum APIClient {
             }
         }
 
-        throw lastError ?? APIError.networkError(URLError(.unknown))
+        throw lastError ?? APIError.networkError(URLError(.unknown).localizedDescription)
     }
 
     static func buildURL(

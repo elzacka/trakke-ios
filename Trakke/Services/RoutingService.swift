@@ -31,12 +31,16 @@ enum RoutingError: Error, LocalizedError {
 
 // MARK: - Routing Service
 
+protocol RouteFetching: Sendable {
+    func computeRoute(from origin: CLLocationCoordinate2D, to destination: CLLocationCoordinate2D) async throws -> ComputedRoute
+}
+
 /// Routes are computed via FOSSGIS's public Valhalla instance (valhalla1.openstreetmap.de).
 /// This is a community-hosted service with no SLA or uptime guarantee. If the server is
 /// unreachable, the UI falls back to compass-based navigation. Rate limiting is enforced
 /// client-side via `minRequestInterval`. A self-hosted Valhalla instance would eliminate
 /// this external dependency if needed in the future.
-actor RoutingService {
+actor RoutingService: RouteFetching {
     private static let baseURL = "https://valhalla1.openstreetmap.de/route"
     private static let timeout: TimeInterval = 30
     private static let minRequestInterval: TimeInterval = 1.5

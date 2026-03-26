@@ -3,36 +3,39 @@ import SwiftData
 import CoreLocation
 
 struct ContentView: View {
-    @State private var mapViewModel = MapViewModel()
+    @State var mapViewModel = MapViewModel()
     @State private var searchViewModel = SearchViewModel()
     @State private var poiViewModel = POIViewModel()
-    @State private var routeViewModel = RouteViewModel()
+    @State var routeViewModel = RouteViewModel()
     @State private var waypointViewModel = WaypointViewModel()
     @State private var offlineViewModel = OfflineViewModel()
     @State private var weatherViewModel = WeatherViewModel()
     @State private var measurementViewModel = MeasurementViewModel()
-    @State private var navigationViewModel = NavigationViewModel()
+    @State var navigationViewModel = NavigationViewModel()
     @State private var sosViewModel = SOSViewModel()
+    @State var activityViewModel = ActivityViewModel()
+    @State private var knowledgeViewModel = KnowledgeViewModel()
     @State private var sheets = SheetCoordinator()
     @State private var connectivityMonitor = ConnectivityMonitor()
     @State private var navigationDestination: CLLocationCoordinate2D?
     @State private var showLongPressOptions = false
+    @State private var isFABMenuOpen = false
     @State private var longPressCoordinate: CLLocationCoordinate2D?
-    @State private var navigatingRouteId: String?
-    @State private var showRouteError = false
+    @State var navigatingRouteId: String?
+    @State var showRouteError = false
     @State private var showStopConfirmation = false
     @State private var showDbRecoveryAlert = false
     @Environment(\.scenePhase) private var scenePhase
-    @AppStorage("showWeatherWidget") private var showWeatherWidget = false
-    @AppStorage("showCompass") private var showCompass = true
-    @AppStorage("showZoomControls") private var showZoomControls = false
-    @AppStorage("showScaleBar") private var showScaleBar = false
-    @AppStorage("enableRotation") private var enableRotation = true
-    @AppStorage("overlayTurrutebasen") private var overlayTurrutebasen = false
-    @AppStorage("overlayHillshading") private var overlayHillshading = false
-    @AppStorage("overlayNaturvernomrader") private var overlayNaturvernomrader = false
-    @AppStorage("overlayNaturskog") private var overlayNaturskog = false
-    @AppStorage("naturskogLayerType") private var naturskogLayerType = OverlayLayer.naturskogSannsynlighet.rawValue
+    @AppStorage(AppStorageKeys.showWeatherWidget) private var showWeatherWidget = false
+    @AppStorage(AppStorageKeys.showCompass) private var showCompass = true
+    @AppStorage(AppStorageKeys.showZoomControls) private var showZoomControls = false
+    @AppStorage(AppStorageKeys.showScaleBar) private var showScaleBar = false
+    @AppStorage(AppStorageKeys.enableRotation) private var enableRotation = true
+    @AppStorage(AppStorageKeys.overlayTurrutebasen) private var overlayTurrutebasen = false
+    @AppStorage(AppStorageKeys.overlayHillshading) private var overlayHillshading = false
+    @AppStorage(AppStorageKeys.overlayNaturvernomrader) private var overlayNaturvernomrader = false
+    @AppStorage(AppStorageKeys.overlayNaturskog) private var overlayNaturskog = false
+    @AppStorage(AppStorageKeys.naturskogLayerType) private var naturskogLayerType = OverlayLayer.naturskogSannsynlighet.rawValue
     @Environment(\.modelContext) private var modelContext
 
     var body: some View {
@@ -42,11 +45,14 @@ struct ContentView: View {
             routeViewModel.loadRoutes()
             waypointViewModel.setModelContext(modelContext)
             waypointViewModel.loadWaypoints()
+            activityViewModel.setModelContext(modelContext)
+            activityViewModel.loadActivities()
             offlineViewModel.startObserving()
             connectivityMonitor.start()
+            BundledPOIService.preloadAll()
             syncOverlays()
-            if UserDefaults.standard.bool(forKey: "dbRecoveryOccurred") {
-                UserDefaults.standard.removeObject(forKey: "dbRecoveryOccurred")
+            if UserDefaults.standard.bool(forKey: AppStorageKeys.dbRecoveryOccurred) {
+                UserDefaults.standard.removeObject(forKey: AppStorageKeys.dbRecoveryOccurred)
                 showDbRecoveryAlert = true
             }
         }
@@ -177,27 +183,12 @@ struct ContentView: View {
                 viewModel: mapViewModel,
                 onSearchTapped: { sheets.showSearchSheet = true },
                 onCategoryTapped: { sheets.showCategoryPicker = true },
-                onRouteTapped: {
-                    sheets.showRouteList = true
-                },
                 onMyPlacesTapped: { sheets.showWaypointList = true },
-                onOfflineTapped: {
-                    if offlineViewModel.packs.isEmpty {
-                        offlineViewModel.startSelection(
-                            center: mapViewModel.currentCenter,
-                            zoom: mapViewModel.currentZoom
-                        )
-                    } else {
-                        sheets.showOfflineManager = true
-                    }
-                },
                 onWeatherTapped: { sheets.showWeatherSheet = true },
-                onMeasurementTapped: { sheets.showMeasurementSheet = true },
-                onSettingsTapped: { sheets.showPreferences = true },
-                onInfoTapped: { sheets.showInfo = true },
-                onEmergencyCoordinatesTapped: { sheets.showEmergencyCoordinates = true },
-                onSOSTapped: { sheets.showSOS = true },
+                onEmergencyTapped: { sheets.showEmergency = true },
+                onMoreTapped: { sheets.showMore = true },
                 enabledOverlays: mapViewModel.enabledOverlays,
+                isMenuOpen: $isFABMenuOpen,
                 weatherContent: Group {
                     if showWeatherWidget {
                         WeatherWidgetView(viewModel: weatherViewModel) {
@@ -208,7 +199,7 @@ struct ContentView: View {
                 showCompass: showCompass,
                 showZoomControls: showZoomControls,
                 showScaleBar: showScaleBar,
-                hideMenuAndZoom: routeViewModel.isDrawing || measurementViewModel.isActive || offlineViewModel.isSelectingArea || navigationViewModel.isActive,
+                hideMenuAndZoom: routeViewModel.isDrawing || measurementViewModel.isActive || offlineViewModel.isSelectingArea || navigationViewModel.isActive || activityViewModel.isRecording,
                 isConnected: connectivityMonitor.isConnected
             )
 
@@ -245,7 +236,7 @@ struct ContentView: View {
             if navigationViewModel.isComputingRoute {
                 VStack {
                     Spacer()
-                    HStack(spacing: 8) {
+                    HStack(spacing: .Trakke.sm) {
                         ProgressView()
                         Text(String(localized: "navigation.computing"))
                             .font(Font.Trakke.bodyRegular)
@@ -290,6 +281,15 @@ struct ContentView: View {
                 )
             }
 
+            if activityViewModel.isRecording {
+                ActivityRecordingToolbar(
+                    formattedDistance: activityViewModel.formattedDistance,
+                    formattedDuration: activityViewModel.formattedDuration,
+                    formattedElevationGain: activityViewModel.formattedElevationGain,
+                    onStop: { sheets.showActivitySave = true }
+                )
+            }
+
             if mapViewModel.showLocationPrimer {
                 Color.black.opacity(0.15)
                     .ignoresSafeArea()
@@ -306,15 +306,20 @@ struct ContentView: View {
         }
         .tint(Color.Trakke.brand)
         .sheet(isPresented: $sheets.showSearchSheet) {
-            SearchSheet(viewModel: searchViewModel) { result in
-                mapViewModel.searchPinCoordinate = result.coordinate
-                mapViewModel.centerOn(coordinate: result.coordinate, zoom: 14)
-            }
+            SearchSheet(
+                viewModel: searchViewModel,
+                onResultSelected: { result in
+                    mapViewModel.searchPinCoordinate = result.coordinate
+                    mapViewModel.centerOn(coordinate: result.coordinate, zoom: 14)
+                }
+            )
             .presentationDetents([.medium, .large])
+            .presentationDragIndicator(.visible)
         }
         .sheet(isPresented: $sheets.showCategoryPicker) {
             CategoryPickerSheet(viewModel: poiViewModel)
                 .presentationDetents([.medium])
+                .presentationDragIndicator(.visible)
         }
         .sheet(isPresented: $sheets.showPOIDetail) {
             if let poi = poiViewModel.selectedPOI {
@@ -378,12 +383,13 @@ struct ContentView: View {
         .sheet(isPresented: $sheets.showMeasurementSheet) {
             MeasurementSheet(viewModel: measurementViewModel)
                 .presentationDetents([.height(200)])
+                .presentationDragIndicator(.visible)
         }
         .onChange(of: measurementViewModel.isActive) { _, isActive in
             if isActive { sheets.showMeasurementSheet = false }
         }
         .sheet(isPresented: $sheets.showPreferences) {
-            PreferencesSheet(mapViewModel: mapViewModel)
+            PreferencesSheet(mapViewModel: mapViewModel, knowledgeViewModel: knowledgeViewModel)
                 .presentationDetents([.medium, .large])
         }
         .sheet(isPresented: $sheets.showInfo) {
@@ -425,10 +431,12 @@ struct ContentView: View {
                 editingWaypoint: sheets.editingWaypoint
             )
             .presentationDetents([.medium])
+            .presentationDragIndicator(.visible)
         }
         .sheet(isPresented: $sheets.showRouteSave) {
             RouteSaveSheet(viewModel: routeViewModel)
                 .presentationDetents([.medium])
+                .presentationDragIndicator(.visible)
         }
         .sheet(isPresented: $sheets.showNavigationStart) {
             if let dest = navigationDestination {
@@ -440,15 +448,86 @@ struct ContentView: View {
                     onCompassNavigation: { startCompassNavigation(to: dest) }
                 )
                 .presentationDetents([.medium])
+                .presentationDragIndicator(.visible)
             }
         }
-        .sheet(isPresented: $sheets.showEmergencyCoordinates) {
-            EmergencyCoordinatesSheet(userLocation: mapViewModel.userLocation)
-                .presentationDetents([.medium])
+        .sheet(isPresented: $sheets.showEmergency, onDismiss: { sosViewModel.deactivate() }) {
+            EmergencySheet(
+                userLocation: mapViewModel.userLocation,
+                sosViewModel: sosViewModel
+            )
+            .presentationDetents([.medium, .large])
+            .presentationDragIndicator(.visible)
         }
-        .sheet(isPresented: $sheets.showSOS, onDismiss: { sosViewModel.deactivate() }) {
-            SOSSheet(viewModel: sosViewModel)
+        .sheet(isPresented: $sheets.showActivityList) {
+            ActivityListSheet(
+                viewModel: activityViewModel,
+                onActivitySelected: { activity in
+                    activityViewModel.selectedActivity = activity
+                    sheets.showActivityDetail = true
+                },
+                onStartRecording: {
+                    startActivityRecording()
+                }
+            )
+            .presentationDetents([.medium, .large])
+        }
+        .sheet(isPresented: $sheets.showActivityDetail) {
+            if let activity = activityViewModel.selectedActivity {
+                ActivityDetailSheet(
+                    viewModel: activityViewModel,
+                    activity: activity,
+                    onRetrace: { coordinate in
+                        sheets.showActivityDetail = false
+                        navigationDestination = coordinate
+                        sheets.showNavigationStart = true
+                    }
+                )
                 .presentationDetents([.medium, .large])
+            }
+        }
+        .sheet(isPresented: $sheets.showActivitySave) {
+            ActivitySaveSheet(viewModel: activityViewModel)
+                .presentationDetents([.medium])
+                .presentationDragIndicator(.visible)
+        }
+        .sheet(isPresented: $sheets.showKnowledge) {
+            KnowledgeSheet(viewModel: knowledgeViewModel)
+                .presentationDetents([.medium, .large])
+        }
+        .sheet(isPresented: $sheets.showMore) {
+            MoreSheet(
+                knowledgeViewModel: knowledgeViewModel,
+                routeViewModel: routeViewModel,
+                activityViewModel: activityViewModel,
+                mapViewModel: mapViewModel,
+                onMeasurementTapped: { sheets.showMeasurementSheet = true },
+                onOfflineTapped: {
+                    if offlineViewModel.packs.isEmpty {
+                        offlineViewModel.startSelection(
+                            center: mapViewModel.currentCenter,
+                            zoom: mapViewModel.currentZoom
+                        )
+                    } else {
+                        sheets.showOfflineManager = true
+                    }
+                },
+                onRouteSelected: { route in
+                    routeViewModel.selectRoute(route)
+                    sheets.showRouteDetail = true
+                },
+                onNewRoute: {
+                    routeViewModel.startDrawing()
+                },
+                onActivitySelected: { activity in
+                    activityViewModel.selectedActivity = activity
+                    sheets.showActivityDetail = true
+                },
+                onStartRecording: {
+                    startActivityRecording()
+                }
+            )
+            .presentationDetents([.medium, .large])
         }
         .alert(
             String(localized: "navigation.routeErrorTitle"),
@@ -469,16 +548,16 @@ struct ContentView: View {
         .alert(
             String(localized: "error.saveFailed"),
             isPresented: Binding(
-                get: { routeViewModel.saveError != nil || waypointViewModel.saveError != nil },
-                set: { if !$0 { routeViewModel.saveError = nil; waypointViewModel.saveError = nil } }
+                get: { routeViewModel.saveError != nil || waypointViewModel.saveError != nil || activityViewModel.saveError != nil },
+                set: { if !$0 { routeViewModel.saveError = nil; waypointViewModel.saveError = nil; activityViewModel.saveError = nil } }
             )
         ) {
             Button(String(localized: "common.ok")) {}
         }
         .confirmationDialog(
-            String(localized: "map.longPressTitle"),
+            "",
             isPresented: $showLongPressOptions,
-            titleVisibility: .visible
+            titleVisibility: .hidden
         ) {
             Button(String(localized: "waypoints.addWaypoint")) {
                 if let coord = longPressCoordinate {
@@ -497,63 +576,7 @@ struct ContentView: View {
     }
 
     // MARK: - Navigation
-
-    private func startRouteNavigation(to destination: CLLocationCoordinate2D) {
-        guard let userLocation = mapViewModel.userLocation else { return }
-        mapViewModel.startNavigation()
-        mapViewModel.onLocationUpdate = { [weak navigationViewModel] location in
-            Task { @MainActor in
-                await navigationViewModel?.processLocationUpdate(location)
-            }
-        }
-        Task {
-            let success = await navigationViewModel.startRouteNavigation(
-                from: userLocation.coordinate, to: destination
-            )
-            if success {
-                UIApplication.shared.isIdleTimerDisabled = true
-            } else {
-                // Route computation failed -- clean up half-started state
-                mapViewModel.stopNavigation()
-                showRouteError = true
-            }
-        }
-    }
-
-    private func startCompassNavigation(to destination: CLLocationCoordinate2D) {
-        mapViewModel.startNavigation()
-        mapViewModel.onLocationUpdate = { [weak navigationViewModel] location in
-            Task { @MainActor in
-                await navigationViewModel?.processLocationUpdate(location)
-            }
-        }
-        navigationViewModel.startCompassNavigation(to: destination)
-        UIApplication.shared.isIdleTimerDisabled = true
-    }
-
-    private func startFollowingRoute(_ route: Route) {
-        navigatingRouteId = route.id
-        mapViewModel.startNavigation()
-        mapViewModel.onLocationUpdate = { [weak navigationViewModel] location in
-            Task { @MainActor in
-                await navigationViewModel?.processLocationUpdate(location)
-            }
-        }
-        navigationViewModel.startFollowingRoute(
-            route: route,
-            elevationProfile: routeViewModel.elevationProfile
-        )
-        UIApplication.shared.isIdleTimerDisabled = true
-    }
-
-    private func stopNavigation() {
-        navigationViewModel.stopNavigation()
-        mapViewModel.stopNavigation()
-        navigatingRouteId = nil
-        UIApplication.shared.isIdleTimerDisabled = false
-    }
-
-
+    // See ContentView+Navigation.swift for navigation method implementations.
 }
 
 #Preview {

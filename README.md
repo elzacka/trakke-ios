@@ -1,23 +1,28 @@
 # Tråkke - Norsk friluftslivsapp for iOS
 
-**Versjon 1.2.0** | iOS 26.0+ | Swift 6.2
+**Versjon 1.3.0** | iOS 26.0+ | Swift 6.2
 
 Tråkke er en kartapp for iPhone og iPad som bruker kartdata fra Kartverket. Appen er laget for turgåere og friluftsfolk i Norge, med fokus på personvern og offline-bruk.
 
 ## Funksjoner
 
-- **Topografiske kart** fra Kartverket (farge og gråtone)
+- **Topografiske kart** fra Kartverket (farge, gråtone og toporaster)
 - **GPS-posisjon** med sanntidsvisning på kartet
 - **Stedsnavn- og adressesøk** via Kartverket
 - **Offline kart** - last ned områder for bruk uten nett
 - **Ruter og veipunkter** - tegn, lagre, importer og eksporter som GPX
 - **Interessepunkter** - tilfluktsrom, huler, utsiktspunkter, krigsminner, gapahuker/vindskjul, kulturminner
-- **Kartlag** - turruter (Kartverket) og naturskog (Miljødirektoratet)
+- **Kartlag** - turruter, fjellskygge, naturvernområder og naturskog (3 lag) fra Kartverket og Miljødirektoratet
 - **Høydeprofiler** med data fra Kartverkets høydemodell
 - **Værmelding** fra Meteorologisk institutt
+- **Vanntemperatur** - havtemperatur (MET Oceanforecast) og badevannstemperatur (Havvarsel-Frost)
+- **Soloppgang og solnedgang** - dagslysinfo beregnet lokalt uten nett
 - **Måleverktøy** for avstand og areal
 - **Koordinatformater** - DD, DMS, DDM, UTM, MGRS
 - **Navigasjon** - beregnet rute (via Valhalla) med sving-for-sving eller kompassretning til mål
+- **Turregistrering** - GPS-basert sporregistrering med avstand, høydemeter og varighet
+- **Kunnskap og overlevelse** - nedlastbare artikler om friluftsliv, tilgjengelig uten nett
+- **Nødkoordinater og SOS-signal** - vis posisjon i DD, UTM og MGRS, SOS-morsekode med lommelykt
 - **Slett alle data** - GDPR-sletting av alle ruter, veipunkter og nedlastede kart (innstillinger)
 
 ## Krav
@@ -47,7 +52,7 @@ xcodebuild -project Trakke.xcodeproj -scheme Trakke \
   -skipMacroValidation test
 ```
 
-**Forutsetninger:** Xcode 26.2, xcodegen (`brew install xcodegen`)
+**Forutsetninger:** Xcode 26.3, xcodegen (`brew install xcodegen`)
 
 ## Teknisk stack
 
@@ -60,6 +65,7 @@ xcodebuild -project Trakke.xcodeproj -scheme Trakke \
 | Lagring | SwiftData |
 | Koordinater | NGA mgrs-ios 2.0.0 |
 | Grafer | Swift Charts |
+| Kunnskap (DB) | GRDB 7.4.0 |
 
 ## Kartdata
 
@@ -69,7 +75,10 @@ Alle kartdata kommer fra Kartverket (kartverket.no). Appen bruker ikke kartdata 
 |---------|-------|
 | Topografisk (standard) | Kartverket WMTS |
 | Gråtone | Kartverket WMTS |
+| Toporaster | Kartverket WMTS |
 | Turruter (overlay) | Kartverket WMS |
+| Fjellskygge (overlay) | Kartverket WMS |
+| Naturvernområder (overlay) | Miljødirektoratet WMS |
 | Naturskog (overlay) | Miljødirektoratet ArcGIS REST |
 
 ## Datakilder
@@ -84,11 +93,14 @@ Alle tjenester er innenfor EU/EØS. Ingen autentisering kreves.
 | Høydedata | Geonorge | Norge |
 | Tilfluktsrom | DSB | Norge |
 | Vær | Meteorologisk institutt (CC BY 4.0) | Norge |
+| Havtemperatur | Meteorologisk institutt (CC BY 4.0) | Norge |
+| Badevannstemperatur | Havvarsel-Frost (CC BY 4.0) | Norge |
 | POI (OpenStreetMap) | Forhåndslastet fra Overpass API (ODbL) | Lokalt i appen |
 | Kulturminner | Riksantikvaren | Norge |
 | Turruter | Kartverket WMS (NLOD 2.0) | Norge |
 | Naturskog | Miljødirektoratet ArcGIS REST (NLOD 2.0) | Norge |
 | Ruting | FOSSGIS Valhalla (ODbL / MIT) | Tyskland (EU) |
+| Kunnskapspakker | GitHub Releases | Lokalt i appen |
 
 ## Personvern
 
@@ -103,7 +115,7 @@ Se [PERSONVERN.md](PERSONVERN.md) for fullstendig personvernerklæring.
 | [PERSONVERN.md](PERSONVERN.md) | Personvernerklæring (GDPR) |
 | [SECURITY.md](SECURITY.md) | Sikkerhetspolicy og arkitektur |
 | [CLAUDE.md](CLAUDE.md) | Utviklerkontekst og arkitektur |
-| [API-JOURNAL.md](API-JOURNAL.md) | API-referanse og feilsøking |
+| [API-JOURNAL.md](API-JOURNAL.md) | API-referanse og integrasjonsjournal |
 | [APP-STORE-CHECKLIST.md](APP-STORE-CHECKLIST.md) | App Store-sjekkliste |
 
 ## Lisens
@@ -113,9 +125,10 @@ MIT License
 ## Attribusjon
 
 - (c) Kartverket - kartdata, turruter og tjenester (NLOD 2.0)
-- Meteorologisk institutt - værdata (CC BY 4.0)
+- Meteorologisk institutt - vær- og havtemperaturdata (CC BY 4.0)
+- Havvarsel-Frost - badevannsdata (CC BY 4.0)
 - OpenStreetMap-bidragsytere - interessepunkter (ODbL)
 - Riksantikvaren - kulturminnedata (NLOD)
 - DSB - tilfluktsromdata (NLOD)
-- Miljødirektoratet - naturskogdata (NLOD 2.0)
+- Miljødirektoratet - naturvernområder og naturskogdata (NLOD 2.0)
 - FOSSGIS / Valhalla - ruteberegning (MIT / ODbL)

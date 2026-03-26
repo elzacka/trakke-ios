@@ -1,6 +1,6 @@
 import Foundation
 import CoreLocation
-import UIKit
+import SwiftUI
 
 @MainActor
 @Observable
@@ -30,7 +30,11 @@ final class NavigationViewModel {
     // MARK: - Private State
 
     private let navigationService = NavigationService()
-    private let routingService = RoutingService()
+    private let routingService: any RouteFetching
+
+    init(routingService: any RouteFetching = RoutingService()) {
+        self.routingService = routingService
+    }
     private var elevationProfile: [ElevationPoint] = []
     private var cumulativeDistances: [Double] = []
     private var totalDistance: Double = 0
@@ -39,7 +43,7 @@ final class NavigationViewModel {
     private var lastDeviationAlertTime: Date?
     private var lastProcessedTime: Date?
     private var isProcessingUpdate = false
-    private let feedbackGenerator = UINotificationFeedbackGenerator()
+    private let hapticFeedback = HapticFeedbackService()
 
     // Navigation update throttling: GPS updates arrive at ~1 Hz, but snap-to-route
     // and progress calculations are expensive. Updates are skipped if less than
@@ -61,7 +65,7 @@ final class NavigationViewModel {
         destination = dest
         isComputingRoute = true
         routeError = nil
-        feedbackGenerator.prepare()
+        hapticFeedback.prepare()
 
         do {
             let computedRoute = try await routingService.computeRoute(from: origin, to: dest)
@@ -103,7 +107,7 @@ final class NavigationViewModel {
         instructions = []
         routeSummary = route.name
         destination = routeCoordinates.last
-        feedbackGenerator.prepare()
+        hapticFeedback.prepare()
 
         mode = .route
         isActive = true
@@ -119,7 +123,7 @@ final class NavigationViewModel {
         isActive = true
         routeCoordinates = []
         instructions = []
-        feedbackGenerator.prepare()
+        hapticFeedback.prepare()
     }
 
     // MARK: - Stop Navigation
@@ -339,10 +343,10 @@ final class NavigationViewModel {
 
         isOffTrack = true
         lastDeviationAlertTime = now
-        feedbackGenerator.notificationOccurred(.warning)
+        hapticFeedback.warning()
     }
 
     private func triggerArrivalFeedback() {
-        feedbackGenerator.notificationOccurred(.success)
+        hapticFeedback.success()
     }
 }

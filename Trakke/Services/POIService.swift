@@ -1,5 +1,6 @@
 import Foundation
 import CoreLocation
+import OSLog
 
 // MARK: - POI Service
 
@@ -59,9 +60,7 @@ actor POIService {
         } catch let urlError as URLError where urlError.code == .cancelled {
             return cache[key]?.pois ?? []
         } catch {
-            #if DEBUG
-            print("POI fetch error (\(category.rawValue)): \(error)")
-            #endif
+            Logger.poi.error("POI fetch error (\(category.rawValue, privacy: .public)): \(error, privacy: .private)")
             return cache[key]?.pois ?? []
         }
     }
@@ -139,6 +138,7 @@ actor POIService {
 
                 let lon = feature.geometry.coordinates[0]
                 let lat = feature.geometry.coordinates[1]
+                guard lat.isFinite, lon.isFinite else { return nil }
 
                 let name = feature.properties.tittel ?? String(localized: "poi.kulturminner")
 
@@ -298,7 +298,8 @@ private class ShelterGMLParser: NSObject, XMLParserDelegate {
                 let parts = coordStr.split(separator: " ")
                 if parts.count >= 2,
                    let lat = Double(parts[0]),
-                   let lon = Double(parts[1]) {
+                   let lon = Double(parts[1]),
+                   lat.isFinite, lon.isFinite {
 
                     let id = romnr ?? "\(lat)-\(lon)"
                     let displayName = "Tilfluktsrom \(romnr ?? "")"

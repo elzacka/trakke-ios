@@ -25,5 +25,12 @@ extension Font {
 
         // Section headers (CardSection)
         static var sectionHeader: Font { .caption }
+
+        // Numeral styles (for distance/area readouts, compass distance)
+        static var numeralLarge: Font { .title3.monospacedDigit().bold() }
+        static var numeralXLarge: Font { .title2.monospacedDigit().bold() }
+
+        // Temperature display (weather)
+        static var temperature: Font { .system(.largeTitle, design: .rounded, weight: .light) }
     }
 }

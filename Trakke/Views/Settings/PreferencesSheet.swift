@@ -3,25 +3,36 @@ import SwiftData
 
 struct PreferencesSheet: View {
     @Bindable var mapViewModel: MapViewModel
-    @AppStorage("coordinateFormat") private var coordinateFormat: CoordinateFormat = .dd
-    @AppStorage("showWeatherWidget") private var showWeatherWidget = false
-    @AppStorage("showCompass") private var showCompass = true
-    @AppStorage("showZoomControls") private var showZoomControls = false
-    @AppStorage("showScaleBar") private var showScaleBar = false
-    @AppStorage("enableRotation") private var enableRotation = true
-    @AppStorage("overlayTurrutebasen") private var overlayTurrutebasen = false
-    @AppStorage("overlayHillshading") private var overlayHillshading = false
-    @AppStorage("overlayNaturvernomrader") private var overlayNaturvernomrader = false
-    @AppStorage("overlayNaturskog") private var overlayNaturskog = false
-    @AppStorage("naturskogLayerType") private var naturskogLayerType = OverlayLayer.naturskogSannsynlighet.rawValue
+    var knowledgeViewModel: KnowledgeViewModel?
+    var isEmbedded = false
+    @AppStorage(AppStorageKeys.coordinateFormat) private var coordinateFormat: CoordinateFormat = .dd
+    @AppStorage(AppStorageKeys.showWeatherWidget) private var showWeatherWidget = false
+    @AppStorage(AppStorageKeys.showCompass) private var showCompass = true
+    @AppStorage(AppStorageKeys.showZoomControls) private var showZoomControls = false
+    @AppStorage(AppStorageKeys.showScaleBar) private var showScaleBar = false
+    @AppStorage(AppStorageKeys.enableRotation) private var enableRotation = true
+    @AppStorage(AppStorageKeys.overlayTurrutebasen) private var overlayTurrutebasen = false
+    @AppStorage(AppStorageKeys.overlayHillshading) private var overlayHillshading = false
+    @AppStorage(AppStorageKeys.overlayNaturvernomrader) private var overlayNaturvernomrader = false
+    @AppStorage(AppStorageKeys.overlayNaturskog) private var overlayNaturskog = false
+    @AppStorage(AppStorageKeys.naturskogLayerType) private var naturskogLayerType = OverlayLayer.naturskogSannsynlighet.rawValue
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var showDeleteAllConfirmation = false
 
     var body: some View {
-        NavigationStack {
-            ScrollView {
+        if isEmbedded {
+            preferencesContent
+        } else {
+            NavigationStack {
+                preferencesContent
+            }
+        }
+    }
+
+    private var preferencesContent: some View {
+        ScrollView {
                 VStack(spacing: .Trakke.cardGap) {
                     // MARK: - Base Layer
                     CardSection(String(localized: "settings.baseLayer")) {
@@ -61,48 +72,17 @@ struct PreferencesSheet: View {
                                 .padding(.bottom, .Trakke.xs)
 
                             settingsToggle(
-                                label: OverlayLayer.turrutebasen.displayName,
-                                isOn: $overlayTurrutebasen
+                                label: String(localized: "map.overlay.naturskog"),
+                                isOn: $overlayNaturskog
                             )
+                            if overlayNaturskog {
+                                naturskogSubPicker
+                            }
                             Divider()
                             settingsToggle(
                                 label: OverlayLayer.naturvernomrader.displayName,
                                 isOn: $overlayNaturvernomrader
                             )
-                            Divider()
-                            settingsToggle(
-                                label: String(localized: "map.overlay.naturskog"),
-                                isOn: $overlayNaturskog
-                            )
-                            if overlayNaturskog {
-                                VStack(spacing: 0) {
-                                    ForEach(Array(OverlayLayer.naturskogLayers.enumerated()), id: \.element) { index, layer in
-                                        if index > 0 {
-                                            Divider().padding(.leading, .Trakke.sheetHorizontal)
-                                        }
-                                        Button {
-                                            naturskogLayerType = layer.rawValue
-                                        } label: {
-                                            HStack {
-                                                Text(layer.displayName)
-                                                    .font(Font.Trakke.bodyRegular)
-                                                    .foregroundStyle(Color.Trakke.text)
-                                                Spacer()
-                                                if naturskogLayerType == layer.rawValue {
-                                                    Image(systemName: "checkmark")
-                                                        .font(Font.Trakke.bodyMedium)
-                                                        .foregroundStyle(Color.Trakke.brand)
-                                                }
-                                            }
-                                            .frame(minHeight: .Trakke.touchMin)
-                                            .contentShape(Rectangle())
-                                        }
-                                        .accessibilityAddTraits(naturskogLayerType == layer.rawValue ? .isSelected : [])
-                                    }
-                                }
-                                .padding(.leading, .Trakke.sheetHorizontal)
-                                .padding(.top, .Trakke.xs)
-                            }
                         }
                     }
 
@@ -110,8 +90,8 @@ struct PreferencesSheet: View {
                     CardSection(String(localized: "settings.display")) {
                         VStack(spacing: 0) {
                             settingsToggle(
-                                label: String(localized: "settings.showWeatherWidget"),
-                                isOn: $showWeatherWidget
+                                label: String(localized: "settings.enableRotation"),
+                                isOn: $enableRotation
                             )
                             Divider()
                             settingsToggle(
@@ -120,18 +100,18 @@ struct PreferencesSheet: View {
                             )
                             Divider()
                             settingsToggle(
-                                label: String(localized: "settings.showZoomControls"),
-                                isOn: $showZoomControls
-                            )
-                            Divider()
-                            settingsToggle(
                                 label: String(localized: "settings.showScaleBar"),
                                 isOn: $showScaleBar
                             )
                             Divider()
                             settingsToggle(
-                                label: String(localized: "settings.enableRotation"),
-                                isOn: $enableRotation
+                                label: String(localized: "settings.showWeatherWidget"),
+                                isOn: $showWeatherWidget
+                            )
+                            Divider()
+                            settingsToggle(
+                                label: String(localized: "settings.showZoomControls"),
+                                isOn: $showZoomControls
                             )
                         }
                     }
@@ -147,7 +127,7 @@ struct PreferencesSheet: View {
                                     coordinateFormat = format
                                 } label: {
                                     HStack {
-                                        VStack(alignment: .leading, spacing: 2) {
+                                        VStack(alignment: .leading, spacing: .Trakke.labelGap) {
                                             Text(format.displayName)
                                                 .font(Font.Trakke.bodyMedium)
                                                 .foregroundStyle(Color.Trakke.text)
@@ -221,24 +201,22 @@ struct PreferencesSheet: View {
             .tint(Color.Trakke.brand)
             .navigationTitle(String(localized: "settings.title"))
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(String(localized: "common.close")) { dismiss() }
-                }
-            }
-        }
     }
 
     // MARK: - Delete All Data
 
     private func deleteAllData() {
-        // Delete all SwiftData records
+        // Delete all SwiftData records (GDPR Art. 17)
         try? modelContext.delete(model: Route.self)
         try? modelContext.delete(model: Waypoint.self)
+        try? modelContext.delete(model: Activity.self)
         try? modelContext.save()
 
         // Delete offline map packs
         OfflineMapService.shared.deleteAllPacks()
+
+        // Delete knowledge packs (SQLite databases, metadata, catalog cache)
+        knowledgeViewModel?.deleteAllPacks()
 
         // Clear in-memory service caches
         BundledPOIService.clearCache()
@@ -256,6 +234,7 @@ struct PreferencesSheet: View {
         overlayNaturskog = false
         naturskogLayerType = OverlayLayer.naturskogSannsynlighet.rawValue
         mapViewModel.baseLayer = .topo
+        UserDefaults.standard.removeObject(forKey: AppStorageKeys.navigationSessionActive)
 
         // Clean up temp directory
         let tempDir = FileManager.default.temporaryDirectory
@@ -268,6 +247,38 @@ struct PreferencesSheet: View {
         }
 
         dismiss()
+    }
+
+    // MARK: - Naturskog Sub-Picker
+
+    private var naturskogSubPicker: some View {
+        VStack(spacing: 0) {
+            ForEach(Array(OverlayLayer.naturskogLayers.enumerated()), id: \.element) { index, layer in
+                if index > 0 {
+                    Divider().padding(.leading, .Trakke.sheetHorizontal)
+                }
+                Button {
+                    naturskogLayerType = layer.rawValue
+                } label: {
+                    HStack {
+                        Text(layer.displayName)
+                            .font(Font.Trakke.bodyRegular)
+                            .foregroundStyle(Color.Trakke.text)
+                        Spacer()
+                        if naturskogLayerType == layer.rawValue {
+                            Image(systemName: "checkmark")
+                                .font(Font.Trakke.bodyMedium)
+                                .foregroundStyle(Color.Trakke.brand)
+                        }
+                    }
+                    .frame(minHeight: .Trakke.touchMin)
+                    .contentShape(Rectangle())
+                }
+                .accessibilityAddTraits(naturskogLayerType == layer.rawValue ? .isSelected : [])
+            }
+        }
+        .padding(.leading, .Trakke.sheetHorizontal)
+        .padding(.top, .Trakke.xs)
     }
 
     // MARK: - Toggle Row

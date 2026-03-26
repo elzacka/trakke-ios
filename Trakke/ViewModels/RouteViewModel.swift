@@ -154,9 +154,7 @@ final class RouteViewModel {
                 route.updatedAt = Date()
                 self.save("elevation data")
             } catch {
-                #if DEBUG
-                print("Elevation fetch error: \(error)")
-                #endif
+                logger.error("Elevation fetch error: \(error, privacy: .private)")
             }
             self.isLoadingElevation = false
         }

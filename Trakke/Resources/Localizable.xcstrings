@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "nb",
   "strings" : {
+    "··· — — — ···" : {
+
+    },
     "(%@)" : {
 
     },
@@ -16,8 +19,388 @@
     "%@ moh." : {
 
     },
+    "%@." : {
+
+    },
     "%@°" : {
 
+    },
+    "•" : {
+
+    },
+    "accessibility.tapToCollapse" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dobbelttrykk for å lukke"
+          }
+        }
+      }
+    },
+    "accessibility.tapToExpand" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dobbelttrykk for å åpne"
+          }
+        }
+      }
+    },
+    "activity.averagePace" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gj.sn. tempo"
+          }
+        }
+      }
+    },
+    "activity.date" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dato"
+          }
+        }
+      }
+    },
+    "activity.defaultName %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tur %@"
+          }
+        }
+      }
+    },
+    "activity.delete" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slett tur"
+          }
+        }
+      }
+    },
+    "activity.delete.confirm" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slett"
+          }
+        }
+      }
+    },
+    "activity.delete.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slett denne turen?"
+          }
+        }
+      }
+    },
+    "activity.deleteAll" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slett alle turer"
+          }
+        }
+      }
+    },
+    "activity.deleteAll.confirm" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slett alle"
+          }
+        }
+      }
+    },
+    "activity.deleteAll.message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle turer slettes permanent."
+          }
+        }
+      }
+    },
+    "activity.deleteAll.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slett alle turer?"
+          }
+        }
+      }
+    },
+    "activity.details" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detaljer"
+          }
+        }
+      }
+    },
+    "activity.discard" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forkast"
+          }
+        }
+      }
+    },
+    "activity.discard.confirm" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forkast"
+          }
+        }
+      }
+    },
+    "activity.discard.message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turen blir ikke lagret."
+          }
+        }
+      }
+    },
+    "activity.discard.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forkast turen?"
+          }
+        }
+      }
+    },
+    "activity.distance" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Distanse"
+          }
+        }
+      }
+    },
+    "activity.duration" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Varighet"
+          }
+        }
+      }
+    },
+    "activity.empty.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trykk opptaksknappen for å logge en tur."
+          }
+        }
+      }
+    },
+    "activity.empty.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingen turer ennå"
+          }
+        }
+      }
+    },
+    "activity.history" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turhistorikk"
+          }
+        }
+      }
+    },
+    "activity.noElevationData" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingen høydedata tilgjengelig"
+          }
+        }
+      }
+    },
+    "activity.recording" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opptak pågår"
+          }
+        }
+      }
+    },
+    "activity.retrace" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naviger tilbake til start"
+          }
+        }
+      }
+    },
+    "activity.save" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lagre"
+          }
+        }
+      }
+    },
+    "activity.save.name" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Navn"
+          }
+        }
+      }
+    },
+    "activity.save.namePlaceholder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gi turen et navn"
+          }
+        }
+      }
+    },
+    "activity.save.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lagre tur"
+          }
+        }
+      }
+    },
+    "activity.startRecording" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start opptak"
+          }
+        }
+      }
+    },
+    "activity.stats" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Statistikk"
+          }
+        }
+      }
+    },
+    "activity.stop" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stopp opptak"
+          }
+        }
+      }
+    },
+    "activity.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turer"
+          }
+        }
+      }
+    },
+    "activity.trackPoints" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sporpunkter"
+          }
+        }
+      }
     },
     "app.tagline" : {
       "extractionState" : "manual",
@@ -132,17 +515,6 @@
         }
       }
     },
-    "error.saveFailed" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kunne ikke lagre endringene. Pr\u00F8v igjen."
-          }
-        }
-      }
-    },
     "common.save" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -248,7 +620,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "H\u00f8ydeprofil ikke tilgjengelig"
+            "value" : "Høydeprofil ikke tilgjengelig"
           }
         }
       }
@@ -259,7 +631,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "N\u00f8yaktighet: ca. %lld meter"
+            "value" : "Nøyaktighet: ca. %lld meter"
           }
         }
       }
@@ -281,7 +653,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oppgi disse koordinatene til n\u00f8detaten n\u00e5r du ringer 112 eller 113. UTM-koordinater samsvarer med Kartverkets papirkart (1:50 000)."
+            "value" : "UTM-koordinater samsvarer med Kartverkets papirkart (1:50 000)."
           }
         }
       }
@@ -292,7 +664,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ingen GPS-posisjon tilgjengelig. S\u00f8rg for at posisjonstjenester er aktivert."
+            "value" : "Ingen GPS-posisjon tilgjengelig. Sørg for at posisjonstjenester er aktivert."
           }
         }
       }
@@ -303,7 +675,194 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "N\u00f8dkoordinat"
+            "value" : "Nødkoordinat"
+          }
+        }
+      }
+    },
+    "emergency.numbers.ambulance" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ambulanse"
+          }
+        }
+      }
+    },
+    "emergency.numbers.callHint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trykk for å ringe"
+          }
+        }
+      }
+    },
+    "emergency.numbers.fire" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brann"
+          }
+        }
+      }
+    },
+    "emergency.numbers.legevakt" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Legevakt"
+          }
+        }
+      }
+    },
+    "emergency.numbers.police" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Politi"
+          }
+        }
+      }
+    },
+    "emergency.numbers.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nødnummer"
+          }
+        }
+      }
+    },
+    "emergency.tab.coordinates" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Koordinater"
+          }
+        }
+      }
+    },
+    "emergency.tab.signal" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nødsignal"
+          }
+        }
+      }
+    },
+    "emergency.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nød"
+          }
+        }
+      }
+    },
+    "error.saveFailed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kunne ikke lagre endringene. Prøv igjen."
+          }
+        }
+      }
+    },
+    "explore.group.beredskap" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beredskap"
+          }
+        }
+      }
+    },
+    "explore.group.friluftsliv" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Friluftsliv"
+          }
+        }
+      }
+    },
+    "explore.group.kulturarv" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kulturarv"
+          }
+        }
+      }
+    },
+    "explore.group.landskap" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Landskap"
+          }
+        }
+      }
+    },
+    "explore.group.naturOgVern" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Natur og vern"
+          }
+        }
+      }
+    },
+    "explore.kartinnhold" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kartinnhold"
+          }
+        }
+      }
+    },
+    "explore.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utforsk"
           }
         }
       }
@@ -352,39 +911,6 @@
         }
       }
     },
-    "info.openSource" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "\u00C5pen kildekode"
-          }
-        }
-      }
-    },
-    "info.maplibre.detail" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kartmotor"
-          }
-        }
-      }
-    },
-    "info.nga.detail" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Koordinatkonvertering"
-          }
-        }
-      }
-    },
     "info.dataSources" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -429,6 +955,17 @@
         }
       }
     },
+    "info.maplibre.detail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kartmotor"
+          }
+        }
+      }
+    },
     "info.met.detail" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -447,6 +984,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Naturskog"
+          }
+        }
+      }
+    },
+    "info.nga.detail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Koordinatkonvertering"
+          }
+        }
+      }
+    },
+    "info.openSource" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Åpen kildekode"
           }
         }
       }
@@ -517,17 +1076,6 @@
         }
       }
     },
-    "info.sourceCode" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kildekode"
-          }
-        }
-      }
-    },
     "info.ra.detail" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -535,6 +1083,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kulturminner"
+          }
+        }
+      }
+    },
+    "info.sourceCode" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kildekode"
           }
         }
       }
@@ -583,6 +1142,259 @@
         }
       }
     },
+    "knowledge.article.dyr" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dyr"
+          }
+        }
+      }
+    },
+    "knowledge.article.forstehjelp" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Førstehjelp"
+          }
+        }
+      }
+    },
+    "knowledge.article.giftigeArter" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giftige arter"
+          }
+        }
+      }
+    },
+    "knowledge.article.ly" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ly og overnatting"
+          }
+        }
+      }
+    },
+    "knowledge.article.mat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mat i naturen"
+          }
+        }
+      }
+    },
+    "knowledge.article.orientering" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Orientering"
+          }
+        }
+      }
+    },
+    "knowledge.article.rettigheter" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rettigheter"
+          }
+        }
+      }
+    },
+    "knowledge.article.signalering" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Signalering"
+          }
+        }
+      }
+    },
+    "knowledge.article.vann" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vann"
+          }
+        }
+      }
+    },
+    "knowledge.article.varme" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Varme og kulde"
+          }
+        }
+      }
+    },
+    "knowledge.articles.empty" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingen artikler tilgjengelig"
+          }
+        }
+      }
+    },
+    "knowledge.description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beskrivelse"
+          }
+        }
+      }
+    },
+    "knowledge.details" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detaljer"
+          }
+        }
+      }
+    },
+    "knowledge.download" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last ned"
+          }
+        }
+      }
+    },
+    "knowledge.source" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kilde"
+          }
+        }
+      }
+    },
+    "knowledge.source.miljodirektoratet" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miljødirektoratet"
+          }
+        }
+      }
+    },
+    "knowledge.theme.arterNasjonal" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arter av nasjonal interesse"
+          }
+        }
+      }
+    },
+    "knowledge.theme.friluftslivsomrader" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Friluftslivsområder"
+          }
+        }
+      }
+    },
+    "knowledge.theme.kulturmiljoer" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kulturmiljøer"
+          }
+        }
+      }
+    },
+    "knowledge.theme.kulturminnerLokaliteter" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kulturminnelokaliteter"
+          }
+        }
+      }
+    },
+    "knowledge.theme.naturvernomrader" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naturvernområder"
+          }
+        }
+      }
+    },
+    "knowledge.theme.restriksjonsomraderNaturvern" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restriksjonsområder (naturvern)"
+          }
+        }
+      }
+    },
+    "knowledge.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kunnskap"
+          }
+        }
+      }
+    },
     "location.primer.allow" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -600,7 +1412,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tr\u00E5kke bruker posisjonen din kun for \u00E5 vise hvor du er p\u00E5 kartet og hente v\u00E6rmelding. Posisjonsdata lagres ikke."
+            "value" : "Tråkke bruker posisjonen din kun for å vise hvor du er på kartet og hente værmelding. Posisjonsdata lagres ikke."
           }
         }
       }
@@ -611,7 +1423,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ikke n\u00E5"
+            "value" : "Ikke nå"
           }
         }
       }
@@ -704,6 +1516,17 @@
         }
       }
     },
+    "map.longPressTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Handling"
+          }
+        }
+      }
+    },
     "map.overlay.hillshading" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -765,7 +1588,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Naturvernomr\u00e5der"
+            "value" : "Naturvernområder"
           }
         }
       }
@@ -858,8 +1681,357 @@
         }
       }
     },
-    "MET Norway" : {
-
+    "more.backToMenu" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meny"
+          }
+        }
+      }
+    },
+    "more.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mer"
+          }
+        }
+      }
+    },
+    "navigation.arrived" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fremme!"
+          }
+        }
+      }
+    },
+    "navigation.bearing" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retning"
+          }
+        }
+      }
+    },
+    "navigation.cameraMode.courseUp" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kurs opp"
+          }
+        }
+      }
+    },
+    "navigation.cameraMode.northUp" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nord opp"
+          }
+        }
+      }
+    },
+    "navigation.compassBearing" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kompasspeiling"
+          }
+        }
+      }
+    },
+    "navigation.compassDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retningspil mot målet (ingen nettilgang nødvendig)"
+          }
+        }
+      }
+    },
+    "navigation.computeRoute" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beregn tursti-rute"
+          }
+        }
+      }
+    },
+    "navigation.computeRouteDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beregner beste tursti fra din posisjon"
+          }
+        }
+      }
+    },
+    "navigation.computing" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beregner rute ..."
+          }
+        }
+      }
+    },
+    "navigation.distance" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avstand"
+          }
+        }
+      }
+    },
+    "navigation.elevationRemaining" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stigning igjen"
+          }
+        }
+      }
+    },
+    "navigation.gpsLost" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GPS-signal tapt"
+          }
+        }
+      }
+    },
+    "navigation.gpsReduced" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Redusert GPS"
+          }
+        }
+      }
+    },
+    "navigation.navigateHere" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naviger hit"
+          }
+        }
+      }
+    },
+    "navigation.offlineHint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frakoblet – kun kompasspeiling tilgjengelig"
+          }
+        }
+      }
+    },
+    "navigation.offTrack %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du er %lld m fra ruten"
+          }
+        }
+      }
+    },
+    "navigation.progress" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fremgang langs ruten"
+          }
+        }
+      }
+    },
+    "navigation.remaining" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gjenstår"
+          }
+        }
+      }
+    },
+    "navigation.reverse" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Snu ruten"
+          }
+        }
+      }
+    },
+    "navigation.routeAttribution" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rute: © OpenStreetMap-bidragsytere"
+          }
+        }
+      }
+    },
+    "navigation.routeErrorGeneric" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prøv igjen eller bruk kompasspeiling."
+          }
+        }
+      }
+    },
+    "navigation.routeErrorTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kunne ikke beregne rute"
+          }
+        }
+      }
+    },
+    "navigation.start" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naviger"
+          }
+        }
+      }
+    },
+    "navigation.stop" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avslutt"
+          }
+        }
+      }
+    },
+    "navigation.stopConfirmTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avslutte navigeringen?"
+          }
+        }
+      }
+    },
+    "navigation.stopNavigation" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avslutt navigering"
+          }
+        }
+      }
+    },
+    "navigation.straightLine" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rettlinjet avstand"
+          }
+        }
+      }
+    },
+    "navigation.switchToCompass" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bytt til kompass"
+          }
+        }
+      }
+    },
+    "navigation.switchToRoute" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bytt til rute"
+          }
+        }
+      }
+    },
+    "navigation.timeRemaining" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tid igjen"
+          }
+        }
+      }
     },
     "offline.areaName" : {
       "extractionState" : "manual",
@@ -1213,6 +2385,28 @@
         }
       }
     },
+    "poi.detail.direction" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utsiktsretning"
+          }
+        }
+      }
+    },
+    "poi.detail.elevation" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoyde over havet"
+          }
+        }
+      }
+    },
     "poi.detail.height" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1301,28 +2495,6 @@
         }
       }
     },
-    "poi.detail.elevation" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hoyde over havet"
-          }
-        }
-      }
-    },
-    "poi.detail.direction" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Utsiktsretning"
-          }
-        }
-      }
-    },
     "poi.details" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1389,17 +2561,6 @@
         }
       }
     },
-    "poi.utsiktspunkter" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Utsiktspunkter"
-          }
-        }
-      }
-    },
     "poi.source" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1418,6 +2579,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tilfluktsrom"
+          }
+        }
+      }
+    },
+    "poi.utsiktspunkter" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utsiktspunkter"
           }
         }
       }
@@ -1510,72 +2682,6 @@
         }
       }
     },
-    "routing.error.decoding" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kunne ikke lese rutedata"
-          }
-        }
-      }
-    },
-    "routing.error.noRoute" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fant ingen rute"
-          }
-        }
-      }
-    },
-    "routing.error.offline" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ingen nettverkstilgang"
-          }
-        }
-      }
-    },
-    "routing.error.rateLimited" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "For mange foresp\u00F8rsler, pr\u00F8v igjen om litt"
-          }
-        }
-      }
-    },
-    "routing.error.server %lld" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Serverfeil (%lld)"
-          }
-        }
-      }
-    },
-    "routing.error.timeout" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tidsavbrudd, pr\u00F8v igjen"
-          }
-        }
-      }
-    },
     "routes.empty.subtitle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1605,6 +2711,73 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Skjul fra kart"
+          }
+        }
+      }
+    },
+    "routes.imported" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importerte rute"
+          }
+        }
+      }
+    },
+    "routes.imported %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Importerte %lld rute"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Importerte %lld ruter"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "routes.importEmpty" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filen inneholder ingen ruter"
+          }
+        }
+      }
+    },
+    "routes.importError" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kunne ikke importere GPX-fil"
+          }
+        }
+      }
+    },
+    "routes.importGPX" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importer GPX"
           }
         }
       }
@@ -1664,73 +2837,6 @@
         }
       }
     },
-    "routes.importEmpty" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Filen inneholder ingen ruter"
-          }
-        }
-      }
-    },
-    "routes.importError" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kunne ikke importere GPX-fil"
-          }
-        }
-      }
-    },
-    "routes.importGPX" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Importer GPX"
-          }
-        }
-      }
-    },
-    "routes.imported" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Importerte rute"
-          }
-        }
-      }
-    },
-    "routes.imported %lld" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Importerte %lld rute"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Importerte %lld ruter"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "routes.visibleOnMap" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1738,6 +2844,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Synlig på kart"
+          }
+        }
+      }
+    },
+    "routing.error.decoding" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kunne ikke lese rutedata"
+          }
+        }
+      }
+    },
+    "routing.error.noRoute" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fant ingen rute"
+          }
+        }
+      }
+    },
+    "routing.error.offline" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingen nettverkstilgang"
+          }
+        }
+      }
+    },
+    "routing.error.rateLimited" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "For mange forespørsler, prøv igjen om litt"
+          }
+        }
+      }
+    },
+    "routing.error.server %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serverfeil (%lld)"
+          }
+        }
+      }
+    },
+    "routing.error.timeout" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidsavbrudd, prøv igjen"
           }
         }
       }
@@ -1759,7 +2931,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kunne ikke s\u00F8ke"
+            "value" : "Kunne ikke søke"
           }
         }
       }
@@ -1819,6 +2991,72 @@
         }
       }
     },
+    "settings.dbRecovery.message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Databasen ble skadet og måtte tilbakestilles. Ruter og veipunkter må importeres på nytt."
+          }
+        }
+      }
+    },
+    "settings.dbRecovery.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data tilbakestilt"
+          }
+        }
+      }
+    },
+    "settings.deleteAllData" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slett alle data"
+          }
+        }
+      }
+    },
+    "settings.deleteAllData.confirm" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slett alt"
+          }
+        }
+      }
+    },
+    "settings.deleteAllData.message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle ruter, veipunkter og nedlastede kart slettes permanent. Innstillinger tilbakestilles. Denne handlingen kan ikke angres."
+          }
+        }
+      }
+    },
+    "settings.deleteAllData.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slett alle data?"
+          }
+        }
+      }
+    },
     "settings.display" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1836,7 +3074,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tillat rotasjon"
+            "value" : "Tillat kartrotasjon"
           }
         }
       }
@@ -1925,72 +3163,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Terreng"
-          }
-        }
-      }
-    },
-    "settings.dbRecovery.message" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Databasen ble skadet og m\u00e5tte tilbakestilles. Ruter og veipunkter m\u00e5 importeres p\u00e5 nytt."
-          }
-        }
-      }
-    },
-    "settings.dbRecovery.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Data tilbakestilt"
-          }
-        }
-      }
-    },
-    "settings.deleteAllData" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Slett alle data"
-          }
-        }
-      }
-    },
-    "settings.deleteAllData.confirm" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Slett alt"
-          }
-        }
-      }
-    },
-    "settings.deleteAllData.message" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alle ruter, veipunkter og nedlastede kart slettes permanent. Innstillinger tilbakestilles. Denne handlingen kan ikke angres."
-          }
-        }
-      }
-    },
-    "settings.deleteAllData.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Slett alle data?"
           }
         }
       }
@@ -2089,18 +3261,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kombiner med \u00e5 ringe 112 hvis mulig. SOS-signalet er et supplement, ikke en erstatning for \u00e5 ringe n\u00f8detaten."
-          }
-        }
-      }
-    },
-    "sos.menu" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "N\u00f8dsignal"
+            "value" : "Kombiner med å ringe 112 hvis mulig. SOS-signalet er et supplement, ikke en erstatning for å ringe nødetaten."
           }
         }
       }
@@ -2111,7 +3272,18 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sender internasjonalt n\u00f8dsignal (morse SOS) med lommelykten. Signalet fortsetter ogs\u00e5 n\u00e5r skjermen sl\u00e5s av."
+            "value" : "Sender internasjonalt nødsignal (morse SOS) med lommelykten. Signalet fortsetter også når skjermen slås av."
+          }
+        }
+      }
+    },
+    "sos.menu" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nødsignal"
           }
         }
       }
@@ -2134,6 +3306,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Stopp"
+          }
+        }
+      }
+    },
+    "waypoints.addWaypoint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Legg til sted"
           }
         }
       }
@@ -2392,6 +3575,17 @@
         }
       }
     },
+    "weather.bathingSpot" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Badeplass"
+          }
+        }
+      }
+    },
     "weather.current" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2399,6 +3593,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Akkurat nå"
+          }
+        }
+      }
+    },
+    "weather.daylight" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sol"
+          }
+        }
+      }
+    },
+    "weather.daylightRemaining" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dagslys igjen"
           }
         }
       }
@@ -2502,6 +3718,39 @@
         }
       }
     },
+    "weather.seaTemperature" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sjøtemperatur"
+          }
+        }
+      }
+    },
+    "weather.sunrise" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soloppgang"
+          }
+        }
+      }
+    },
+    "weather.sunset" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solnedgang"
+          }
+        }
+      }
+    },
     "weather.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2524,364 +3773,23 @@
         }
       }
     },
+    "weather.waterTemperature" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vanntemperatur"
+          }
+        }
+      }
+    },
     "z%@-%@" : {
       "localizations" : {
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "z%1$@-%2$@"
-          }
-        }
-      }
-    },
-    "map.longPressTitle" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Handling"
-          }
-        }
-      }
-    },
-    "navigation.arrived" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fremme!"
-          }
-        }
-      }
-    },
-    "navigation.bearing" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Retning"
-          }
-        }
-      }
-    },
-    "navigation.cameraMode.courseUp" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kurs opp"
-          }
-        }
-      }
-    },
-    "navigation.cameraMode.northUp" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nord opp"
-          }
-        }
-      }
-    },
-    "navigation.compassBearing" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kompasspeiling"
-          }
-        }
-      }
-    },
-    "navigation.compassDescription" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Retningspil mot m\u00E5let (ingen nettilgang n\u00F8dvendig)"
-          }
-        }
-      }
-    },
-    "navigation.computing" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Beregner rute\u2009..."
-          }
-        }
-      }
-    },
-    "navigation.computeRoute" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Beregn tursti-rute"
-          }
-        }
-      }
-    },
-    "navigation.computeRouteDescription" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Beregner beste tursti fra din posisjon"
-          }
-        }
-      }
-    },
-    "navigation.distance" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Avstand"
-          }
-        }
-      }
-    },
-    "navigation.elevationRemaining" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stigning igjen"
-          }
-        }
-      }
-    },
-    "navigation.gpsLost" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "GPS-signal tapt"
-          }
-        }
-      }
-    },
-    "navigation.gpsReduced" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Redusert GPS"
-          }
-        }
-      }
-    },
-    "navigation.navigateHere" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Naviger hit"
-          }
-        }
-      }
-    },
-    "navigation.offlineHint" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Frakoblet \u2013 kun kompasspeiling tilgjengelig"
-          }
-        }
-      }
-    },
-    "navigation.offTrack %lld" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Du er %lld m fra ruten"
-          }
-        }
-      }
-    },
-    "navigation.remaining" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gjenstår"
-          }
-        }
-      }
-    },
-    "navigation.reverse" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Snu ruten"
-          }
-        }
-      }
-    },
-    "navigation.routeAttribution" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rute: \u00A9 OpenStreetMap-bidragsytere"
-          }
-        }
-      }
-    },
-    "navigation.start" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Naviger"
-          }
-        }
-      }
-    },
-    "navigation.stop" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Avslutt"
-          }
-        }
-      }
-    },
-    "navigation.stopConfirmTitle" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Avslutte navigeringen?"
-          }
-        }
-      }
-    },
-    "navigation.stopNavigation" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Avslutt navigering"
-          }
-        }
-      }
-    },
-    "navigation.progress" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fremgang langs ruten"
-          }
-        }
-      }
-    },
-    "navigation.routeErrorTitle" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kunne ikke beregne rute"
-          }
-        }
-      }
-    },
-    "navigation.routeErrorGeneric" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pr\u00F8v igjen eller bruk kompasspeiling."
-          }
-        }
-      }
-    },
-    "navigation.straightLine" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rettlinjet avstand"
-          }
-        }
-      }
-    },
-    "navigation.switchToCompass" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bytt til kompass"
-          }
-        }
-      }
-    },
-    "navigation.switchToRoute" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bytt til rute"
-          }
-        }
-      }
-    },
-    "navigation.timeRemaining" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tid igjen"
-          }
-        }
-      }
-    },
-    "waypoints.addWaypoint" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Legg til veipunkt"
           }
         }
       }

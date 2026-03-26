@@ -74,6 +74,15 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
         }
     }
 
+    var contentGroup: ContentGroup {
+        switch self {
+        case .shelters: return .beredskap
+        case .caves, .wildernessShelters: return .friluftsliv
+        case .viewpoints: return .landskap
+        case .warMemorials, .kulturminner: return .kulturarv
+        }
+    }
+
     var isBundled: Bool {
         switch self {
         case .caves, .viewpoints, .warMemorials, .wildernessShelters: return true

@@ -12,13 +12,13 @@ struct WeatherWidgetView: View {
                         .scaleEffect(0.7)
                         .frame(width: .Trakke.touchMin, height: .Trakke.touchMin)
                 } else if let forecast = viewModel.forecast {
-                    VStack(spacing: 2) {
+                    VStack(spacing: .Trakke.labelGap) {
                         Image(forecast.current.symbol)
                             .resizable()
                             .scaledToFit()
                             .frame(width: .Trakke.xxl, height: .Trakke.xxl)
                         Text("\(Int(forecast.current.temperature.rounded()))°")
-                            .font(.system(.caption, design: .rounded, weight: .semibold).monospacedDigit())
+                            .font(Font.Trakke.caption.weight(.semibold).monospacedDigit())
                             .foregroundStyle(Color.Trakke.text)
                     }
                     .frame(width: .Trakke.touchMin, height: .Trakke.touchMin)

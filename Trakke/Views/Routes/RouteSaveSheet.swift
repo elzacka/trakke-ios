@@ -71,20 +71,26 @@ struct RouteSaveSheet: View {
             VStack(alignment: .leading, spacing: .Trakke.sm) {
                 Text(String(localized: "route.color"))
                     .font(Font.Trakke.bodyRegular)
-                HStack(spacing: .Trakke.sm) {
-                    ForEach(Array(RouteViewModel.routeColors.enumerated()), id: \.element) { index, color in
-                        Circle()
-                            .fill(Color(hex: color))
-                            .frame(width: 28, height: 28)
-                            .overlay(
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: .Trakke.sm) {
+                        ForEach(Array(RouteViewModel.routeColors.enumerated()), id: \.element) { index, color in
+                            Button {
+                                selectedColor = color
+                            } label: {
                                 Circle()
-                                    .strokeBorder(.primary, lineWidth: selectedColor == color ? 2 : 0)
-                            )
-                            .frame(minWidth: .Trakke.touchMin, minHeight: .Trakke.touchMin)
+                                    .fill(Color(hex: color))
+                                    .frame(width: 32, height: 32)
+                                    .overlay(
+                                        Circle()
+                                            .strokeBorder(.primary, lineWidth: selectedColor == color ? 2 : 0)
+                                    )
+                            }
+                            .buttonStyle(.plain)
+                            .frame(width: .Trakke.touchMin, height: .Trakke.touchMin)
                             .contentShape(Circle())
-                            .onTapGesture { selectedColor = color }
                             .accessibilityLabel(String(localized: "route.color") + " \(index + 1)")
                             .accessibilityAddTraits(selectedColor == color ? .isSelected : [])
+                        }
                     }
                 }
             }

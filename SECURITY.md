@@ -33,7 +33,11 @@ All external API connections are restricted to EU/EEA services:
 | MET Norway | api.met.no | Norway | Approximate coordinates (4 decimal truncation) |
 | DSB Shelters | ogc.dsb.no | Norway | Bounding box queries |
 | Riksantikvaren | api.ra.no | Norway | Bounding box queries |
+| MET Oceanforecast | api.met.no | Norway | Approximate coordinates for ocean temperature |
+| Havvarsel-Frost | havvarsel-frost.met.no | Norway | Approximate coordinates for bathing spot data |
 | Miljødirektoratet (naturskog) | image001.miljodirektoratet.no | Norway | Bounding box (overlay tiles) |
+| Miljødirektoratet WMS (naturvernområder) | kart.miljodirektoratet.no | Norway | Bounding box (overlay tiles) |
+| Kartverket WMS (fjellskygge) | wms.geonorge.no | Norway | Bounding box (overlay tiles) |
 | FOSSGIS Valhalla | valhalla1.openstreetmap.de | Germany (EU) | Origin/destination coordinates for route computation |
 
 No data is sent to servers outside the EU/EEA. The Valhalla routing server (FOSSGIS e.V., Germany) receives origin and destination coordinates for route computation only; no user identity data is included. POI data from OpenStreetMap (caves, viewpoints, war memorials, wilderness shelters) is pre-bundled in the app as static GeoJSON files and requires no network requests.
@@ -42,7 +46,7 @@ No data is sent to servers outside the EU/EEA. The Valhalla routing server (FOSS
 
 - All API responses are decoded through Swift `Codable` with strict type checking
 - Coordinate inputs are validated against geographic bounds
-- Coordinate values are guarded with `.isFinite` checks in all GPX import and export paths to reject NaN/Inf values
+- Coordinate values are guarded with `.isFinite` checks in GPX import/export, BundledPOIService, POIService, and ActivityTrackingService to reject NaN/Inf values
 - Search inputs are sanitized before API calls
 - XXE prevention (`shouldResolveExternalEntities = false`) on all XML parsers: GPX import (GPXImportService) and GML shelter parsing (POIService/ShelterGMLParser)
 - GPX import enforces a 50 MB file size limit
@@ -50,6 +54,10 @@ No data is sent to servers outside the EU/EEA. The Valhalla routing server (FOSS
 - Valhalla routing responses are decoded through `Codable` with coordinate validation; polyline6 decoded coordinates are checked for `.isFinite`
 - Route computation is rate-limited client-side (1.5 s minimum interval) to prevent abuse of the public Valhalla server
 - Route computation cancellation is properly propagated (CancellationError not swallowed by rate limiter)
+- Knowledge pack file paths sanitized against path traversal (`../` and `/` characters replaced) in PackStorageHelper
+- Knowledge pack downloads verified via SHA256 checksum (PackDownloadManager.verifyChecksum)
+- Knowledge pack databases opened as read-only with `immutable=1` URI flag (prevents WAL/SHM file creation)
+- Activity tracking rejects GPS points with horizontal accuracy > 50 m or negative accuracy
 - No dynamic code execution or `eval` equivalents
 
 ### Data Protection
@@ -61,15 +69,19 @@ No data is sent to servers outside the EU/EEA. The Valhalla routing server (FOSS
 - GPX temp files are cleaned up automatically after share sheet dismissal
 - GPX temp export files are additionally protected with `NSFileProtectionComplete` (encrypted at rest)
 - SwiftData save failures are surfaced to the user via alerts rather than silently logged
+- Knowledge pack databases stored in Application Support with `NSFileProtectionComplete`
+- Activity data (GPS tracks) stored in SwiftData with `NSFileProtectionComplete`
+- Logger categories use `privacy: .private` for all user data (centralized in Logger+Trakke.swift)
 
 ### Dependency Management
 
-- **3 external SPM dependencies**, all open-source with active maintenance:
+- **4 external SPM dependencies**, all open-source with active maintenance:
   - MapLibre Native (BSD-2-Clause)
   - MapLibreSwiftUI (ISC)
   - NGA mgrs-ios (MIT)
+  - GRDB (MIT)
 - Dependencies are pinned to specific versions via `Package.resolved`
-- These 3 direct dependencies resolve to 9 total packages via SPM (including NGA utility libraries and Mockable for testing macros). All are open-source.
+- These 4 direct dependencies resolve to 10 total packages via SPM (including NGA utility libraries and Mockable for testing macros). All are open-source.
 - No closed-source SDKs
 
 ### Information Disclosure
@@ -84,14 +96,17 @@ No data is sent to servers outside the EU/EEA. The Valhalla routing server (FOSS
 - Location data is never stored remotely or shared with third parties
 - Location permission uses a pre-permission primer card (LocationPrimerView) before the system dialog, explaining why access is needed. The app remains fully functional without location access.
 - Navigation sends only origin/destination coordinates to the routing server -- no user identity, device ID, or session tokens
+- Activity tracking uses location only during active recording; GPS tracks are stored locally and never transmitted
+- Knowledge system downloads packs from GitHub Releases; no user identity data is sent with download requests
 
 ## Supported Versions
 
 | Version | Supported |
 |---------|-----------|
-| 1.2.x   | Current release |
-| 1.1.x   | Security fixes only |
-| 1.0.x   | Security fixes only |
+| 1.3.x   | Current release |
+| 1.2.x   | Security fixes only |
+| 1.1.x   | End of life |
+| 1.0.x   | End of life |
 
 ## Reporting a Vulnerability
 
@@ -114,3 +129,7 @@ Please do not open public GitHub issues for security vulnerabilities.
 - [ ] No `UIWebView` or `WKWebView` with arbitrary content loading
 - [ ] Input validation on all user-facing text fields
 - [ ] Dependencies reviewed and pinned to specific versions
+- [ ] Knowledge pack paths sanitized against traversal attacks
+- [ ] Knowledge databases opened read-only (immutable)
+- [ ] Activity GPS data never leaves the device
+- [ ] Pack download checksums verified before installation

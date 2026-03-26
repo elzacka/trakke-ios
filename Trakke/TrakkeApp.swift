@@ -81,7 +81,7 @@ struct TrakkeApp: App {
                 allowsSave: true
             )
             modelContainer = try ModelContainer(
-                for: Route.self, Waypoint.self,
+                for: Route.self, Waypoint.self, Activity.self,
                 migrationPlan: TrakkeMigrationPlan.self,
                 configurations: config
             )
@@ -104,12 +104,12 @@ struct TrakkeApp: App {
                     allowsSave: true
                 )
                 modelContainer = try ModelContainer(
-                    for: Route.self, Waypoint.self,
+                    for: Route.self, Waypoint.self, Activity.self,
                     migrationPlan: TrakkeMigrationPlan.self,
                     configurations: config
                 )
                 logger.info("SwiftData recovery successful -- created fresh store")
-                UserDefaults.standard.set(true, forKey: "dbRecoveryOccurred")
+                UserDefaults.standard.set(true, forKey: AppStorageKeys.dbRecoveryOccurred)
             } catch {
                 fatalError("Failed to create SwiftData ModelContainer after recovery attempt")
             }

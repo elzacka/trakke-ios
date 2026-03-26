@@ -41,7 +41,7 @@ struct RouteDetailSheet: View {
 
     private var routeInfoCard: some View {
         CardSection(String(localized: "route.info")) {
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: .Trakke.labelGap) {
                 Text(route.name)
                     .font(Font.Trakke.bodyMedium)
                 Text(viewModel.formattedDistance(route.distance))

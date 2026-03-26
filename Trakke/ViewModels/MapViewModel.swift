@@ -1,5 +1,6 @@
 import SwiftUI
 import CoreLocation
+import OSLog
 
 @MainActor
 @Observable
@@ -42,8 +43,8 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
         // crash or force-quit during active navigation. CLBackgroundActivitySession
         // persists across app terminations; creating a new session invalidates
         // any existing one, then we immediately invalidate the new one.
-        if UserDefaults.standard.bool(forKey: "navigationSessionActive") {
-            UserDefaults.standard.set(false, forKey: "navigationSessionActive")
+        if UserDefaults.standard.bool(forKey: AppStorageKeys.navigationSessionActive) {
+            UserDefaults.standard.set(false, forKey: AppStorageKeys.navigationSessionActive)
             CLBackgroundActivitySession().invalidate()
             locationManager.allowsBackgroundLocationUpdates = false
             locationManager.showsBackgroundLocationIndicator = false
@@ -148,7 +149,7 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
             locationManager.allowsBackgroundLocationUpdates = true
             locationManager.showsBackgroundLocationIndicator = true
             backgroundSession = CLBackgroundActivitySession()
-            UserDefaults.standard.set(true, forKey: "navigationSessionActive")
+            UserDefaults.standard.set(true, forKey: AppStorageKeys.navigationSessionActive)
         }
 
         locationManager.startUpdatingLocation()
@@ -174,7 +175,7 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
 
         backgroundSession?.invalidate()
         backgroundSession = nil
-        UserDefaults.standard.set(false, forKey: "navigationSessionActive")
+        UserDefaults.standard.set(false, forKey: AppStorageKeys.navigationSessionActive)
 
         // Restart basic location tracking (without background mode) for the
         // map's user position dot. This uses default settings (no distance
@@ -229,8 +230,6 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
     }
 
     nonisolated func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        #if DEBUG
-        print("Location error: \(error.localizedDescription)")
-        #endif
+        Logger.map.error("Location error: \(error.localizedDescription, privacy: .private)")
     }
 }

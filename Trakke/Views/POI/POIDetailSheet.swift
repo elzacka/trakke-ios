@@ -22,7 +22,7 @@ struct POIDetailSheet: View {
                                 if index > 0 {
                                     Divider().padding(.leading, .Trakke.dividerLeading)
                                 }
-                                VStack(alignment: .leading, spacing: 2) {
+                                VStack(alignment: .leading, spacing: .Trakke.labelGap) {
                                     Text(localizedDetailKey(detail.key))
                                         .font(Font.Trakke.caption)
                                         .foregroundStyle(Color.Trakke.textTertiary)
@@ -72,7 +72,7 @@ struct POIDetailSheet: View {
                                         .font(Font.Trakke.captionSoft)
                                         .foregroundStyle(Color.Trakke.textTertiary)
                                 }
-                                .padding(.vertical, 2)
+                                .padding(.vertical, .Trakke.labelGap)
                             }
                         }
                     }

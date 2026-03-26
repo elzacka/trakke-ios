@@ -4,40 +4,29 @@ struct MapControlsOverlay<WeatherContent: View>: View {
     @Bindable var viewModel: MapViewModel
     var onSearchTapped: (() -> Void)?
     var onCategoryTapped: (() -> Void)?
-    var onRouteTapped: (() -> Void)?
     var onMyPlacesTapped: (() -> Void)?
-    var onOfflineTapped: (() -> Void)?
     var onWeatherTapped: (() -> Void)?
-    var onMeasurementTapped: (() -> Void)?
-    var onSettingsTapped: (() -> Void)?
-    var onInfoTapped: (() -> Void)?
-    var onEmergencyCoordinatesTapped: (() -> Void)?
-    var onSOSTapped: (() -> Void)?
+    var onEmergencyTapped: (() -> Void)?
+    var onMoreTapped: (() -> Void)?
     var enabledOverlays: Set<OverlayLayer> = []
+    @Binding var isMenuOpen: Bool
     var weatherContent: WeatherContent
     var showCompass = false
     var showZoomControls = false
     var showScaleBar = false
     var hideMenuAndZoom = false
     var isConnected = true
-
-    @State private var isMenuOpen = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var menuItems: [(icon: String, label: String, action: () -> Void)] {
         [
             ("magnifyingglass", String(localized: "search.title"), { onSearchTapped?() }),
             (viewModel.isTrackingUser ? "location.fill" : "location", String(localized: "map.controls.myPosition"), { viewModel.centerOnUser() }),
-            ("point.topleft.down.to.point.bottomright.curvepath", String(localized: "routes.title"), { onRouteTapped?() }),
-            ("mappin", String(localized: "waypoints.title"), { onMyPlacesTapped?() }),
             ("square.grid.2x2", String(localized: "categories.title"), { onCategoryTapped?() }),
+            ("mappin", String(localized: "waypoints.title"), { onMyPlacesTapped?() }),
+            ("light.beacon.max.fill", String(localized: "emergency.title"), { onEmergencyTapped?() }),
             ("cloud.sun", String(localized: "weather.title"), { onWeatherTapped?() }),
-            ("ruler", String(localized: "measurement.title"), { onMeasurementTapped?() }),
-            ("location.viewfinder", String(localized: "emergency.coordinates.title"), { onEmergencyCoordinatesTapped?() }),
-            ("sos", String(localized: "sos.menu"), { onSOSTapped?() }),
-            ("arrow.down.circle", String(localized: "offline.title"), { onOfflineTapped?() }),
-            ("gearshape", String(localized: "settings.title"), { onSettingsTapped?() }),
-            ("info.circle", String(localized: "info.title"), { onInfoTapped?() }),
+            ("ellipsis", String(localized: "more.title"), { onMoreTapped?() }),
         ]
     }
 
@@ -116,7 +105,7 @@ struct MapControlsOverlay<WeatherContent: View>: View {
             Group {
                 if isMenuOpen {
                     Image(systemName: "xmark")
-                        .font(.title3.weight(.semibold))
+                        .font(Font.Trakke.bodyMedium)
                 } else {
                     Image("ForestIcon")
                         .resizable()

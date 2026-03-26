@@ -37,7 +37,7 @@ struct NavigationStartSheet: View {
                             onRouteNavigation()
                         } label: {
                             HStack {
-                                VStack(alignment: .leading, spacing: 2) {
+                                VStack(alignment: .leading, spacing: .Trakke.labelGap) {
                                     Text(String(localized: "navigation.computeRoute"))
                                         .font(Font.Trakke.bodyMedium)
                                     Text(String(localized: "navigation.computeRouteDescription"))
@@ -58,7 +58,7 @@ struct NavigationStartSheet: View {
                             onCompassNavigation()
                         } label: {
                             HStack {
-                                VStack(alignment: .leading, spacing: 2) {
+                                VStack(alignment: .leading, spacing: .Trakke.labelGap) {
                                     Text(String(localized: "navigation.compassBearing"))
                                         .font(Font.Trakke.bodyMedium)
                                     Text(String(localized: "navigation.compassDescription"))
@@ -94,11 +94,6 @@ struct NavigationStartSheet: View {
             .tint(Color.Trakke.brand)
             .navigationTitle(String(localized: "navigation.navigateHere"))
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(String(localized: "common.close")) { dismiss() }
-                }
-            }
         }
     }
 
