@@ -38,13 +38,15 @@ final class ActivityViewModel {
         currentElevationGain = 0
         currentDuration = 0
 
-        Task { await trackingService.start() }
+        Task { [weak self] in
+            await self?.trackingService.start()
+        }
 
-        statsTask = Task {
+        statsTask = Task { [weak self] in
             while !Task.isCancelled {
                 try? await Task.sleep(for: .seconds(1))
                 guard !Task.isCancelled else { break }
-                await updateStats()
+                await self?.updateStats()
             }
         }
     }
@@ -92,6 +94,9 @@ final class ActivityViewModel {
         currentDistance = 0
         currentElevationGain = 0
         currentDuration = 0
+        Task { [weak self] in
+            await self?.trackingService.finish()
+        }
     }
 
     func deleteActivity(_ activity: Activity) {
@@ -116,13 +121,16 @@ final class ActivityViewModel {
         }
     }
 
+    func exportGPX(for activity: Activity) -> URL? {
+        let gpxString = GPXExportService.exportActivity(activity)
+        let filename = GPXExportService.sanitizeFilename(activity.name)
+        return GPXExportService.writeToTemporaryFile(gpxString: gpxString, filename: filename)
+    }
+
     // MARK: - Formatting
 
     var formattedDistance: String {
-        if currentDistance < 1000 {
-            return "\(Int(currentDistance)) m"
-        }
-        return String(format: "%.1f km", currentDistance / 1000)
+        MeasurementService.formatDistance(currentDistance)
     }
 
     var formattedDuration: String {
@@ -130,7 +138,7 @@ final class ActivityViewModel {
     }
 
     var formattedElevationGain: String {
-        "\(Int(currentElevationGain)) m"
+        MeasurementService.formatElevation(currentElevationGain)
     }
 
     static func formatDuration(_ duration: TimeInterval) -> String {

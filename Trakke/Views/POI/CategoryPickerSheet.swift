@@ -8,7 +8,7 @@ struct CategoryPickerSheet: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: .Trakke.cardGap) {
-                    CardSection(String(localized: "categories.title")) {
+                    CardSection {
                         let sorted = POICategory.allCases.sorted {
                             $0.displayName.localizedCompare($1.displayName) == .orderedAscending
                         }

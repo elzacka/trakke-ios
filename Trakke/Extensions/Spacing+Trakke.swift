@@ -22,6 +22,8 @@ extension CGFloat {
         // Touch targets (WCAG)
         static let touchMin: CGFloat = 44
         static let touchComfortable: CGFloat = 48
+        /// Emergency CTA button height — intentionally oversized for SOS actions
+        static let touchCTA: CGFloat = 72
     }
 
     enum TrakkeRadius {

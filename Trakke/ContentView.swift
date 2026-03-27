@@ -346,6 +346,7 @@ struct ContentView: View {
                 }
             )
             .presentationDetents([.medium, .large])
+            .presentationDragIndicator(.visible)
         }
         .sheet(isPresented: $sheets.showRouteDetail) {
             if let route = routeViewModel.selectedRoute {
@@ -358,6 +359,7 @@ struct ContentView: View {
                     }
                 )
                 .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
             }
         }
         .sheet(isPresented: $sheets.showOfflineManager) {
@@ -371,6 +373,7 @@ struct ContentView: View {
                 }
             )
             .presentationDetents([.medium, .large])
+            .presentationDragIndicator(.visible)
         }
         .sheet(isPresented: $sheets.showDownloadArea) {
             DownloadAreaSheet(viewModel: offlineViewModel)
@@ -379,6 +382,7 @@ struct ContentView: View {
         .sheet(isPresented: $sheets.showWeatherSheet) {
             WeatherSheet(viewModel: weatherViewModel)
                 .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
         }
         .sheet(isPresented: $sheets.showMeasurementSheet) {
             MeasurementSheet(viewModel: measurementViewModel)
@@ -423,6 +427,7 @@ struct ContentView: View {
                     }
                 )
                 .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
             }
         }
         .sheet(isPresented: $sheets.showWaypointEdit) {
@@ -471,6 +476,7 @@ struct ContentView: View {
                 }
             )
             .presentationDetents([.medium, .large])
+            .presentationDragIndicator(.visible)
         }
         .sheet(isPresented: $sheets.showActivityDetail) {
             if let activity = activityViewModel.selectedActivity {
@@ -484,6 +490,7 @@ struct ContentView: View {
                     }
                 )
                 .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
             }
         }
         .sheet(isPresented: $sheets.showActivitySave) {

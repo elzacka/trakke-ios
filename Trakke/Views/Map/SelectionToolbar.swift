@@ -25,6 +25,10 @@ struct SelectionToolbar: View {
                     }
                     .accessibilityElement(children: .combine)
                     .foregroundStyle(estimatedTileCount > 20_000 ? Color.Trakke.red : .primary)
+                    .accessibilityLabel(estimatedTileCount > 20_000
+                        ? String(localized: "offline.tooManyTiles")
+                        : String(localized: "offline.tiles \(estimatedTileCount)")
+                    )
                     .padding(.horizontal, .Trakke.lg)
                     .padding(.vertical, .Trakke.sm)
                     .background(.regularMaterial)

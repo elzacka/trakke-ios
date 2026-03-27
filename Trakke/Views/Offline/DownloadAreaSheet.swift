@@ -138,9 +138,16 @@ struct DownloadAreaSheet: View {
                     Text(String(localized: "offline.tileCount"))
                         .font(Font.Trakke.bodyRegular)
                     Spacer()
-                    Text("\(viewModel.estimatedTileCount)")
-                        .font(Font.Trakke.bodyRegular.monospacedDigit())
-                        .foregroundStyle(viewModel.estimatedTileCount > 20_000 ? Color.Trakke.red : .primary)
+                    HStack(spacing: .Trakke.xs) {
+                        if viewModel.estimatedTileCount > 20_000 {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .font(Font.Trakke.captionSoft)
+                                .foregroundStyle(Color.Trakke.red)
+                        }
+                        Text("\(viewModel.estimatedTileCount)")
+                            .font(Font.Trakke.bodyRegular.monospacedDigit())
+                            .foregroundStyle(viewModel.estimatedTileCount > 20_000 ? Color.Trakke.red : .primary)
+                    }
                 }
                 .padding(.vertical, .Trakke.xs)
 

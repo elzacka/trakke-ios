@@ -103,14 +103,16 @@ final class KnowledgeViewModel {
     func cancelDownload(packId: String) {
         downloadTasks[packId]?.cancel()
         downloadTasks.removeValue(forKey: packId)
-        Task {
+        Task { [weak self] in
+            guard let self else { return }
             await downloadManager.cancelDownload(packId: packId)
             activeDownloads.removeValue(forKey: packId)
         }
     }
 
     func deletePack(_ info: InstalledPackInfo) {
-        Task {
+        Task { [weak self] in
+            guard let self else { return }
             // Close database connection first
             await queryService.closeDatabase(for: info.id)
             try? await downloadManager.deletePack(packId: info.id)
@@ -128,7 +130,8 @@ final class KnowledgeViewModel {
     func deleteAllPacks() {
         downloadTasks.values.forEach { $0.cancel() }
         downloadTasks.removeAll()
-        Task {
+        Task { [weak self] in
+            guard let self else { return }
             await queryService.closeAll()
             try? await downloadManager.deleteAllPacks()
             await catalogService.clearCache()
@@ -141,7 +144,8 @@ final class KnowledgeViewModel {
     }
 
     func refreshInstalledPacks() {
-        Task {
+        Task { [weak self] in
+            guard let self else { return }
             installedPacks = await downloadManager.installedPacks()
         }
     }
@@ -162,7 +166,8 @@ final class KnowledgeViewModel {
 
     private func loadTheme(_ theme: KnowledgeTheme, bounds: ViewportBounds, zoom: Double) {
         let service = queryService
-        Task {
+        Task { [weak self] in
+            guard let self else { return }
             isQuerying = true
             do {
                 let newEntries = try await service.entries(for: theme, in: bounds)
@@ -191,7 +196,8 @@ final class KnowledgeViewModel {
         let service = queryService
         let themes = enabledThemes
 
-        queryTask = Task {
+        queryTask = Task { [weak self] in
+            guard let self else { return }
             try? await Task.sleep(for: Self.debounceInterval)
             guard !Task.isCancelled else { return }
 

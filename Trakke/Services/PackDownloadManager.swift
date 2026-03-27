@@ -10,75 +10,83 @@ actor PackDownloadManager {
     // MARK: - Download
 
     func download(pack: KnowledgePack) -> AsyncStream<DownloadProgress> {
-        AsyncStream { continuation in
-            // Cancel any existing download for this pack
-            activeDownloads[pack.id]?.cancel()
+        // Cancel any existing download before creating the stream.
+        // Both lines run in the actor-isolated function body — safe.
+        activeDownloads[pack.id]?.cancel()
+        activeDownloads.removeValue(forKey: pack.id)
 
-            let task = Task {
-                do {
+        // Use makeStream() so the continuation is available in the actor-isolated
+        // scope, allowing us to start the download task and register it in
+        // activeDownloads without touching actor state from a nonisolated closure.
+        let (stream, continuation) = AsyncStream<DownloadProgress>.makeStream()
 
-                    let request = Self.makeRequest(url: pack.downloadURL)
-                    let (tempURL, response) = try await APIClient.session.download(for: request)
+        let task = Task {
+            defer { self.removeActiveDownload(pack.id) }
+            do {
+                let request = Self.makeRequest(url: pack.downloadURL)
+                let (tempURL, response) = try await APIClient.session.download(for: request)
 
-                    guard let httpResponse = response as? HTTPURLResponse,
-                          (200...299).contains(httpResponse.statusCode)
-                    else {
-                        continuation.yield(DownloadProgress(
-                            packId: pack.id, bytesWritten: 0, totalBytes: pack.fileSize, isComplete: false
-                        ))
-                        continuation.finish()
-                        return
-                    }
-
-                    // Verify checksum
-                    guard Self.verifyChecksum(fileURL: tempURL, expected: pack.checksum) else {
-                        Logger.knowledge.error("Checksum verification failed for pack: \(pack.id, privacy: .public)")
-                        try? FileManager.default.removeItem(at: tempURL)
-                        continuation.finish()
-                        return
-                    }
-
-                    // Atomic move to final location
-                    let finalURL = PackStorageHelper.packFileURL(for: pack.id)
-                    PackStorageHelper.ensureDirectoryExists()
-
-                    // Remove existing file if any
-                    try? FileManager.default.removeItem(at: finalURL)
-                    try FileManager.default.moveItem(at: tempURL, to: finalURL)
-
-                    // Save metadata
-                    let info = InstalledPackInfo(
-                        id: pack.id,
-                        name: pack.name,
-                        theme: pack.theme,
-                        county: pack.county,
-                        fileSize: pack.fileSize,
-                        entryCount: pack.entryCount,
-                        installedAt: Date()
-                    )
-                    self.saveInstalledPack(info)
-
+                guard let httpResponse = response as? HTTPURLResponse,
+                      (200...299).contains(httpResponse.statusCode)
+                else {
                     continuation.yield(DownloadProgress(
-                        packId: pack.id,
-                        bytesWritten: pack.fileSize,
-                        totalBytes: pack.fileSize,
-                        isComplete: true
+                        packId: pack.id, bytesWritten: 0, totalBytes: pack.fileSize, isComplete: false
                     ))
                     continuation.finish()
-                } catch {
-                    Logger.knowledge.error("Download failed for pack \(pack.id, privacy: .public): \(error, privacy: .private)")
-                    continuation.finish()
+                    return
                 }
 
-                self.removeActiveDownload(pack.id)
-            }
+                // Verify checksum
+                guard Self.verifyChecksum(fileURL: tempURL, expected: pack.checksum) else {
+                    Logger.knowledge.error("Checksum verification failed for pack: \(pack.id, privacy: .public)")
+                    try? FileManager.default.removeItem(at: tempURL)
+                    continuation.finish()
+                    return
+                }
 
-            self.activeDownloads[pack.id] = task
+                // Atomic move to final location
+                let finalURL = PackStorageHelper.packFileURL(for: pack.id)
+                PackStorageHelper.ensureDirectoryExists()
 
-            continuation.onTermination = { _ in
-                task.cancel()
+                // Remove existing file if any
+                try? FileManager.default.removeItem(at: finalURL)
+                try FileManager.default.moveItem(at: tempURL, to: finalURL)
+
+                // Save metadata
+                let info = InstalledPackInfo(
+                    id: pack.id,
+                    name: pack.name,
+                    theme: pack.theme,
+                    county: pack.county,
+                    fileSize: pack.fileSize,
+                    entryCount: pack.entryCount,
+                    installedAt: Date()
+                )
+                self.saveInstalledPack(info)
+
+                continuation.yield(DownloadProgress(
+                    packId: pack.id,
+                    bytesWritten: pack.fileSize,
+                    totalBytes: pack.fileSize,
+                    isComplete: true
+                ))
+                continuation.finish()
+            } catch {
+                Logger.knowledge.error("Download failed for pack \(pack.id, privacy: .public): \(error, privacy: .private)")
+                continuation.finish()
             }
         }
+
+        // Register the task in actor-isolated scope so cancelDownload(packId:) can reach it.
+        activeDownloads[pack.id] = task
+
+        // onTermination fires from a nonisolated context when the consumer stops iterating.
+        // task.cancel() is safe to call from any context (Task conforms to Sendable).
+        continuation.onTermination = { _ in
+            task.cancel()
+        }
+
+        return stream
     }
 
     func cancelDownload(packId: String) {

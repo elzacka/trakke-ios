@@ -763,7 +763,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nødsignal"
+            "value" : "SOS-signal"
           }
         }
       }
@@ -774,7 +774,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nød"
+            "value" : "SOS"
           }
         }
       }
@@ -933,6 +933,28 @@
         }
       }
     },
+    "info.grdb.detail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Databasemotor for kunnskapspakker"
+          }
+        }
+      }
+    },
+    "info.havvarsel.detail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Badevannstemperatur"
+          }
+        }
+      }
+    },
     "info.dsb.detail" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -972,7 +994,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vær"
+            "value" : "Vær og havtemperatur"
           }
         }
       }
@@ -983,7 +1005,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Naturskog"
+            "value" : "Naturvernområder og naturskog"
           }
         }
       }
@@ -1259,6 +1281,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ingen artikler tilgjengelig"
+          }
+        }
+      }
+    },
+    "knowledge.articles.empty.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last ned kunnskapspakker for å se artikler i denne kategorien"
           }
         }
       }
@@ -1588,7 +1621,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Naturvernområder"
+            "value" : "Naturvernområde"
           }
         }
       }
@@ -1764,7 +1797,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Retningspil mot målet (ingen nettilgang nødvendig)"
+            "value" : "Retningspil mot målet (ingen dekning nødvendig)"
           }
         }
       }
@@ -2061,7 +2094,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nedlastede kart brukes automatisk når du er uten nettilgang."
+            "value" : "Nedlastede kart brukes automatisk når du er uten dekning."
           }
         }
       }
@@ -2876,7 +2909,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ingen nettverkstilgang"
+            "value" : "Ingen dekning"
           }
         }
       }
@@ -3272,7 +3305,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sender internasjonalt nødsignal (morse SOS) med lommelykten. Signalet fortsetter også når skjermen slås av."
+            "value" : "Sender internasjonalt SOS-signal (morse) med lommelykten. Signalet fortsetter også når skjermen slås av."
           }
         }
       }
@@ -3283,7 +3316,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nødsignal"
+            "value" : "SOS-signal"
           }
         }
       }
@@ -3769,6 +3802,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Oppdatert %@"
+          }
+        }
+      }
+    },
+    "weather.mayBeOutdated" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Været kan være utdatert"
+          }
+        }
+      }
+    },
+    "weather.metAttribution" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MET Norway"
           }
         }
       }

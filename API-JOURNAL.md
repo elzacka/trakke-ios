@@ -1,7 +1,7 @@
 # API Journal -- Trakke iOS
 
 API reference and integration journal for Trakke v1.3.0.
-Last updated: 26 March 2026.
+Last updated: 27 March 2026.
 
 ---
 
@@ -43,6 +43,8 @@ Set dynamically from `CFBundleShortVersionString` via `APIClient.userAgent`. All
 
 **If-Modified-Since / Expires** -- used by MET APIs (`WeatherService`, `WaterTemperatureService`). On 304 responses, cached data is kept and the expiry is refreshed from the new `Expires` header.
 
+**Accept-Language** -- `nb-NO,nb;q=0.9,no;q=0.8,en;q=0.5` set on the shared `URLSession` configuration via `APIClient`.
+
 **Accept-Encoding** -- `gzip, deflate, br` set globally on the shared `URLSession` configuration.
 
 **ATS** -- App Transport Security enforced. No exceptions. All traffic is HTTPS.
@@ -78,7 +80,7 @@ enum APIError: Error, LocalizedError, Sendable {
 }
 ```
 
-All error descriptions are in Norwegian Bokmal.
+All error descriptions are in Norwegian Bokmål. Localized via `String(localized:)` through `Localizable.xcstrings` (migrated from hardcoded strings).
 
 ### RoutingError (`Trakke/Services/RoutingService.swift`)
 
@@ -98,10 +100,10 @@ Separate error type for Valhalla routing: `.noRoute`, `.offline`, `.timeout`, `.
 | WaterTemperatureService | In-memory dict | Respects `Expires` header (fallback 1h) | 10 | Oldest evicted when full |
 | POIService (live) | In-memory dict | 30 min | 50 | Stale evicted, then oldest |
 | BundledPOIService | In-memory (static) | Permanent (loaded once at launch) | N/A | N/A |
-| RoutingService | In-memory dict | None (session-lived) | 20 | FIFO |
+| RoutingService | In-memory dict (route + cachedAt tuples) | 2 hours | 20 | Stale evicted inline, then FIFO |
 | PackCatalogService | In-memory + on-disk JSON | 1 hour (in-memory), persistent (disk) | 1 | Replaced on refresh |
 | PackQueryService (installed list) | In-memory | 30s | 1 | Replaced on refresh |
-| ElevationService | None | N/A | N/A | N/A |
+| ElevationService | In-memory dict (keyed by `first\|last\|count`, coords rounded to 4dp) | Permanent (static data) | 5 | FIFO |
 | SearchService | None | N/A | N/A | N/A |
 
 Tile caching is handled by MapLibre internally and by `URLCache` (100 MB disk) on the shared `URLSession`.
@@ -172,6 +174,11 @@ Services are Swift actors. ViewModels are `@Observable` classes on `@MainActor`.
 
 - No API keys in source code.
 - All XML parsers disable external entity resolution (`shouldResolveExternalEntities = false`).
-- Coordinate validation: `.isFinite` guards on all coordinate paths.
+- Coordinate validation: `.isFinite` guards on all coordinate paths (GPX import/export, POI, Activity, SearchService, ElevationService).
 - GPX import: 50 MB file size limit, temp files protected with `NSFileProtectionComplete`.
-- Knowledge pack file paths sanitized (path traversal prevention via `replacingOccurrences(of: "..", with: "_")`).
+- GPX export: `GPXExportService.exportActivity(_:)` exports Activity records as GPX `<trk>` documents with `<ele>` and `<time>` per trackpoint. Temp files use `NSFileProtectionComplete`.
+- Knowledge pack file paths sanitized via **allowlist** (`CharacterSet.alphanumerics` plus `-` and `_`; all other characters stripped; empty results fall back to `"unknown"`). Prevents path traversal.
+- Clipboard expiration: Copied coordinates (EmergencySheet, POIDetailSheet, WaypointDetailSheet) use `UIPasteboard.setItems(_:options:)` with a **5-minute expiration** instead of persisting indefinitely.
+- Date formatters: `nonisolated(unsafe)` static `ISO8601DateFormatter` instances removed from WeatherService and KnowledgeArticle. Replaced with local allocations (thread-safe under strict concurrency).
+- Logger privacy: `WaterTemperatureService` error logs use `privacy: .private` to prevent coordinate leakage in system logs.
+- Knowledge pack downloads report error state via `DownloadProgress.error` field and `isFailed` computed property.

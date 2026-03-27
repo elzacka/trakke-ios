@@ -8,13 +8,15 @@ import CryptoKit
 @Test func packFileURLSanitizesSlashes() {
     let url = PackStorageHelper.packFileURL(for: "malicious/pack")
     #expect(!url.path.contains("malicious/pack"))
-    #expect(url.lastPathComponent == "malicious_pack.sqlite")
+    // Allowlist strips slashes entirely
+    #expect(url.lastPathComponent == "maliciouspack.sqlite")
 }
 
 @Test func packFileURLSanitizesDotDot() {
     let url = PackStorageHelper.packFileURL(for: "../../etc/passwd")
     #expect(!url.path.contains(".."))
-    #expect(url.lastPathComponent.hasPrefix("__"))
+    // Allowlist strips dots and slashes, keeping only alphanumerics/hyphens/underscores
+    #expect(url.lastPathComponent == "etcpasswd.sqlite")
 }
 
 @Test func packFileURLNormalInput() {
@@ -25,7 +27,8 @@ import CryptoKit
 @Test func metadataFileURLSanitizesSlashes() {
     let url = PackStorageHelper.metadataFileURL(for: "malicious/pack")
     #expect(!url.path.contains("malicious/pack"))
-    #expect(url.lastPathComponent == "malicious_pack.meta.json")
+    // Allowlist strips slashes entirely
+    #expect(url.lastPathComponent == "maliciouspack.meta.json")
 }
 
 @Test func metadataFileURLSanitizesDotDot() {

@@ -46,8 +46,9 @@ actor RoutingService: RouteFetching {
     private static let minRequestInterval: TimeInterval = 1.5
 
     private var lastRequestTime: Date?
-    private var cache: [String: ComputedRoute] = [:]
+    private var cache: [String: (route: ComputedRoute, cachedAt: Date)] = [:]
     private var cacheOrder: [String] = []
+    private static let cacheTTL: TimeInterval = 7200 // 2 hours
 
     // MARK: - Compute Route
 
@@ -55,10 +56,15 @@ actor RoutingService: RouteFetching {
         from origin: CLLocationCoordinate2D,
         to destination: CLLocationCoordinate2D
     ) async throws -> ComputedRoute {
-        // Check cache
+        // Check cache (TTL-aware)
         let cacheKey = Self.cacheKey(from: origin, to: destination)
-        if let cached = cache[cacheKey] {
-            return cached
+        if let entry = cache[cacheKey],
+           Date().timeIntervalSince(entry.cachedAt) < Self.cacheTTL {
+            return entry.route
+        } else if cache[cacheKey] != nil {
+            // Entry exists but is stale — evict it
+            cache.removeValue(forKey: cacheKey)
+            cacheOrder.removeAll { $0 == cacheKey }
         }
 
         // Rate limiting (propagates CancellationError)
@@ -116,8 +122,8 @@ actor RoutingService: RouteFetching {
 
         let route = try Self.parseResponse(data)
 
-        // Cache (limit to 20 entries, FIFO eviction)
-        cache[cacheKey] = route
+        // Cache (limit to 20 entries, FIFO eviction + 2-hour TTL)
+        cache[cacheKey] = (route: route, cachedAt: Date())
         cacheOrder.append(cacheKey)
         if cache.count > 20, let oldest = cacheOrder.first {
             cache.removeValue(forKey: oldest)

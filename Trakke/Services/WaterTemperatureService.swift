@@ -84,7 +84,7 @@ actor WaterTemperatureService: WaterTemperatureFetching {
         do {
             ocean = try await oceanTemp
         } catch {
-            Logger.weather.warning("Ocean temperature fetch failed: \(error.localizedDescription)")
+            Logger.weather.warning("Ocean temperature fetch failed: \(error.localizedDescription, privacy: .private)")
             ocean = nil
         }
 
@@ -92,7 +92,7 @@ actor WaterTemperatureService: WaterTemperatureFetching {
         do {
             spots = try await bathingSpots
         } catch {
-            Logger.weather.warning("Bathing spots fetch failed: \(error.localizedDescription)")
+            Logger.weather.warning("Bathing spots fetch failed: \(error.localizedDescription, privacy: .private)")
             spots = []
         }
 
@@ -179,7 +179,7 @@ actor WaterTemperatureService: WaterTemperatureFetching {
             return nil
         }
 
-        // Find the entry closest to now
+        // Find the entry closest to now (formatter created once per call, actor-isolated)
         let now = Date.now
         let formatter = ISO8601DateFormatter()
 

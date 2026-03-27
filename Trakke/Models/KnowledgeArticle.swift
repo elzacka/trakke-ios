@@ -69,8 +69,6 @@ struct KnowledgeArticle: Identifiable, Hashable, Sendable {
 // MARK: - GRDB FetchableRecord
 
 extension KnowledgeArticle: FetchableRecord {
-    private nonisolated(unsafe) static let iso8601Formatter = ISO8601DateFormatter()
-
     init(row: Row) {
         id = row["id"]
         theme = row["theme"]
@@ -80,7 +78,7 @@ extension KnowledgeArticle: FetchableRecord {
         source = row["source"]
         sourceURL = row["source_url"]
         let dateString: String = row["verified_at"]
-        verifiedAt = Self.iso8601Formatter.date(from: dateString) ?? Date()
+        verifiedAt = ISO8601DateFormatter().date(from: dateString) ?? Date()
         sortOrder = row["sort_order"]
     }
 }

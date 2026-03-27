@@ -83,33 +83,34 @@ struct MoreSheet: View {
 
     private var moreList: some View {
         ScrollView {
-            VStack(spacing: 0) {
-                // Push destinations (navigate within sheet)
-                moreLink(icon: "book.closed", label: String(localized: "knowledge.title"), destination: .knowledge)
-                Divider().padding(.leading, .Trakke.touchMin + .Trakke.md)
-                moreLink(icon: "point.topleft.down.to.point.bottomright.curvepath", label: String(localized: "routes.title"), destination: .routes)
-                Divider().padding(.leading, .Trakke.touchMin + .Trakke.md)
-                moreLink(icon: "figure.hiking", label: String(localized: "activity.title"), destination: .activities)
-
-                Divider().padding(.vertical, .Trakke.sm)
-
-                // Dismiss-and-trigger actions (activate map modes)
-                moreButton(icon: "ruler", label: String(localized: "measurement.title")) {
-                    dismiss()
-                    onMeasurementTapped?()
-                }
-                Divider().padding(.leading, .Trakke.touchMin + .Trakke.md)
-                moreButton(icon: "arrow.down.circle", label: String(localized: "offline.title")) {
-                    dismiss()
-                    onOfflineTapped?()
+            VStack(spacing: .Trakke.cardGap) {
+                CardSection {
+                    moreLink(icon: "book.closed", label: String(localized: "knowledge.title"), destination: .knowledge)
+                    Divider().padding(.leading, .Trakke.touchMin + .Trakke.md)
+                    moreLink(icon: "point.topleft.down.to.point.bottomright.curvepath", label: String(localized: "routes.title"), destination: .routes)
+                    Divider().padding(.leading, .Trakke.touchMin + .Trakke.md)
+                    moreLink(icon: "figure.hiking", label: String(localized: "activity.title"), destination: .activities)
                 }
 
-                Divider().padding(.vertical, .Trakke.sm)
+                CardSection {
+                    moreButton(icon: "ruler", label: String(localized: "measurement.title")) {
+                        dismiss()
+                        onMeasurementTapped?()
+                    }
+                    Divider().padding(.leading, .Trakke.touchMin + .Trakke.md)
+                    moreButton(icon: "arrow.down.circle", label: String(localized: "offline.title")) {
+                        dismiss()
+                        onOfflineTapped?()
+                    }
+                }
 
-                // Push destinations (settings/info)
-                moreLink(icon: "info.circle", label: String(localized: "info.title"), destination: .info)
-                Divider().padding(.leading, .Trakke.touchMin + .Trakke.md)
-                moreLink(icon: "gearshape", label: String(localized: "settings.title"), destination: .preferences)
+                CardSection {
+                    moreLink(icon: "info.circle", label: String(localized: "info.title"), destination: .info)
+                    Divider().padding(.leading, .Trakke.touchMin + .Trakke.md)
+                    moreLink(icon: "gearshape", label: String(localized: "settings.title"), destination: .preferences)
+                }
+
+                Spacer(minLength: .Trakke.lg)
             }
             .padding(.horizontal, .Trakke.sheetHorizontal)
             .padding(.top, .Trakke.sheetTop)
@@ -135,7 +136,7 @@ struct MoreSheet: View {
     private func moreRowContent(icon: String, label: String, showChevron: Bool = true) -> some View {
         HStack(spacing: .Trakke.md) {
             Image(systemName: icon)
-                .font(.system(size: .Trakke.lg, weight: .medium))
+                .font(Font.Trakke.bodyMedium)
                 .foregroundStyle(Color.Trakke.brand)
                 .frame(width: .Trakke.touchMin)
                 .accessibilityHidden(true)

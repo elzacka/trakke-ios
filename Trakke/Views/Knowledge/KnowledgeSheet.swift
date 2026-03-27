@@ -10,6 +10,14 @@ struct KnowledgeSheet: View {
         } else {
             NavigationStack {
                 knowledgeContent
+                    .navigationDestination(for: KnowledgeDestination.self) { destination in
+                        switch destination {
+                        case .category(let category):
+                            KnowledgeCategoryView(category: category, viewModel: viewModel)
+                        case .article(let article):
+                            ArticleDetailView(article: article)
+                        }
+                    }
             }
         }
     }
@@ -51,14 +59,6 @@ struct KnowledgeSheet: View {
         .tint(Color.Trakke.brand)
         .navigationTitle(String(localized: "knowledge.title"))
         .navigationBarTitleDisplayMode(.inline)
-        .navigationDestination(for: KnowledgeDestination.self) { destination in
-            switch destination {
-            case .category(let category):
-                KnowledgeCategoryView(category: category, viewModel: viewModel)
-            case .article(let article):
-                ArticleDetailView(article: article)
-            }
-        }
         .task {
             await viewModel.loadArticles()
         }
@@ -86,10 +86,11 @@ struct KnowledgeCategoryView: View {
         ScrollView {
             VStack(spacing: .Trakke.cardGap) {
                 if filteredArticles.isEmpty {
-                    Text(String(localized: "knowledge.articles.empty"))
-                        .font(Font.Trakke.bodyRegular)
-                        .foregroundStyle(Color.Trakke.textTertiary)
-                        .padding(.vertical, .Trakke.xxl)
+                    EmptyStateView(
+                        icon: "book.closed",
+                        title: String(localized: "knowledge.articles.empty"),
+                        subtitle: String(localized: "knowledge.articles.empty.subtitle")
+                    )
                 } else {
                     CardSection("") {
                         ForEach(Array(filteredArticles.enumerated()), id: \.element.id) { index, article in

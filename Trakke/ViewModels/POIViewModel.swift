@@ -14,6 +14,7 @@ final class POIViewModel {
     private var lastBounds: ViewportBounds?
     private var lastZoom: Double = 0
     private static let debounceInterval: Duration = .milliseconds(1500)
+    private static let maxAnnotations = 2000
 
     func toggleCategory(_ category: POICategory) {
         if enabledCategories.contains(category) {
@@ -28,13 +29,19 @@ final class POIViewModel {
     }
 
     private func loadCategory(_ category: POICategory, bounds: ViewportBounds, zoom: Double) {
+        guard zoom >= category.minZoom else {
+            pois.removeAll { $0.category == category }
+            return
+        }
+
         if category.isBundled {
             let newPOIs = BundledPOIService.pois(for: category, in: bounds.buffered())
             pois.removeAll { $0.category == category }
             pois.append(contentsOf: newPOIs)
         } else {
             let service = poiService
-            Task {
+            Task { [weak self] in
+                guard let self else { return }
                 isLoading = true
                 let newPOIs = await service.fetchPOIs(category: category, bounds: bounds, zoom: zoom)
                 guard enabledCategories.contains(category) else {
@@ -46,6 +53,7 @@ final class POIViewModel {
                 isLoading = false
             }
         }
+        enforceAnnotationLimit()
     }
 
     func viewportChanged(bounds: ViewportBounds, zoom: Double) {
@@ -58,14 +66,21 @@ final class POIViewModel {
         let bundledCategories = enabledCategories.filter(\.isBundled)
         let buffered = bounds.buffered()
         for category in bundledCategories {
-            let result = BundledPOIService.pois(for: category, in: buffered)
-            pois.removeAll { $0.category == category }
-            pois.append(contentsOf: result)
+            if zoom < category.minZoom {
+                pois.removeAll { $0.category == category }
+            } else {
+                let result = BundledPOIService.pois(for: category, in: buffered)
+                pois.removeAll { $0.category == category }
+                pois.append(contentsOf: result)
+            }
         }
 
         // Debounce live categories (network requests)
         let liveCategories = enabledCategories.filter { !$0.isBundled }
-        guard !liveCategories.isEmpty else { return }
+        guard !liveCategories.isEmpty else {
+            enforceAnnotationLimit()
+            return
+        }
 
         loadTask?.cancel()
         let service = poiService
@@ -84,8 +99,14 @@ final class POIViewModel {
             }
 
             self.pois.removeAll { !self.enabledCategories.contains($0.category) }
+            self.enforceAnnotationLimit()
             self.isLoading = false
         }
+    }
+
+    private func enforceAnnotationLimit() {
+        guard pois.count > Self.maxAnnotations else { return }
+        pois = Array(pois.prefix(Self.maxAnnotations))
     }
 
     func selectPOI(_ poi: POI) {

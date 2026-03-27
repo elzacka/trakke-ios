@@ -36,7 +36,7 @@ struct ActivityListSheet: View {
         .navigationTitle(String(localized: "activity.title"))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
+            ToolbarItem(placement: .topBarTrailing) {
                 Button {
                     dismissFully()
                     onStartRecording()

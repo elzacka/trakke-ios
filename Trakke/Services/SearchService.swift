@@ -157,7 +157,8 @@ actor SearchService: SearchFetching {
             guard let name = result.skrivemåte,
                   let punkt = result.representasjonspunkt,
                   let lon = punkt.øst,
-                  let lat = punkt.nord else { return nil }
+                  let lat = punkt.nord,
+                  lat.isFinite, lon.isFinite else { return nil }
 
             let score = scorePlaceResult(name: name, query: queryLower, type: result.navneobjekttype)
             guard score >= PlaceScore.threshold else { return nil }
@@ -261,7 +262,8 @@ actor SearchService: SearchFetching {
             guard let adressetekst = result.adressetekst,
                   let punkt = result.representasjonspunkt,
                   let lat = punkt.lat,
-                  let lon = punkt.lon else { return nil }
+                  let lon = punkt.lon,
+                  lat.isFinite, lon.isFinite else { return nil }
 
             let score = scoreAddressResult(
                 address: adressetekst,

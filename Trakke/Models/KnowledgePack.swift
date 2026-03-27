@@ -110,9 +110,26 @@ struct DownloadProgress: Sendable {
     let bytesWritten: Int64
     let totalBytes: Int64
     let isComplete: Bool
+    let error: String?
+
+    init(
+        packId: String,
+        bytesWritten: Int64,
+        totalBytes: Int64,
+        isComplete: Bool,
+        error: String? = nil
+    ) {
+        self.packId = packId
+        self.bytesWritten = bytesWritten
+        self.totalBytes = totalBytes
+        self.isComplete = isComplete
+        self.error = error
+    }
 
     var percentage: Double {
         guard totalBytes > 0 else { return 0 }
         return Double(bytesWritten) / Double(totalBytes)
     }
+
+    var isFailed: Bool { error != nil }
 }

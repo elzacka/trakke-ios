@@ -1,4 +1,5 @@
 import Foundation
+import OSLog
 
 enum BaseLayer: String, CaseIterable, Identifiable, Sendable {
     case topo
@@ -94,10 +95,10 @@ enum OverlayLayer: String, CaseIterable, Identifiable, Sendable {
         }
     }
 
-    /// Raster opacity — hillshading is semi-transparent so the base map shows through.
+    /// Raster opacity — hillshading needs enough opacity for visible 3D relief effect.
     var opacity: Double {
         switch self {
-        case .hillshading: return 0.5
+        case .hillshading: return 0.7
         case .naturvernomrader: return 0.5
         default: return 0.7
         }
@@ -192,7 +193,11 @@ enum KartverketTileService {
         let fileURL = cacheDir.appendingPathComponent(fileName)
         if !FileManager.default.fileExists(atPath: fileURL.path) {
             let data = styleJSON(for: layer)
-            try? data.write(to: fileURL, options: .atomic)
+            do {
+                try data.write(to: fileURL, options: .atomic)
+            } catch {
+                Logger.map.error("Failed to write map style to cache: \(error, privacy: .private)")
+            }
         }
         return fileURL
     }

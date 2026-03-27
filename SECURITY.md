@@ -46,7 +46,7 @@ No data is sent to servers outside the EU/EEA. The Valhalla routing server (FOSS
 
 - All API responses are decoded through Swift `Codable` with strict type checking
 - Coordinate inputs are validated against geographic bounds
-- Coordinate values are guarded with `.isFinite` checks in GPX import/export, BundledPOIService, POIService, and ActivityTrackingService to reject NaN/Inf values
+- Coordinate values are guarded with `.isFinite` checks in GPX import/export, BundledPOIService, POIService, ActivityTrackingService, SearchService (place name and address coordinate decoding), and ElevationService (input boundary validation) to reject NaN/Inf values
 - Search inputs are sanitized before API calls
 - XXE prevention (`shouldResolveExternalEntities = false`) on all XML parsers: GPX import (GPXImportService) and GML shelter parsing (POIService/ShelterGMLParser)
 - GPX import enforces a 50 MB file size limit
@@ -54,7 +54,8 @@ No data is sent to servers outside the EU/EEA. The Valhalla routing server (FOSS
 - Valhalla routing responses are decoded through `Codable` with coordinate validation; polyline6 decoded coordinates are checked for `.isFinite`
 - Route computation is rate-limited client-side (1.5 s minimum interval) to prevent abuse of the public Valhalla server
 - Route computation cancellation is properly propagated (CancellationError not swallowed by rate limiter)
-- Knowledge pack file paths sanitized against path traversal (`../` and `/` characters replaced) in PackStorageHelper
+- ISO8601 date formatters use local per-call allocations (no `nonisolated(unsafe)` static mutable state) to eliminate data race risk under Swift strict concurrency
+- Knowledge pack file paths use allowlist sanitization in PackStorageHelper: only `CharacterSet.alphanumerics` plus hyphens and underscores pass through; all other characters are stripped. Empty results fall back to `"unknown"`. This prevents path traversal via `..`, `/`, null bytes, or other special characters
 - Knowledge pack downloads verified via SHA256 checksum (PackDownloadManager.verifyChecksum)
 - Knowledge pack databases opened as read-only with `immutable=1` URI flag (prevents WAL/SHM file creation)
 - Activity tracking rejects GPS points with horizontal accuracy > 50 m or negative accuracy
@@ -65,13 +66,15 @@ No data is sent to servers outside the EU/EEA. The Valhalla routing server (FOSS
 - SwiftData store protected with `NSFileProtectionComplete` (encrypted at rest, locked when device is locked)
 - Logger output uses `privacy: .private` for all user data interpolations
 - ModelContainer crash recovery: corrupted store is deleted and recreated rather than crashing
-- GDPR Art. 17 "right to erasure": In-app "Slett alle data" in Preferences deletes all SwiftData records, offline map packs, temp files, and resets all preferences
+- GDPR Art. 17 "right to erasure": In-app "Slett alle data" in Preferences deletes all SwiftData records, offline map packs, temp files, clears URLCache (may contain coordinates from API requests), and uses `removePersistentDomain` for complete UserDefaults erasure
 - GPX temp files are cleaned up automatically after share sheet dismissal
 - GPX temp export files are additionally protected with `NSFileProtectionComplete` (encrypted at rest)
 - SwiftData save failures are surfaced to the user via alerts rather than silently logged
 - Knowledge pack databases stored in Application Support with `NSFileProtectionComplete`
 - Activity data (GPS tracks) stored in SwiftData with `NSFileProtectionComplete`
-- Logger categories use `privacy: .private` for all user data (centralized in Logger+Trakke.swift)
+- Logger categories use `privacy: .private` for all user data (centralized in Logger+Trakke.swift), including WaterTemperatureService error logs
+- Clipboard security: all coordinate copy actions (EmergencySheet, POIDetailSheet, WaypointDetailSheet) use `UIPasteboard.setItems(_:options:)` with 5-minute expiration instead of persisting indefinitely
+- Activity GPX export uses the same XML escaping, coordinate validation (`.isFinite`), and `NSFileProtectionComplete` as route GPX export
 
 ### Dependency Management
 
@@ -87,6 +90,7 @@ No data is sent to servers outside the EU/EEA. The Valhalla routing server (FOSS
 ### Information Disclosure
 
 - All API requests include a User-Agent header: `Trakke-iOS/{version} hei@tazk.no` (version read dynamically from bundle). This is required by several Norwegian public APIs for identification. The header contains the app name, version, and developer contact email -- no user data.
+- An `Accept-Language: nb-NO` header is sent with API requests. This identifies the app's language preference but contains no user data.
 
 ### Privacy as Security
 
@@ -129,7 +133,9 @@ Please do not open public GitHub issues for security vulnerabilities.
 - [ ] No `UIWebView` or `WKWebView` with arbitrary content loading
 - [ ] Input validation on all user-facing text fields
 - [ ] Dependencies reviewed and pinned to specific versions
-- [ ] Knowledge pack paths sanitized against traversal attacks
+- [ ] Knowledge pack paths use allowlist sanitization against traversal attacks
 - [ ] Knowledge databases opened read-only (immutable)
 - [ ] Activity GPS data never leaves the device
 - [ ] Pack download checksums verified before installation
+- [ ] Clipboard copies use time-limited expiry (5 minutes)
+- [ ] No `nonisolated(unsafe)` static mutable state
