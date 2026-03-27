@@ -15,6 +15,7 @@
 		0708C19448134DE5282529E4 /* TrakkeMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6672497810D8608FD93B7A54 /* TrakkeMapView.swift */; };
 		07EF3A5CB1E670E2E5581620 /* MoreSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15E64B03DA7B98D4A32DFE4D /* MoreSheet.swift */; };
 		09A79DCA43FB500CAB668321 /* TrakkeMapView+Annotations.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E2C88B67EF2819E60B5DEE /* TrakkeMapView+Annotations.swift */; };
+		09D957D62C3C2BC629516232 /* NaturskogSubPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F2114F04FF6BB7D485A84C1 /* NaturskogSubPickerView.swift */; };
 		0F051C209281F38C528947D9 /* Route.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0D13322F67F86A945E22BC /* Route.swift */; };
 		0FCAB2E0C251794C34AC48AE /* MeasurementViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F6D928AD7D002ECC5E284AE /* MeasurementViewModel.swift */; };
 		114B3348F8F39431E4AF33A3 /* viewpoints.geojson in Resources */ = {isa = PBXBuildFile; fileRef = A1F9C343CDA8510C0C705666 /* viewpoints.geojson */; };
@@ -286,6 +287,7 @@
 		3EC1194CD1BCB7392992B45D /* POIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POIService.swift; sourceTree = "<group>"; };
 		410D3AEE72E9675202D9132B /* InfoSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoSheet.swift; sourceTree = "<group>"; };
 		42231E41B2F790E4CFAFD79C /* fair_day.svg */ = {isa = PBXFileReference; path = fair_day.svg; sourceTree = "<group>"; };
+		42B3A207C0E1760AB1C8EEA1 /* mgrs-ios */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "mgrs-ios"; path = "LocalPackages/mgrs-ios"; sourceTree = SOURCE_ROOT; };
 		42B9EA0B5AE9C2165FE85693 /* ArticleDetailSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleDetailSheet.swift; sourceTree = "<group>"; };
 		43EC7EBDBC9F398CEFDB1BF5 /* ExploreSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreSheet.swift; sourceTree = "<group>"; };
 		44E67DF50AC72B5B791232E2 /* ActivityTrackingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityTrackingService.swift; sourceTree = "<group>"; };
@@ -370,6 +372,7 @@
 		9C339D71719011F80C6EF589 /* partlycloudy_night.svg */ = {isa = PBXFileReference; path = partlycloudy_night.svg; sourceTree = "<group>"; };
 		9D48828032FCDC1F1557D39D /* rainshowersandthunder_polartwilight.svg */ = {isa = PBXFileReference; path = rainshowersandthunder_polartwilight.svg; sourceTree = "<group>"; };
 		9E771B0038B66E3A05A4334B /* MapControlsOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapControlsOverlay.swift; sourceTree = "<group>"; };
+		9F2114F04FF6BB7D485A84C1 /* NaturskogSubPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaturskogSubPickerView.swift; sourceTree = "<group>"; };
 		9F6D928AD7D002ECC5E284AE /* MeasurementViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementViewModel.swift; sourceTree = "<group>"; };
 		9F85C307536813A4292BFE90 /* KnowledgePack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnowledgePack.swift; sourceTree = "<group>"; };
 		A072AA3247DF55D602639556 /* OfflineMapService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineMapService.swift; sourceTree = "<group>"; };
@@ -579,6 +582,7 @@
 		3241D291E1877084913966F9 = {
 			isa = PBXGroup;
 			children = (
+				3B5A770E30D465E2EAC776F5 /* Packages */,
 				1E9E23F0C6FACF848FAAC70C /* Trakke */,
 				AF6A68507C4E16E6B2C4821B /* TrakkeTests */,
 				8CC2233841B761D1DA08D541 /* TrakkeUITests */,
@@ -592,6 +596,14 @@
 				DE4630C010440BDC6D4BE2E8 /* APIClient.swift */,
 			);
 			path = Networking;
+			sourceTree = "<group>";
+		};
+		3B5A770E30D465E2EAC776F5 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				42B3A207C0E1760AB1C8EEA1 /* mgrs-ios */,
+			);
+			name = Packages;
 			sourceTree = "<group>";
 		};
 		3BD20CA4090237E9D10CF16A /* Waypoints */ = {
@@ -802,6 +814,7 @@
 				F0100C1D0198B9660EA1B145 /* EmptyStateView.swift */,
 				06E26EE05C9FC796FD7D4D17 /* LocationPrimerView.swift */,
 				A23FC13BE17D1AC98EFDC6B8 /* MarkdownBodyView.swift */,
+				9F2114F04FF6BB7D485A84C1 /* NaturskogSubPickerView.swift */,
 				808E75F58FCD02C57629BE59 /* ShareSheet.swift */,
 				7C7CC07ECBFFF2A606A4FD1D /* TrakkeButtonStyle.swift */,
 			);
@@ -1010,9 +1023,9 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				35D657859CEC9995F570E304 /* XCRemoteSwiftPackageReference "GRDB.swift" */,
-				D4C9855FA77B07F460F4B3CF /* XCRemoteSwiftPackageReference "mgrs-ios" */,
 				3044EB09DCC6BF380138ED4D /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */,
 				E304B341153993036392B3D4 /* XCRemoteSwiftPackageReference "swiftui-dsl" */,
+				E56EA52064779552F6E45AC3 /* XCLocalSwiftPackageReference "LocalPackages/mgrs-ios" */,
 			);
 			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
@@ -1188,6 +1201,7 @@
 				BA3A7CFE7F5226CFAD1A4E76 /* MeasurementToolbar.swift in Sources */,
 				0FCAB2E0C251794C34AC48AE /* MeasurementViewModel.swift in Sources */,
 				07EF3A5CB1E670E2E5581620 /* MoreSheet.swift in Sources */,
+				09D957D62C3C2BC629516232 /* NaturskogSubPickerView.swift in Sources */,
 				E4C087FCE6116F6A4E442834 /* NavigationOverlayView.swift in Sources */,
 				202C5DFE5B14DA479A999731 /* NavigationService.swift in Sources */,
 				798CC23F2072E7C19629E605 /* NavigationStartSheet.swift in Sources */,
@@ -1334,7 +1348,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -1423,7 +1437,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -1583,6 +1597,13 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		E56EA52064779552F6E45AC3 /* XCLocalSwiftPackageReference "LocalPackages/mgrs-ios" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "LocalPackages/mgrs-ios";
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCRemoteSwiftPackageReference section */
 		3044EB09DCC6BF380138ED4D /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -1598,14 +1619,6 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 7.4.0;
-			};
-		};
-		D4C9855FA77B07F460F4B3CF /* XCRemoteSwiftPackageReference "mgrs-ios" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/ngageoint/mgrs-ios";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.0.0;
 			};
 		};
 		E304B341153993036392B3D4 /* XCRemoteSwiftPackageReference "swiftui-dsl" */ = {
@@ -1631,7 +1644,6 @@
 		};
 		97B2D7D8D3A31119337EF8C7 /* MGRS */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = D4C9855FA77B07F460F4B3CF /* XCRemoteSwiftPackageReference "mgrs-ios" */;
 			productName = MGRS;
 		};
 		B20C41DFD30629853159F9CD /* MapLibreSwiftUI */ = {

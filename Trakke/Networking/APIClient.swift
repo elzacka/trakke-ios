@@ -12,19 +12,19 @@ enum APIError: Error, LocalizedError, Sendable {
     var errorDescription: String? {
         switch self {
         case .invalidURL:
-            return "Ugyldig URL"
+            return String(localized: "error.invalidURL")
         case .invalidResponse:
-            return "Ugyldig respons"
+            return String(localized: "error.invalidResponse")
         case .httpError(let code):
-            return "HTTP-feil: \(code)"
+            return String(localized: "error.httpError \(code)")
         case .rateLimited:
-            return "For mange forsøk"
+            return String(localized: "error.rateLimited")
         case .decodingError(let description):
-            return "Dekodingsfeil: \(description)"
+            return String(localized: "error.decodingError \(description)")
         case .networkError(let description):
-            return "Nettverksfeil: \(description)"
+            return String(localized: "error.networkError \(description)")
         case .timeout:
-            return "Tidsavbrudd"
+            return String(localized: "error.timeout")
         }
     }
 }
@@ -46,6 +46,7 @@ enum APIClient {
         )
         config.httpAdditionalHeaders = [
             "Accept-Encoding": "gzip, deflate, br",
+            "Accept-Language": "nb-NO,nb;q=0.9,no;q=0.8,en;q=0.5",
         ]
         return URLSession(configuration: config)
     }()

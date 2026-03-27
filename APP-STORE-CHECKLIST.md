@@ -1,7 +1,7 @@
 # App Store Distribution Checklist
 
-**For: Tråkke v1.3.0 (build 1)**
-**Updated: March 26, 2026**
+**For: Tråkke v1.3.0 (build 2)**
+**Updated: 27 March 2026**
 **Scope: Post-build phases before shipping to Apple for review**
 
 ---
@@ -36,7 +36,7 @@
 
 - [ ] `CFBundleDisplayName` = "Tråkke" (with å)
 - [ ] `CFBundleShortVersionString` matches App Store Connect version (1.3.0)
-- [ ] `CFBundleVersion` is higher than any previously uploaded build (currently 1)
+- [ ] `CFBundleVersion` is higher than any previously uploaded build (currently 2; build 1 was uploaded to TestFlight)
 - [ ] `ITSAppUsesNonExemptEncryption` = `false` (app uses only standard HTTPS)
 - [ ] `NSLocationWhenInUseUsageDescription` is present, specific, and in Norwegian
 - [ ] `UIRequiredDeviceCapabilities` = `[arm64]` only (do not add `gps` or `location-services`)
@@ -318,9 +318,9 @@ xcrun simctl io <DEVICE_ID> recordVideo --codec h264 --force preview.mp4
 
 **Suggested Norwegian keywords (v1.3.0):**
 ```
-turkart,friluftsliv,topo,kartverket,tur,fjell,vandring,gps,rute,offline,kart,natur,skog,topptur,tilfluktsrom,kulturminne,gpx,veipunkt,overlevelse,aktivitet,soloppgang,vanntemperatur
+turkart,friluftsliv,kartverket,fjell,vandring,gps,rute,offline,topptur,tilfluktsrom,gpx,aktivitet
 ```
-(Verify total is under 100 bytes before saving)
+(97 bytes of 100 -- verified)
 
 ### Age Rating
 
@@ -391,7 +391,8 @@ Tråkke's architecture is GDPR-friendly by design:
 - Privacy policy covers legal basis (legitimate interest + consent for location)
 - Users can delete all data by deleting the app
 - Routes exportable as GPX (data portability)
-- In-app "Slett alle data" function in Preferences (GDPR Art. 17 right to erasure) -- also deletes activity records and downloaded knowledge packs
+- In-app "Slett alle data" function in Preferences (GDPR Art. 17 right to erasure) -- also deletes activity records and downloaded knowledge packs, clears URLCache (which may contain coordinates from API requests), and uses `removePersistentDomain` for a complete UserDefaults reset
+- Activity tracks exportable as GPX (data portability, GDPR Art. 20)
 
 ### Data Source Attribution
 
@@ -466,14 +467,17 @@ KEY FEATURES TO TEST:
    bearing mode (works offline).
 9. Activity tracking: Tap the activity button to start recording a GPS hike.
    Stop and save the activity. Saved activities are viewable in the activity
-   list.
+   list. Activities can be exported as GPX files (data portability, GDPR
+   Art. 20) via the share sheet.
 10. Knowledge articles: Open the "More" hub sheet and navigate to the
     knowledge section. Browse bundled survival articles. Download an
-    additional knowledge pack (requires network).
+    additional knowledge pack (requires network). If the download fails
+    (e.g. no network), an error state is shown with a retry option.
 11. Emergency sheet: Open via the emergency button. The sheet has two tabs:
     "Koordinater" (displays current location in multiple coordinate formats
     including decimal, DMS, and MGRS) and "SOS-signal" (Morse code torch
-    signalling).
+    signalling). Coordinates copied to the clipboard expire automatically
+    after 5 minutes for privacy.
 12. More hub: Open the "More" sheet to navigate to all secondary features
     (knowledge, activity history, settings).
 13. Data deletion: In Settings > "Slett alle data" deletes all user data
@@ -512,6 +516,9 @@ Riksantikvaren) within the EU/EEA.
 - [ ] Test **water temperature display** in weather sheet (ocean forecast card and bathing spot data)
 - [ ] Test **emergency coordinates display** in multiple formats (decimal, DMS, MGRS) when location is available and denied
 - [ ] Test **SOS morse signal** activation and deactivation (torch flashing pattern starts and stops correctly)
+- [ ] Test **clipboard expiry** -- copy coordinates from the Emergency sheet, wait 5 minutes, verify the clipboard no longer contains the coordinates
+- [ ] Test **activity GPX export** -- record and save an activity, export as GPX via the share sheet, verify the file contains valid track points
+- [ ] Test **knowledge pack download failure** -- disable network during a pack download, verify an error state is shown and the app does not crash
 - [ ] Test **"More" sheet** navigation to all sub-destinations (knowledge, activity, settings)
 - [ ] Test **toporaster base layer** -- tiles load and display correctly
 - [ ] Test **naturskog sub-picker** -- switching between the three naturskog layers updates the map overlay
@@ -633,8 +640,8 @@ Not applicable for Tråkke: Dark Interface (light mode only), Captions, Audio De
 5. **Fill in App Privacy Details** in ASC (Precise Location, not linked, not tracking)
 6. **Complete age rating questionnaire** (all "None" = 4+ rating)
 7. **Declare content rights** (confirm rights to Kartverket, OSM, MET, Havvarsel-Frost data)
-8. **Write reviewer notes** in English explaining the Norwegian-language app and new v1.3.0 features
-9. **Upload build** via Xcode, wait for processing, submit for review
+8. **Write reviewer notes** in English explaining the Norwegian-language app and new v1.3.0 features (activity GPX export, knowledge pack error handling, clipboard expiry on coordinates)
+9. **Upload build 2** via Xcode, wait for processing, submit for review
 
 ### Should Do
 

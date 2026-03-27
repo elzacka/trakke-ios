@@ -163,14 +163,13 @@ actor WeatherService: WeatherFetching {
 
     // MARK: - Parsing
 
-    private nonisolated(unsafe) static let iso8601Formatter = ISO8601DateFormatter()
-
     private func parseMetData(_ response: MetApiResponse, lat: Double, lon: Double) -> WeatherForecast {
         let timeseries = response.properties.timeseries
         let now = Date()
+        let formatter = ISO8601DateFormatter()
 
         let parsed: [(date: Date, data: WeatherData)] = timeseries.compactMap { point in
-            guard let date = Self.iso8601Formatter.date(from: point.time) else { return nil }
+            guard let date = formatter.date(from: point.time) else { return nil }
             let instant = point.data.instant.details
             let next1h = point.data.next_1_hours
             let next6h = point.data.next_6_hours
@@ -210,7 +209,8 @@ actor WeatherService: WeatherFetching {
         let calendar = Calendar.current
         var dailyMap: [String: [(date: Date, data: WeatherData)]] = [:]
         for item in parsed where item.date > now {
-            let key = calendar.startOfDay(for: item.date).description
+            let components = calendar.dateComponents([.year, .month, .day], from: item.date)
+            let key = "\(components.year!)-\(components.month!)-\(components.day!)"
             dailyMap[key, default: []].append(item)
         }
 

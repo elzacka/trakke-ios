@@ -53,8 +53,8 @@ final class WaypointViewModel {
         save("waypoint")
         loadWaypoints()
 
-        Task {
-            await fetchElevation(for: wp)
+        Task { [weak self] in
+            await self?.fetchElevation(for: wp)
         }
     }
 

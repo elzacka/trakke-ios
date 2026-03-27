@@ -25,17 +25,47 @@ actor ElevationService {
     private static let sampleInterval = 100.0 // meters
     private static let timeout: TimeInterval = 15
 
+    // MARK: - Profile cache (elevation data is static; no TTL needed)
+
+    private var profileCache: [String: [ElevationPoint]] = [:]
+    private var profileCacheOrder: [String] = []
+    private static let profileCacheLimit = 5
+
+    private func profileCacheKey(for coordinates: [CLLocationCoordinate2D]) -> String {
+        guard let first = coordinates.first, let last = coordinates.last else { return "" }
+        let count = coordinates.count
+        // Round to 4 decimal places (~11m) so near-identical requests hit the cache
+        let f = "\((first.latitude * 10000).rounded() / 10000),\((first.longitude * 10000).rounded() / 10000)"
+        let l = "\((last.latitude * 10000).rounded() / 10000),\((last.longitude * 10000).rounded() / 10000)"
+        return "\(f)|\(l)|\(count)"
+    }
+
+    private func cacheProfile(_ points: [ElevationPoint], forKey key: String) {
+        profileCache[key] = points
+        profileCacheOrder.append(key)
+        if profileCache.count > Self.profileCacheLimit, let oldest = profileCacheOrder.first {
+            profileCache.removeValue(forKey: oldest)
+            profileCacheOrder.removeFirst()
+        }
+    }
+
     func fetchElevationProfile(
         coordinates: [CLLocationCoordinate2D]
     ) async throws -> [ElevationPoint] {
-        guard coordinates.count >= 2 else { return [] }
+        let validCoordinates = coordinates.filter { $0.latitude.isFinite && $0.longitude.isFinite }
+        guard validCoordinates.count >= 2 else { return [] }
 
-        let sampled = Haversine.sampleCoordinates(coordinates, interval: Self.sampleInterval)
+        let cacheKey = profileCacheKey(for: validCoordinates)
+        if let cached = profileCache[cacheKey] {
+            return cached
+        }
+
+        let sampled = Haversine.sampleCoordinates(validCoordinates, interval: Self.sampleInterval)
         let elevations = try await fetchElevations(for: sampled)
         let distances = Haversine.cumulativeDistances(coordinates: sampled)
 
         // Filter out points where the elevation lookup returned nil (e.g. sea/outside coverage)
-        return zip(zip(sampled, elevations), distances).compactMap { pair, dist in
+        let points = zip(zip(sampled, elevations), distances).compactMap { pair, dist -> ElevationPoint? in
             guard let elevation = pair.1 else { return nil }
             return ElevationPoint(
                 coordinate: pair.0,
@@ -43,6 +73,9 @@ actor ElevationService {
                 distance: dist
             )
         }
+
+        cacheProfile(points, forKey: cacheKey)
+        return points
     }
 
     func calculateStats(from points: [ElevationPoint]) -> ElevationStats {

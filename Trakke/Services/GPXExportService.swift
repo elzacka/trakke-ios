@@ -90,6 +90,45 @@ enum GPXExportService {
         return gpx
     }
 
+    static func exportActivity(_ activity: Activity) -> String {
+        var gpx = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <gpx version="1.1" creator="Tråkke"
+          xmlns="http://www.topografix.com/GPX/1/1"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+          <metadata>
+            <name>\(escapeXML(activity.name))</name>
+            <time>\(iso8601(activity.startedAt))</time>
+          </metadata>
+        """
+
+        gpx += "\n  <trk>"
+        gpx += "\n    <name>\(escapeXML(activity.name))</name>"
+        gpx += "\n    <trkseg>"
+
+        for point in activity.trackPoints {
+            guard point.count >= 2 else { continue }
+            let lon = point[0]
+            let lat = point[1]
+            guard lon.isFinite, lat.isFinite else { continue }
+            gpx += "\n      <trkpt lat=\"\(lat)\" lon=\"\(lon)\">"
+            if point.count >= 3, point[2].isFinite {
+                gpx += "\n        <ele>\(point[2])</ele>"
+            }
+            if point.count >= 4, point[3].isFinite {
+                gpx += "\n        <time>\(iso8601(Date(timeIntervalSince1970: point[3])))</time>"
+            }
+            gpx += "\n      </trkpt>"
+        }
+
+        gpx += "\n    </trkseg>"
+        gpx += "\n  </trk>"
+        gpx += "\n</gpx>\n"
+
+        return gpx
+    }
+
     static func sanitizeFilename(_ name: String) -> String {
         let cleaned = name
             .replacingOccurrences(of: "[^a-zA-ZæøåÆØÅ0-9\\-_]", with: "_", options: .regularExpression)

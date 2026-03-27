@@ -571,6 +571,9 @@ struct TrakkeMapView: UIViewRepresentable {
 
             let layer = MLNRasterStyleLayer(identifier: overlay.layerID, source: source)
             layer.rasterOpacity = NSExpression(forConstantValue: overlay.opacity)
+            if overlay == .hillshading {
+                layer.rasterContrast = NSExpression(forConstantValue: 0.3)
+            }
             style.addLayer(layer)
         }
 

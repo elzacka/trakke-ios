@@ -149,9 +149,9 @@ struct MapControlsOverlay<WeatherContent: View>: View {
         action: @escaping () -> Void
     ) -> some View {
         Button(action: action) {
-            HStack(spacing: 10) {
+            HStack(spacing: .Trakke.md) {
                 Image(systemName: icon)
-                    .font(.system(size: .Trakke.lg, weight: .medium))
+                    .font(Font.Trakke.bodyMedium)
                     .foregroundStyle(Color.Trakke.brand)
                     .frame(width: .Trakke.xxl)
                     .accessibilityHidden(true)
@@ -162,7 +162,7 @@ struct MapControlsOverlay<WeatherContent: View>: View {
 
                 Spacer()
             }
-            .padding(.horizontal, 14)
+            .padding(.horizontal, .Trakke.lg)
             .frame(height: .Trakke.touchMin)
             .background(.regularMaterial)
             .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))
@@ -178,7 +178,7 @@ struct MapControlsOverlay<WeatherContent: View>: View {
                 viewModel.zoomIn()
             } label: {
                 Image(systemName: "plus")
-                    .font(.system(size: .Trakke.lg, weight: .medium))
+                    .font(Font.Trakke.bodyMedium)
                     .foregroundStyle(Color.Trakke.brand)
                     .frame(width: .Trakke.touchMin, height: .Trakke.touchMin)
             }
@@ -191,7 +191,7 @@ struct MapControlsOverlay<WeatherContent: View>: View {
                 viewModel.zoomOut()
             } label: {
                 Image(systemName: "minus")
-                    .font(.system(size: .Trakke.lg, weight: .medium))
+                    .font(Font.Trakke.bodyMedium)
                     .foregroundStyle(Color.Trakke.brand)
                     .frame(width: .Trakke.touchMin, height: .Trakke.touchMin)
             }

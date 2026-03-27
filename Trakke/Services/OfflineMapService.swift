@@ -41,10 +41,27 @@ struct OfflinePackContext: Codable, Sendable {
     let layer: String
 }
 
+// MARK: - Offline Map Managing
+
+@MainActor
+protocol OfflineMapManaging: AnyObject {
+    func startDownload(
+        name: String,
+        layer: BaseLayer,
+        south: Double, west: Double, north: Double, east: Double,
+        minZoom: Int, maxZoom: Int
+    )
+    func getPacks() -> [OfflinePackInfo]
+    func deletePack(_ info: OfflinePackInfo)
+    func deleteAllPacks()
+    func pausePack(_ info: OfflinePackInfo)
+    func resumePack(_ info: OfflinePackInfo)
+}
+
 // MARK: - Offline Map Service
 
 @MainActor
-final class OfflineMapService {
+final class OfflineMapService: OfflineMapManaging {
     static let shared = OfflineMapService()
     nonisolated private static let tileSizeEstimate: Int64 = 15_000 // ~15 KB per tile
 

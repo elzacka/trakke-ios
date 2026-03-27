@@ -1,6 +1,6 @@
 # Personvernerklæring for Tråkke
 
-**Sist oppdatert:** 26. mars 2026
+**Sist oppdatert:** 27. mars 2026
 **Behandlingsansvarlig:** Tazk
 **Kontakt:** hei@tazk.no
 
@@ -53,6 +53,8 @@ Appen ber om tilgang til posisjonen din kun når du aktivt velger å vise den p�
 
 Posisjonsdata lagres ikke og sendes ikke videre, bortsett fra som beskrevet i punkt 3.
 
+Turdata kan eksporteres som GPX-filer for dataportabilitet (GDPR artikkel 20).
+
 ### 2.3 Data som ikke samles inn
 
 - Ingen brukerkontoer eller innlogging
@@ -69,7 +71,7 @@ Appen kommuniserer med følgende tjenester for å gi deg kartdata, vær og annen
 | Tjeneste | Formål | Data som sendes | Land |
 |----------|--------|-----------------|------|
 | Kartverket (cache.kartverket.no) | Kartfliser | Kartkoordinater (zoom, x, y) | Norge |
-| Kartverket WMS (wms.geonorge.no) | Turruter-kartlag | Kartområde (bounding box) | Norge |
+| Kartverket WMS (wms.geonorge.no) | Turruter- og fjellskygge-kartlag | Kartområde (bounding box) | Norge |
 | Geonorge Stedsnavn (ws.geonorge.no) | Stedsnavn-søk | Søketekst | Norge |
 | Geonorge Adresser (ws.geonorge.no) | Adressesøk | Søketekst | Norge |
 | Geonorge Høydedata (ws.geonorge.no) | Høydeprofiler | Koordinater langs ruten | Norge |
@@ -77,6 +79,7 @@ Appen kommuniserer med følgende tjenester for å gi deg kartdata, vær og annen
 | DSB (ogc.dsb.no) | Tilfluktsrom | Kartområde (bounding box) | Norge |
 | Riksantikvaren (api.ra.no) | Kulturminner | Kartområde (bounding box) | Norge |
 | Miljødirektoratet (image001.miljodirektoratet.no) | Naturskog-kartlag | Kartområde (bounding box) | Norge |
+| Miljødirektoratet (kart.miljodirektoratet.no) | Naturvernområder-kartlag | Kartområde (bounding box) | Norge |
 | Meteorologisk institutt Oceanforecast (api.met.no) | Havtemperatur | Omtrentlig posisjon | Norge |
 | Havvarsel-Frost (havvarsel-frost.met.no) | Badevannstemperatur | Omtrentlig posisjon | Norge |
 | FOSSGIS Valhalla (valhalla1.openstreetmap.de) | Ruteberegning | Start- og målkoordinater | Tyskland (EU) |
@@ -106,8 +109,8 @@ Behandlingen av data i Tråkke er basert på:
 Siden Tråkke ikke samler inn personopplysninger, er de fleste rettigheter automatisk ivaretatt:
 
 - **Innsyn:** Alle data er synlig i appen din.
-- **Sletting:** Slett appen for å fjerne alle data. Du kan også slette enkeltdata (ruter, veipunkter, turer, nedlastede kart) direkte i appen, eller bruke «Slett alle data» i innstillingene for å slette alt på en gang -- inkludert turdata og kunnskapspakker.
-- **Dataportabilitet:** Ruter kan eksporteres som GPX-filer. Turdata (registrerte turer) kan sees og slettes direkte i appen.
+- **Sletting:** Slett appen for å fjerne alle data. Du kan også slette enkeltdata (ruter, veipunkter, turer, nedlastede kart) direkte i appen, eller bruke «Slett alle data» i innstillingene for å slette alt på en gang -- inkludert turdata, kunnskapspakker og nettleserens hurtigbuffer (URLCache) som kan inneholde koordinater fra API-forespørsler.
+- **Dataportabilitet:** Ruter og registrerte turer kan eksporteres som GPX-filer. Turdata kan også sees og slettes direkte i appen.
 - **Begrenset behandling:** Du kan bruke appen uten å gi posisjonstilgang.
 
 ## 6. Datasikkerhet
@@ -120,6 +123,8 @@ Siden Tråkke ikke samler inn personopplysninger, er de fleste rettigheter autom
 - Kunnskapspakker lagres lokalt som skrivebeskyttede databaser med filbeskyttelse
 - Turdata (GPS-spor) lagres kun lokalt og sendes aldri til eksterne tjenester
 - Nedlastede pakker verifiseres med SHA256-sjekksum før installasjon
+- Kopierte koordinater (fra nødskjermen og detaljvisninger) utløper automatisk fra utklippstavlen etter 5 minutter
+- Filnavn for kunnskapspakker valideres med en godkjenningsliste som kun tillater bokstaver, tall, bindestreker og understrek
 - Appen krever ingen brukerkontoer eller passord
 
 ## 7. Barn

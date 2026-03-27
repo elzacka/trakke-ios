@@ -33,11 +33,6 @@ struct DownloadManagerSheet: View {
                     }
                     .accessibilityLabel(String(localized: "offline.download"))
                 }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(String(localized: "common.close")) {
-                        dismiss()
-                    }
-                }
             }
             .alert(
                 String(localized: "offline.deleteConfirm.title"),
@@ -67,16 +62,11 @@ struct DownloadManagerSheet: View {
         ScrollView {
             VStack(spacing: .Trakke.cardGap) {
                 // Info about how offline maps work
-                HStack(spacing: .Trakke.sm) {
-                    Image(systemName: "info.circle")
-                        .font(Font.Trakke.caption)
-                        .foregroundStyle(Color.Trakke.textTertiary)
-                    Text(String(localized: "offline.autoUseHint"))
-                        .font(Font.Trakke.caption)
-                        .foregroundStyle(Color.Trakke.textTertiary)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, .Trakke.xs)
+                Text(String(localized: "offline.autoUseHint"))
+                    .font(Font.Trakke.caption)
+                    .foregroundStyle(Color.Trakke.textTertiary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, .Trakke.xs)
 
                 CardSection(String(localized: "offline.packs")) {
                     ForEach(Array(viewModel.packs.enumerated()), id: \.element.id) { index, pack in

@@ -21,6 +21,7 @@ Tråkke er en kartapp for iPhone og iPad som bruker kartdata fra Kartverket. App
 - **Koordinatformater** - DD, DMS, DDM, UTM, MGRS
 - **Navigasjon** - beregnet rute (via Valhalla) med sving-for-sving eller kompassretning til mål
 - **Turregistrering** - GPS-basert sporregistrering med avstand, høydemeter og varighet
+- **Eksport av turdata som GPX** - registrerte aktiviteter kan eksporteres som GPX-filer for dataportabilitet
 - **Kunnskap og overlevelse** - nedlastbare artikler om friluftsliv, tilgjengelig uten nett
 - **Nødkoordinater og SOS-signal** - vis posisjon i DD, UTM og MGRS, SOS-morsekode med lommelykt
 - **Slett alle data** - GDPR-sletting av alle ruter, veipunkter og nedlastede kart (innstillinger)
@@ -105,6 +106,8 @@ Alle tjenester er innenfor EU/EØS. Ingen autentisering kreves.
 ## Personvern
 
 Alle brukerdata lagres lokalt på enheten. Ingen sporing, ingen informasjonskapsler, ingen analyse. Alle eksterne tjenester er innenfor EU/EØS.
+
+Kopierte koordinater slettes automatisk fra utklippstavlen etter 5 minutter. "Slett alle data" i innstillingene gjennomfører full sletting i henhold til GDPR artikkel 17 — alle ruter, veipunkter, aktiviteter og nedlastede kart fjernes permanent.
 
 Se [PERSONVERN.md](PERSONVERN.md) for fullstendig personvernerklæring.
 

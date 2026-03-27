@@ -120,7 +120,8 @@ actor NavigationService {
     func remainingDistance(
         fromIndex: Int,
         snappedCoordinate: CLLocationCoordinate2D,
-        routeCoordinates: [CLLocationCoordinate2D]
+        routeCoordinates: [CLLocationCoordinate2D],
+        cumulativeDistances: [Double] = []
     ) -> Double {
         guard fromIndex < routeCoordinates.count - 1 else { return 0 }
 
@@ -130,7 +131,14 @@ actor NavigationService {
             to: routeCoordinates[fromIndex + 1]
         )
 
-        // Sum remaining full segments
+        // O(1) path: use precomputed cumulative distances if available
+        if cumulativeDistances.count == routeCoordinates.count {
+            let totalDistance = cumulativeDistances[cumulativeDistances.count - 1]
+            let distanceAtNextVertex = cumulativeDistances[fromIndex + 1]
+            return toNextVertex + (totalDistance - distanceAtNextVertex)
+        }
+
+        // Fallback: sum remaining full segments
         var remaining = toNextVertex
         for i in (fromIndex + 1)..<(routeCoordinates.count - 1) {
             remaining += Haversine.distance(
@@ -150,14 +158,13 @@ actor NavigationService {
     ) -> (gain: Double, loss: Double) {
         guard elevationProfile.count >= 2 else { return (0, 0) }
 
-        // Find the first elevation point ahead of our position
+        // Find the first elevation point at or ahead of our position
         var startIndex = 0
         for (i, point) in elevationProfile.enumerated() {
+            startIndex = i
             if point.distance >= fromAlongTrackDistance {
-                startIndex = i
                 break
             }
-            startIndex = i
         }
 
         var gain = 0.0

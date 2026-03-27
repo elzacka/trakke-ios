@@ -140,7 +140,8 @@ final class RouteViewModel {
         isLoadingElevation = true
         let service = elevationService
 
-        Task {
+        Task { [weak self] in
+            guard let self else { return }
             do {
                 let profile = try await service.fetchElevationProfile(coordinates: coords)
                 let stats = await service.calculateStats(from: profile)

@@ -46,15 +46,9 @@ struct MeasurementSheet: View {
         } label: {
             VStack(spacing: .Trakke.rowVertical) {
                 Image(systemName: icon)
-                    .font(Font.Trakke.bodyMedium)
                 Text(label)
-                    .font(Font.Trakke.bodyRegular)
             }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 14)
-            .background(Color.Trakke.brand.opacity(0.1))
-            .foregroundStyle(Color.Trakke.brand)
-            .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))
         }
+        .buttonStyle(.trakkeSecondary)
     }
 }

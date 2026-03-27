@@ -48,6 +48,10 @@ enum MeasurementService {
         return String(format: "%.0f m", meters)
     }
 
+    static func formatElevation(_ meters: Double) -> String {
+        "\(Int(meters.rounded())) m"
+    }
+
     static func formatArea(_ squareMeters: Double) -> String {
         if squareMeters >= 10_000 {
             return String(format: "%.2f km\u{00B2}", squareMeters / 1_000_000)

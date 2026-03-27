@@ -69,6 +69,7 @@ struct SearchSheet: View {
                 VStack {
                     Spacer()
                     Text(error)
+                        .font(Font.Trakke.bodyRegular)
                         .foregroundStyle(Color.Trakke.textTertiary)
                     Spacer()
                 }

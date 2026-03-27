@@ -9,6 +9,7 @@ struct WaypointDetailSheet: View {
     @Environment(\.dismiss) private var dismiss
     @AppStorage(AppStorageKeys.coordinateFormat) private var coordinateFormat: CoordinateFormat = .dd
     @State private var showDeleteConfirmation = false
+    @State private var copied = false
 
     var body: some View {
         NavigationStack {
@@ -27,13 +28,6 @@ struct WaypointDetailSheet: View {
             .tint(Color.Trakke.brand)
             .navigationTitle(waypoint.name)
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(String(localized: "common.close")) {
-                        dismiss()
-                    }
-                }
-            }
         }
     }
 
@@ -102,9 +96,17 @@ struct WaypointDetailSheet: View {
                         .font(Font.Trakke.bodyRegular.monospacedDigit())
                     Spacer()
                     Button {
-                        UIPasteboard.general.string = formatted.copyText
+                        UIPasteboard.general.setItems(
+                            [["public.utf8-plain-text": formatted.copyText]],
+                            options: [.expirationDate: Date().addingTimeInterval(300)]
+                        )
+                        withAnimation { copied = true }
+                        Task {
+                            try? await Task.sleep(for: .milliseconds(1500))
+                            withAnimation { copied = false }
+                        }
                     } label: {
-                        Image(systemName: "doc.on.doc")
+                        Image(systemName: copied ? "checkmark" : "doc.on.doc")
                             .font(Font.Trakke.bodyRegular)
                             .foregroundStyle(Color.Trakke.brand)
                             .frame(minWidth: .Trakke.touchMin, minHeight: .Trakke.touchMin)

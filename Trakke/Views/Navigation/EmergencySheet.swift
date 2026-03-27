@@ -56,7 +56,7 @@ struct EmergencySheet: View {
 
 private struct CoordinatesContent: View {
     let userLocation: CLLocation?
-    @State private var copied = false
+    @State private var copiedId: String?
 
     private var coordinate: CLLocationCoordinate2D? {
         guard let loc = userLocation,
@@ -91,11 +91,11 @@ private struct CoordinatesContent: View {
         let dd = CoordinateService.format(coordinate: coord, format: .dd)
 
         CardSection(String(localized: "emergency.coordinates.decimal")) {
-            coordinateRow(formatted: dd)
+            coordinateRow(id: "dd", formatted: dd)
         }
 
         CardSection("UTM") {
-            coordinateRow(formatted: utm)
+            coordinateRow(id: "utm", formatted: utm)
         }
 
         if let accuracy = userLocation?.horizontalAccuracy, accuracy > 0 {
@@ -106,7 +106,7 @@ private struct CoordinatesContent: View {
         }
     }
 
-    private func coordinateRow(formatted: FormattedCoordinate) -> some View {
+    private func coordinateRow(id: String, formatted: FormattedCoordinate) -> some View {
         HStack(alignment: .center) {
             Text(formatted.display)
                 .font(Font.Trakke.title)
@@ -116,14 +116,17 @@ private struct CoordinatesContent: View {
             Spacer()
 
             Button {
-                UIPasteboard.general.string = formatted.copyText
-                withAnimation { copied = true }
+                UIPasteboard.general.setItems(
+                    [["public.utf8-plain-text": formatted.copyText]],
+                    options: [.expirationDate: Date().addingTimeInterval(300)]
+                )
+                withAnimation { copiedId = id }
                 Task {
                     try? await Task.sleep(for: .milliseconds(1500))
-                    withAnimation { copied = false }
+                    withAnimation { if copiedId == id { copiedId = nil } }
                 }
             } label: {
-                Image(systemName: copied ? "checkmark" : "doc.on.doc")
+                Image(systemName: copiedId == id ? "checkmark" : "doc.on.doc")
                     .font(Font.Trakke.bodyRegular)
                     .foregroundStyle(Color.Trakke.brand)
                     .frame(minWidth: .Trakke.touchMin, minHeight: .Trakke.touchMin)
@@ -194,7 +197,7 @@ private struct CoordinatesContent: View {
         } label: {
             HStack(spacing: .Trakke.md) {
                 Image(systemName: icon)
-                    .font(.system(size: .Trakke.lg, weight: .medium))
+                    .font(Font.Trakke.bodyMedium)
                     .foregroundStyle(Color.Trakke.brand)
                     .frame(width: .Trakke.touchMin)
 
@@ -239,17 +242,17 @@ private struct SOSContent: View {
 
     var body: some View {
         VStack(spacing: .Trakke.cardGap) {
-            Spacer()
-
             if viewModel.isActive {
+                Spacer()
                 activeState
+                Spacer()
             } else {
                 inactiveState
+                Spacer(minLength: .Trakke.lg)
             }
-
-            Spacer()
         }
         .padding(.horizontal, .Trakke.sheetHorizontal)
+        .padding(.top, .Trakke.sm)
         .animation(reduceMotion ? .none : .easeInOut(duration: 0.25), value: viewModel.isActive)
     }
 
@@ -276,10 +279,10 @@ private struct SOSContent: View {
                 viewModel.activate()
             } label: {
                 Text(String(localized: "sos.activate"))
-                    .font(Font.Trakke.title)
+                    .font(Font.Trakke.title).bold()
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity)
-                    .frame(height: 72)
+                    .frame(height: .Trakke.touchCTA)
                     .background(Color.Trakke.brand)
                     .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.xl))
             }
@@ -302,29 +305,14 @@ private struct SOSContent: View {
                 viewModel.deactivate()
             } label: {
                 Text(String(localized: "sos.stop"))
-                    .font(Font.Trakke.title)
+                    .font(Font.Trakke.title).bold()
                     .foregroundStyle(Color.Trakke.brandDark)
                     .frame(maxWidth: .infinity)
-                    .frame(height: 72)
+                    .frame(height: .Trakke.touchCTA)
                     .background(.white)
                     .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.xl))
             }
             .accessibilityLabel(String(localized: "sos.stop"))
-
-            Toggle(isOn: $viewModel.audioEnabled) {
-                Label {
-                    Text(String(localized: "sos.audio"))
-                        .font(Font.Trakke.bodyRegular)
-                        .foregroundStyle(.white.opacity(0.7))
-                } icon: {
-                    Image(systemName: "speaker.wave.2")
-                        .foregroundStyle(.white.opacity(0.7))
-                }
-            }
-            .tint(Color.Trakke.brand)
-            .disabled(true)
-            .opacity(0.5)
-            .padding(.horizontal, .Trakke.lg)
         }
     }
 

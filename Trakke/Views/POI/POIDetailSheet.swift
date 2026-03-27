@@ -4,17 +4,12 @@ import CoreLocation
 struct POIDetailSheet: View {
     let poi: POI
     var onNavigate: ((CLLocationCoordinate2D) -> Void)?
-    @Environment(\.dismiss) private var dismiss
+    @State private var copied = false
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: .Trakke.cardGap) {
-                    // MARK: - Category
-                    Text(poi.category.displayName)
-                        .font(Font.Trakke.bodyRegular)
-                        .foregroundStyle(Color.Trakke.textTertiary)
-
                     // MARK: - Details
                     if !poi.details.isEmpty {
                         CardSection(String(localized: "poi.details")) {
@@ -46,9 +41,17 @@ struct POIDetailSheet: View {
                                 .font(Font.Trakke.bodyRegular.monospacedDigit())
                             Spacer()
                             Button {
-                                UIPasteboard.general.string = formatted.copyText
+                                UIPasteboard.general.setItems(
+                                    [["public.utf8-plain-text": formatted.copyText]],
+                                    options: [.expirationDate: Date().addingTimeInterval(300)]
+                                )
+                                withAnimation { copied = true }
+                                Task {
+                                    try? await Task.sleep(for: .milliseconds(1500))
+                                    withAnimation { copied = false }
+                                }
                             } label: {
-                                Image(systemName: "doc.on.doc")
+                                Image(systemName: copied ? "checkmark" : "doc.on.doc")
                                     .font(Font.Trakke.bodyRegular)
                                     .foregroundStyle(Color.Trakke.brand)
                                     .frame(minWidth: .Trakke.touchMin, minHeight: .Trakke.touchMin)
@@ -114,11 +117,6 @@ struct POIDetailSheet: View {
                         .foregroundStyle(Color(hex: poi.category.color))
                         .accessibilityHidden(true)
                 }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(String(localized: "common.close")) {
-                        dismiss()
-                    }
-                }
             }
         }
     }
@@ -153,14 +151,21 @@ struct POIDetailSheet: View {
     }
 
     private func localizedDetailValue(key: String, value: String) -> String {
-        guard key == "type" || key == "subtype" else { return value }
+        guard key == "type" || key == "subtype" || key == "shelterType" else { return value }
         switch value {
+        // Viewpoints
         case "observation_tower": return "Utsiktstårn"
         case "bird_hide": return "Fugletårn"
         case "watchtower": return "Vakttårn"
+        // War memorials
         case "bunker": return "Bunker"
         case "fort": return "Festning"
         case "battlefield": return "Slagmark"
+        // Wilderness shelters
+        case "basic_hut": return "Enkel hytte"
+        case "weather_shelter": return "Vindskjul"
+        case "rock_shelter": return "Heller"
+        case "lavvu": return "Lavvo"
         default: return value
         }
     }

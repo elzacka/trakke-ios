@@ -24,13 +24,6 @@ struct RouteDetailSheet: View {
             .tint(Color.Trakke.brand)
             .navigationTitle(route.name)
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(String(localized: "common.close")) {
-                        dismiss()
-                    }
-                }
-            }
             .sheet(item: $shareURL) { item in
                 ShareSheet(activityItems: [item.url])
             }

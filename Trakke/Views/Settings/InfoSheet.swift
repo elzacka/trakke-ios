@@ -43,6 +43,12 @@ struct InfoSheet: View {
                         )
                         Divider()
                         dataSourceRow(
+                            name: "Havvarsel-Frost",
+                            detail: String(localized: "info.havvarsel.detail"),
+                            license: "CC BY 4.0"
+                        )
+                        Divider()
+                        dataSourceRow(
                             name: "DSB",
                             detail: String(localized: "info.dsb.detail"),
                             license: "NLOD"
@@ -80,6 +86,12 @@ struct InfoSheet: View {
                             detail: String(localized: "info.nga.detail"),
                             license: "MIT"
                         )
+                        Divider()
+                        dataSourceRow(
+                            name: "GRDB",
+                            detail: String(localized: "info.grdb.detail"),
+                            license: "MIT"
+                        )
                     }
 
                     // MARK: - Privacy
@@ -102,6 +114,7 @@ struct InfoSheet: View {
                                     .font(Font.Trakke.captionSoft)
                             }
                         }
+                        .accessibilityLabel(String(localized: "info.privacy.policy"))
 
                         Link(destination: URL(string: "https://github.com/elzacka/trakke-ios")!) {
                             HStack(spacing: .Trakke.xs) {
@@ -110,11 +123,12 @@ struct InfoSheet: View {
                                     .font(Font.Trakke.captionSoft)
                             }
                         }
+                        .accessibilityLabel(String(localized: "info.sourceCode"))
 
                         Spacer()
                     }
                     .font(Font.Trakke.caption)
-                    .foregroundStyle(Color.Trakke.textTertiary)
+                    .foregroundStyle(Color.Trakke.brand)
 
                     // MARK: - App Info
                     CardSection(String(localized: "info.appInfo")) {

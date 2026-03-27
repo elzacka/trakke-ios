@@ -221,20 +221,14 @@ struct PreferencesSheet: View {
         // Clear in-memory service caches
         BundledPOIService.clearCache()
 
-        // Reset all preferences to defaults
-        coordinateFormat = .dd
-        showWeatherWidget = false
-        showCompass = true
-        showZoomControls = false
-        showScaleBar = false
-        enableRotation = true
-        overlayTurrutebasen = false
-        overlayHillshading = false
-        overlayNaturvernomrader = false
-        overlayNaturskog = false
-        naturskogLayerType = OverlayLayer.naturskogSannsynlighet.rawValue
+        // Clear all UserDefaults for the app (GDPR Art. 17 completeness)
+        if let bundleId = Bundle.main.bundleIdentifier {
+            UserDefaults.standard.removePersistentDomain(forName: bundleId)
+        }
         mapViewModel.baseLayer = .topo
-        UserDefaults.standard.removeObject(forKey: AppStorageKeys.navigationSessionActive)
+
+        // Clear URLCache (may contain coordinates from API requests)
+        URLCache.shared.removeAllCachedResponses()
 
         // Clean up temp directory
         let tempDir = FileManager.default.temporaryDirectory
@@ -252,33 +246,7 @@ struct PreferencesSheet: View {
     // MARK: - Naturskog Sub-Picker
 
     private var naturskogSubPicker: some View {
-        VStack(spacing: 0) {
-            ForEach(Array(OverlayLayer.naturskogLayers.enumerated()), id: \.element) { index, layer in
-                if index > 0 {
-                    Divider().padding(.leading, .Trakke.sheetHorizontal)
-                }
-                Button {
-                    naturskogLayerType = layer.rawValue
-                } label: {
-                    HStack {
-                        Text(layer.displayName)
-                            .font(Font.Trakke.bodyRegular)
-                            .foregroundStyle(Color.Trakke.text)
-                        Spacer()
-                        if naturskogLayerType == layer.rawValue {
-                            Image(systemName: "checkmark")
-                                .font(Font.Trakke.bodyMedium)
-                                .foregroundStyle(Color.Trakke.brand)
-                        }
-                    }
-                    .frame(minHeight: .Trakke.touchMin)
-                    .contentShape(Rectangle())
-                }
-                .accessibilityAddTraits(naturskogLayerType == layer.rawValue ? .isSelected : [])
-            }
-        }
-        .padding(.leading, .Trakke.sheetHorizontal)
-        .padding(.top, .Trakke.xs)
+        NaturskogSubPickerView(selectedLayerType: $naturskogLayerType)
     }
 
     // MARK: - Toggle Row

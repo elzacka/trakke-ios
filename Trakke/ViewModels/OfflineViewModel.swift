@@ -1,4 +1,5 @@
 import SwiftUI
+import OSLog
 @preconcurrency import MapLibre
 
 @MainActor
@@ -14,9 +15,13 @@ final class OfflineViewModel {
     var downloadMaxZoom = 15
     var isDownloading = false
 
-    private let service = OfflineMapService.shared
+    private let service: OfflineMapManaging
     private var progressObserver: NSObjectProtocol?
     private var errorObserver: NSObjectProtocol?
+
+    init(service: OfflineMapManaging = OfflineMapService.shared) {
+        self.service = service
+    }
 
     var selectionBounds: (south: Double, west: Double, north: Double, east: Double)? {
         guard let c1 = selectionCorner1, let c2 = selectionCorner2 else { return nil }
@@ -60,11 +65,9 @@ final class OfflineViewModel {
             object: nil,
             queue: .main
         ) { [weak self] notification in
-            #if DEBUG
             if let error = notification.userInfo?[MLNOfflinePackUserInfoKey.error] as? Error {
-                print("Offline error: \(error)")
+                Logger.offline.error("Offline pack error: \(error, privacy: .private)")
             }
-            #endif
             Task { @MainActor in
                 self?.loadPacks()
             }

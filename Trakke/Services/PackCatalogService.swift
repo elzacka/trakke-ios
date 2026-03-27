@@ -119,15 +119,24 @@ enum PackStorageHelper {
     }
 
     static func packFileURL(for packId: String) -> URL {
-        let sanitizedId = packId.replacingOccurrences(of: "/", with: "_")
-            .replacingOccurrences(of: "..", with: "_")
+        let sanitizedId = sanitize(packId)
         return packsDirectory.appendingPathComponent("\(sanitizedId).sqlite")
     }
 
     static func metadataFileURL(for packId: String) -> URL {
-        let sanitizedId = packId.replacingOccurrences(of: "/", with: "_")
-            .replacingOccurrences(of: "..", with: "_")
+        let sanitizedId = sanitize(packId)
         return packsDirectory.appendingPathComponent("\(sanitizedId).meta.json")
+    }
+
+    /// Allowlist sanitization: only alphanumerics, hyphens, and underscores are kept.
+    /// Prevents path traversal via `..`, `/`, null bytes, or other special characters.
+    private static func sanitize(_ packId: String) -> String {
+        let allowed = CharacterSet.alphanumerics.union(CharacterSet(charactersIn: "-_"))
+        let sanitized = packId.unicodeScalars
+            .filter { allowed.contains($0) }
+            .map(String.init)
+            .joined()
+        return sanitized.isEmpty ? "unknown" : sanitized
     }
 
     static var installedPacksURL: URL {
