@@ -25,6 +25,12 @@ struct InfoSheet: View {
                         )
                         Divider()
                         dataSourceRow(
+                            name: "Mapzen Terrain Tiles",
+                            detail: String(localized: "info.mapzen.detail"),
+                            license: "CC BY 4.0"
+                        )
+                        Divider()
+                        dataSourceRow(
                             name: "Milj\u{00F8}direktoratet",
                             detail: String(localized: "info.miljodir.detail"),
                             license: "NLOD 2.0"
@@ -61,9 +67,15 @@ struct InfoSheet: View {
                         )
                         Divider()
                         dataSourceRow(
-                            name: "OpenStreetMap contributors",
+                            name: "OpenStreetMap",
                             detail: String(localized: "info.osm.detail"),
                             license: "ODbL"
+                        )
+                        Divider()
+                        dataSourceRow(
+                            name: "FOSSGIS / Valhalla",
+                            detail: String(localized: "info.valhalla.detail"),
+                            license: "ODbL / MIT"
                         )
                     }
 
@@ -73,12 +85,6 @@ struct InfoSheet: View {
                             name: "MapLibre",
                             detail: String(localized: "info.maplibre.detail"),
                             license: "BSD / ISC"
-                        )
-                        Divider()
-                        dataSourceRow(
-                            name: "FOSSGIS / Valhalla",
-                            detail: String(localized: "info.valhalla.detail"),
-                            license: "MIT"
                         )
                         Divider()
                         dataSourceRow(
@@ -92,18 +98,6 @@ struct InfoSheet: View {
                             detail: String(localized: "info.grdb.detail"),
                             license: "MIT"
                         )
-                    }
-
-                    // MARK: - Privacy
-                    CardSection(String(localized: "info.privacy")) {
-                        VStack(alignment: .leading, spacing: .Trakke.sm) {
-                            Text(String(localized: "info.privacy.noTracking"))
-                            Text(String(localized: "info.privacy.localData"))
-                            Text(String(localized: "info.privacy.euOnly"))
-                        }
-                        .font(Font.Trakke.caption)
-                        .foregroundStyle(Color.Trakke.textSecondary)
-                        .padding(.vertical, .Trakke.xs)
                     }
 
                     HStack {

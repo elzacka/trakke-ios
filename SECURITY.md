@@ -23,24 +23,9 @@ Tråkke follows Secure by Design principles aligned with the CIS (Center for Int
 
 ### Data Residency
 
-All external API connections are restricted to EU/EEA services:
+All primary API connections use Norwegian or EU/EEA services. Two non-EU services are used for non-personal data: AWS (terrain tiles, anonymous tile coordinates only) and GitHub (knowledge pack downloads, no user data). No user identity or tracking data is sent to any service.
 
-| Service | Host | Location | Data Transmitted |
-|---------|------|----------|-----------------|
-| Kartverket WMTS | cache.kartverket.no | Norway | Tile coordinates only |
-| Kartverket WMS (turruter) | wms.geonorge.no | Norway | Bounding box (overlay tiles) |
-| Geonorge APIs | ws.geonorge.no | Norway | Search queries, coordinate lookups |
-| MET Norway | api.met.no | Norway | Approximate coordinates (4 decimal truncation) |
-| DSB Shelters | ogc.dsb.no | Norway | Bounding box queries |
-| Riksantikvaren | api.ra.no | Norway | Bounding box queries |
-| MET Oceanforecast | api.met.no | Norway | Approximate coordinates for ocean temperature |
-| Havvarsel-Frost | havvarsel-frost.met.no | Norway | Approximate coordinates for bathing spot data |
-| Miljødirektoratet (naturskog) | image001.miljodirektoratet.no | Norway | Bounding box (overlay tiles) |
-| Miljødirektoratet WMS (naturvernområder) | kart.miljodirektoratet.no | Norway | Bounding box (overlay tiles) |
-| Kartverket WMS (fjellskygge) | wms.geonorge.no | Norway | Bounding box (overlay tiles) |
-| FOSSGIS Valhalla | valhalla1.openstreetmap.de | Germany (EU) | Origin/destination coordinates for route computation |
-
-No data is sent to servers outside the EU/EEA. The Valhalla routing server (FOSSGIS e.V., Germany) receives origin and destination coordinates for route computation only; no user identity data is included. POI data from OpenStreetMap (caves, viewpoints, war memorials, wilderness shelters) is pre-bundled in the app as static GeoJSON files and requires no network requests.
+See [PERSONVERN.md](PERSONVERN.md) for the complete list of external services and what data is transmitted.
 
 ### Input Validation
 
@@ -91,17 +76,6 @@ No data is sent to servers outside the EU/EEA. The Valhalla routing server (FOSS
 
 - All API requests include a User-Agent header: `Trakke-iOS/{version} hei@tazk.no` (version read dynamically from bundle). This is required by several Norwegian public APIs for identification. The header contains the app name, version, and developer contact email -- no user data.
 - An `Accept-Language: nb-NO` header is sent with API requests. This identifies the app's language preference but contains no user data.
-
-### Privacy as Security
-
-- No user accounts or authentication (no credentials to compromise)
-- No personal data collection beyond device-local storage
-- No cookies, tokens, or session identifiers sent to external services
-- Location data is never stored remotely or shared with third parties
-- Location permission uses a pre-permission primer card (LocationPrimerView) before the system dialog, explaining why access is needed. The app remains fully functional without location access.
-- Navigation sends only origin/destination coordinates to the routing server -- no user identity, device ID, or session tokens
-- Activity tracking uses location only during active recording; GPS tracks are stored locally and never transmitted
-- Knowledge system downloads packs from GitHub Releases; no user identity data is sent with download requests
 
 ## Supported Versions
 
