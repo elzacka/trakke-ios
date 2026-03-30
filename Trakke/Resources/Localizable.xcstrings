@@ -867,6 +867,39 @@
         }
       }
     },
+    "fab.cleanMap.active" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meny (rent kart)"
+          }
+        }
+      }
+    },
+    "fab.cleanMap.hint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hold inne for å vise eller skjule kartoverlegg"
+          }
+        }
+      }
+    },
+    "fab.cleanMap.toggle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bytt rent kart-modus"
+          }
+        }
+      }
+    },
     "fab.menu" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -896,6 +929,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Filen er for stor (%lld MB). Maks 50 MB."
+          }
+        }
+      }
+    },
+    "image.fullscreen.hint" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trykk for å se bildet i fullskjerm"
+          }
+        }
+      }
+    },
+    "image.viewer.close" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lukk"
           }
         }
       }
@@ -933,6 +988,17 @@
         }
       }
     },
+    "info.dsb.detail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Offentlige tilfluktsrom"
+          }
+        }
+      }
+    },
     "info.grdb.detail" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -955,24 +1021,24 @@
         }
       }
     },
-    "info.dsb.detail" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Offentlige tilfluktsrom"
-          }
-        }
-      }
-    },
     "info.kartverket.detail" : {
       "extractionState" : "manual",
       "localizations" : {
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Topografiske kart, stedsnavn, adresser, høydedata, turruter"
+            "value" : "Topografiske kart, terrengdata, stedsnavn, adresser, høydedata, turruter"
+          }
+        }
+      }
+    },
+    "info.mapzen.detail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terrengmodell for 3D-relieff (Kartverket DTM)"
           }
         }
       }
@@ -1038,51 +1104,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Interessepunkter og ruteberegning"
-          }
-        }
-      }
-    },
-    "info.privacy" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Personvern"
-          }
-        }
-      }
-    },
-    "info.privacy.euOnly" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kun EU/EØS-datakilder."
-          }
-        }
-      }
-    },
-    "info.privacy.localData" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alle brukerdata lagres lokalt på enheten."
-          }
-        }
-      }
-    },
-    "info.privacy.noTracking" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ingen sporing, ingen analyse, ingen informasjonskapsler."
+            "value" : "Interessepunkter (huler, utsiktspunkter, krigsminner, gapahuker)"
           }
         }
       }
@@ -1566,7 +1588,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fjellskygge"
+            "value" : "3D-relieff"
           }
         }
       }
@@ -3030,7 +3052,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Databasen ble skadet og måtte tilbakestilles. Ruter og veipunkter må importeres på nytt."
+            "value" : "Databasen ble skadet og måtte tilbakestilles. Ruter og steder må importeres på nytt."
           }
         }
       }
@@ -3074,7 +3096,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Alle ruter, veipunkter og nedlastede kart slettes permanent. Innstillinger tilbakestilles. Denne handlingen kan ikke angres."
+            "value" : "Alle ruter, steder og nedlastede kart slettes permanent. Innstillinger tilbakestilles. Denne handlingen kan ikke angres."
           }
         }
       }
@@ -3718,6 +3740,28 @@
         }
       }
     },
+    "weather.mayBeOutdated" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Været kan være utdatert"
+          }
+        }
+      }
+    },
+    "weather.metAttribution" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MET Norway"
+          }
+        }
+      }
+    },
     "weather.noData" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3802,28 +3846,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Oppdatert %@"
-          }
-        }
-      }
-    },
-    "weather.mayBeOutdated" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Været kan være utdatert"
-          }
-        }
-      }
-    },
-    "weather.metAttribution" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "MET Norway"
           }
         }
       }

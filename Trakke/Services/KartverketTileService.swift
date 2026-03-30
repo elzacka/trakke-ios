@@ -65,6 +65,18 @@ enum OverlayLayer: String, CaseIterable, Identifiable, Sendable {
         }
     }
 
+    var attribution: String {
+        switch self {
+        case .turrutebasen: return "\u{00A9} Kartverket"
+        case .hillshading: return "\u{00A9} Kartverket / Mapzen"
+        case .naturvernomrader,
+             .naturskogFoer1940, .naturskogSannsynlighet, .naturskogNaerhet:
+            return "\u{00A9} Milj\u{00F8}direktoratet"
+        }
+    }
+
+    // MARK: - WMS/REST overlay properties (not used by .hillshading)
+
     var sourceID: String { "overlay-\(rawValue)" }
     var layerID: String { "overlay-\(rawValue)-layer" }
 
@@ -85,20 +97,17 @@ enum OverlayLayer: String, CaseIterable, Identifiable, Sendable {
         }
     }
 
-    /// Minimum zoom level for the overlay source.
     var minZoom: Int {
         switch self {
         case .turrutebasen: return 5
-        case .hillshading: return 3
         case .naturvernomrader: return 6
         case .naturskogFoer1940, .naturskogSannsynlighet, .naturskogNaerhet: return 8
+        case .hillshading: return 3
         }
     }
 
-    /// Raster opacity — hillshading needs enough opacity for visible 3D relief effect.
     var opacity: Double {
         switch self {
-        case .hillshading: return 0.7
         case .naturvernomrader: return 0.5
         default: return 0.7
         }
@@ -112,12 +121,6 @@ enum OverlayLayer: String, CaseIterable, Identifiable, Sendable {
                 + "&LAYERS=Fotrute&STYLES=default&SRS=EPSG:3857"
                 + "&BBOX={bbox-epsg-3857}&WIDTH=256&HEIGHT=256"
                 + "&FORMAT=image/png&TRANSPARENT=true"
-        case .hillshading:
-            return "https://wms.geonorge.no/skwms1/wms.fjellskygge"
-                + "?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap"
-                + "&LAYERS=fjellskygge&STYLES=default&SRS=EPSG:3857"
-                + "&BBOX={bbox-epsg-3857}&WIDTH=256&HEIGHT=256"
-                + "&FORMAT=image/png&TRANSPARENT=true"
         case .naturvernomrader:
             return "https://kart.miljodirektoratet.no/arcgis/services/vern/mapserver/WMSServer"
                 + "?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap"
@@ -129,15 +132,8 @@ enum OverlayLayer: String, CaseIterable, Identifiable, Sendable {
                 + "?bbox={bbox-epsg-3857}&bboxSR=3857&imageSR=3857"
                 + "&size=256,256&format=png32&transparent=true"
                 + "&layers=show:\(naturskogLayerID)&f=image"
-        }
-    }
-
-    var attribution: String {
-        switch self {
-        case .turrutebasen, .hillshading: return "\u{00A9} Kartverket"
-        case .naturvernomrader,
-             .naturskogFoer1940, .naturskogSannsynlighet, .naturskogNaerhet:
-            return "\u{00A9} Milj\u{00F8}direktoratet"
+        case .hillshading:
+            preconditionFailure("Hillshading uses TerrainConstants, not WMS tileURL")
         }
     }
 }
@@ -151,6 +147,15 @@ enum MapConstants {
     static let maxPitch: Double = 85
     static let tileSize: Int = 256
     static let attribution = "\u{00A9} Kartverket"
+}
+
+enum TerrainConstants {
+    static let demSourceID = "terrain-dem-source"
+    static let hillshadeLayerID = "terrain-hillshade-layer"
+    static let demTileURL = "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"
+    static let maxDEMZoom: Int = 15
+    static let defaultExaggeration: Float = 0.5
+    static let defaultIlluminationDirection: Float = 335
 }
 
 enum KartverketTileService {

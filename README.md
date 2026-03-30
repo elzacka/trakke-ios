@@ -10,9 +10,9 @@ Tråkke er en kartapp for iPhone og iPad som bruker kartdata fra Kartverket. App
 - **GPS-posisjon** med sanntidsvisning på kartet
 - **Stedsnavn- og adressesøk** via Kartverket
 - **Offline kart** - last ned områder for bruk uten nett
-- **Ruter og veipunkter** - tegn, lagre, importer og eksporter som GPX
+- **Ruter og steder** - tegn, lagre, importer og eksporter som GPX
 - **Interessepunkter** - tilfluktsrom, huler, utsiktspunkter, krigsminner, gapahuker/vindskjul, kulturminner
-- **Kartlag** - turruter, fjellskygge, naturvernområder og naturskog (3 lag) fra Kartverket og Miljødirektoratet
+- **Kartlag** - turruter, 3D-relieff, naturvernområder og naturskog fra Kartverket og Miljødirektoratet
 - **Høydeprofiler** med data fra Kartverkets høydemodell
 - **Værmelding** fra Meteorologisk institutt
 - **Vanntemperatur** - havtemperatur (MET Oceanforecast) og badevannstemperatur (Havvarsel-Frost)
@@ -24,7 +24,7 @@ Tråkke er en kartapp for iPhone og iPad som bruker kartdata fra Kartverket. App
 - **Eksport av turdata som GPX** - registrerte aktiviteter kan eksporteres som GPX-filer for dataportabilitet
 - **Kunnskap og overlevelse** - nedlastbare artikler om friluftsliv, tilgjengelig uten nett
 - **Nødkoordinater og SOS-signal** - vis posisjon i DD, UTM og MGRS, SOS-morsekode med lommelykt
-- **Slett alle data** - GDPR-sletting av alle ruter, veipunkter og nedlastede kart (innstillinger)
+- **Slett alle data** - GDPR-sletting av alle ruter, steder og nedlastede kart (innstillinger)
 
 ## Krav
 
@@ -68,57 +68,17 @@ xcodebuild -project Trakke.xcodeproj -scheme Trakke \
 | Grafer | Swift Charts |
 | Kunnskap (DB) | GRDB 7.4.0 |
 
-## Kartdata
-
-Alle kartdata kommer fra Kartverket (kartverket.no). Appen bruker ikke kartdata fra Apple.
-
-| Kartlag | Kilde |
-|---------|-------|
-| Topografisk (standard) | Kartverket WMTS |
-| Gråtone | Kartverket WMTS |
-| Toporaster | Kartverket WMTS |
-| Turruter (overlay) | Kartverket WMS |
-| Fjellskygge (overlay) | Kartverket WMS |
-| Naturvernområder (overlay) | Miljødirektoratet WMS |
-| Naturskog (overlay) | Miljødirektoratet ArcGIS REST |
-
-## Datakilder
-
-Alle tjenester er innenfor EU/EØS. Ingen autentisering kreves.
-
-| Data | Kilde | Land |
-|------|-------|------|
-| Kart | Kartverket | Norge |
-| Stedsnavn | Geonorge | Norge |
-| Adresser | Geonorge | Norge |
-| Høydedata | Geonorge | Norge |
-| Tilfluktsrom | DSB | Norge |
-| Vær | Meteorologisk institutt (CC BY 4.0) | Norge |
-| Havtemperatur | Meteorologisk institutt (CC BY 4.0) | Norge |
-| Badevannstemperatur | Havvarsel-Frost (CC BY 4.0) | Norge |
-| POI (OpenStreetMap) | Forhåndslastet fra Overpass API (ODbL) | Lokalt i appen |
-| Kulturminner | Riksantikvaren | Norge |
-| Turruter | Kartverket WMS (NLOD 2.0) | Norge |
-| Naturskog | Miljødirektoratet ArcGIS REST (NLOD 2.0) | Norge |
-| Ruting | FOSSGIS Valhalla (ODbL / MIT) | Tyskland (EU) |
-| Kunnskapspakker | GitHub Releases | Lokalt i appen |
-
 ## Personvern
 
-Alle brukerdata lagres lokalt på enheten. Ingen sporing, ingen informasjonskapsler, ingen analyse. Alle eksterne tjenester er innenfor EU/EØS.
-
-Kopierte koordinater slettes automatisk fra utklippstavlen etter 5 minutter. "Slett alle data" i innstillingene gjennomfører full sletting i henhold til GDPR artikkel 17 — alle ruter, veipunkter, aktiviteter og nedlastede kart fjernes permanent.
-
-Se [PERSONVERN.md](PERSONVERN.md) for fullstendig personvernerklæring.
+Alle brukerdata lagres lokalt på enheten. Ingen sporing, ingen analyse. Se [PERSONVERN.md](PERSONVERN.md) for fullstendig personvernerklæring.
 
 ## Dokumentasjon
 
 | Dokument | Innhold |
 |----------|---------|
 | [PERSONVERN.md](PERSONVERN.md) | Personvernerklæring (GDPR) |
-| [SECURITY.md](SECURITY.md) | Sikkerhetspolicy og arkitektur |
+| [SECURITY.md](SECURITY.md) | Sikkerhetspolicy |
 | [CLAUDE.md](CLAUDE.md) | Utviklerkontekst og arkitektur |
-| [API-JOURNAL.md](API-JOURNAL.md) | API-referanse og integrasjonsjournal |
 | [APP-STORE-CHECKLIST.md](APP-STORE-CHECKLIST.md) | App Store-sjekkliste |
 
 ## Lisens
@@ -127,7 +87,8 @@ MIT License
 
 ## Attribusjon
 
-- (c) Kartverket - kartdata, turruter og tjenester (NLOD 2.0)
+- (c) Kartverket - kartdata, terrengdata, turruter og tjenester (NLOD 2.0)
+- Mapzen Terrain Tiles - terrengmodell for 3D-relieff (CC BY 4.0)
 - Meteorologisk institutt - vær- og havtemperaturdata (CC BY 4.0)
 - Havvarsel-Frost - badevannsdata (CC BY 4.0)
 - OpenStreetMap-bidragsytere - interessepunkter (ODbL)
