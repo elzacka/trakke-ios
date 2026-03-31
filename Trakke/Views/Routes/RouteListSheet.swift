@@ -45,7 +45,7 @@ struct RouteListSheet: View {
         .navigationTitle(String(localized: "routes.title"))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
+            ToolbarItem(placement: .topBarTrailing) {
                 Button {
                     onNewRoute?()
                     dismissFully()

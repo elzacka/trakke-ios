@@ -22,17 +22,35 @@ struct KnowledgeSheet: View {
         }
     }
 
+    private var sortedCategories: [ArticleCategory] {
+        ArticleCategory.allCases.sorted {
+            $0.displayName.localizedCompare($1.displayName) == .orderedAscending
+        }
+    }
+
+    private func articlesForCategory(_ category: ArticleCategory) -> [KnowledgeArticle] {
+        viewModel.articles.filter { $0.category == category.rawValue }
+    }
+
+    private func destination(for category: ArticleCategory) -> KnowledgeDestination {
+        let articles = articlesForCategory(category)
+        if articles.count == 1, let article = articles.first {
+            return .article(article)
+        }
+        return .category(category)
+    }
+
     private var knowledgeContent: some View {
         ScrollView {
             VStack(spacing: .Trakke.cardGap) {
                 CardSection("") {
-                    ForEach(Array(ArticleCategory.allCases.enumerated()), id: \.element) { index, category in
+                    ForEach(Array(sortedCategories.enumerated()), id: \.element) { index, category in
                         if index > 0 {
                             Divider().padding(.leading, .Trakke.dividerLeading)
                         }
-                        NavigationLink(value: KnowledgeDestination.category(category)) {
+                        NavigationLink(value: destination(for: category)) {
                             HStack(spacing: .Trakke.md) {
-                                Image(systemName: category.iconName)
+                                categoryIcon(category)
                                     .foregroundStyle(Color.Trakke.brand)
                                     .frame(width: 24)
                                 Text(category.displayName)
@@ -42,6 +60,7 @@ struct KnowledgeSheet: View {
                                 Image(systemName: "chevron.right")
                                     .font(Font.Trakke.captionSoft)
                                     .foregroundStyle(Color.Trakke.textTertiary)
+                                    .accessibilityHidden(true)
                             }
                             .frame(minHeight: .Trakke.touchMin)
                             .contentShape(Rectangle())
@@ -61,6 +80,16 @@ struct KnowledgeSheet: View {
         .navigationBarTitleDisplayMode(.inline)
         .task {
             await viewModel.loadArticles()
+        }
+    }
+
+    @ViewBuilder
+    private func categoryIcon(_ category: ArticleCategory) -> some View {
+        if let name = category.iconName {
+            Image(systemName: name)
+        } else if let glyph = category.iconGlyph {
+            Text(glyph)
+                .font(Font.Trakke.bodyMedium)
         }
     }
 }
@@ -107,6 +136,7 @@ struct KnowledgeCategoryView: View {
                                     Image(systemName: "chevron.right")
                                         .font(Font.Trakke.captionSoft)
                                         .foregroundStyle(Color.Trakke.textTertiary)
+                                        .accessibilityHidden(true)
                                 }
                                 .frame(minHeight: .Trakke.touchMin)
                                 .contentShape(Rectangle())

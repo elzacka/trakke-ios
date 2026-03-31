@@ -142,6 +142,7 @@ private struct CoordinatesContent: View {
                 Image(systemName: "location.slash")
                     .font(Font.Trakke.title)
                     .foregroundStyle(Color.Trakke.textTertiary)
+                    .accessibilityHidden(true)
                 Text(String(localized: "emergency.coordinates.noPosition"))
                     .font(Font.Trakke.bodyRegular)
                     .foregroundStyle(Color.Trakke.textTertiary)

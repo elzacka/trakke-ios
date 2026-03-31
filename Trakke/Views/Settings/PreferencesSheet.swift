@@ -83,6 +83,11 @@ struct PreferencesSheet: View {
                                 label: OverlayLayer.naturvernomrader.displayName,
                                 isOn: $overlayNaturvernomrader
                             )
+                            Divider()
+                            settingsToggle(
+                                label: OverlayLayer.turrutebasen.displayName,
+                                isOn: $overlayTurrutebasen
+                            )
                         }
                     }
 
@@ -220,6 +225,7 @@ struct PreferencesSheet: View {
 
         // Clear in-memory service caches
         BundledPOIService.clearCache()
+        Task { await ArtsdatabankenImageService.default.clearCache() }
 
         // Clear all UserDefaults for the app (GDPR Art. 17 completeness)
         if let bundleId = Bundle.main.bundleIdentifier {

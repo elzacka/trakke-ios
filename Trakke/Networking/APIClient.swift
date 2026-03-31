@@ -67,15 +67,21 @@ enum APIClient {
 
     /// Fetch raw data with User-Agent, timeout, HTTP status validation, and single retry.
     /// Retries once after 1s for timeouts, connection loss, and 5xx server errors.
+    /// Set `optional` to true for non-essential requests (species images, user guide) that
+    /// should be skipped in Low Data Mode.
     static func fetchData(
         url: URL,
         timeout: TimeInterval? = nil,
-        additionalHeaders: [String: String] = [:]
+        additionalHeaders: [String: String] = [:],
+        optional: Bool = false
     ) async throws -> Data {
         var request = URLRequest(url: url)
         request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
         if let timeout {
             request.timeoutInterval = timeout
+        }
+        if optional {
+            request.allowsConstrainedNetworkAccess = false
         }
         for (key, value) in additionalHeaders {
             request.setValue(value, forHTTPHeaderField: key)

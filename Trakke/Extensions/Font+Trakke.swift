@@ -18,6 +18,7 @@ extension Font {
         }
 
         // Body text styles
+        static var articleHeading: Font { .subheadline.weight(.semibold) }
         static var bodyMedium: Font { .subheadline.weight(.medium) }
         static var bodyRegular: Font { .subheadline }
         static var caption: Font { .caption }

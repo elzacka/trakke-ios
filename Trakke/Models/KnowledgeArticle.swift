@@ -32,7 +32,7 @@ enum ArticleCategory: String, CaseIterable, Identifiable, Sendable {
         }
     }
 
-    var iconName: String {
+    var iconName: String? {
         switch self {
         case .vann: return "drop.fill"
         case .mat: return "leaf.fill"
@@ -43,7 +43,15 @@ enum ArticleCategory: String, CaseIterable, Identifiable, Sendable {
         case .forstehjelp: return "cross.case.fill"
         case .signalering: return "antenna.radiowaves.left.and.right"
         case .dyr: return "pawprint.fill"
-        case .rettigheter: return "scale.3d"
+        case .rettigheter: return nil
+        }
+    }
+
+    /// Custom text glyph for categories without an SF Symbol (e.g. § for rettigheter)
+    var iconGlyph: String? {
+        switch self {
+        case .rettigheter: return "§"
+        default: return nil
         }
     }
 }
@@ -69,6 +77,12 @@ struct KnowledgeArticle: Identifiable, Hashable, Sendable {
 // MARK: - GRDB FetchableRecord
 
 extension KnowledgeArticle: FetchableRecord {
+    // ISO8601DateFormatter is not Sendable but this instance is never mutated after init
+    nonisolated(unsafe) private static let dateFormatter: ISO8601DateFormatter = {
+        let formatter = ISO8601DateFormatter()
+        return formatter
+    }()
+
     init(row: Row) {
         id = row["id"]
         theme = row["theme"]
@@ -78,7 +92,7 @@ extension KnowledgeArticle: FetchableRecord {
         source = row["source"]
         sourceURL = row["source_url"]
         let dateString: String = row["verified_at"]
-        verifiedAt = ISO8601DateFormatter().date(from: dateString) ?? Date()
+        verifiedAt = Self.dateFormatter.date(from: dateString) ?? Date()
         sortOrder = row["sort_order"]
     }
 }

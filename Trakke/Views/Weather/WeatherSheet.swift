@@ -208,6 +208,7 @@ struct WeatherSheet: View {
                             .font(Font.Trakke.captionSoft)
                             .foregroundStyle(Color.Trakke.textTertiary)
                             .frame(width: 24)
+                            .accessibilityHidden(true)
 
                         Text(String(localized: "weather.seaTemperature"))
                             .font(Font.Trakke.bodyRegular)
@@ -232,6 +233,7 @@ struct WeatherSheet: View {
                             .font(Font.Trakke.captionSoft)
                             .foregroundStyle(Color.Trakke.textTertiary)
                             .frame(width: 24)
+                            .accessibilityHidden(true)
 
                         Text(spot.name ?? String(localized: "weather.bathingSpot"))
                             .font(Font.Trakke.bodyRegular)
@@ -246,6 +248,14 @@ struct WeatherSheet: View {
                     }
                     .padding(.vertical, .Trakke.xs)
                 }
+
+                // Freshness indicator
+                Divider().padding(.leading, .Trakke.dividerLeading)
+                Text(String(localized: "weather.updated \(formatHour(water.fetchedAt))"))
+                    .font(Font.Trakke.caption)
+                    .foregroundStyle(Color.Trakke.textTertiary)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                    .padding(.top, .Trakke.xs)
             }
         }
     }

@@ -25,7 +25,10 @@ struct ContentView: View {
     @State var showRouteError = false
     @State private var showStopConfirmation = false
     @State private var showDbRecoveryAlert = false
+    @State private var isCleanMapActive = false
+    private let haptics = HapticFeedbackService()
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @AppStorage(AppStorageKeys.showWeatherWidget) private var showWeatherWidget = false
     @AppStorage(AppStorageKeys.showCompass) private var showCompass = true
     @AppStorage(AppStorageKeys.showZoomControls) private var showZoomControls = false
@@ -96,6 +99,21 @@ struct ContentView: View {
         mapViewModel.enabledOverlays = overlays
     }
 
+    // MARK: - Clean Map
+
+    private var effectiveShowCompass: Bool { isCleanMapActive ? false : showCompass }
+    private var effectiveShowZoomControls: Bool { isCleanMapActive ? false : showZoomControls }
+    private var effectiveShowScaleBar: Bool { isCleanMapActive ? false : showScaleBar }
+    private var effectiveShowWeatherWidget: Bool { isCleanMapActive ? false : showWeatherWidget }
+    private var effectiveOverlays: Set<OverlayLayer> { isCleanMapActive ? [] : mapViewModel.enabledOverlays }
+
+    private func toggleCleanMap() {
+        haptics.success()
+        withAnimation(reduceMotion ? .none : .easeInOut(duration: 0.3)) {
+            isCleanMapActive.toggle()
+        }
+    }
+
     // MARK: - Map Tap Handler
 
     private func handleMapTap(_ coordinate: CLLocationCoordinate2D) {
@@ -146,8 +164,8 @@ struct ContentView: View {
                 measurementCoordinates: measurementViewModel.points,
                 measurementMode: measurementViewModel.mode,
                 searchPinCoordinate: mapViewModel.searchPinCoordinate,
-                enabledOverlays: mapViewModel.enabledOverlays,
-                showWeatherWidget: showWeatherWidget,
+                enabledOverlays: effectiveOverlays,
+                showWeatherWidget: effectiveShowWeatherWidget,
                 enableRotation: enableRotation,
                 onViewportChanged: handleViewportChanged,
                 onPOISelected: { poi in
@@ -187,20 +205,22 @@ struct ContentView: View {
                 onWeatherTapped: { sheets.showWeatherSheet = true },
                 onEmergencyTapped: { sheets.showEmergency = true },
                 onMoreTapped: { sheets.showMore = true },
-                enabledOverlays: mapViewModel.enabledOverlays,
+                enabledOverlays: effectiveOverlays,
                 isMenuOpen: $isFABMenuOpen,
                 weatherContent: Group {
-                    if showWeatherWidget {
+                    if effectiveShowWeatherWidget {
                         WeatherWidgetView(viewModel: weatherViewModel) {
                             sheets.showWeatherSheet = true
                         }
                     }
                 },
-                showCompass: showCompass,
-                showZoomControls: showZoomControls,
-                showScaleBar: showScaleBar,
+                showCompass: effectiveShowCompass,
+                showZoomControls: effectiveShowZoomControls,
+                showScaleBar: effectiveShowScaleBar,
                 hideMenuAndZoom: routeViewModel.isDrawing || measurementViewModel.isActive || offlineViewModel.isSelectingArea || navigationViewModel.isActive || activityViewModel.isRecording,
-                isConnected: connectivityMonitor.isConnected
+                isConnected: connectivityMonitor.isConnected,
+                isCleanMapActive: isCleanMapActive,
+                onCleanMapToggle: toggleCleanMap
             )
 
             if navigationViewModel.isActive {
@@ -332,6 +352,7 @@ struct ContentView: View {
                     }
                 )
                 .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
             }
         }
         .sheet(isPresented: $sheets.showRouteList) {
@@ -378,10 +399,11 @@ struct ContentView: View {
         .sheet(isPresented: $sheets.showDownloadArea) {
             DownloadAreaSheet(viewModel: offlineViewModel)
                 .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
         }
         .sheet(isPresented: $sheets.showWeatherSheet) {
             WeatherSheet(viewModel: weatherViewModel)
-                .presentationDetents([.medium, .large])
+                .presentationDetents([.large])
                 .presentationDragIndicator(.visible)
         }
         .sheet(isPresented: $sheets.showMeasurementSheet) {
@@ -394,11 +416,13 @@ struct ContentView: View {
         }
         .sheet(isPresented: $sheets.showPreferences) {
             PreferencesSheet(mapViewModel: mapViewModel, knowledgeViewModel: knowledgeViewModel)
-                .presentationDetents([.medium, .large])
+                .presentationDetents([.large])
+                .presentationDragIndicator(.visible)
         }
         .sheet(isPresented: $sheets.showInfo) {
             InfoSheet()
-                .presentationDetents([.medium, .large])
+                .presentationDetents([.large])
+                .presentationDragIndicator(.visible)
         }
         .sheet(isPresented: $sheets.showWaypointList) {
             WaypointListSheet(
@@ -409,6 +433,7 @@ struct ContentView: View {
                 }
             )
             .presentationDetents([.medium, .large])
+            .presentationDragIndicator(.visible)
         }
         .sheet(isPresented: $sheets.showWaypointDetail) {
             if let wp = waypointViewModel.selectedWaypoint {
@@ -500,7 +525,8 @@ struct ContentView: View {
         }
         .sheet(isPresented: $sheets.showKnowledge) {
             KnowledgeSheet(viewModel: knowledgeViewModel)
-                .presentationDetents([.medium, .large])
+                .presentationDetents([.large])
+                .presentationDragIndicator(.visible)
         }
         .sheet(isPresented: $sheets.showMore) {
             MoreSheet(
@@ -534,7 +560,7 @@ struct ContentView: View {
                     startActivityRecording()
                 }
             )
-            .presentationDetents([.medium, .large])
+            .presentationDragIndicator(.visible)
         }
         .alert(
             String(localized: "navigation.routeErrorTitle"),

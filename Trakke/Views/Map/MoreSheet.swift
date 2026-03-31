@@ -15,6 +15,8 @@ struct MoreSheet: View {
     var onActivitySelected: ((Activity) -> Void)?
     var onStartRecording: (() -> Void)?
     @Environment(\.dismiss) private var dismiss
+    @State private var navigationPath = NavigationPath()
+    @State private var selectedDetent: PresentationDetent = .medium
 
     enum Destination: Hashable {
         case knowledge
@@ -25,7 +27,7 @@ struct MoreSheet: View {
     }
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $navigationPath) {
             moreList
                 .tint(Color.Trakke.brand)
                 .navigationTitle(String(localized: "more.title"))
@@ -77,6 +79,12 @@ struct MoreSheet: View {
                     }
                 }
         }
+        .presentationDetents([.medium, .large], selection: $selectedDetent)
+        .onChange(of: navigationPath.count) {
+            if navigationPath.count == 0 {
+                selectedDetent = .medium
+            }
+        }
     }
 
     // MARK: - Menu List
@@ -85,10 +93,10 @@ struct MoreSheet: View {
         ScrollView {
             VStack(spacing: .Trakke.cardGap) {
                 CardSection {
-                    moreLink(icon: "book.closed", label: String(localized: "knowledge.title"), destination: .knowledge)
-                    Divider().padding(.leading, .Trakke.touchMin + .Trakke.md)
+                    moreLink(icon: "book.closed", label: String(localized: "knowledge.title"), destination: .knowledge, expandSheet: true)
+                    Divider().padding(.leading, .Trakke.dividerLeading)
                     moreLink(icon: "point.topleft.down.to.point.bottomright.curvepath", label: String(localized: "routes.title"), destination: .routes)
-                    Divider().padding(.leading, .Trakke.touchMin + .Trakke.md)
+                    Divider().padding(.leading, .Trakke.dividerLeading)
                     moreLink(icon: "figure.hiking", label: String(localized: "activity.title"), destination: .activities)
                 }
 
@@ -97,20 +105,16 @@ struct MoreSheet: View {
                         dismiss()
                         onMeasurementTapped?()
                     }
-                    Divider().padding(.leading, .Trakke.touchMin + .Trakke.md)
+                    Divider().padding(.leading, .Trakke.dividerLeading)
                     moreButton(icon: "arrow.down.circle", label: String(localized: "offline.title")) {
                         dismiss()
                         onOfflineTapped?()
                     }
+                    Divider().padding(.leading, .Trakke.dividerLeading)
+                    moreLink(icon: "info.circle", label: String(localized: "info.title"), destination: .info, expandSheet: true)
+                    Divider().padding(.leading, .Trakke.dividerLeading)
+                    moreLink(icon: "gearshape", label: String(localized: "settings.title"), destination: .preferences, expandSheet: true)
                 }
-
-                CardSection {
-                    moreLink(icon: "info.circle", label: String(localized: "info.title"), destination: .info)
-                    Divider().padding(.leading, .Trakke.touchMin + .Trakke.md)
-                    moreLink(icon: "gearshape", label: String(localized: "settings.title"), destination: .preferences)
-                }
-
-                Spacer(minLength: .Trakke.lg)
             }
             .padding(.horizontal, .Trakke.sheetHorizontal)
             .padding(.top, .Trakke.sheetTop)
@@ -120,8 +124,11 @@ struct MoreSheet: View {
 
     // MARK: - Row Views
 
-    private func moreLink(icon: String, label: String, destination: Destination) -> some View {
-        NavigationLink(value: destination) {
+    private func moreLink(icon: String, label: String, destination: Destination, expandSheet: Bool = false) -> some View {
+        Button {
+            if expandSheet { selectedDetent = .large }
+            navigationPath.append(destination)
+        } label: {
             moreRowContent(icon: icon, label: label)
         }
         .buttonStyle(.plain)
@@ -138,7 +145,7 @@ struct MoreSheet: View {
             Image(systemName: icon)
                 .font(Font.Trakke.bodyMedium)
                 .foregroundStyle(Color.Trakke.brand)
-                .frame(width: .Trakke.touchMin)
+                .frame(width: 24)
                 .accessibilityHidden(true)
 
             Text(label)
@@ -153,7 +160,7 @@ struct MoreSheet: View {
                     .foregroundStyle(Color.Trakke.textTertiary)
             }
         }
-        .frame(minHeight: .Trakke.touchComfortable)
+        .frame(minHeight: .Trakke.touchMin)
         .contentShape(Rectangle())
     }
 }

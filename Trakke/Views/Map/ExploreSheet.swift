@@ -129,12 +129,13 @@ private struct ContentGroupSection: View {
     @Bindable var poiViewModel: POIViewModel
     @Bindable var knowledgeViewModel: KnowledgeViewModel
     @State private var isExpanded = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         VStack(spacing: 0) {
             // Group header
             Button {
-                withAnimation(.easeInOut(duration: 0.2)) {
+                withAnimation(reduceMotion ? .none : .easeInOut(duration: 0.2)) {
                     isExpanded.toggle()
                 }
             } label: {
@@ -216,6 +217,7 @@ private struct ExploreThemeRow: View {
     let theme: KnowledgeTheme
     @Bindable var viewModel: KnowledgeViewModel
     @State private var isExpanded = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var packs: [KnowledgePack] {
         viewModel.packsForTheme(theme).sorted { $0.countyName < $1.countyName }
@@ -228,7 +230,7 @@ private struct ExploreThemeRow: View {
     var body: some View {
         VStack(alignment: .leading, spacing: .Trakke.xs) {
             Button {
-                withAnimation(.easeInOut(duration: 0.2)) {
+                withAnimation(reduceMotion ? .none : .easeInOut(duration: 0.2)) {
                     isExpanded.toggle()
                 }
             } label: {

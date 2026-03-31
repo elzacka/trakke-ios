@@ -2,11 +2,11 @@
 
 **Versjon 1.3.0** | iOS 26.0+ | Swift 6.2
 
-Tråkke er en kartapp for iPhone og iPad som bruker kartdata fra Kartverket. Appen er laget for turgåere og friluftsfolk i Norge, med fokus på personvern og offline-bruk.
+Tråkke er en kartapp for iPhone som bruker kartdata fra Kartverket. Appen er laget for turgåere og friluftsfolk i Norge, med fokus på personvern og offline bruk.
 
 ## Funksjoner
 
-- **Topografiske kart** fra Kartverket (farge, gråtone og toporaster)
+- **Topografiske kart** fra Kartverket (topografisk, gråtone og toporaster/turkart)
 - **GPS-posisjon** med sanntidsvisning på kartet
 - **Stedsnavn- og adressesøk** via Kartverket
 - **Offline kart** - last ned områder for bruk uten nett
@@ -15,16 +15,16 @@ Tråkke er en kartapp for iPhone og iPad som bruker kartdata fra Kartverket. App
 - **Kartlag** - turruter, 3D-relieff, naturvernområder og naturskog fra Kartverket og Miljødirektoratet
 - **Høydeprofiler** med data fra Kartverkets høydemodell
 - **Værmelding** fra Meteorologisk institutt
-- **Vanntemperatur** - havtemperatur (MET Oceanforecast) og badevannstemperatur (Havvarsel-Frost)
+- **Vanntemperatur** - havtemperatur (MET Oceanforecast) og badevannstemperatur (Havvarsel-Frost) med ferskhetsstatus
 - **Soloppgang og solnedgang** - dagslysinfo beregnet lokalt uten nett
 - **Måleverktøy** for avstand og areal
 - **Koordinatformater** - DD, DMS, DDM, UTM, MGRS
 - **Navigasjon** - beregnet rute (via Valhalla) med sving-for-sving eller kompassretning til mål
 - **Turregistrering** - GPS-basert sporregistrering med avstand, høydemeter og varighet
 - **Eksport av turdata som GPX** - registrerte aktiviteter kan eksporteres som GPX-filer for dataportabilitet
-- **Kunnskap og overlevelse** - nedlastbare artikler om friluftsliv, tilgjengelig uten nett
+- **Kunnskap og overlevelse** - nedlastbare artikler om friluftsliv med artsbilder, tilgjengelig uten nett
 - **Nødkoordinater og SOS-signal** - vis posisjon i DD, UTM og MGRS, SOS-morsekode med lommelykt
-- **Slett alle data** - GDPR-sletting av alle ruter, steder og nedlastede kart (innstillinger)
+- **Slett alle data** - slett alle ruter og steder du har lagt til kart du har lastet ned (via Innstillinger)
 
 ## Krav
 
@@ -74,12 +74,11 @@ Alle brukerdata lagres lokalt på enheten. Ingen sporing, ingen analyse. Se [PER
 
 ## Dokumentasjon
 
-| Dokument | Innhold |
-|----------|---------|
-| [PERSONVERN.md](PERSONVERN.md) | Personvernerklæring (GDPR) |
-| [SECURITY.md](SECURITY.md) | Sikkerhetspolicy |
-| [CLAUDE.md](CLAUDE.md) | Utviklerkontekst og arkitektur |
-| [APP-STORE-CHECKLIST.md](APP-STORE-CHECKLIST.md) | App Store-sjekkliste |
+| Dokument                                                           | Innhold                        |
+| ------------------------------------------------------------------ | ------------------------------ |
+| [PERSONVERN.md](PERSONVERN.md)                                     | Personvernerklæring (GDPR)     |
+| [SECURITY.md](SECURITY.md)                                         | Sikkerhetspolicy               |
+| [CLAUDE.md](CLAUDE.md)                                             | Utviklerkontekst og arkitektur |
 
 ## Lisens
 
@@ -96,3 +95,4 @@ MIT License
 - DSB - tilfluktsromdata (NLOD)
 - Miljødirektoratet - naturvernområder og naturskogdata (NLOD 2.0)
 - FOSSGIS / Valhalla - ruteberegning (MIT / ODbL)
+- Artsdatabanken - artsbilder (CC BY 4.0)

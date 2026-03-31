@@ -13,11 +13,115 @@ struct InfoSheet: View {
         }
     }
 
+    @State private var showUserGuide = false
+
     private var infoContent: some View {
         ScrollView {
                 VStack(spacing: .Trakke.cardGap) {
-                    // MARK: - Data Sources
+                    // MARK: - User Guide & Links
+                    CardSection {
+                        Button {
+                            showUserGuide = true
+                        } label: {
+                            HStack(spacing: .Trakke.md) {
+                                Image(systemName: "book.pages")
+                                    .font(Font.Trakke.bodyMedium)
+                                    .foregroundStyle(Color.Trakke.brand)
+                                    .frame(width: .Trakke.touchMin)
+                                    .accessibilityHidden(true)
+
+                                Text(String(localized: "userguide.title"))
+                                    .font(Font.Trakke.bodyRegular)
+                                    .foregroundStyle(Color.Trakke.text)
+
+                                Spacer()
+
+                                Image(systemName: "chevron.right")
+                                    .font(Font.Trakke.captionSoft)
+                                    .foregroundStyle(Color.Trakke.textTertiary)
+                            }
+                            .frame(minHeight: .Trakke.touchMin)
+                            .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+
+                        Divider()
+
+                        Link(destination: URL(string: "https://github.com/elzacka/trakke-ios/blob/main/PERSONVERN.md")!) {
+                            HStack(spacing: .Trakke.md) {
+                                Image(systemName: "hand.raised")
+                                    .font(Font.Trakke.bodyMedium)
+                                    .foregroundStyle(Color.Trakke.brand)
+                                    .frame(width: .Trakke.touchMin)
+                                    .accessibilityHidden(true)
+
+                                Text(String(localized: "info.privacy.policy"))
+                                    .font(Font.Trakke.bodyRegular)
+                                    .foregroundStyle(Color.Trakke.text)
+
+                                Spacer()
+
+                                Image(systemName: "arrow.up.right")
+                                    .font(Font.Trakke.captionSoft)
+                                    .foregroundStyle(Color.Trakke.textTertiary)
+                            }
+                            .frame(minHeight: .Trakke.touchMin)
+                            .contentShape(Rectangle())
+                        }
+                        .accessibilityLabel(String(localized: "info.privacy.policy"))
+
+                        Divider()
+
+                        Link(destination: URL(string: "https://github.com/elzacka/trakke-ios")!) {
+                            HStack(spacing: .Trakke.md) {
+                                Image(systemName: "chevron.left.forwardslash.chevron.right")
+                                    .font(Font.Trakke.bodyMedium)
+                                    .foregroundStyle(Color.Trakke.brand)
+                                    .frame(width: .Trakke.touchMin)
+                                    .accessibilityHidden(true)
+
+                                Text(String(localized: "info.sourceCode"))
+                                    .font(Font.Trakke.bodyRegular)
+                                    .foregroundStyle(Color.Trakke.text)
+
+                                Spacer()
+
+                                Image(systemName: "arrow.up.right")
+                                    .font(Font.Trakke.captionSoft)
+                                    .foregroundStyle(Color.Trakke.textTertiary)
+                            }
+                            .frame(minHeight: .Trakke.touchMin)
+                            .contentShape(Rectangle())
+                        }
+                        .accessibilityLabel(String(localized: "info.sourceCode"))
+                    }
+
+                    // MARK: - Data Sources (alphabetical)
                     CardSection(String(localized: "info.dataSources")) {
+                        dataSourceRow(
+                            name: "Artsdatabanken",
+                            detail: String(localized: "info.artsdatabanken.detail"),
+                            license: "CC BY 4.0"
+                        )
+                        Divider()
+                        dataSourceRow(
+                            name: "DSB",
+                            detail: String(localized: "info.dsb.detail"),
+                            license: "NLOD"
+                        )
+                        Divider()
+                        dataSourceRow(
+                            name: "FOSSGIS / Valhalla",
+                            detail: String(localized: "info.valhalla.detail"),
+                            license: "ODbL / MIT"
+                        )
+                        Divider()
+                        dataSourceRow(
+                            name: "Havvarsel-Frost",
+                            detail: String(localized: "info.havvarsel.detail"),
+                            license: "CC BY 4.0"
+                        )
+                        Divider()
                         dataSourceRow(
                             name: "Kartverket",
                             detail: String(localized: "info.kartverket.detail"),
@@ -31,39 +135,15 @@ struct InfoSheet: View {
                         )
                         Divider()
                         dataSourceRow(
-                            name: "Milj\u{00F8}direktoratet",
-                            detail: String(localized: "info.miljodir.detail"),
-                            license: "NLOD 2.0"
-                        )
-                        Divider()
-                        dataSourceRow(
                             name: "MET Norway",
                             detail: String(localized: "info.met.detail"),
                             license: "CC BY 4.0"
                         )
                         Divider()
                         dataSourceRow(
-                            name: "Yr/NRK",
-                            detail: String(localized: "info.yr.detail"),
-                            license: "CC BY 4.0"
-                        )
-                        Divider()
-                        dataSourceRow(
-                            name: "Havvarsel-Frost",
-                            detail: String(localized: "info.havvarsel.detail"),
-                            license: "CC BY 4.0"
-                        )
-                        Divider()
-                        dataSourceRow(
-                            name: "DSB",
-                            detail: String(localized: "info.dsb.detail"),
-                            license: "NLOD"
-                        )
-                        Divider()
-                        dataSourceRow(
-                            name: "Riksantikvaren",
-                            detail: String(localized: "info.ra.detail"),
-                            license: "NLOD"
+                            name: "Milj\u{00F8}direktoratet",
+                            detail: String(localized: "info.miljodir.detail"),
+                            license: "NLOD 2.0"
                         )
                         Divider()
                         dataSourceRow(
@@ -73,14 +153,26 @@ struct InfoSheet: View {
                         )
                         Divider()
                         dataSourceRow(
-                            name: "FOSSGIS / Valhalla",
-                            detail: String(localized: "info.valhalla.detail"),
-                            license: "ODbL / MIT"
+                            name: "Riksantikvaren",
+                            detail: String(localized: "info.ra.detail"),
+                            license: "NLOD"
+                        )
+                        Divider()
+                        dataSourceRow(
+                            name: "Yr/NRK",
+                            detail: String(localized: "info.yr.detail"),
+                            license: "CC BY 4.0"
                         )
                     }
 
-                    // MARK: - Open Source
+                    // MARK: - Open Source (alphabetical)
                     CardSection(String(localized: "info.openSource")) {
+                        dataSourceRow(
+                            name: "GRDB",
+                            detail: String(localized: "info.grdb.detail"),
+                            license: "MIT"
+                        )
+                        Divider()
                         dataSourceRow(
                             name: "MapLibre",
                             detail: String(localized: "info.maplibre.detail"),
@@ -92,37 +184,7 @@ struct InfoSheet: View {
                             detail: String(localized: "info.nga.detail"),
                             license: "MIT"
                         )
-                        Divider()
-                        dataSourceRow(
-                            name: "GRDB",
-                            detail: String(localized: "info.grdb.detail"),
-                            license: "MIT"
-                        )
                     }
-
-                    HStack {
-                        Link(destination: URL(string: "https://github.com/elzacka/trakke-ios/blob/main/PERSONVERN.md")!) {
-                            HStack(spacing: .Trakke.xs) {
-                                Text(String(localized: "info.privacy.policy"))
-                                Image(systemName: "arrow.up.right")
-                                    .font(Font.Trakke.captionSoft)
-                            }
-                        }
-                        .accessibilityLabel(String(localized: "info.privacy.policy"))
-
-                        Link(destination: URL(string: "https://github.com/elzacka/trakke-ios")!) {
-                            HStack(spacing: .Trakke.xs) {
-                                Text(String(localized: "info.sourceCode"))
-                                Image(systemName: "arrow.up.right")
-                                    .font(Font.Trakke.captionSoft)
-                            }
-                        }
-                        .accessibilityLabel(String(localized: "info.sourceCode"))
-
-                        Spacer()
-                    }
-                    .font(Font.Trakke.caption)
-                    .foregroundStyle(Color.Trakke.brand)
 
                     // MARK: - App Info
                     CardSection(String(localized: "info.appInfo")) {
@@ -146,6 +208,10 @@ struct InfoSheet: View {
             .tint(Color.Trakke.brand)
             .navigationTitle(String(localized: "info.title"))
             .navigationBarTitleDisplayMode(.inline)
+            .sheet(isPresented: $showUserGuide) {
+                UserGuideSheet()
+                    .presentationDragIndicator(.visible)
+            }
     }
 
     // MARK: - Data Source Row
