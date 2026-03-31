@@ -25,6 +25,7 @@ struct ArticleSuggestionChip: View {
                     .frame(minWidth: .Trakke.touchMin, minHeight: .Trakke.touchMin)
                     .contentShape(Rectangle())
             }
+            .accessibilityLabel(String(localized: "common.close"))
         }
         .foregroundStyle(Color.Trakke.brand)
         .padding(.leading, .Trakke.md)

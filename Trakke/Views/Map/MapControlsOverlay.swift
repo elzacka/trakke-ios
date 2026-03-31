@@ -16,6 +16,8 @@ struct MapControlsOverlay<WeatherContent: View>: View {
     var showScaleBar = false
     var hideMenuAndZoom = false
     var isConnected = true
+    var isCleanMapActive = false
+    var onCleanMapToggle: (() -> Void)?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var menuItems: [(icon: String, label: String, action: () -> Void)] {
@@ -97,29 +99,45 @@ struct MapControlsOverlay<WeatherContent: View>: View {
     // MARK: - FAB Button
 
     private var fabButton: some View {
-        Button {
-            withAnimation(reduceMotion ? .none : .spring(duration: 0.3)) {
-                isMenuOpen.toggle()
+        fabButtonLabel
+            .onLongPressGesture(minimumDuration: 0.5) {
+                guard !isMenuOpen else { return }
+                onCleanMapToggle?()
             }
-        } label: {
-            Group {
-                if isMenuOpen {
-                    Image(systemName: "xmark")
-                        .font(Font.Trakke.bodyMedium)
-                } else {
-                    Image("ForestIcon")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 24, height: 24)
+            .onTapGesture {
+                withAnimation(reduceMotion ? .none : .spring(duration: 0.3)) {
+                    isMenuOpen.toggle()
                 }
             }
-            .foregroundStyle(.white)
-            .frame(width: 56, height: 56)
-            .background(Color.Trakke.brand)
-            .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.xl))
-            .trakkeFABShadow()
+            .accessibilityLabel(isCleanMapActive
+                ? String(localized: "fab.cleanMap.active")
+                : String(localized: "fab.menu"))
+            .accessibilityHint(String(localized: "fab.cleanMap.hint"))
+            .accessibilityAction(named: Text(String(localized: "fab.cleanMap.toggle"))) {
+                onCleanMapToggle?()
+            }
+    }
+
+    private var fabButtonLabel: some View {
+        Group {
+            if isMenuOpen {
+                Image(systemName: "xmark")
+                    .font(Font.Trakke.bodyMedium)
+            } else if isCleanMapActive {
+                Image(systemName: "eye.slash")
+                    .font(Font.Trakke.bodyMedium)
+            } else {
+                Image("ForestIcon")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 24, height: 24)
+            }
         }
-        .accessibilityLabel(String(localized: "fab.menu"))
+        .foregroundStyle(.white)
+        .frame(width: 56, height: 56)
+        .background(Color.Trakke.brand)
+        .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.xl))
+        .trakkeFABShadow()
     }
 
     // MARK: - FAB Menu Items
@@ -136,7 +154,7 @@ struct MapControlsOverlay<WeatherContent: View>: View {
                     removal: .opacity
                 ))
                 .animation(
-                    .spring(duration: 0.35).delay(Double(menuItems.count - 1 - index) * 0.03),
+                    reduceMotion ? .none : .spring(duration: 0.35).delay(Double(menuItems.count - 1 - index) * 0.03),
                     value: isMenuOpen
                 )
             }

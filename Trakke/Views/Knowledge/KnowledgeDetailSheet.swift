@@ -103,7 +103,10 @@ struct KnowledgeDetailSheet: View {
                     .font(Font.Trakke.bodyRegular.monospacedDigit())
                 Spacer()
                 Button {
-                    UIPasteboard.general.string = formatted.copyText
+                    UIPasteboard.general.setItems(
+                        [[UIPasteboard.typeAutomatic: formatted.copyText]],
+                        options: [.expirationDate: Date().addingTimeInterval(300)]
+                    )
                     withAnimation { copied = true }
                     UIAccessibility.post(
                         notification: .announcement,

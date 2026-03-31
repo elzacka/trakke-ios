@@ -50,6 +50,17 @@
         }
       }
     },
+    "action.done" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ferdig"
+          }
+        }
+      }
+    },
     "activity.averagePace" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -504,6 +515,17 @@
         }
       }
     },
+    "common.loading" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laster inn"
+          }
+        }
+      }
+    },
     "common.ok" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -779,6 +801,72 @@
         }
       }
     },
+    "error.decodingError %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kunne ikke lese dataene"
+          }
+        }
+      }
+    },
+    "error.httpError %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tjenestefeil (%lld)"
+          }
+        }
+      }
+    },
+    "error.invalidResponse" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ugyldig svar fra tjenesten"
+          }
+        }
+      }
+    },
+    "error.invalidURL" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ugyldig nettadresse"
+          }
+        }
+      }
+    },
+    "error.networkError %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nettverksfeil"
+          }
+        }
+      }
+    },
+    "error.rateLimited" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "For mange forespørsler, prøv igjen om litt"
+          }
+        }
+      }
+    },
     "error.saveFailed" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -786,6 +874,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kunne ikke lagre endringene. Prøv igjen."
+          }
+        }
+      }
+    },
+    "error.timeout" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forespørselen tok for lang tid"
           }
         }
       }
@@ -933,8 +1032,19 @@
         }
       }
     },
+    "image.attribution.artsdatabanken" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foto: Artsdatabanken"
+          }
+        }
+      }
+    },
     "image.fullscreen.hint" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "nb" : {
           "stringUnit" : {
@@ -945,7 +1055,7 @@
       }
     },
     "image.viewer.close" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "nb" : {
           "stringUnit" : {
@@ -962,6 +1072,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Om appen"
+          }
+        }
+      }
+    },
+    "info.artsdatabanken.detail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Artsbilder i kunnskapsartikler"
           }
         }
       }
@@ -1032,17 +1153,6 @@
         }
       }
     },
-    "info.mapzen.detail" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Terrengmodell for 3D-relieff (Kartverket DTM)"
-          }
-        }
-      }
-    },
     "info.maplibre.detail" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1050,6 +1160,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kartmotor"
+          }
+        }
+      }
+    },
+    "info.mapzen.detail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terrengmodell for 3D-relieff (Kartverket DTM)"
           }
         }
       }
@@ -1192,7 +1313,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dyr"
+            "value" : "Dyr i naturen"
           }
         }
       }
@@ -1258,7 +1379,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rettigheter"
+            "value" : "Allemannsretten"
           }
         }
       }
@@ -1269,7 +1390,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Signalering"
+            "value" : "Redningssignaler"
           }
         }
       }
@@ -3365,6 +3486,50 @@
         }
       }
     },
+    "userguide.backToTop" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tilbake til toppen"
+          }
+        }
+      }
+    },
+    "userguide.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brukerveiledning"
+          }
+        }
+      }
+    },
+    "userguide.unavailable" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kunne ikke laste brukerveiledningen"
+          }
+        }
+      }
+    },
+    "userguide.unavailable.detail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sjekk internettforbindelsen og prøv igjen."
+          }
+        }
+      }
+    },
     "waypoints.addWaypoint" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3872,5 +4037,5 @@
       }
     }
   },
-  "version" : "1.0"
+  "version" : "1.1"
 }

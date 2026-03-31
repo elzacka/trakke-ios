@@ -233,6 +233,7 @@ struct NavigationOverlayView: View {
             HStack(spacing: .Trakke.xs) {
                 Image(systemName: "antenna.radiowaves.left.and.right.slash")
                     .font(Font.Trakke.captionSoft)
+                    .accessibilityHidden(true)
                 Text(String(localized: "navigation.gpsReduced"))
                     .font(Font.Trakke.captionSoft)
             }
@@ -241,6 +242,7 @@ struct NavigationOverlayView: View {
             HStack(spacing: .Trakke.xs) {
                 Image(systemName: "location.slash")
                     .font(Font.Trakke.captionSoft)
+                    .accessibilityHidden(true)
                 Text(String(localized: "navigation.gpsLost"))
                     .font(Font.Trakke.captionSoft)
             }

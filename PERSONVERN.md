@@ -33,11 +33,11 @@ Posisjonen brukes til å vise deg på kartet, hente værmelding, beregne turrute
 
 ### 1.3 Data som ikke samles inn
 
-Ingen brukerkontoer, informasjonskapsler, enhetsidentifikatorer (IDFA), bruksstatistikk, annonser eller biometriske data.
+Ingen brukerkontoer, informasjonskapsler, enhetsidentifikatorer (IDFA), bruksstatistikk eller biometriske data.
 
 ## 2. Eksterne tjenester
 
-Appen henter data fra følgende tjenester. Alle tjenester er norske eller europeiske, med unntak av terrengdata (AWS) og kunnskapspakker (GitHub) som ikke inneholder brukerdata.
+Appen henter data fra følgende tjenester. Alle tjenester er norske eller europeiske. Unntak: Terrengdata (AWS) og kunnskapspakker (GitHub), men disse inneholder ikke brukerdata (personopplysninger).
 
 | Tjeneste | Formål | Data som sendes | Land |
 |----------|--------|-----------------|------|
@@ -50,6 +50,7 @@ Appen henter data fra følgende tjenester. Alle tjenester er norske eller europe
 | Riksantikvaren (api.ra.no) | Kulturminner | Kartområde (bounding box) | Norge |
 | Miljødirektoratet | Naturvernområder og naturskog | Kartområde (bounding box) | Norge |
 | FOSSGIS Valhalla (valhalla1.openstreetmap.de) | Ruteberegning | Start- og målkoordinater | Tyskland (EU) |
+| Artsdatabanken (ai.artsdatabanken.no) | Artsbilder i kunnskapsartikler | Vitenskapelige artsnavn | Norge |
 | Mapzen Terrain Tiles (s3.amazonaws.com) | Terrengmodell for 3D-relieff | Kartkoordinater (zoom, x, y) | USA* |
 | GitHub Releases (github.com) | Kunnskapspakker | Ingen brukerdata | USA* |
 

@@ -73,6 +73,7 @@ struct WaypointDetailSheet: View {
                     set: { _ in viewModel.toggleVisibility(waypoint) }
                 ))
                 .labelsHidden()
+                .accessibilityLabel(String(localized: "waypoints.showOnMap"))
             }
             .padding(.vertical, .Trakke.xs)
         }

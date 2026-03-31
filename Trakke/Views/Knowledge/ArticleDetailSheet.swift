@@ -14,24 +14,22 @@ struct ArticleDetailView: View {
                 // MARK: - Source
                 if !article.source.isEmpty {
                     CardSection(String(localized: "knowledge.source")) {
-                        VStack(alignment: .leading, spacing: .Trakke.xs) {
-                            Text(article.source)
-                                .font(Font.Trakke.bodyRegular)
-
-                            if let urlString = article.sourceURL,
-                               let url = URL(string: urlString),
-                               url.scheme == "https" {
-                                Link(destination: url) {
-                                    HStack {
-                                        Text(String(localized: "poi.moreInfo"))
-                                            .font(Font.Trakke.bodyRegular)
-                                        Spacer()
-                                        Image(systemName: "arrow.up.right")
-                                            .font(Font.Trakke.captionSoft)
-                                            .foregroundStyle(Color.Trakke.textTertiary)
-                                    }
+                        if let urlString = article.sourceURL,
+                           let url = URL(string: urlString),
+                           url.scheme == "https" {
+                            Link(destination: url) {
+                                HStack {
+                                    Text(article.source)
+                                        .font(Font.Trakke.bodyRegular)
+                                    Spacer()
+                                    Image(systemName: "arrow.up.right")
+                                        .font(Font.Trakke.captionSoft)
+                                        .foregroundStyle(Color.Trakke.textTertiary)
                                 }
                             }
+                        } else {
+                            Text(article.source)
+                                .font(Font.Trakke.bodyRegular)
                         }
                     }
                 }
@@ -48,9 +46,15 @@ struct ArticleDetailView: View {
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 if let category = article.articleCategory {
-                    Image(systemName: category.iconName)
-                        .foregroundStyle(Color.Trakke.brand)
-                        .accessibilityHidden(true)
+                    Group {
+                        if let name = category.iconName {
+                            Image(systemName: name)
+                        } else if let glyph = category.iconGlyph {
+                            Text(glyph).font(Font.Trakke.bodyMedium)
+                        }
+                    }
+                    .foregroundStyle(Color.Trakke.brand)
+                    .accessibilityHidden(true)
                 }
             }
         }

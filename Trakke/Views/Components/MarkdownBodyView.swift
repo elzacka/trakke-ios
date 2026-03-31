@@ -1,102 +1,62 @@
 import SwiftUI
 
-/// Renders simple markdown content (headers, bullets, numbered lists, bold/italic, paragraphs)
+/// Renders simple markdown content (headers, bullets, numbered lists, bold/italic, paragraphs, images)
 /// into native SwiftUI views. Avoids third-party dependencies.
+///
+/// Supports two image types:
+/// - Asset catalog: `![caption](asset-name)` -- loads from Xcode assets
+/// - Species: `![caption](species:Scientific Name)` -- fetches from Artsdatabanken
 struct MarkdownBodyView: View {
     let markdown: String
+    var imageService: ArtsdatabankenImageProviding = ArtsdatabankenImageService.default
+    @State private var selectedImage: ImageRef?
+    @State private var parsedBlocks: [MarkdownBlock]?
+
+    private struct ImageRef: Identifiable {
+        let id: String
+        let caption: String
+        let isSpecies: Bool
+        var loadedImage: UIImage?
+        var name: String { id }
+    }
+
+    private static let parseOptions = MarkdownParserOptions(parseImages: true)
 
     var body: some View {
         VStack(alignment: .leading, spacing: .Trakke.md) {
-            ForEach(Array(parseBlocks().enumerated()), id: \.offset) { _, block in
+            ForEach(Array((parsedBlocks ?? []).enumerated()), id: \.offset) { _, block in
                 blockView(block)
             }
         }
-    }
-
-    // MARK: - Block Types
-
-    private enum Block {
-        case heading2(String)
-        case heading3(String)
-        case paragraph(String)
-        case bulletList([String])
-        case numberedList([String])
-    }
-
-    // MARK: - Parsing
-
-    private func parseBlocks() -> [Block] {
-        let sections = markdown.components(separatedBy: "\n\n")
-        var blocks: [Block] = []
-
-        for section in sections {
-            let trimmed = section.trimmingCharacters(in: .whitespacesAndNewlines)
-            guard !trimmed.isEmpty else { continue }
-
-            let lines = trimmed.components(separatedBy: "\n")
-
-            // Check if the entire section is a list
-            var bulletItems: [String] = []
-            var numberedItems: [String] = []
-
-            for line in lines {
-                let stripped = line.trimmingCharacters(in: .whitespaces)
-                if stripped.hasPrefix("## ") || stripped.hasPrefix("### ") {
-                    if !bulletItems.isEmpty {
-                        blocks.append(.bulletList(bulletItems))
-                        bulletItems = []
-                    }
-                    if !numberedItems.isEmpty {
-                        blocks.append(.numberedList(numberedItems))
-                        numberedItems = []
-                    }
-                    if stripped.hasPrefix("### ") {
-                        blocks.append(.heading3(String(stripped.dropFirst(4))))
-                    } else {
-                        blocks.append(.heading2(String(stripped.dropFirst(3))))
-                    }
-                } else if stripped.hasPrefix("- ") {
-                    bulletItems.append(String(stripped.dropFirst(2)))
-                } else if let match = stripped.firstMatch(of: /^(\d+)\.\s+(.+)/) {
-                    numberedItems.append(String(match.2))
-                } else if !stripped.isEmpty {
-                    if !bulletItems.isEmpty {
-                        blocks.append(.bulletList(bulletItems))
-                        bulletItems = []
-                    }
-                    if !numberedItems.isEmpty {
-                        blocks.append(.numberedList(numberedItems))
-                        numberedItems = []
-                    }
-                    blocks.append(.paragraph(stripped))
-                }
-            }
-
-            if !bulletItems.isEmpty {
-                blocks.append(.bulletList(bulletItems))
-            }
-            if !numberedItems.isEmpty {
-                blocks.append(.numberedList(numberedItems))
+        .task(id: markdown) {
+            parsedBlocks = MarkdownParser.parse(markdown, options: Self.parseOptions)
+        }
+        .fullScreenCover(item: $selectedImage) { ref in
+            if ref.isSpecies, let uiImage = ref.loadedImage {
+                ImageViewerView(
+                    uiImage: uiImage,
+                    caption: ref.caption,
+                    attribution: String(localized: "image.attribution.artsdatabanken")
+                )
+            } else if !ref.isSpecies {
+                ImageViewerView(name: ref.name, caption: ref.caption)
             }
         }
-
-        return blocks
     }
 
     // MARK: - Block Views
 
     @ViewBuilder
-    private func blockView(_ block: Block) -> some View {
+    private func blockView(_ block: MarkdownBlock) -> some View {
         switch block {
-        case .heading2(let text):
+        case .heading2(let text, _):
             inlineText(text)
-                .font(Font.Trakke.bodyMedium)
+                .font(Font.Trakke.articleHeading)
                 .padding(.top, .Trakke.sm)
 
         case .heading3(let text):
             inlineText(text)
-                .font(Font.Trakke.caption)
-                .fontWeight(.semibold)
+                .font(Font.Trakke.bodyMedium)
                 .padding(.top, .Trakke.xs)
 
         case .paragraph(let text):
@@ -129,6 +89,38 @@ struct MarkdownBodyView: View {
                     }
                 }
             }
+
+        case .image(let name, let caption):
+            Button {
+                selectedImage = ImageRef(id: name, caption: caption, isSpecies: false)
+            } label: {
+                VStack(alignment: .leading, spacing: .Trakke.xs) {
+                    Image(name)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.md))
+
+                    if !caption.isEmpty {
+                        Text(caption)
+                            .font(Font.Trakke.captionSoft)
+                            .foregroundStyle(Color.Trakke.textTertiary)
+                    }
+                }
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(caption)
+            .accessibilityAddTraits(.isImage)
+            .accessibilityHint(String(localized: "image.fullscreen.hint"))
+
+        case .speciesImage(let scientificName, let caption):
+            SpeciesImageBlock(
+                scientificName: scientificName,
+                caption: caption,
+                imageService: imageService,
+                onTap: { loadedImage in
+                    selectedImage = ImageRef(id: scientificName, caption: caption, isSpecies: true, loadedImage: loadedImage)
+                }
+            )
         }
     }
 
@@ -139,5 +131,65 @@ struct MarkdownBodyView: View {
             return Text(attributed)
         }
         return Text(text)
+    }
+}
+
+// MARK: - Species Image Block (async loading)
+
+private struct SpeciesImageBlock: View {
+    let scientificName: String
+    let caption: String
+    var imageService: ArtsdatabankenImageProviding = ArtsdatabankenImageService.default
+    let onTap: (UIImage) -> Void
+    @State private var image: UIImage?
+    @State private var isLoading = true
+
+    var body: some View {
+        if let image {
+            Button { onTap(image) } label: {
+                VStack(alignment: .leading, spacing: .Trakke.xs) {
+                    Image(uiImage: image)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.md))
+
+                    speciesCaption
+                }
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(caption)
+            .accessibilityAddTraits(.isImage)
+            .accessibilityHint(String(localized: "image.fullscreen.hint"))
+        } else if isLoading {
+            VStack(alignment: .leading, spacing: .Trakke.xs) {
+                RoundedRectangle(cornerRadius: .TrakkeRadius.md)
+                    .fill(Color(.systemGray6))
+                    .aspectRatio(1, contentMode: .fit)
+                    .overlay {
+                        ProgressView()
+                            .accessibilityLabel(String(localized: "common.loading"))
+                    }
+
+                speciesCaption
+            }
+            .task(id: scientificName) {
+                image = await imageService.image(for: scientificName)
+                isLoading = false
+            }
+        }
+        // If not loading and no image: show nothing (species image not available)
+    }
+
+    private var speciesCaption: some View {
+        VStack(alignment: .leading, spacing: .Trakke.labelGap) {
+            if !caption.isEmpty {
+                Text(caption)
+                    .font(Font.Trakke.captionSoft)
+                    .foregroundStyle(Color.Trakke.textTertiary)
+            }
+            Text(String(localized: "image.attribution.artsdatabanken"))
+                .font(Font.Trakke.captionSoft)
+                .foregroundStyle(Color.Trakke.textTertiary)
+        }
     }
 }

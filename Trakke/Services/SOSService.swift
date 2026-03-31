@@ -1,5 +1,6 @@
 import AVFoundation
 import os
+import OSLog
 
 /// Manages the SOS Morse code signal using the device torch and optional audio.
 /// Morse SOS pattern: ··· — — — ··· (dot=1 unit, dash=3 units, inter-element gap=1 unit,
@@ -90,14 +91,30 @@ actor SOSService {
     // MARK: - Audio
 
     private func startAudio() {
+        // Configure audio session BEFORE creating the engine.
+        // On real devices, the output node format depends on the active session.
+        do {
+            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: .mixWithOthers)
+            try AVAudioSession.sharedInstance().setActive(true)
+        } catch {
+            Logger.data.error("Failed to configure audio session: \(error.localizedDescription)")
+            return
+        }
+
         let engine = AVAudioEngine()
-        let format = engine.outputNode.outputFormat(forBus: 0)
-        let sampleRate = Float(format.sampleRate)
+
+        // Use an explicit format rather than relying on the output node, which can
+        // return a zero-sample-rate format on real devices if the session isn't ready.
+        let sampleRate: Double = 44100
+        guard let format = AVAudioFormat(standardFormatWithSampleRate: sampleRate, channels: 1) else {
+            return
+        }
+
         var phase: Float = 0
-        let phaseIncrement = (2.0 * Float.pi * toneFrequency) / sampleRate
+        let phaseIncrement = (2.0 * Float.pi * toneFrequency) / Float(sampleRate)
         let toneFlag = toneActive
 
-        let source = AVAudioSourceNode { _, _, frameCount, bufferList -> OSStatus in
+        let source = AVAudioSourceNode(format: format) { _, _, frameCount, bufferList -> OSStatus in
             let buffer = UnsafeMutableAudioBufferListPointer(bufferList)
             let isOn = toneFlag.withLock { $0 }
             for frame in 0..<Int(frameCount) {
@@ -122,11 +139,9 @@ actor SOSService {
         engine.connect(source, to: engine.mainMixerNode, format: format)
 
         do {
-            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: .mixWithOthers)
-            try AVAudioSession.sharedInstance().setActive(true)
             try engine.start()
         } catch {
-            // Audio unavailable -- continue with torch only
+            Logger.data.error("Failed to start audio engine: \(error.localizedDescription)")
         }
 
         self.audioEngine = engine
