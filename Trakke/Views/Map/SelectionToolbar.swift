@@ -14,6 +14,11 @@ struct SelectionToolbar: View {
             VStack(spacing: .Trakke.sm) {
                 if hasValidSelection {
                     HStack(spacing: .Trakke.rowVertical) {
+                        if estimatedTileCount > 20_000 {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .font(Font.Trakke.caption)
+                                .accessibilityHidden(true)
+                        }
                         Image(systemName: "square.grid.3x3")
                             .font(Font.Trakke.caption)
                             .accessibilityHidden(true)

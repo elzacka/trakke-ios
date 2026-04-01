@@ -79,7 +79,7 @@ actor ArtsdatabankenImageService: ArtsdatabankenImageProviding {
             catalog = try JSONDecoder().decode([String: String].self, from: data)
             Logger.knowledge.info("Loaded Artsdatabanken image catalog: \(self.catalog?.count ?? 0) species")
         } catch {
-            Logger.knowledge.error("Failed to load Artsdatabanken catalog: \(error.localizedDescription)")
+            Logger.knowledge.error("Failed to load Artsdatabanken catalog: \(error.localizedDescription, privacy: .private)")
             // Leave catalog as nil so next call retries
         }
     }

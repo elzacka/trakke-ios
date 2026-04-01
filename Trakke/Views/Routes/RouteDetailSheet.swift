@@ -81,6 +81,7 @@ struct RouteDetailSheet: View {
                     set: { _ in viewModel.toggleVisibility(route) }
                 ))
                 .labelsHidden()
+                .accessibilityLabel(String(localized: "routes.visibleOnMap"))
             }
             .padding(.vertical, .Trakke.xs)
         }

@@ -1027,11 +1027,10 @@
 			};
 			buildConfigurationList = EE88E3822F3A90838539679F /* Build configuration list for PBXProject "Trakke" */;
 			compatibilityVersion = "Xcode 14.0";
-			developmentRegion = en;
+			developmentRegion = nb;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				Base,
-				en,
 				nb,
 			);
 			mainGroup = 3241D291E1877084913966F9;

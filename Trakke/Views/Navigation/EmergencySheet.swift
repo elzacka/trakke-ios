@@ -120,10 +120,10 @@ private struct CoordinatesContent: View {
                     [["public.utf8-plain-text": formatted.copyText]],
                     options: [.expirationDate: Date().addingTimeInterval(300)]
                 )
-                withAnimation { copiedId = id }
+                copiedId = id
                 Task {
                     try? await Task.sleep(for: .milliseconds(1500))
-                    withAnimation { if copiedId == id { copiedId = nil } }
+                    if copiedId == id { copiedId = nil }
                 }
             } label: {
                 Image(systemName: copiedId == id ? "checkmark" : "doc.on.doc")
@@ -294,7 +294,7 @@ private struct SOSContent: View {
     private var activeState: some View {
         VStack(spacing: .Trakke.lg) {
             Text("\u{00B7}\u{00B7}\u{00B7} \u{2014} \u{2014} \u{2014} \u{00B7}\u{00B7}\u{00B7}")
-                .font(.system(size: morseSize, weight: .bold, design: .monospaced))
+                .font(Font.Trakke.morse)
                 .foregroundStyle(.white.opacity(0.9))
                 .accessibilityLabel("SOS")
 

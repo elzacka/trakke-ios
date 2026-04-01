@@ -163,10 +163,12 @@ actor WeatherService: WeatherFetching {
 
     // MARK: - Parsing
 
+    private nonisolated(unsafe) static let iso8601Formatter = ISO8601DateFormatter()
+
     private func parseMetData(_ response: MetApiResponse, lat: Double, lon: Double) -> WeatherForecast {
         let timeseries = response.properties.timeseries
         let now = Date()
-        let formatter = ISO8601DateFormatter()
+        let formatter = Self.iso8601Formatter
 
         let parsed: [(date: Date, data: WeatherData)] = timeseries.compactMap { point in
             guard let date = formatter.date(from: point.time) else { return nil }

@@ -9,12 +9,16 @@ final class POIViewModel {
     var selectedPOI: POI?
     var isLoading = false
 
-    private let poiService = POIService()
+    private let poiService: any POIFetching
     private var loadTask: Task<Void, Never>?
     private var lastBounds: ViewportBounds?
     private var lastZoom: Double = 0
     private static let debounceInterval: Duration = .milliseconds(1500)
     private static let maxAnnotations = 2000
+
+    init(poiService: any POIFetching = POIService()) {
+        self.poiService = poiService
+    }
 
     func toggleCategory(_ category: POICategory) {
         if enabledCategories.contains(category) {
@@ -84,23 +88,23 @@ final class POIViewModel {
 
         loadTask?.cancel()
         let service = poiService
-        loadTask = Task {
+        loadTask = Task { [weak self] in
             try? await Task.sleep(for: Self.debounceInterval)
-            guard !Task.isCancelled else { return }
+            guard !Task.isCancelled, let self else { return }
 
-            self.isLoading = true
+            isLoading = true
 
             for category in liveCategories {
                 guard !Task.isCancelled else { return }
                 let result = await service.fetchPOIs(category: category, bounds: bounds, zoom: zoom)
                 guard !Task.isCancelled else { return }
-                self.pois.removeAll { $0.category == category }
-                self.pois.append(contentsOf: result)
+                pois.removeAll { $0.category == category }
+                pois.append(contentsOf: result)
             }
 
-            self.pois.removeAll { !self.enabledCategories.contains($0.category) }
-            self.enforceAnnotationLimit()
-            self.isLoading = false
+            pois.removeAll { !enabledCategories.contains($0.category) }
+            enforceAnnotationLimit()
+            isLoading = false
         }
     }
 

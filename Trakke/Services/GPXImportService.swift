@@ -128,7 +128,8 @@ private class GPXWaypointParser: NSObject, XMLParserDelegate {
             currentType = trimmed.isEmpty ? nil : trimmed
         case "wpt":
             if let lat = currentLat, let lon = currentLon,
-               lat.isFinite, lon.isFinite {
+               lat.isFinite, lon.isFinite,
+               (-90...90).contains(lat), (-180...180).contains(lon) {
                 let wp = GPXImportService.ImportedWaypoint(
                     name: currentName ?? String(localized: "waypoints.new"),
                     latitude: lat,
@@ -183,7 +184,8 @@ private class GPXRouteParser: NSObject, XMLParserDelegate {
             if insideTrkSeg,
                let lat = Double(attributes["lat"] ?? ""),
                let lon = Double(attributes["lon"] ?? ""),
-               lat.isFinite, lon.isFinite {
+               lat.isFinite, lon.isFinite,
+               (-90...90).contains(lat), (-180...180).contains(lon) {
                 currentCoords.append([lon, lat])
             }
         case "rte":
@@ -194,7 +196,8 @@ private class GPXRouteParser: NSObject, XMLParserDelegate {
             if insideRte,
                let lat = Double(attributes["lat"] ?? ""),
                let lon = Double(attributes["lon"] ?? ""),
-               lat.isFinite, lon.isFinite {
+               lat.isFinite, lon.isFinite,
+               (-90...90).contains(lat), (-180...180).contains(lon) {
                 currentCoords.append([lon, lat])
             }
         default:

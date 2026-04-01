@@ -35,7 +35,7 @@ struct ArticleSuggestionChip: View {
         .padding(.horizontal, .Trakke.sheetHorizontal)
         .padding(.bottom, .Trakke.xs)
         .onTapGesture { onTap() }
-        .accessibilityElement(children: .combine)
-        .accessibilityAddTraits(.isButton)
+        .accessibilityElement(children: .contain)
+        .accessibilityAction(named: String(localized: "common.close")) { onDismiss() }
     }
 }

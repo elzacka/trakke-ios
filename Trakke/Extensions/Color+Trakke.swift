@@ -54,6 +54,12 @@ extension Color {
             "#3e4533", "#e74c3c", "#795548", "#2ecc71",
             "#f39c12", "#9b59b6", "#1abc9c", "#e67e22",
         ]
+
+        /// Norwegian color names for VoiceOver, matching routeColors order
+        static let routeColorNames: [String] = [
+            "skoggrønn", "rød", "brun", "lysegrønn",
+            "gul", "lilla", "turkis", "oransje",
+        ]
     }
 }
 

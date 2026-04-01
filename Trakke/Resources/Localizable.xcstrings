@@ -1313,7 +1313,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dyr i naturen"
+            "value" : "Møte dyr i naturen"
           }
         }
       }
@@ -3806,6 +3806,28 @@
         }
       }
     },
+    "weather.clearsky" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klarvær"
+          }
+        }
+      }
+    },
+    "weather.cloudy" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Overskyet"
+          }
+        }
+      }
+    },
     "weather.current" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3861,6 +3883,28 @@
         }
       }
     },
+    "weather.fair" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lettskyet"
+          }
+        }
+      }
+    },
+    "weather.fog" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tåke"
+          }
+        }
+      }
+    },
     "weather.forecast" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3868,6 +3912,50 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "7-dagers varsel"
+          }
+        }
+      }
+    },
+    "weather.heavyrain" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kraftig regn"
+          }
+        }
+      }
+    },
+    "weather.heavyrainshowers" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kraftige regnbyger"
+          }
+        }
+      }
+    },
+    "weather.heavysleet" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kraftig sludd"
+          }
+        }
+      }
+    },
+    "weather.heavysnow" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kraftig snøfall"
           }
         }
       }
@@ -3890,6 +3978,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fuktighet"
+          }
+        }
+      }
+    },
+    "weather.lightrain" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lett regn"
+          }
+        }
+      }
+    },
+    "weather.lightrainshowers" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lette regnbyger"
           }
         }
       }
@@ -3949,6 +4059,17 @@
         }
       }
     },
+    "weather.partlycloudy" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delvis skyet"
+          }
+        }
+      }
+    },
     "weather.precipitation" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3960,6 +4081,50 @@
         }
       }
     },
+    "weather.rain" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regn"
+          }
+        }
+      }
+    },
+    "weather.rainandthunder" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regn og torden"
+          }
+        }
+      }
+    },
+    "weather.rainshowers" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regnbyger"
+          }
+        }
+      }
+    },
+    "weather.rainshowersandthunder" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regnbyger og torden"
+          }
+        }
+      }
+    },
     "weather.seaTemperature" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3967,6 +4132,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sjøtemperatur"
+          }
+        }
+      }
+    },
+    "weather.sleet" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sludd"
+          }
+        }
+      }
+    },
+    "weather.sleetandthunder" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sludd og torden"
+          }
+        }
+      }
+    },
+    "weather.sleetshowers" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sluddbyger"
+          }
+        }
+      }
+    },
+    "weather.snow" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Snø"
+          }
+        }
+      }
+    },
+    "weather.snowandthunder" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Snø og torden"
+          }
+        }
+      }
+    },
+    "weather.snowshowers" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Snøbyger"
           }
         }
       }

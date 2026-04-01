@@ -1,9 +1,7 @@
 import SwiftUI
 import SwiftData
 import CoreLocation
-import os
-
-private let logger = Logger(subsystem: "no.tazk.trakke", category: "WaypointViewModel")
+import OSLog
 
 @MainActor
 @Observable
@@ -26,7 +24,7 @@ final class WaypointViewModel {
         do {
             try modelContext?.save()
         } catch {
-            logger.error("Failed to save (\(operation)): \(error, privacy: .private)")
+            Logger.waypoints.error("Failed to save (\(operation)): \(error, privacy: .private)")
             saveError = String(localized: "error.saveFailed")
         }
     }

@@ -33,5 +33,11 @@ extension Font {
 
         // Temperature display (weather)
         static var temperature: Font { .system(.largeTitle, design: .rounded, weight: .light) }
+
+        // Morse code display (SOS signal) — monospaced for even character spacing
+        static var morse: Font { .system(.title, design: .monospaced, weight: .bold) }
+
+        // Compass arrow — sized via @ScaledMetric, uses system font
+        static var compassArrow: Font { .system(.title) }
     }
 }

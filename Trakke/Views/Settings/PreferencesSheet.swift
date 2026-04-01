@@ -7,7 +7,7 @@ struct PreferencesSheet: View {
     var isEmbedded = false
     @AppStorage(AppStorageKeys.coordinateFormat) private var coordinateFormat: CoordinateFormat = .dd
     @AppStorage(AppStorageKeys.showWeatherWidget) private var showWeatherWidget = false
-    @AppStorage(AppStorageKeys.showCompass) private var showCompass = true
+    @AppStorage(AppStorageKeys.showCompass) private var showCompass = false
     @AppStorage(AppStorageKeys.showZoomControls) private var showZoomControls = false
     @AppStorage(AppStorageKeys.showScaleBar) private var showScaleBar = false
     @AppStorage(AppStorageKeys.enableRotation) private var enableRotation = true
@@ -160,7 +160,7 @@ struct PreferencesSheet: View {
                         withAnimation(reduceMotion ? .none : .default) {
                             coordinateFormat = .dd
                             showWeatherWidget = false
-                            showCompass = true
+                            showCompass = false
                             showZoomControls = false
                             showScaleBar = false
                             enableRotation = true
@@ -217,8 +217,17 @@ struct PreferencesSheet: View {
         try? modelContext.delete(model: Activity.self)
         try? modelContext.save()
 
-        // Delete offline map packs
+        // Remove WAL/SHM files to physically purge deleted data
+        if let storeURL = modelContext.container.configurations.first?.url {
+            let walURL = storeURL.appendingPathExtension("wal")
+            let shmURL = storeURL.appendingPathExtension("shm")
+            try? FileManager.default.removeItem(at: walURL)
+            try? FileManager.default.removeItem(at: shmURL)
+        }
+
+        // Delete offline map packs and MapLibre tile cache
         OfflineMapService.shared.deleteAllPacks()
+        OfflineMapService.shared.clearTileCache()
 
         // Delete knowledge packs (SQLite databases, metadata, catalog cache)
         knowledgeViewModel?.deleteAllPacks()

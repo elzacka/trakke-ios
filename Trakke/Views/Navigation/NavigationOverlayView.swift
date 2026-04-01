@@ -123,12 +123,12 @@ struct NavigationOverlayView: View {
     private var compassHUD: some View {
         VStack(spacing: .Trakke.md) {
             let relativeBearing = computeRelativeBearing()
-            Image(systemName: "arrowtriangle.up.fill")
-                .font(.system(size: compassArrowSize))
+            Image(systemName: "location.north.fill")
+                .font(Font.Trakke.compassArrow)
                 .foregroundStyle(Color.Trakke.brand)
                 .rotationEffect(.degrees(relativeBearing))
                 .animation(
-                    reduceMotion ? nil : .easeInOut(duration: 0.3),
+                    reduceMotion ? nil : .easeInOut(duration: 0.5),
                     value: relativeBearing
                 )
                 .accessibilityLabel(
@@ -297,9 +297,14 @@ struct NavigationOverlayView: View {
         return "\(minutes) min"
     }
 
+    /// Relative bearing from user's heading to the destination.
+    /// Normalized to -180...180 so SwiftUI animates the shortest rotation path.
     private func computeRelativeBearing() -> Double {
         let heading = userHeading ?? 0
-        return navigationVM.compassBearing - heading
+        var delta = navigationVM.compassBearing - heading
+        if delta > 180 { delta -= 360 }
+        if delta < -180 { delta += 360 }
+        return delta
     }
 
     private func bearingText(_ degrees: Double) -> String {

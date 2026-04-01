@@ -35,7 +35,7 @@ private struct TrakkeButtonBody: View {
             .font(Font.Trakke.bodyMedium)
             .foregroundStyle(TrakkeButtonStyle.foregroundColor(for: variant))
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 14)
+            .padding(.vertical, .Trakke.buttonPadV)
             .padding(.horizontal, .Trakke.cardPadH)
             .background(TrakkeButtonStyle.backgroundColor(for: variant))
             .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))

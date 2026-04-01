@@ -1,9 +1,22 @@
 import Foundation
 import GRDB
 
+protocol PackQuerying: Sendable {
+    func entries(for theme: KnowledgeTheme, in bounds: ViewportBounds, limit: Int) async throws -> [KnowledgeEntry]
+    func articles(for category: ArticleCategory?) async throws -> [KnowledgeArticle]
+    func closeDatabase(for packId: String) async
+    func closeAll() async
+}
+
+extension PackQuerying {
+    func entries(for theme: KnowledgeTheme, in bounds: ViewportBounds) async throws -> [KnowledgeEntry] {
+        try await entries(for: theme, in: bounds, limit: 500)
+    }
+}
+
 // MARK: - Pack Query Service
 
-actor PackQueryService {
+actor PackQueryService: PackQuerying {
     private var openDatabases: [String: DatabaseQueue] = [:]
     private var accessOrder: [String] = []
     private static let maxOpenDatabases = 5

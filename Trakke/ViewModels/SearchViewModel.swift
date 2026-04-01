@@ -33,28 +33,28 @@ final class SearchViewModel {
 
         isSearching = true
         let service = searchService
-        searchTask = Task {
+        searchTask = Task { [weak self] in
             try? await Task.sleep(for: Self.debounceInterval)
-            guard !Task.isCancelled else { return }
+            guard !Task.isCancelled, let self else { return }
 
             // Check for coordinate input first
             if let coordResult = CoordinateService.parse(trimmed) {
-                self.results = [coordResult]
-                self.isSearching = false
+                results = [coordResult]
+                isSearching = false
                 return
             }
 
             do {
                 let searchResults = try await service.search(query: trimmed)
                 guard !Task.isCancelled else { return }
-                self.results = searchResults
-                self.error = nil
+                results = searchResults
+                error = nil
             } catch {
                 guard !Task.isCancelled else { return }
-                self.results = []
+                results = []
                 self.error = String(localized: "search.error")
             }
-            self.isSearching = false
+            isSearching = false
         }
     }
 

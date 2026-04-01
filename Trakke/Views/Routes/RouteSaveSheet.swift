@@ -88,7 +88,9 @@ struct RouteSaveSheet: View {
                             .buttonStyle(.plain)
                             .frame(width: .Trakke.touchMin, height: .Trakke.touchMin)
                             .contentShape(Circle())
-                            .accessibilityLabel(String(localized: "route.color") + " \(index + 1)")
+                            .accessibilityLabel(index < Color.Trakke.routeColorNames.count
+                                ? Color.Trakke.routeColorNames[index]
+                                : String(localized: "route.color") + " \(index + 1)")
                             .accessibilityAddTraits(selectedColor == color ? .isSelected : [])
                         }
                     }

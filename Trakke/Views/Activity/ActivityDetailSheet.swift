@@ -160,6 +160,7 @@ struct ActivityDetailSheet: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
         .buttonStyle(.trakkeDanger)
+        .accessibilityHint(String(localized: "accessibility.deleteHint"))
         .confirmationDialog(
             String(localized: "activity.delete.title"),
             isPresented: $showDeleteConfirmation,
@@ -180,6 +181,7 @@ struct ActivityDetailSheet: View {
                 Image(systemName: icon)
                     .font(Font.Trakke.captionSoft)
                     .foregroundStyle(Color.Trakke.textTertiary)
+                    .accessibilityHidden(true)
                 Text(value)
                     .font(Font.Trakke.bodyMedium)
                     .monospacedDigit()
@@ -188,6 +190,7 @@ struct ActivityDetailSheet: View {
                 .foregroundStyle(Color.Trakke.textTertiary)
                 .font(Font.Trakke.captionSoft)
         }
+        .accessibilityElement(children: .combine)
     }
 
     private func detailRow(label: String, value: String) -> some View {

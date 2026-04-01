@@ -163,8 +163,9 @@ final class OfflineViewModel {
         downloadName = ""
 
         // Download starts async, packs list will update via notification
-        Task {
+        Task { [weak self] in
             try? await Task.sleep(for: .seconds(1))
+            guard let self else { return }
             loadPacks()
             isDownloading = false
         }

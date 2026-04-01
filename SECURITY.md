@@ -31,19 +31,23 @@ See [PERSONVERN.md](PERSONVERN.md) for the complete list of external services an
 
 APIClient supports an `optional` parameter that sets `allowsConstrainedNetworkAccess = false` on the URLRequest. Non-essential requests (Artsdatabanken species images, user guide remote fetch) are marked optional and silently skipped when the user has enabled Low Data Mode in iOS Settings. Core APIs (weather, search, routing, elevation, map tiles) remain unaffected.
 
+APIClient retries on HTTP 429 (rate limited) with `Retry-After` header support, capped at 30 seconds. Only one retry is attempted before surfacing the error.
+
 ### Input Validation
 
 - All API responses are decoded through Swift `Codable` with strict type checking
 - Coordinate inputs are validated against geographic bounds
 - Coordinate values are guarded with `.isFinite` checks in GPX import/export, BundledPOIService, POIService, ActivityTrackingService, SearchService (place name and address coordinate decoding), and ElevationService (input boundary validation) to reject NaN/Inf values
+- GPX import additionally validates coordinate ranges (`-90...90` latitude, `-180...180` longitude) on trackpoints, route points, and waypoints
 - Search inputs are sanitized before API calls
 - XXE prevention (`shouldResolveExternalEntities = false`) on all XML parsers: GPX import (GPXImportService) and GML shelter parsing (POIService/ShelterGMLParser)
 - GPX import enforces a 50 MB file size limit
 - Weather cache evicts expired entries and is capped at 10 entries to prevent unbounded memory growth
+- SearchService maintains a 5-minute TTL in-memory cache to reduce redundant API calls
 - Valhalla routing responses are decoded through `Codable` with coordinate validation; polyline6 decoded coordinates are checked for `.isFinite`
 - Route computation is rate-limited client-side (1.5 s minimum interval) to prevent abuse of the public Valhalla server
 - Route computation cancellation is properly propagated (CancellationError not swallowed by rate limiter)
-- `nonisolated(unsafe)` is used only for read-only static instances: `ISO8601DateFormatter` in `KnowledgeArticle` (GRDB row decoding) and a `PreferenceKey.defaultValue` in `UserGuideSheet`. Both are initialized once and never mutated, so no data race risk under Swift strict concurrency
+- `nonisolated(unsafe)` is used only for read-only static instances: `ISO8601DateFormatter` in `KnowledgeArticle`, `WeatherService`, and `WaterTemperatureService`, plus a `PreferenceKey.defaultValue` in `UserGuideSheet`. All are initialized once and never mutated, so no data race risk under Swift strict concurrency
 - Knowledge pack file paths use allowlist sanitization in PackStorageHelper: only `CharacterSet.alphanumerics` plus hyphens and underscores pass through; all other characters are stripped. Empty results fall back to `"unknown"`. This prevents path traversal via `..`, `/`, null bytes, or other special characters
 - Knowledge pack downloads verified via SHA256 checksum (PackDownloadManager.verifyChecksum)
 - Knowledge pack databases opened as read-only with `immutable=1` URI flag (prevents WAL/SHM file creation)
@@ -55,14 +59,15 @@ APIClient supports an `optional` parameter that sets `allowsConstrainedNetworkAc
 - SwiftData store protected with `NSFileProtectionComplete` (encrypted at rest, locked when device is locked)
 - Logger output uses `privacy: .private` for all user data interpolations
 - ModelContainer crash recovery: corrupted store is deleted and recreated rather than crashing
-- GDPR Art. 17 "right to erasure": In-app "Slett alle data" in Preferences deletes all SwiftData records, offline map packs, knowledge packs, Artsdatabanken image cache, bundled POI cache, temp GPX files, clears URLCache (may contain coordinates from API requests), and uses `removePersistentDomain` for complete UserDefaults erasure
-- GPX temp files are cleaned up automatically after share sheet dismissal
+- GDPR Art. 17 "right to erasure": In-app "Slett alle data" in Preferences deletes all SwiftData records (including WAL/SHM journal files), offline map packs, MapLibre tile cache (`clearTileCache()`), knowledge packs, Artsdatabanken image cache, bundled POI cache, temp GPX files, clears URLCache (may contain coordinates from API requests), and uses `removePersistentDomain` for complete UserDefaults erasure
+- GPX temp files are cleaned up automatically after share sheet dismissal and at app launch (orphaned files from previous sessions)
 - GPX temp export files are additionally protected with `NSFileProtectionComplete` (encrypted at rest)
 - SwiftData save failures are surfaced to the user via alerts rather than silently logged
 - Knowledge pack databases stored in Application Support with `NSFileProtectionComplete`
+- Knowledge pack metadata files (`installed_packs.json`, `catalog.json`) written with `.completeFileProtection`
 - Activity data (GPS tracks) stored in SwiftData with `NSFileProtectionComplete`
-- Logger categories use `privacy: .private` for all user data (centralized in Logger+Trakke.swift), including WaterTemperatureService error logs
-- Clipboard security: all coordinate copy actions (EmergencySheet, POIDetailSheet, WaypointDetailSheet, KnowledgeDetailSheet) use `UIPasteboard.setItems(_:options:)` with 5-minute expiration instead of persisting indefinitely
+- Logger categories use `privacy: .private` consistently for all user data across all services (centralized categories in Logger+Trakke.swift, including dedicated `Logger.sos` for SOSService)
+- Clipboard security: all coordinate copy actions (EmergencySheet, POIDetailSheet, WaypointDetailSheet, KnowledgeDetailSheet) use `UIPasteboard.setItems(_:options:)` with `"public.utf8-plain-text"` type and 5-minute expiration instead of persisting indefinitely
 - Activity GPX export uses the same XML escaping, coordinate validation (`.isFinite`), and `NSFileProtectionComplete` as route GPX export
 
 ### External API: Artsdatabanken
@@ -96,10 +101,9 @@ APIClient supports an `optional` parameter that sets `allowsConstrainedNetworkAc
 
 | Version | Supported |
 |---------|-----------|
-| 1.3.x   | Current release |
+| 1.3.1   | Current release |
 | 1.2.x   | Security fixes only |
-| 1.1.x   | End of life |
-| 1.0.x   | End of life |
+| < 1.2   | End of life |
 
 ## Reporting a Vulnerability
 
@@ -126,7 +130,11 @@ Please do not open public GitHub issues for security vulnerabilities.
 - [ ] Knowledge databases opened read-only (immutable)
 - [ ] Activity GPS data never leaves the device
 - [ ] Pack download checksums verified before installation
-- [ ] Clipboard copies use time-limited expiry (5 minutes) at all 4 sites
+- [ ] Clipboard copies use time-limited expiry (5 minutes) with `"public.utf8-plain-text"` at all 4 sites
 - [ ] `nonisolated(unsafe)` used only for read-only static instances (never mutable state)
 - [ ] Non-essential network requests marked `optional` (skipped in Low Data Mode)
 - [ ] Artsdatabanken image cache cleared in "Slett alle data"
+- [ ] GDPR deletion removes WAL/SHM files and MapLibre tile cache
+- [ ] Knowledge pack metadata files written with `.completeFileProtection`
+- [ ] GPX import validates coordinate ranges in addition to `.isFinite`
+- [ ] GPX temp files cleaned up at app launch
