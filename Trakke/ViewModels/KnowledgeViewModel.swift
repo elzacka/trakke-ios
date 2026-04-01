@@ -33,14 +33,24 @@ final class KnowledgeViewModel {
 
     // MARK: - Private
 
-    private let catalogService = PackCatalogService()
-    private let downloadManager = PackDownloadManager()
-    private let queryService = PackQueryService()
+    private let catalogService: any PackCatalogFetching
+    private let downloadManager: any PackDownloading
+    private let queryService: any PackQuerying
     private var queryTask: Task<Void, Never>?
     private var downloadTasks: [String: Task<Void, Never>] = [:]
     private var lastBounds: ViewportBounds?
     private var lastZoom: Double = 0
     private static let debounceInterval: Duration = .milliseconds(500)
+
+    init(
+        catalogService: any PackCatalogFetching = PackCatalogService(),
+        downloadManager: any PackDownloading = PackDownloadManager(),
+        queryService: any PackQuerying = PackQueryService()
+    ) {
+        self.catalogService = catalogService
+        self.downloadManager = downloadManager
+        self.queryService = queryService
+    }
 
     // MARK: - Catalog
 
@@ -79,21 +89,22 @@ final class KnowledgeViewModel {
 
     func downloadPack(_ pack: KnowledgePack) {
         let manager = downloadManager
-        downloadTasks[pack.id] = Task {
+        downloadTasks[pack.id] = Task { [weak self] in
+            guard let self else { return }
             let progressStream = await manager.download(pack: pack)
             for await progress in progressStream {
                 guard !Task.isCancelled else { return }
-                self.activeDownloads[pack.id] = progress
+                activeDownloads[pack.id] = progress
                 if progress.isComplete {
-                    self.activeDownloads.removeValue(forKey: pack.id)
-                    self.downloadTasks.removeValue(forKey: pack.id)
-                    self.refreshInstalledPacks()
+                    activeDownloads.removeValue(forKey: pack.id)
+                    downloadTasks.removeValue(forKey: pack.id)
+                    refreshInstalledPacks()
 
                     // If the theme is enabled, reload entries
                     if let theme = KnowledgeTheme(rawValue: pack.theme),
-                       self.enabledThemes.contains(theme),
-                       let bounds = self.lastBounds {
-                        self.loadTheme(theme, bounds: bounds, zoom: self.lastZoom)
+                       enabledThemes.contains(theme),
+                       let bounds = lastBounds {
+                        loadTheme(theme, bounds: bounds, zoom: lastZoom)
                     }
                 }
             }

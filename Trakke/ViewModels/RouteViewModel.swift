@@ -1,9 +1,7 @@
 import SwiftUI
 import SwiftData
 import CoreLocation
-import os
-
-private let logger = Logger(subsystem: "no.tazk.trakke", category: "RouteViewModel")
+import OSLog
 
 @MainActor
 @Observable
@@ -30,7 +28,7 @@ final class RouteViewModel {
         do {
             try modelContext?.save()
         } catch {
-            logger.error("Failed to save (\(operation)): \(error, privacy: .private)")
+            Logger.routes.error("Failed to save (\(operation)): \(error, privacy: .private)")
             saveError = String(localized: "error.saveFailed")
         }
     }
@@ -155,7 +153,7 @@ final class RouteViewModel {
                 route.updatedAt = Date()
                 self.save("elevation data")
             } catch {
-                logger.error("Elevation fetch error: \(error, privacy: .private)")
+                Logger.routes.error("Elevation fetch error: \(error, privacy: .private)")
             }
             self.isLoadingElevation = false
         }
@@ -195,7 +193,7 @@ final class RouteViewModel {
             importMessage = String(localized: "routes.imported \(count)")
         } catch {
             importMessage = String(localized: "routes.importError")
-            logger.error("GPX route import failed: \(error, privacy: .private)")
+            Logger.routes.error("GPX route import failed: \(error, privacy: .private)")
         }
     }
 

@@ -24,6 +24,17 @@ extension CGFloat {
         static let touchComfortable: CGFloat = 48
         /// Emergency CTA button height — intentionally oversized for SOS actions
         static let touchCTA: CGFloat = 72
+
+        // Button padding — between md (12) and lg (16) for primary/secondary/danger buttons
+        static let buttonPadV: CGFloat = 14
+
+        // Icon slots for list rows
+        static let iconSlot: CGFloat = 24      // SF Symbol icons in navigation rows
+        static let iconSlotLarge: CGFloat = 28  // Weather symbols, search icons, POI outer frame
+
+        // Badge padding — intentionally tight for compact layout
+        static let badgePadH: CGFloat = 6
+        static let badgePadV: CGFloat = 2
     }
 
     enum TrakkeRadius {

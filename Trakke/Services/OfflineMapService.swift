@@ -56,6 +56,7 @@ protocol OfflineMapManaging: AnyObject {
     func deleteAllPacks()
     func pausePack(_ info: OfflinePackInfo)
     func resumePack(_ info: OfflinePackInfo)
+    func clearTileCache()
 }
 
 // MARK: - Offline Map Service
@@ -168,6 +169,15 @@ final class OfflineMapService: OfflineMapManaging {
 
     func resumePack(_ info: OfflinePackInfo) {
         findPack(id: info.id)?.resume()
+    }
+
+    /// Clear the MapLibre ambient tile cache (non-offline tiles the user has viewed).
+    func clearTileCache() {
+        MLNOfflineStorage.shared.resetDatabase { error in
+            if let error {
+                Logger.offline.error("Failed to reset tile cache: \(error, privacy: .private)")
+            }
+        }
     }
 
     // MARK: - Helpers

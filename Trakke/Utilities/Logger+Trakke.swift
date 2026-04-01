@@ -12,4 +12,7 @@ extension Logger {
     static let poi = Logger(subsystem: subsystem, category: "poi")
     static let offline = Logger(subsystem: subsystem, category: "offline")
     static let weather = Logger(subsystem: subsystem, category: "weather")
+    static let sos = Logger(subsystem: subsystem, category: "sos")
+    static let routes = Logger(subsystem: subsystem, category: "routes")
+    static let waypoints = Logger(subsystem: subsystem, category: "waypoints")
 }

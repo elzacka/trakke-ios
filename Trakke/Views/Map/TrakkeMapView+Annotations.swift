@@ -29,6 +29,13 @@ extension TrakkeMapView.Coordinator {
         return nil
     }
 
+    func mapView(_ mapView: MLNMapView, annotationCanShowCallout annotation: MLNAnnotation) -> Bool {
+        // Prevent shape annotations (polygons, polylines) from intercepting taps
+        // that should go to draggable point annotations above them.
+        if annotation is MLNPolygon || annotation is MLNPolyline { return false }
+        return false // No callouts used in this app
+    }
+
     func mapView(_ mapView: MLNMapView, didSelect annotation: MLNAnnotation) {
         mapView.deselectAnnotation(annotation, animated: false)
         if let waypointAnnotation = annotation as? WaypointAnnotation {
@@ -493,16 +500,23 @@ extension TrakkeMapView.Coordinator {
         on mapView: MLNMapView
     ) -> MLNAnnotationView? {
         let reuseId = "measurement-point"
+        let hitSize: CGFloat = 44
+        let dotSize: CGFloat = 20
         var view = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId)
 
         if view == nil {
             view = MLNAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
-            view?.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
+            view?.frame = CGRect(x: 0, y: 0, width: hitSize, height: hitSize)
             view?.isDraggable = true
 
-            let dot = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
+            let dot = UIView(frame: CGRect(
+                x: (hitSize - dotSize) / 2,
+                y: (hitSize - dotSize) / 2,
+                width: dotSize,
+                height: dotSize
+            ))
             dot.backgroundColor = UIColor.Trakke.measurement
-            dot.layer.cornerRadius = 10
+            dot.layer.cornerRadius = dotSize / 2
             dot.layer.borderWidth = 2
             dot.layer.borderColor = UIColor.white.cgColor
             view?.addSubview(dot)

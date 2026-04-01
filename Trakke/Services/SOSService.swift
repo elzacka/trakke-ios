@@ -97,7 +97,7 @@ actor SOSService {
             try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: .mixWithOthers)
             try AVAudioSession.sharedInstance().setActive(true)
         } catch {
-            Logger.data.error("Failed to configure audio session: \(error.localizedDescription)")
+            Logger.sos.error("Failed to configure audio session: \(error.localizedDescription, privacy: .private)")
             return
         }
 
@@ -141,7 +141,7 @@ actor SOSService {
         do {
             try engine.start()
         } catch {
-            Logger.data.error("Failed to start audio engine: \(error.localizedDescription)")
+            Logger.sos.error("Failed to start audio engine: \(error.localizedDescription, privacy: .private)")
         }
 
         self.audioEngine = engine

@@ -90,6 +90,9 @@ struct MarkdownBodyView: View {
                 }
             }
 
+        case .table(let headers, let rows):
+            MarkdownTableView(headers: headers, rows: rows)
+
         case .image(let name, let caption):
             Button {
                 selectedImage = ImageRef(id: name, caption: caption, isSpecies: false)
@@ -191,5 +194,51 @@ private struct SpeciesImageBlock: View {
                 .font(Font.Trakke.captionSoft)
                 .foregroundStyle(Color.Trakke.textTertiary)
         }
+    }
+}
+
+// MARK: - Markdown Table View
+
+struct MarkdownTableView: View {
+    let headers: [String]
+    let rows: [[String]]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            // Header row
+            HStack(spacing: 0) {
+                ForEach(Array(headers.enumerated()), id: \.offset) { _, header in
+                    Text(header)
+                        .font(Font.Trakke.bodyMedium)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.vertical, .Trakke.xs)
+                        .padding(.horizontal, .Trakke.sm)
+                }
+            }
+            .background(Color.Trakke.brandTint)
+
+            Divider()
+
+            // Data rows
+            ForEach(Array(rows.enumerated()), id: \.offset) { rowIndex, row in
+                if rowIndex > 0 {
+                    Divider()
+                }
+                HStack(alignment: .top, spacing: 0) {
+                    ForEach(Array(row.prefix(headers.count).enumerated()), id: \.offset) { _, cell in
+                        Text(cell)
+                            .font(Font.Trakke.caption)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.vertical, .Trakke.xs)
+                            .padding(.horizontal, .Trakke.sm)
+                    }
+                }
+            }
+        }
+        .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.md))
+        .overlay(
+            RoundedRectangle(cornerRadius: .TrakkeRadius.md)
+                .stroke(Color(.separator), lineWidth: 0.5)
+        )
     }
 }

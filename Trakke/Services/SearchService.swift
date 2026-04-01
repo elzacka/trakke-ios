@@ -113,10 +113,19 @@ actor SearchService: SearchFetching {
     private static let searchTimeout: TimeInterval = 10
     private static let addressQueryRegex = try! NSRegularExpression(pattern: #"\b(\d+)([a-z]?)$"#)
     private static let addressNumberRegex = try! NSRegularExpression(pattern: #"\b(\d+)([a-z]?)(?:\s|$)"#)
+    private static let cacheTTL: TimeInterval = 300 // 5 minutes
+
+    private var queryCache: [String: (results: [SearchResult], cachedAt: Date)] = [:]
 
     func search(query: String) async throws -> [SearchResult] {
         let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
         guard trimmed.count >= 2 else { return [] }
+
+        let cacheKey = trimmed.lowercased()
+        if let cached = queryCache[cacheKey],
+           Date().timeIntervalSince(cached.cachedAt) < Self.cacheTTL {
+            return cached.results
+        }
 
         async let places = searchPlaces(query: trimmed)
         async let addresses = searchAddresses(query: trimmed)
@@ -127,7 +136,9 @@ actor SearchService: SearchFetching {
         var combined = placeResults.prefix(6) + addressResults.prefix(3)
         combined.sort { $0.score > $1.score }
 
-        return Array(combined.prefix(10))
+        let results = Array(combined.prefix(10))
+        queryCache[cacheKey] = (results: results, cachedAt: Date())
+        return results
     }
 
     // MARK: - Place Search

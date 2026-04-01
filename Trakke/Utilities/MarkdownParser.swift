@@ -7,6 +7,7 @@ enum MarkdownBlock: Sendable {
     case paragraph(String)
     case bulletList([String])
     case numberedList([String])
+    case table(headers: [String], rows: [[String]])
     case image(name: String, caption: String)
     case speciesImage(scientificName: String, caption: String)
 }
@@ -83,6 +84,28 @@ enum MarkdownParser {
                     } else {
                         blocks.append(.image(name: name, caption: caption))
                     }
+                } else if stripped.hasPrefix("|") && stripped.hasSuffix("|") {
+                    flushLists(&bulletItems, &numberedItems, into: &blocks)
+                    // Collect all table lines from this point in the section
+                    var tableLines: [String] = [stripped]
+                    // The remaining lines in this section that are table rows
+                    // will be handled below; for now just collect this one.
+                    // We handle multi-line tables by checking subsequent lines in a second pass.
+                    // For simplicity, parse the entire section as a table block.
+                    let remainingLines = lines.suffix(from: lines.firstIndex(of: line)!.advanced(by: 1))
+                    for nextLine in remainingLines {
+                        let nextStripped = nextLine.trimmingCharacters(in: .whitespaces)
+                        if nextStripped.hasPrefix("|") && nextStripped.hasSuffix("|") {
+                            tableLines.append(nextStripped)
+                        } else {
+                            break
+                        }
+                    }
+                    if let table = parseTable(tableLines) {
+                        blocks.append(table)
+                    }
+                    // Skip the rest of this section since we consumed the table lines
+                    break
                 } else if stripped.hasPrefix("- ") {
                     if !numberedItems.isEmpty { blocks.append(.numberedList(numberedItems)); numberedItems = [] }
                     bulletItems.append(String(stripped.dropFirst(2)))
@@ -104,5 +127,32 @@ enum MarkdownParser {
     private static func flushLists(_ bullets: inout [String], _ numbered: inout [String], into blocks: inout [MarkdownBlock]) {
         if !bullets.isEmpty { blocks.append(.bulletList(bullets)); bullets = [] }
         if !numbered.isEmpty { blocks.append(.numberedList(numbered)); numbered = [] }
+    }
+
+    /// Parse markdown table lines into a .table block.
+    /// Expects lines like: | Col1 | Col2 | ... with a separator row (|---|---|).
+    private static func parseTable(_ lines: [String]) -> MarkdownBlock? {
+        guard lines.count >= 2 else { return nil }
+
+        func splitRow(_ line: String) -> [String] {
+            line.split(separator: "|", omittingEmptySubsequences: false)
+                .map { $0.trimmingCharacters(in: .whitespaces) }
+                .filter { !$0.isEmpty }
+        }
+
+        let headers = splitRow(lines[0])
+        guard !headers.isEmpty else { return nil }
+
+        // Skip separator row (|---|---|)
+        let startIndex = lines.count > 2 && lines[1].contains("---") ? 2 : 1
+
+        var rows: [[String]] = []
+        for i in startIndex..<lines.count {
+            let cells = splitRow(lines[i])
+            guard !cells.allSatisfy({ $0.allSatisfy { $0 == "-" } }) else { continue }
+            rows.append(cells)
+        }
+
+        return .table(headers: headers, rows: rows)
     }
 }

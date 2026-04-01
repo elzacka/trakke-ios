@@ -8,7 +8,14 @@ struct TrackPoint: Sendable {
     let horizontalAccuracy: Double
 }
 
-actor ActivityTrackingService {
+protocol ActivityTracking: Sendable {
+    func start() async
+    func addLocation(_ location: CLLocation) async
+    func finish() async -> ActivityResult
+    func currentStats() async -> ActivityStats
+}
+
+actor ActivityTrackingService: ActivityTracking {
     private var trackPoints: [TrackPoint] = []
     private var startTime: Date?
     private var totalDistance: Double = 0

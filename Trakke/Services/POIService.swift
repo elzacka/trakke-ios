@@ -2,9 +2,13 @@ import Foundation
 import CoreLocation
 import OSLog
 
+protocol POIFetching: Sendable {
+    func fetchPOIs(category: POICategory, bounds: ViewportBounds, zoom: Double) async -> [POI]
+}
+
 // MARK: - POI Service
 
-actor POIService {
+actor POIService: POIFetching {
     private var cache: [String: CacheEntry] = [:]
     private static let cacheTTL: TimeInterval = 1800 // 30 minutes
     private static let maxCacheEntries = 50

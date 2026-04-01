@@ -2,9 +2,17 @@ import Foundation
 import CryptoKit
 import OSLog
 
+protocol PackDownloading: Sendable {
+    func download(pack: KnowledgePack) async -> AsyncStream<DownloadProgress>
+    func cancelDownload(packId: String) async
+    func installedPacks() async -> [InstalledPackInfo]
+    func deletePack(packId: String) async throws
+    func deleteAllPacks() async throws
+}
+
 // MARK: - Pack Download Manager
 
-actor PackDownloadManager {
+actor PackDownloadManager: PackDownloading {
     private var activeDownloads: [String: Task<Void, Never>] = [:]
 
     // MARK: - Download
@@ -151,7 +159,7 @@ actor PackDownloadManager {
         encoder.dateEncodingStrategy = .iso8601
         encoder.outputFormatting = .prettyPrinted
         guard let data = try? encoder.encode(packs) else { return }
-        try? data.write(to: PackStorageHelper.installedPacksURL, options: .atomic)
+        try? data.write(to: PackStorageHelper.installedPacksURL, options: [.atomic, .completeFileProtection])
     }
 
     private static func makeRequest(url: URL) -> URLRequest {

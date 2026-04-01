@@ -115,6 +115,16 @@ enum APIClient {
             case 200...299:
                 return data
             case 429:
+                // Respect Retry-After header if present, capped at 30s
+                if attempt < 1 {
+                    let retryAfter = min(
+                        Double(httpResponse.value(forHTTPHeaderField: "Retry-After") ?? "") ?? 2,
+                        30
+                    )
+                    try await Task.sleep(for: .seconds(retryAfter))
+                    lastError = APIError.rateLimited
+                    continue
+                }
                 throw APIError.rateLimited
             case 500...599:
                 lastError = APIError.httpError(statusCode: httpResponse.statusCode)

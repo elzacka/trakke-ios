@@ -282,11 +282,11 @@ import SwiftData
 // MARK: - Weather Condition Text Tests
 
 @Test func weatherConditionText() {
-    #expect(WeatherViewModel.conditionText(for: "clearsky_day") == "Klarvær")
-    #expect(WeatherViewModel.conditionText(for: "clearsky_night") == "Klarvær")
-    #expect(WeatherViewModel.conditionText(for: "rain") == "Regn")
-    #expect(WeatherViewModel.conditionText(for: "heavysnow") == "Kraftig snøfall")
-    #expect(WeatherViewModel.conditionText(for: "unknown_symbol") == "Overskyet")
+    #expect(WeatherViewModel.conditionText(for: "clearsky_day") == String(localized: "weather.clearsky"))
+    #expect(WeatherViewModel.conditionText(for: "clearsky_night") == String(localized: "weather.clearsky"))
+    #expect(WeatherViewModel.conditionText(for: "rain") == String(localized: "weather.rain"))
+    #expect(WeatherViewModel.conditionText(for: "heavysnow") == String(localized: "weather.heavysnow"))
+    #expect(WeatherViewModel.conditionText(for: "unknown_symbol") == String(localized: "weather.cloudy"))
 }
 
 @Test func weatherWindDirection() {

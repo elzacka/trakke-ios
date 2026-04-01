@@ -45,10 +45,10 @@ struct POIDetailSheet: View {
                                     [["public.utf8-plain-text": formatted.copyText]],
                                     options: [.expirationDate: Date().addingTimeInterval(300)]
                                 )
-                                withAnimation { copied = true }
+                                copied = true
                                 Task {
                                     try? await Task.sleep(for: .milliseconds(1500))
-                                    withAnimation { copied = false }
+                                    copied = false
                                 }
                             } label: {
                                 Image(systemName: copied ? "checkmark" : "doc.on.doc")

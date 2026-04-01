@@ -191,6 +191,7 @@ private struct ContentGroupSection: View {
                     .frame(width: 20, height: 20)
                     .foregroundStyle(Color(hex: category.color))
                     .frame(width: 28, height: 28)
+                    .accessibilityHidden(true)
 
                 Text(category.displayName)
                     .font(Font.Trakke.bodyRegular)
@@ -202,11 +203,16 @@ private struct ContentGroupSection: View {
                     Image(systemName: "checkmark")
                         .font(Font.Trakke.bodyMedium)
                         .foregroundStyle(Color.Trakke.brand)
+                        .accessibilityHidden(true)
                 }
             }
             .frame(minHeight: .Trakke.touchMin)
             .contentShape(Rectangle())
         }
+        .accessibilityLabel(category.displayName)
+        .accessibilityValue(poiViewModel.enabledCategories.contains(category)
+            ? String(localized: "accessibility.enabled")
+            : String(localized: "accessibility.disabled"))
         .accessibilityAddTraits(poiViewModel.enabledCategories.contains(category) ? .isSelected : [])
     }
 }

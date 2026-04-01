@@ -204,8 +204,8 @@ struct TrakkeMapView: UIViewRepresentable {
         context.coordinator.cornerPanGesture = cornerPan
         mapView.addGestureRecognizer(cornerPan)
 
-        // Make the map's built-in pan gesture wait for our corner pan to fail first.
-        // This prevents the map from scrolling when the user drags a corner.
+        // Make the map's built-in pan gesture wait for our custom pan to fail first.
+        // This prevents the map from scrolling when the user drags a point.
         for gesture in mapView.gestureRecognizers ?? [] {
             if gesture is UIPanGestureRecognizer && gesture !== cornerPan {
                 gesture.require(toFail: cornerPan)
@@ -336,10 +336,13 @@ struct TrakkeMapView: UIViewRepresentable {
         var desiredOverlays: Set<OverlayLayer> = []
         var appliedOverlays: Set<OverlayLayer> = []
 
-        // Custom corner drag state (replaces MapLibre's isDraggable system)
+        // Custom pan drag state for selection corners, measurement points, and route points.
+        // Replaces MapLibre's isDraggable system which conflicts with our gesture setup.
         var cornerPanGesture: UIPanGestureRecognizer?
         var isDraggingSelection = false
         private var draggingCornerIndex: Int?
+        private var draggingMeasurementIndex: Int?
+        private var draggingRouteIndex: Int?
 
         // Reusable haptic generators (avoids creating new instances per gesture)
         private let lightHaptic = UIImpactFeedbackGenerator(style: .light)
@@ -413,16 +416,15 @@ struct TrakkeMapView: UIViewRepresentable {
         // MARK: - Gesture Recognizer Delegate
 
         func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-            // For the corner pan gesture: only begin if the touch is near a selection corner.
-            // Returning false makes the gesture "fail", allowing the map's built-in pan
-            // (which has require(toFail:) on this gesture) to proceed normally.
+            // For the custom pan gesture: begin if the touch is near any draggable point
+            // (selection corner, measurement point, or route drawing point).
+            // Returning false makes the gesture "fail", allowing the map's built-in pan to proceed.
             if gestureRecognizer === cornerPanGesture {
                 guard let mapView = gestureRecognizer.view as? MLNMapView else { return false }
-                guard !selectionAnnotations.isEmpty else { return false }
-
                 let touchPoint = gestureRecognizer.location(in: mapView)
                 let hitRadius: CGFloat = 30
 
+                // Check selection corners
                 for annotation in selectionAnnotations {
                     let annotationPoint = mapView.convert(annotation.coordinate, toPointTo: mapView)
                     let dx = touchPoint.x - annotationPoint.x
@@ -432,6 +434,29 @@ struct TrakkeMapView: UIViewRepresentable {
                         return true
                     }
                 }
+
+                // Check measurement points
+                for annotation in measurementAnnotations {
+                    let annotationPoint = mapView.convert(annotation.coordinate, toPointTo: mapView)
+                    let dx = touchPoint.x - annotationPoint.x
+                    let dy = touchPoint.y - annotationPoint.y
+                    if dx * dx + dy * dy < hitRadius * hitRadius {
+                        draggingMeasurementIndex = annotation.index
+                        return true
+                    }
+                }
+
+                // Check route drawing points
+                for annotation in drawingAnnotations {
+                    let annotationPoint = mapView.convert(annotation.coordinate, toPointTo: mapView)
+                    let dx = touchPoint.x - annotationPoint.x
+                    let dy = touchPoint.y - annotationPoint.y
+                    if dx * dx + dy * dy < hitRadius * hitRadius {
+                        draggingRouteIndex = annotation.index
+                        return true
+                    }
+                }
+
                 return false
             }
             return true
@@ -448,42 +473,93 @@ struct TrakkeMapView: UIViewRepresentable {
             return true
         }
 
-        // MARK: - Custom Corner Pan Gesture
+        // MARK: - Custom Point Drag Gesture
 
         @objc func handleCornerPan(_ gesture: UIPanGestureRecognizer) {
-            guard let mapView = gesture.view as? MLNMapView,
-                  let cornerIndex = draggingCornerIndex else { return }
-
+            guard let mapView = gesture.view as? MLNMapView else { return }
             let touchPoint = gesture.location(in: mapView)
             let coord = mapView.convert(touchPoint, toCoordinateFrom: mapView)
 
+            if let cornerIndex = draggingCornerIndex {
+                handleSelectionCornerDrag(gesture, mapView: mapView, cornerIndex: cornerIndex, coord: coord)
+            } else if let measureIndex = draggingMeasurementIndex {
+                handleMeasurementPointDrag(gesture, mapView: mapView, pointIndex: measureIndex, coord: coord)
+            } else if let routeIndex = draggingRouteIndex {
+                handleRoutePointDrag(gesture, mapView: mapView, pointIndex: routeIndex, coord: coord)
+            }
+        }
+
+        private func handleSelectionCornerDrag(
+            _ gesture: UIPanGestureRecognizer,
+            mapView: MLNMapView,
+            cornerIndex: Int,
+            coord: CLLocationCoordinate2D
+        ) {
+            let sorted = selectionAnnotations.sorted { $0.index < $1.index }
             switch gesture.state {
             case .began:
                 isDraggingSelection = true
                 mediumHaptic.impactOccurred()
-
             case .changed:
-                // Directly update the annotation's coordinate and rebuild the rectangle.
-                // Since we own the gesture (not MapLibre's isDraggable), we have full
-                // control over the coordinate -- no stale value issue.
-                let sorted = selectionAnnotations.sorted { $0.index < $1.index }
-                if cornerIndex < sorted.count {
-                    sorted[cornerIndex].coordinate = coord
-                }
+                if cornerIndex < sorted.count { sorted[cornerIndex].coordinate = coord }
                 rebuildSelectionRect(on: mapView)
-
             case .ended, .cancelled:
-                let sorted = selectionAnnotations.sorted { $0.index < $1.index }
-                if cornerIndex < sorted.count {
-                    sorted[cornerIndex].coordinate = coord
-                }
+                if cornerIndex < sorted.count { sorted[cornerIndex].coordinate = coord }
                 isDraggingSelection = false
                 draggingCornerIndex = nil
                 rebuildSelectionRect(on: mapView)
                 onSelectionCornerDragged?(cornerIndex, coord)
+            default: break
+            }
+        }
 
-            default:
-                break
+        private func handleMeasurementPointDrag(
+            _ gesture: UIPanGestureRecognizer,
+            mapView: MLNMapView,
+            pointIndex: Int,
+            coord: CLLocationCoordinate2D
+        ) {
+            switch gesture.state {
+            case .began:
+                mediumHaptic.impactOccurred()
+            case .changed:
+                if pointIndex < measurementAnnotations.count {
+                    measurementAnnotations[pointIndex].coordinate = coord
+                }
+                rebuildMeasurementShape(on: mapView)
+            case .ended, .cancelled:
+                if pointIndex < measurementAnnotations.count {
+                    measurementAnnotations[pointIndex].coordinate = coord
+                }
+                draggingMeasurementIndex = nil
+                rebuildMeasurementShape(on: mapView)
+                onMeasurementPointDragged?(pointIndex, coord)
+            default: break
+            }
+        }
+
+        private func handleRoutePointDrag(
+            _ gesture: UIPanGestureRecognizer,
+            mapView: MLNMapView,
+            pointIndex: Int,
+            coord: CLLocationCoordinate2D
+        ) {
+            switch gesture.state {
+            case .began:
+                mediumHaptic.impactOccurred()
+            case .changed:
+                if pointIndex < drawingAnnotations.count {
+                    drawingAnnotations[pointIndex].coordinate = coord
+                }
+                rebuildDrawingPolyline(on: mapView)
+            case .ended, .cancelled:
+                if pointIndex < drawingAnnotations.count {
+                    drawingAnnotations[pointIndex].coordinate = coord
+                }
+                draggingRouteIndex = nil
+                rebuildDrawingPolyline(on: mapView)
+                onRoutePointDragged?(pointIndex, coord)
+            default: break
             }
         }
 
@@ -647,35 +723,9 @@ struct TrakkeMapView: UIViewRepresentable {
         }
 
 
-        func mapView(
-            _ mapView: MLNMapView,
-            annotationView: MLNAnnotationView,
-            didChange dragState: MLNAnnotationViewDragState,
-            fromOldState oldState: MLNAnnotationViewDragState
-        ) {
-            // Selection corners are handled by handleCornerPan, not MapLibre's drag system.
-            if dragState == .starting {
-                mediumHaptic.impactOccurred()
-            }
-
-            guard let annotation = annotationView.annotation else { return }
-
-            if dragState == .dragging {
-                if annotation is RoutePointAnnotation {
-                    rebuildDrawingPolyline(on: mapView)
-                } else if annotation is MeasurementPointAnnotation {
-                    rebuildMeasurementShape(on: mapView)
-                }
-            }
-
-            guard dragState == .ending else { return }
-            let newCoord = annotation.coordinate
-            if let routePoint = annotation as? RoutePointAnnotation {
-                onRoutePointDragged?(routePoint.index, newCoord)
-            } else if let measurePoint = annotation as? MeasurementPointAnnotation {
-                onMeasurementPointDragged?(measurePoint.index, newCoord)
-            }
-        }
+        // Note: MapLibre's built-in annotation drag (didChange dragState) is not used.
+        // All point dragging is handled by our custom pan gesture (handleCornerPan)
+        // which avoids gesture conflicts with the map's scroll pan.
 
 
         func mapView(

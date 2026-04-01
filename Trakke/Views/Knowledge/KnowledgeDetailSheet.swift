@@ -104,17 +104,17 @@ struct KnowledgeDetailSheet: View {
                 Spacer()
                 Button {
                     UIPasteboard.general.setItems(
-                        [[UIPasteboard.typeAutomatic: formatted.copyText]],
+                        [["public.utf8-plain-text": formatted.copyText]],
                         options: [.expirationDate: Date().addingTimeInterval(300)]
                     )
-                    withAnimation { copied = true }
+                    copied = true
                     UIAccessibility.post(
                         notification: .announcement,
                         argument: String(localized: "common.copied")
                     )
                     Task {
                         try? await Task.sleep(for: .milliseconds(1500))
-                        withAnimation { copied = false }
+                        copied = false
                     }
                 } label: {
                     Image(systemName: copied ? "checkmark" : "doc.on.doc")

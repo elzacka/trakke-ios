@@ -84,6 +84,8 @@ actor RoutingService: RouteFetching {
         request.timeoutInterval = Self.timeout
         request.httpBody = requestBody
 
+        lastRequestTime = Date()
+
         let data: Data
         let response: URLResponse
         do {
@@ -102,8 +104,6 @@ actor RoutingService: RouteFetching {
         } catch {
             throw RoutingError.offline
         }
-
-        lastRequestTime = Date()
 
         guard let httpResponse = response as? HTTPURLResponse else {
             throw RoutingError.noRoute

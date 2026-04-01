@@ -1,6 +1,6 @@
 # Personvernerklæring for Tråkke
 
-**Sist oppdatert:** 30. mars 2026
+**Sist oppdatert:** 31. mars 2026
 **Behandlingsansvarlig:** Tazk
 **Kontakt:** hei@tazk.no
 

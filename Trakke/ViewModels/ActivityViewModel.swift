@@ -13,9 +13,13 @@ final class ActivityViewModel {
     var selectedActivity: Activity?
     var saveError: String?
 
-    private let trackingService = ActivityTrackingService()
+    private let trackingService: any ActivityTracking
     private var statsTask: Task<Void, Never>?
     private var modelContext: ModelContext?
+
+    init(trackingService: any ActivityTracking = ActivityTrackingService()) {
+        self.trackingService = trackingService
+    }
 
     func setModelContext(_ context: ModelContext) {
         modelContext = context
@@ -53,7 +57,7 @@ final class ActivityViewModel {
 
     func processLocation(_ location: CLLocation) {
         guard isRecording else { return }
-        Task { await trackingService.addLocation(location) }
+        Task { [weak self] in await self?.trackingService.addLocation(location) }
     }
 
     func stopAndSave(name: String) async {

@@ -30,8 +30,10 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
     private var backgroundSession: CLBackgroundActivitySession?
     private var lastHeadingTime: Date?
     private var lastHeadingValue: Double = 0
+    private var smoothedHeading: Double = 0
     private static let headingMinInterval: TimeInterval = 0.2  // ~5 Hz max
     private static let headingMinDelta: Double = 2.0           // degrees
+    private static let headingSmoothingFactor: Double = 0.25   // low-pass filter (0 = ignore new, 1 = no smoothing)
 
     override init() {
         super.init()
@@ -189,7 +191,8 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
 
     nonisolated func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
-        Task { @MainActor in
+        Task { @MainActor [weak self] in
+            guard let self else { return }
             userLocation = location
             if isTrackingUser {
                 currentCenter = location.coordinate
@@ -200,24 +203,35 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
 
     nonisolated func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
         let heading = newHeading.trueHeading >= 0 ? newHeading.trueHeading : newHeading.magneticHeading
-        Task { @MainActor in
+        Task { @MainActor [weak self] in
+            guard let self else { return }
             let now = Date()
             if let lastTime = lastHeadingTime,
                now.timeIntervalSince(lastTime) < Self.headingMinInterval {
-                // Allow through only if angle changed significantly
                 var delta = abs(heading - lastHeadingValue)
                 if delta > 180 { delta = 360 - delta }
                 guard delta >= Self.headingMinDelta else { return }
             }
             lastHeadingTime = now
             lastHeadingValue = heading
-            userHeading = heading
+
+            // Low-pass filter to smooth magnetometer jitter.
+            // Handle 0/360 wrap-around by computing shortest angular delta.
+            var delta = heading - smoothedHeading
+            if delta > 180 { delta -= 360 }
+            if delta < -180 { delta += 360 }
+            smoothedHeading = (smoothedHeading + delta * Self.headingSmoothingFactor)
+                .truncatingRemainder(dividingBy: 360)
+            if smoothedHeading < 0 { smoothedHeading += 360 }
+
+            userHeading = smoothedHeading
         }
     }
 
     nonisolated func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         let status = manager.authorizationStatus
-        Task { @MainActor in
+        Task { @MainActor [weak self] in
+            guard let self else { return }
             locationAuthStatus = status
             if status == .authorizedWhenInUse || status == .authorizedAlways {
                 if isTrackingUser || isNavigating {

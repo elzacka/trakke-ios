@@ -46,7 +46,7 @@ struct UserGuideSheet: View {
                 return
             }
         } catch {
-            Logger.knowledge.warning("Failed to fetch remote user guide: \(error.localizedDescription)")
+            Logger.knowledge.warning("Failed to fetch remote user guide: \(error.localizedDescription, privacy: .private)")
         }
 
         if let bundleURL = Bundle.main.url(forResource: "Brukerveiledning", withExtension: "md"),
@@ -185,6 +185,9 @@ private struct UserGuideBodyView: View {
                     }
                 }
             }
+
+        case .table(let headers, let rows):
+            MarkdownTableView(headers: headers, rows: rows)
 
         case .image, .speciesImage:
             EmptyView()  // User guide does not contain images

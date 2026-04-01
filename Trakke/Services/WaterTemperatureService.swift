@@ -45,6 +45,7 @@ actor WaterTemperatureService: WaterTemperatureFetching {
     }
 
     private static let maxCacheEntries = 10
+    private nonisolated(unsafe) static let iso8601Formatter = ISO8601DateFormatter()
     private var cache: [String: CachedResult] = [:]
 
     private static let expiresFormatter: DateFormatter = {
@@ -129,7 +130,13 @@ actor WaterTemperatureService: WaterTemperatureFetching {
     private func fetchOceanTemperature(lat: Double, lon: Double) async throws -> OceanFetchResult {
         let truncLat = (lat * 10000).rounded() / 10000
         let truncLon = (lon * 10000).rounded() / 10000
-        guard let url = URL(string: "\(Self.oceanBaseURL)?lat=\(truncLat)&lon=\(truncLon)") else {
+
+        var components = URLComponents(string: Self.oceanBaseURL)
+        components?.queryItems = [
+            URLQueryItem(name: "lat", value: String(truncLat)),
+            URLQueryItem(name: "lon", value: String(truncLon)),
+        ]
+        guard let url = components?.url else {
             return OceanFetchResult(temperature: nil, expiresAt: Date.now.addingTimeInterval(Self.fallbackTTL), lastModified: nil)
         }
 
@@ -179,9 +186,8 @@ actor WaterTemperatureService: WaterTemperatureFetching {
             return nil
         }
 
-        // Find the entry closest to now (formatter created once per call, actor-isolated)
         let now = Date.now
-        let formatter = ISO8601DateFormatter()
+        let formatter = Self.iso8601Formatter
 
         var closestTemp: Double?
         var closestDistance: TimeInterval = .greatestFiniteMagnitude

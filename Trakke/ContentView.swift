@@ -30,7 +30,7 @@ struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @AppStorage(AppStorageKeys.showWeatherWidget) private var showWeatherWidget = false
-    @AppStorage(AppStorageKeys.showCompass) private var showCompass = true
+    @AppStorage(AppStorageKeys.showCompass) private var showCompass = false
     @AppStorage(AppStorageKeys.showZoomControls) private var showZoomControls = false
     @AppStorage(AppStorageKeys.showScaleBar) private var showScaleBar = false
     @AppStorage(AppStorageKeys.enableRotation) private var enableRotation = true
@@ -316,6 +316,7 @@ struct ContentView: View {
                     .onTapGesture {
                         mapViewModel.dismissLocationPrimer()
                     }
+                    .accessibilityHidden(true)
 
                 LocationPrimerView(
                     onAllow: { mapViewModel.confirmLocationPermission() },

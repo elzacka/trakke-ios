@@ -72,6 +72,14 @@ struct TrakkeApp: App {
             logger.error("Failed to set file protection on Application Support: \(error, privacy: .private)")
         }
 
+        // Clean up any orphaned GPX temp files from previous sessions
+        let tempDir = fileManager.temporaryDirectory
+        if let tempFiles = try? fileManager.contentsOfDirectory(at: tempDir, includingPropertiesForKeys: nil) {
+            for file in tempFiles where file.pathExtension == "gpx" {
+                try? fileManager.removeItem(at: file)
+            }
+        }
+
         let storeURL = appSupportURL.appendingPathComponent("Trakke.store")
 
         // Create ModelContainer with versioned schema and migration plan
