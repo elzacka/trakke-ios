@@ -28,6 +28,7 @@
 	<string>Tråkke bruker posisjonen din for å vise hvor du er på kartet og navigere langs ruter. Under navigering brukes posisjonen i bakgrunnen for å gi deg retningsanvisninger. Posisjonen din brukes også for relevante værmeldinger.</string>
 	<key>UIBackgroundModes</key>
 	<array>
+		<string>audio</string>
 		<string>location</string>
 	</array>
 	<key>UILaunchScreen</key>

@@ -4,7 +4,7 @@ struct MapControlsOverlay<WeatherContent: View>: View {
     @Bindable var viewModel: MapViewModel
     var onSearchTapped: (() -> Void)?
     var onCategoryTapped: (() -> Void)?
-    var onMyPlacesTapped: (() -> Void)?
+    var onMyStuffTapped: (() -> Void)?
     var onWeatherTapped: (() -> Void)?
     var onEmergencyTapped: (() -> Void)?
     var onMoreTapped: (() -> Void)?
@@ -18,6 +18,7 @@ struct MapControlsOverlay<WeatherContent: View>: View {
     var isConnected = true
     var isCleanMapActive = false
     var onCleanMapToggle: (() -> Void)?
+    var isInsideOfflineArea = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var menuItems: [(icon: String, label: String, action: () -> Void)] {
@@ -25,7 +26,7 @@ struct MapControlsOverlay<WeatherContent: View>: View {
             ("magnifyingglass", String(localized: "search.title"), { onSearchTapped?() }),
             (viewModel.isTrackingUser ? "location.fill" : "location", String(localized: "map.controls.myPosition"), { viewModel.centerOnUser() }),
             ("square.grid.2x2", String(localized: "categories.title"), { onCategoryTapped?() }),
-            ("mappin", String(localized: "waypoints.title"), { onMyPlacesTapped?() }),
+            ("tray.full", String(localized: "mystuff.title"), { onMyStuffTapped?() }),
             ("light.beacon.max.fill", String(localized: "emergency.title"), { onEmergencyTapped?() }),
             ("cloud.sun", String(localized: "weather.title"), { onWeatherTapped?() }),
             ("ellipsis", String(localized: "more.title"), { onMoreTapped?() }),
@@ -314,16 +315,22 @@ struct MapControlsOverlay<WeatherContent: View>: View {
 
     private var offlineChip: some View {
         HStack(spacing: .Trakke.xs) {
-            Image(systemName: "wifi.slash")
+            Image(systemName: isInsideOfflineArea ? "checkmark.circle.fill" : "wifi.slash")
                 .font(Font.Trakke.captionSoft)
-            Text(String(localized: "connectivity.offline"))
+                .foregroundStyle(isInsideOfflineArea ? Color.Trakke.brand : Color.Trakke.warning)
+            Text(isInsideOfflineArea
+                ? String(localized: "connectivity.offline.mapAvailable")
+                : String(localized: "connectivity.offline"))
                 .font(Font.Trakke.caption)
+                .foregroundStyle(Color.Trakke.textTertiary)
         }
-        .foregroundStyle(Color.Trakke.textTertiary)
         .padding(.horizontal, .Trakke.md)
         .padding(.vertical, .Trakke.sm)
-        .background(.regularMaterial)
+        .background(Color.Trakke.background)
         .clipShape(Capsule())
         .trakkeControlShadow()
+        .accessibilityLabel(isInsideOfflineArea
+            ? String(localized: "connectivity.offline.mapAvailable")
+            : String(localized: "connectivity.offline"))
     }
 }

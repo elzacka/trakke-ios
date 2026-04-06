@@ -142,7 +142,7 @@ final class RouteViewModel {
             guard let self else { return }
             do {
                 let profile = try await service.fetchElevationProfile(coordinates: coords)
-                let stats = await service.calculateStats(from: profile)
+                let stats = service.calculateStats(from: profile)
 
                 self.elevationProfile = profile
                 self.elevationStats = stats
@@ -202,5 +202,9 @@ final class RouteViewModel {
     func formattedDistance(_ meters: Double?) -> String {
         guard let meters, meters > 0 else { return "--" }
         return MeasurementService.formatDistance(meters)
+    }
+
+    func clearCaches() async {
+        await elevationService.clearCache()
     }
 }

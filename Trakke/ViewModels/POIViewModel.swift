@@ -39,10 +39,14 @@ final class POIViewModel {
         }
 
         if category.isBundled {
+            // Show bundled data immediately
             let newPOIs = BundledPOIService.pois(for: category, in: bounds.buffered())
             pois.removeAll { $0.category == category }
             pois.append(contentsOf: newPOIs)
-        } else {
+        }
+
+        if category.isLive {
+            // Refresh from live API (replaces bundled data when successful)
             let service = poiService
             Task { [weak self] in
                 guard let self else { return }
@@ -79,8 +83,8 @@ final class POIViewModel {
             }
         }
 
-        // Debounce live categories (network requests)
-        let liveCategories = enabledCategories.filter { !$0.isBundled }
+        // Debounce live categories (network requests) -- includes hybrid categories
+        let liveCategories = enabledCategories.filter(\.isLive)
         guard !liveCategories.isEmpty else {
             enforceAnnotationLimit()
             return
@@ -119,5 +123,9 @@ final class POIViewModel {
 
     func clearSelection() {
         selectedPOI = nil
+    }
+
+    func clearCaches() async {
+        await poiService.clearCache()
     }
 }

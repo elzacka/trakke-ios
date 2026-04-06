@@ -1,0 +1,3577 @@
+{
+  "version": 1,
+  "source": "Kartverket GeoNorge API",
+  "license": "NLOD 2.0",
+  "kommuner": [
+    {
+      "id": "4203",
+      "name": "Arendal",
+      "fylke": "Agder",
+      "fylkenummer": "42",
+      "south": 58.250271,
+      "west": 8.499747,
+      "north": 58.603528,
+      "east": 9.364087
+    },
+    {
+      "id": "4216",
+      "name": "Birkenes",
+      "fylke": "Agder",
+      "fylkenummer": "42",
+      "south": 58.241875,
+      "west": 7.931311,
+      "north": 58.637223,
+      "east": 8.444985
+    },
+    {
+      "id": "4220",
+      "name": "Bygland",
+      "fylke": "Agder",
+      "fylkenummer": "42",
+      "south": 58.645913,
+      "west": 7.032587,
+      "north": 59.098136,
+      "east": 8.016843
+    },
+    {
+      "id": "4222",
+      "name": "Bykle",
+      "fylke": "Agder",
+      "fylkenummer": "42",
+      "south": 59.181916,
+      "west": 6.824533,
+      "north": 59.672687,
+      "east": 7.625633
+    },
+    {
+      "id": "4219",
+      "name": "Evje og Hornnes",
+      "fylke": "Agder",
+      "fylkenummer": "42",
+      "south": 58.441828,
+      "west": 7.513236,
+      "north": 58.731274,
+      "east": 8.112132
+    },
+    {
+      "id": "4206",
+      "name": "Farsund",
+      "fylke": "Agder",
+      "fylkenummer": "42",
+      "south": 57.818893,
+      "west": 6.164533,
+      "north": 58.230568,
+      "east": 7.001416
+    },
+    {
+      "id": "4207",
+      "name": "Flekkefjord",
+      "fylke": "Agder",
+      "fylkenummer": "42",
+      "south": 58.020848,
+      "west": 6.149708,
+      "north": 58.569022,
+      "east": 6.926334
+    },
+    {
+      "id": "4214",
+      "name": "Froland",
+      "fylke": "Agder",
+      "fylkenummer": "42",
+      "south": 58.452775,
+      "west": 7.955896,
+      "north": 58.721646,
+      "east": 8.759697
+    },
+    {
+      "id": "4211",
+      "name": "Gjerstad",
+      "fylke": "Agder",
+      "fylkenummer": "42",
+      "south": 58.763187,
+      "west": 8.754469,
+      "north": 58.993227,
+      "east": 9.191236
+    },
+    {
+      "id": "4202",
+      "name": "Grimstad",
+      "fylke": "Agder",
+      "fylkenummer": "42",
+      "south": 58.081372,
+      "west": 8.308676,
+      "north": 58.49177,
+      "east": 9.067265
+    },
+    {
+      "id": "4226",
+      "name": "Hægebostad",
+      "fylke": "Agder",
+      "fylkenummer": "42",
+      "south": 58.282369,
+      "west": 7.068069,
+      "north": 58.67073,
+      "east": 7.378905
+    },
+    {
+      "id": "4218",
+      "name": "Iveland",
+      "fylke": "Agder",
+      "fylkenummer": "42",
+      "south": 58.308598,
+      "west": 7.782262,
+      "north": 58.55755,
+      "east": 8.109878
+    },
+    {
+      "id": "4204",
+      "name": "Kristiansand",
+      "fylke": "Agder",
+      "fylkenummer": "42",
+      "south": 57.802041,
+      "west": 7.527299,
+      "north": 58.368953,
+      "east": 8.371666
+    },
+    {
+      "id": "4227",
+      "name": "Kvinesdal",
+      "fylke": "Agder",
+      "fylkenummer": "42",
+      "south": 58.213319,
+      "west": 6.713008,
+      "north": 58.822707,
+      "east": 7.183846
+    },
+    {
+      "id": "4215",
+      "name": "Lillesand",
+      "fylke": "Agder",
+      "fylkenummer": "42",
+      "south": 57.917237,
+      "west": 8.144522,
+      "north": 58.3333,
+      "east": 8.753824
+    },
+    {
+      "id": "4205",
+      "name": "Lindesnes",
+      "fylke": "Agder",
+      "fylkenummer": "42",
+      "south": 57.759005,
+      "west": 6.934874,
+      "north": 58.473295,
+      "east": 7.87924
+    },
+    {
+      "id": "4225",
+      "name": "Lyngdal",
+      "fylke": "Agder",
+      "fylkenummer": "42",
+      "south": 57.787747,
+      "west": 6.772475,
+      "north": 58.515609,
+      "east": 7.532486
+    },
+    {
+      "id": "4201",
+      "name": "Risør",
+      "fylke": "Agder",
+      "fylkenummer": "42",
+      "south": 58.523631,
+      "west": 8.994301,
+      "north": 58.829882,
+      "east": 9.668878
+    },
+    {
+      "id": "4228",
+      "name": "Sirdal",
+      "fylke": "Agder",
+      "fylkenummer": "42",
+      "south": 58.500415,
+      "west": 6.436069,
+      "north": 59.189687,
+      "east": 7.20486
+    },
+    {
+      "id": "4213",
+      "name": "Tvedestrand",
+      "fylke": "Agder",
+      "fylkenummer": "42",
+      "south": 58.425665,
+      "west": 8.733068,
+      "north": 58.728489,
+      "east": 9.531649
+    },
+    {
+      "id": "4221",
+      "name": "Valle",
+      "fylke": "Agder",
+      "fylkenummer": "42",
+      "south": 58.939356,
+      "west": 6.996384,
+      "north": 59.398819,
+      "east": 7.821009
+    },
+    {
+      "id": "4212",
+      "name": "Vegårshei",
+      "fylke": "Agder",
+      "fylkenummer": "42",
+      "south": 58.639326,
+      "west": 8.621775,
+      "north": 58.871341,
+      "east": 9.01708
+    },
+    {
+      "id": "4223",
+      "name": "Vennesla",
+      "fylke": "Agder",
+      "fylkenummer": "42",
+      "south": 58.216636,
+      "west": 7.623897,
+      "north": 58.46299,
+      "east": 8.079482
+    },
+    {
+      "id": "4217",
+      "name": "Åmli",
+      "fylke": "Agder",
+      "fylkenummer": "42",
+      "south": 58.614341,
+      "west": 7.961383,
+      "north": 58.985024,
+      "east": 8.759712
+    },
+    {
+      "id": "4224",
+      "name": "Åseral",
+      "fylke": "Agder",
+      "fylkenummer": "42",
+      "south": 58.488882,
+      "west": 7.141083,
+      "north": 58.879368,
+      "east": 7.667
+    },
+    {
+      "id": "3203",
+      "name": "Asker",
+      "fylke": "Akershus",
+      "fylkenummer": "32",
+      "south": 59.457327,
+      "west": 10.290062,
+      "north": 59.905938,
+      "east": 10.634994
+    },
+    {
+      "id": "3226",
+      "name": "Aurskog-Høland",
+      "fylke": "Akershus",
+      "fylkenummer": "32",
+      "south": 59.593646,
+      "west": 11.274078,
+      "north": 60.023634,
+      "east": 11.946004
+    },
+    {
+      "id": "3201",
+      "name": "Bærum",
+      "fylke": "Akershus",
+      "fylkenummer": "32",
+      "south": 59.82574,
+      "west": 10.348024,
+      "north": 60.032227,
+      "east": 10.658082
+    },
+    {
+      "id": "3240",
+      "name": "Eidsvoll",
+      "fylke": "Akershus",
+      "fylkenummer": "32",
+      "south": 60.225973,
+      "west": 11.072095,
+      "north": 60.605148,
+      "east": 11.421933
+    },
+    {
+      "id": "3220",
+      "name": "Enebakk",
+      "fylke": "Akershus",
+      "fylkenummer": "32",
+      "south": 59.682404,
+      "west": 10.931896,
+      "north": 59.856051,
+      "east": 11.243729
+    },
+    {
+      "id": "3214",
+      "name": "Frogn",
+      "fylke": "Akershus",
+      "fylkenummer": "32",
+      "south": 59.61266,
+      "west": 10.538102,
+      "north": 59.7792,
+      "east": 10.75116
+    },
+    {
+      "id": "3230",
+      "name": "Gjerdrum",
+      "fylke": "Akershus",
+      "fylkenummer": "32",
+      "south": 60.028534,
+      "west": 10.911143,
+      "north": 60.128997,
+      "east": 11.116139
+    },
+    {
+      "id": "3242",
+      "name": "Hurdal",
+      "fylke": "Akershus",
+      "fylkenummer": "32",
+      "south": 60.330388,
+      "west": 10.671978,
+      "north": 60.524189,
+      "east": 11.139315
+    },
+    {
+      "id": "3236",
+      "name": "Jevnaker",
+      "fylke": "Akershus",
+      "fylkenummer": "32",
+      "south": 60.164778,
+      "west": 10.194273,
+      "north": 60.400342,
+      "east": 10.576893
+    },
+    {
+      "id": "3205",
+      "name": "Lillestrøm",
+      "fylke": "Akershus",
+      "fylkenummer": "32",
+      "south": 59.75385,
+      "west": 10.933734,
+      "north": 60.077247,
+      "east": 11.439506
+    },
+    {
+      "id": "3234",
+      "name": "Lunner",
+      "fylke": "Akershus",
+      "fylkenummer": "32",
+      "south": 60.13161,
+      "west": 10.456348,
+      "north": 60.339115,
+      "east": 10.864739
+    },
+    {
+      "id": "3222",
+      "name": "Lørenskog",
+      "fylke": "Akershus",
+      "fylkenummer": "32",
+      "south": 59.836384,
+      "west": 10.907158,
+      "north": 59.957957,
+      "east": 11.030625
+    },
+    {
+      "id": "3238",
+      "name": "Nannestad",
+      "fylke": "Akershus",
+      "fylkenummer": "32",
+      "south": 60.106292,
+      "west": 10.772026,
+      "north": 60.346692,
+      "east": 11.129198
+    },
+    {
+      "id": "3228",
+      "name": "Nes",
+      "fylke": "Akershus",
+      "fylkenummer": "32",
+      "south": 59.988452,
+      "west": 11.254469,
+      "north": 60.352563,
+      "east": 11.822695
+    },
+    {
+      "id": "3212",
+      "name": "Nesodden",
+      "fylke": "Akershus",
+      "fylkenummer": "32",
+      "south": 59.72212,
+      "west": 10.542101,
+      "north": 59.88441,
+      "east": 10.74402
+    },
+    {
+      "id": "3232",
+      "name": "Nittedal",
+      "fylke": "Akershus",
+      "fylkenummer": "32",
+      "south": 59.972865,
+      "west": 10.675192,
+      "north": 60.188019,
+      "east": 10.995952
+    },
+    {
+      "id": "3207",
+      "name": "Nordre Follo",
+      "fylke": "Akershus",
+      "fylkenummer": "32",
+      "south": 59.618675,
+      "west": 10.71864,
+      "north": 59.839283,
+      "east": 10.991982
+    },
+    {
+      "id": "3224",
+      "name": "Rælingen",
+      "fylke": "Akershus",
+      "fylkenummer": "32",
+      "south": 59.827179,
+      "west": 11.010827,
+      "north": 59.954854,
+      "east": 11.173637
+    },
+    {
+      "id": "3209",
+      "name": "Ullensaker",
+      "fylke": "Akershus",
+      "fylkenummer": "32",
+      "south": 60.051607,
+      "west": 11.040857,
+      "north": 60.256572,
+      "east": 11.335724
+    },
+    {
+      "id": "3216",
+      "name": "Vestby",
+      "fylke": "Akershus",
+      "fylkenummer": "32",
+      "south": 59.471879,
+      "west": 10.616438,
+      "north": 59.647722,
+      "east": 10.860056
+    },
+    {
+      "id": "3218",
+      "name": "Ås",
+      "fylke": "Akershus",
+      "fylkenummer": "32",
+      "south": 59.592284,
+      "west": 10.674113,
+      "north": 59.765987,
+      "east": 10.891746
+    },
+    {
+      "id": "3301",
+      "name": "Drammen",
+      "fylke": "Buskerud",
+      "fylkenummer": "33",
+      "south": 59.530433,
+      "west": 9.943217,
+      "north": 59.862544,
+      "east": 10.424497
+    },
+    {
+      "id": "3334",
+      "name": "Flesberg",
+      "fylke": "Buskerud",
+      "fylkenummer": "33",
+      "south": 59.717266,
+      "west": 9.1788,
+      "north": 59.997468,
+      "east": 9.721987
+    },
+    {
+      "id": "3320",
+      "name": "Flå",
+      "fylke": "Buskerud",
+      "fylkenummer": "33",
+      "south": 60.29672,
+      "west": 9.095833,
+      "north": 60.571929,
+      "east": 9.846718
+    },
+    {
+      "id": "3324",
+      "name": "Gol",
+      "fylke": "Buskerud",
+      "fylkenummer": "33",
+      "south": 60.631209,
+      "west": 8.718583,
+      "north": 60.871715,
+      "east": 9.33211
+    },
+    {
+      "id": "3326",
+      "name": "Hemsedal",
+      "fylke": "Buskerud",
+      "fylkenummer": "33",
+      "south": 60.764039,
+      "west": 8.040872,
+      "north": 61.09172,
+      "east": 8.918998
+    },
+    {
+      "id": "3330",
+      "name": "Hol",
+      "fylke": "Buskerud",
+      "fylkenummer": "33",
+      "south": 60.341031,
+      "west": 7.438842,
+      "north": 60.86657,
+      "east": 8.622496
+    },
+    {
+      "id": "3310",
+      "name": "Hole",
+      "fylke": "Buskerud",
+      "fylkenummer": "33",
+      "south": 59.956454,
+      "west": 10.12454,
+      "north": 60.126562,
+      "east": 10.477743
+    },
+    {
+      "id": "3303",
+      "name": "Kongsberg",
+      "fylke": "Buskerud",
+      "fylkenummer": "33",
+      "south": 59.407871,
+      "west": 9.333289,
+      "north": 59.781339,
+      "east": 10.059968
+    },
+    {
+      "id": "3318",
+      "name": "Krødsherad",
+      "fylke": "Buskerud",
+      "fylkenummer": "33",
+      "south": 60.070945,
+      "west": 9.458479,
+      "north": 60.313986,
+      "east": 9.881705
+    },
+    {
+      "id": "3312",
+      "name": "Lier",
+      "fylke": "Buskerud",
+      "fylkenummer": "33",
+      "south": 59.716095,
+      "west": 10.061995,
+      "north": 59.974562,
+      "east": 10.377301
+    },
+    {
+      "id": "3316",
+      "name": "Modum",
+      "fylke": "Buskerud",
+      "fylkenummer": "33",
+      "south": 59.849747,
+      "west": 9.712912,
+      "north": 60.170819,
+      "east": 10.294038
+    },
+    {
+      "id": "3322",
+      "name": "Nesbyen",
+      "fylke": "Buskerud",
+      "fylkenummer": "33",
+      "south": 60.39324,
+      "west": 8.681447,
+      "north": 60.701169,
+      "east": 9.435185
+    },
+    {
+      "id": "3338",
+      "name": "Nore og Uvdal",
+      "fylke": "Buskerud",
+      "fylkenummer": "33",
+      "south": 60.070994,
+      "west": 7.488262,
+      "north": 60.512072,
+      "east": 9.217847
+    },
+    {
+      "id": "3305",
+      "name": "Ringerike",
+      "fylke": "Buskerud",
+      "fylkenummer": "33",
+      "south": 60.01726,
+      "west": 9.704509,
+      "north": 60.637926,
+      "east": 10.601538
+    },
+    {
+      "id": "3336",
+      "name": "Rollag",
+      "fylke": "Buskerud",
+      "fylkenummer": "33",
+      "south": 59.879399,
+      "west": 8.970661,
+      "north": 60.152447,
+      "east": 9.46605
+    },
+    {
+      "id": "3332",
+      "name": "Sigdal",
+      "fylke": "Buskerud",
+      "fylkenummer": "33",
+      "south": 59.896241,
+      "west": 9.134005,
+      "north": 60.364677,
+      "east": 9.858876
+    },
+    {
+      "id": "3328",
+      "name": "Ål",
+      "fylke": "Buskerud",
+      "fylkenummer": "33",
+      "south": 60.470499,
+      "west": 7.775174,
+      "north": 60.924048,
+      "east": 8.843884
+    },
+    {
+      "id": "3314",
+      "name": "Øvre Eiker",
+      "fylke": "Buskerud",
+      "fylkenummer": "33",
+      "south": 59.582481,
+      "west": 9.64547,
+      "north": 59.905933,
+      "east": 10.061995
+    },
+    {
+      "id": "5601",
+      "name": "Alta",
+      "fylke": "Finnmark",
+      "fylkenummer": "56",
+      "south": 69.645451,
+      "west": 22.185819,
+      "north": 70.448021,
+      "east": 24.218232
+    },
+    {
+      "id": "5630",
+      "name": "Berlevåg",
+      "fylke": "Finnmark",
+      "fylkenummer": "56",
+      "south": 70.476806,
+      "west": 28.385282,
+      "north": 71.1207,
+      "east": 30.052098
+    },
+    {
+      "id": "5632",
+      "name": "Båtsfjord",
+      "fylke": "Finnmark",
+      "fylkenummer": "56",
+      "south": 70.29643,
+      "west": 29.2177,
+      "north": 70.940141,
+      "east": 31.222583
+    },
+    {
+      "id": "5626",
+      "name": "Gamvik",
+      "fylke": "Finnmark",
+      "fylkenummer": "56",
+      "south": 70.399485,
+      "west": 27.351511,
+      "north": 71.329653,
+      "east": 29.16079
+    },
+    {
+      "id": "5603",
+      "name": "Hammerfest",
+      "fylke": "Finnmark",
+      "fylkenummer": "56",
+      "south": 70.096523,
+      "west": 22.298338,
+      "north": 71.186228,
+      "east": 24.977208
+    },
+    {
+      "id": "5616",
+      "name": "Hasvik",
+      "fylke": "Finnmark",
+      "fylkenummer": "56",
+      "south": 70.280196,
+      "west": 21.175928,
+      "north": 70.98768,
+      "east": 22.899466
+    },
+    {
+      "id": "5610",
+      "name": "Karasjok",
+      "fylke": "Finnmark",
+      "fylkenummer": "56",
+      "south": 68.880803,
+      "west": 24.193806,
+      "north": 69.903158,
+      "east": 26.260394
+    },
+    {
+      "id": "5612",
+      "name": "Kautokeino",
+      "fylke": "Finnmark",
+      "fylkenummer": "56",
+      "south": 68.554592,
+      "west": 21.983619,
+      "north": 69.712957,
+      "east": 25.401602
+    },
+    {
+      "id": "5624",
+      "name": "Lebesby",
+      "fylke": "Finnmark",
+      "fylkenummer": "56",
+      "south": 69.973117,
+      "west": 25.913048,
+      "north": 71.351786,
+      "east": 27.774308
+    },
+    {
+      "id": "5614",
+      "name": "Loppa",
+      "fylke": "Finnmark",
+      "fylkenummer": "56",
+      "south": 70.038696,
+      "west": 20.479733,
+      "north": 70.790018,
+      "east": 22.603693
+    },
+    {
+      "id": "5618",
+      "name": "Måsøy",
+      "fylke": "Finnmark",
+      "fylkenummer": "56",
+      "south": 70.618275,
+      "west": 23.24746,
+      "north": 71.335677,
+      "east": 25.500267
+    },
+    {
+      "id": "5636",
+      "name": "Nesseby",
+      "fylke": "Finnmark",
+      "fylkenummer": "56",
+      "south": 69.849193,
+      "west": 28.304416,
+      "north": 70.406546,
+      "east": 29.344409
+    },
+    {
+      "id": "5620",
+      "name": "Nordkapp",
+      "fylke": "Finnmark",
+      "fylkenummer": "56",
+      "south": 70.656302,
+      "west": 24.919794,
+      "north": 71.384879,
+      "east": 27.060702
+    },
+    {
+      "id": "5622",
+      "name": "Porsanger",
+      "fylke": "Finnmark",
+      "fylkenummer": "56",
+      "south": 69.730873,
+      "west": 23.911366,
+      "north": 70.755063,
+      "east": 26.148462
+    },
+    {
+      "id": "5605",
+      "name": "Sør-Varanger",
+      "fylke": "Finnmark",
+      "fylkenummer": "56",
+      "south": 69.01083,
+      "west": 28.330476,
+      "north": 70.064259,
+      "east": 31.198324
+    },
+    {
+      "id": "5628",
+      "name": "Tana",
+      "fylke": "Finnmark",
+      "fylkenummer": "56",
+      "south": 69.817114,
+      "west": 25.767372,
+      "north": 70.761601,
+      "east": 29.22599
+    },
+    {
+      "id": "5607",
+      "name": "Vadsø",
+      "fylke": "Finnmark",
+      "fylkenummer": "56",
+      "south": 69.975044,
+      "west": 28.981029,
+      "north": 70.47779,
+      "east": 30.932745
+    },
+    {
+      "id": "5634",
+      "name": "Vardø",
+      "fylke": "Finnmark",
+      "fylkenummer": "56",
+      "south": 70.012747,
+      "west": 30.074358,
+      "north": 70.64439,
+      "east": 31.761593
+    },
+    {
+      "id": "3428",
+      "name": "Alvdal",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 61.913289,
+      "west": 10.122072,
+      "north": 62.279817,
+      "east": 10.932754
+    },
+    {
+      "id": "3431",
+      "name": "Dovre",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 61.886299,
+      "west": 9.010277,
+      "north": 62.343127,
+      "east": 9.9282
+    },
+    {
+      "id": "3416",
+      "name": "Eidskog",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 59.840785,
+      "west": 11.793048,
+      "north": 60.141582,
+      "east": 12.358682
+    },
+    {
+      "id": "3420",
+      "name": "Elverum",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 60.741261,
+      "west": 11.298946,
+      "north": 61.20427,
+      "east": 12.161089
+    },
+    {
+      "id": "3425",
+      "name": "Engerdal",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 61.574542,
+      "west": 11.510019,
+      "north": 62.374481,
+      "east": 12.299371
+    },
+    {
+      "id": "3450",
+      "name": "Etnedal",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 60.799254,
+      "west": 9.377646,
+      "north": 61.127984,
+      "east": 9.815608
+    },
+    {
+      "id": "3429",
+      "name": "Folldal",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 61.884445,
+      "west": 9.583827,
+      "north": 62.427808,
+      "east": 10.391593
+    },
+    {
+      "id": "3441",
+      "name": "Gausdal",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 61.10745,
+      "west": 9.30087,
+      "north": 61.421018,
+      "east": 10.367654
+    },
+    {
+      "id": "3407",
+      "name": "Gjøvik",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 60.70747,
+      "west": 10.167662,
+      "north": 61.036826,
+      "east": 10.744765
+    },
+    {
+      "id": "3446",
+      "name": "Gran",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 60.312067,
+      "west": 10.124806,
+      "north": 60.564811,
+      "east": 10.933903
+    },
+    {
+      "id": "3417",
+      "name": "Grue",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 60.276828,
+      "west": 11.795696,
+      "north": 60.550658,
+      "east": 12.606883
+    },
+    {
+      "id": "3403",
+      "name": "Hamar",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 60.768984,
+      "west": 10.98098,
+      "north": 61.236045,
+      "east": 11.279712
+    },
+    {
+      "id": "3401",
+      "name": "Kongsvinger",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 59.981707,
+      "west": 11.830715,
+      "north": 60.398142,
+      "east": 12.541906
+    },
+    {
+      "id": "3432",
+      "name": "Lesja",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 62.000851,
+      "west": 7.98361,
+      "north": 62.378402,
+      "east": 9.319237
+    },
+    {
+      "id": "3405",
+      "name": "Lillehammer",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 61.018551,
+      "west": 10.037733,
+      "north": 61.248027,
+      "east": 10.74367
+    },
+    {
+      "id": "3434",
+      "name": "Lom",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 61.397734,
+      "west": 7.895651,
+      "north": 62.030964,
+      "east": 8.992714
+    },
+    {
+      "id": "3412",
+      "name": "Løten",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 60.675248,
+      "west": 11.219779,
+      "north": 61.055259,
+      "east": 11.642981
+    },
+    {
+      "id": "3451",
+      "name": "Nord-Aurdal",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 60.767359,
+      "west": 8.889454,
+      "north": 61.240697,
+      "east": 9.690255
+    },
+    {
+      "id": "3436",
+      "name": "Nord-Fron",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 61.340888,
+      "west": 8.899646,
+      "north": 61.86631,
+      "east": 10.014959
+    },
+    {
+      "id": "3414",
+      "name": "Nord-Odal",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 60.295429,
+      "west": 11.342247,
+      "north": 60.584153,
+      "east": 11.837252
+    },
+    {
+      "id": "3448",
+      "name": "Nordre Land",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 60.726064,
+      "west": 9.632029,
+      "north": 61.165847,
+      "east": 10.253809
+    },
+    {
+      "id": "3430",
+      "name": "Os",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 62.13419,
+      "west": 10.721551,
+      "north": 62.696296,
+      "east": 11.856805
+    },
+    {
+      "id": "3424",
+      "name": "Rendalen",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 61.412906,
+      "west": 10.448486,
+      "north": 62.200312,
+      "east": 11.843268
+    },
+    {
+      "id": "3439",
+      "name": "Ringebu",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 61.362451,
+      "west": 9.938654,
+      "north": 61.751767,
+      "east": 10.705044
+    },
+    {
+      "id": "3411",
+      "name": "Ringsaker",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 60.675745,
+      "west": 10.442951,
+      "north": 61.295536,
+      "east": 11.117698
+    },
+    {
+      "id": "3437",
+      "name": "Sel",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 61.560374,
+      "west": 9.112119,
+      "north": 61.957401,
+      "east": 10.015503
+    },
+    {
+      "id": "3433",
+      "name": "Skjåk",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 61.679137,
+      "west": 7.34253,
+      "north": 62.189687,
+      "east": 8.591365
+    },
+    {
+      "id": "3413",
+      "name": "Stange",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 60.458786,
+      "west": 11.027777,
+      "north": 60.792256,
+      "east": 11.654353
+    },
+    {
+      "id": "3423",
+      "name": "Stor-Elvdal",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 61.199486,
+      "west": 10.052638,
+      "north": 61.963908,
+      "east": 11.374582
+    },
+    {
+      "id": "3447",
+      "name": "Søndre Land",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 60.526695,
+      "west": 9.977391,
+      "north": 60.878782,
+      "east": 10.550535
+    },
+    {
+      "id": "3449",
+      "name": "Sør-Aurdal",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 60.454233,
+      "west": 9.257783,
+      "north": 60.879172,
+      "east": 10.036019
+    },
+    {
+      "id": "3438",
+      "name": "Sør-Fron",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 61.292481,
+      "west": 9.187244,
+      "north": 61.913424,
+      "east": 10.164822
+    },
+    {
+      "id": "3415",
+      "name": "Sør-Odal",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 60.047784,
+      "west": 11.520338,
+      "north": 60.376782,
+      "east": 11.937189
+    },
+    {
+      "id": "3426",
+      "name": "Tolga",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 62.143584,
+      "west": 10.47382,
+      "north": 62.60012,
+      "east": 11.695815
+    },
+    {
+      "id": "3421",
+      "name": "Trysil",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 61.013078,
+      "west": 11.737163,
+      "north": 61.69914,
+      "east": 12.870849
+    },
+    {
+      "id": "3427",
+      "name": "Tynset",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 62.022976,
+      "west": 10.005732,
+      "north": 62.696928,
+      "east": 11.217521
+    },
+    {
+      "id": "3454",
+      "name": "Vang",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 60.93916,
+      "west": 8.006564,
+      "north": 61.445616,
+      "east": 8.889158
+    },
+    {
+      "id": "3452",
+      "name": "Vestre Slidre",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 60.896631,
+      "west": 8.654052,
+      "north": 61.209635,
+      "east": 9.178739
+    },
+    {
+      "id": "3443",
+      "name": "Vestre Toten",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 60.50028,
+      "west": 10.484844,
+      "north": 60.755409,
+      "east": 10.761835
+    },
+    {
+      "id": "3435",
+      "name": "Vågå",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 61.386706,
+      "west": 8.487673,
+      "north": 62.018937,
+      "east": 9.430897
+    },
+    {
+      "id": "3419",
+      "name": "Våler",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 60.565138,
+      "west": 11.613556,
+      "north": 61.061507,
+      "east": 12.338109
+    },
+    {
+      "id": "3422",
+      "name": "Åmot",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 61.015125,
+      "west": 10.957745,
+      "north": 61.507195,
+      "east": 11.916085
+    },
+    {
+      "id": "3418",
+      "name": "Åsnes",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 60.471596,
+      "west": 11.641341,
+      "north": 60.890833,
+      "east": 12.598287
+    },
+    {
+      "id": "3442",
+      "name": "Østre Toten",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 60.470582,
+      "west": 10.671472,
+      "north": 60.774941,
+      "east": 11.153986
+    },
+    {
+      "id": "3440",
+      "name": "Øyer",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 61.182999,
+      "west": 10.17943,
+      "north": 61.471593,
+      "east": 10.849055
+    },
+    {
+      "id": "3453",
+      "name": "Øystre Slidre",
+      "fylke": "Innlandet",
+      "fylkenummer": "34",
+      "south": 61.050918,
+      "west": 8.721471,
+      "north": 61.450773,
+      "east": 9.466004
+    },
+    {
+      "id": "1547",
+      "name": "Aukra",
+      "fylke": "Møre og Romsdal",
+      "fylkenummer": "15",
+      "south": 62.738654,
+      "west": 6.338083,
+      "north": 63.145964,
+      "east": 7.047402
+    },
+    {
+      "id": "1576",
+      "name": "Aure",
+      "fylke": "Møre og Romsdal",
+      "fylkenummer": "15",
+      "south": 63.115442,
+      "west": 7.743677,
+      "north": 63.447481,
+      "east": 8.911065
+    },
+    {
+      "id": "1554",
+      "name": "Averøy",
+      "fylke": "Møre og Romsdal",
+      "fylkenummer": "15",
+      "south": 62.921942,
+      "west": 6.860531,
+      "north": 63.342479,
+      "east": 7.756307
+    },
+    {
+      "id": "1578",
+      "name": "Fjord",
+      "fylke": "Møre og Romsdal",
+      "fylkenummer": "15",
+      "south": 62.06534,
+      "west": 6.827155,
+      "north": 62.484307,
+      "east": 7.82858
+    },
+    {
+      "id": "1532",
+      "name": "Giske",
+      "fylke": "Møre og Romsdal",
+      "fylkenummer": "15",
+      "south": 62.443593,
+      "west": 5.341277,
+      "north": 62.811986,
+      "east": 6.191016
+    },
+    {
+      "id": "1557",
+      "name": "Gjemnes",
+      "fylke": "Møre og Romsdal",
+      "fylkenummer": "15",
+      "south": 62.821059,
+      "west": 7.384867,
+      "north": 63.015597,
+      "east": 8.138853
+    },
+    {
+      "id": "1580",
+      "name": "Haram",
+      "fylke": "Møre og Romsdal",
+      "fylkenummer": "15",
+      "south": 62.509237,
+      "west": 5.64125,
+      "north": 62.927079,
+      "east": 6.8404
+    },
+    {
+      "id": "1517",
+      "name": "Hareid",
+      "fylke": "Møre og Romsdal",
+      "fylkenummer": "15",
+      "south": 62.27516,
+      "west": 5.900634,
+      "north": 62.444299,
+      "east": 6.166655
+    },
+    {
+      "id": "1515",
+      "name": "Herøy",
+      "fylke": "Møre og Romsdal",
+      "fylkenummer": "15",
+      "south": 62.205851,
+      "west": 4.887411,
+      "north": 62.665952,
+      "east": 5.857293
+    },
+    {
+      "id": "1579",
+      "name": "Hustadvika",
+      "fylke": "Møre og Romsdal",
+      "fylkenummer": "15",
+      "south": 62.752145,
+      "west": 6.499304,
+      "north": 63.273304,
+      "east": 7.615331
+    },
+    {
+      "id": "1505",
+      "name": "Kristiansund",
+      "fylke": "Møre og Romsdal",
+      "fylkenummer": "15",
+      "south": 63.005339,
+      "west": 6.971311,
+      "north": 63.428913,
+      "east": 7.931261
+    },
+    {
+      "id": "1506",
+      "name": "Molde",
+      "fylke": "Møre og Romsdal",
+      "fylkenummer": "15",
+      "south": 62.331744,
+      "west": 6.447003,
+      "north": 62.871439,
+      "east": 8.731647
+    },
+    {
+      "id": "1539",
+      "name": "Rauma",
+      "fylke": "Møre og Romsdal",
+      "fylkenummer": "15",
+      "south": 62.170778,
+      "west": 7.225462,
+      "north": 62.722982,
+      "east": 8.205852
+    },
+    {
+      "id": "1514",
+      "name": "Sande",
+      "fylke": "Møre og Romsdal",
+      "fylkenummer": "15",
+      "south": 62.154759,
+      "west": 4.816611,
+      "north": 62.433237,
+      "east": 5.793346
+    },
+    {
+      "id": "1573",
+      "name": "Smøla",
+      "fylke": "Møre og Romsdal",
+      "fylkenummer": "15",
+      "south": 63.202422,
+      "west": 7.110665,
+      "north": 63.768162,
+      "east": 8.342934
+    },
+    {
+      "id": "1525",
+      "name": "Stranda",
+      "fylke": "Møre og Romsdal",
+      "fylkenummer": "15",
+      "south": 61.963547,
+      "west": 6.657573,
+      "north": 62.372162,
+      "east": 7.419457
+    },
+    {
+      "id": "1531",
+      "name": "Sula",
+      "fylke": "Møre og Romsdal",
+      "fylkenummer": "15",
+      "south": 62.366688,
+      "west": 6.011947,
+      "north": 62.458979,
+      "east": 6.375956
+    },
+    {
+      "id": "1563",
+      "name": "Sunndal",
+      "fylke": "Møre og Romsdal",
+      "fylkenummer": "15",
+      "south": 62.353193,
+      "west": 8.206133,
+      "north": 62.941262,
+      "east": 9.243822
+    },
+    {
+      "id": "1566",
+      "name": "Surnadal",
+      "fylke": "Møre og Romsdal",
+      "fylkenummer": "15",
+      "south": 62.711771,
+      "west": 8.243706,
+      "north": 63.133919,
+      "east": 9.364831
+    },
+    {
+      "id": "1528",
+      "name": "Sykkylven",
+      "fylke": "Møre og Romsdal",
+      "fylkenummer": "15",
+      "south": 62.220912,
+      "west": 6.3634,
+      "north": 62.464249,
+      "east": 6.889526
+    },
+    {
+      "id": "1560",
+      "name": "Tingvoll",
+      "fylke": "Møre og Romsdal",
+      "fylkenummer": "15",
+      "south": 62.78155,
+      "west": 7.836506,
+      "north": 63.129376,
+      "east": 8.440644
+    },
+    {
+      "id": "1516",
+      "name": "Ulstein",
+      "fylke": "Møre og Romsdal",
+      "fylkenummer": "15",
+      "south": 62.216154,
+      "west": 5.680605,
+      "north": 62.513707,
+      "east": 5.967034
+    },
+    {
+      "id": "1511",
+      "name": "Vanylven",
+      "fylke": "Møre og Romsdal",
+      "fylkenummer": "15",
+      "south": 61.960412,
+      "west": 5.358392,
+      "north": 62.216154,
+      "east": 5.864026
+    },
+    {
+      "id": "1535",
+      "name": "Vestnes",
+      "fylke": "Møre og Romsdal",
+      "fylkenummer": "15",
+      "south": 62.44624,
+      "west": 6.676577,
+      "north": 62.690133,
+      "east": 7.41292
+    },
+    {
+      "id": "1577",
+      "name": "Volda",
+      "fylke": "Møre og Romsdal",
+      "fylkenummer": "15",
+      "south": 61.923344,
+      "west": 5.72792,
+      "north": 62.237523,
+      "east": 6.793988
+    },
+    {
+      "id": "1508",
+      "name": "Ålesund",
+      "fylke": "Møre og Romsdal",
+      "fylkenummer": "15",
+      "south": 62.394358,
+      "west": 5.887839,
+      "north": 63.091326,
+      "east": 7.120459
+    },
+    {
+      "id": "1520",
+      "name": "Ørsta",
+      "fylke": "Møre og Romsdal",
+      "fylkenummer": "15",
+      "south": 62.099228,
+      "west": 5.922289,
+      "north": 62.394358,
+      "east": 6.784127
+    },
+    {
+      "id": "1820",
+      "name": "Alstahaug",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 65.694936,
+      "west": 12.071283,
+      "north": 66.03974,
+      "east": 12.774986
+    },
+    {
+      "id": "1871",
+      "name": "Andøy",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 68.75986,
+      "west": 15.022083,
+      "north": 69.596703,
+      "east": 16.517643
+    },
+    {
+      "id": "1839",
+      "name": "Beiarn",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 66.645933,
+      "west": 14.308319,
+      "north": 67.13802,
+      "east": 15.02317
+    },
+    {
+      "id": "1811",
+      "name": "Bindal",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 64.939497,
+      "west": 10.578061,
+      "north": 65.502709,
+      "east": 13.156714
+    },
+    {
+      "id": "1804",
+      "name": "Bodø",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 66.920554,
+      "west": 12.729971,
+      "north": 67.699619,
+      "east": 15.364907
+    },
+    {
+      "id": "1813",
+      "name": "Brønnøy",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 65.203917,
+      "west": 10.641886,
+      "north": 65.623534,
+      "east": 13.167037
+    },
+    {
+      "id": "1867",
+      "name": "Bø",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 68.479734,
+      "west": 13.491803,
+      "north": 69.001025,
+      "east": 14.863119
+    },
+    {
+      "id": "1827",
+      "name": "Dønna",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 65.996108,
+      "west": 11.839954,
+      "north": 66.33418,
+      "east": 12.834101
+    },
+    {
+      "id": "1853",
+      "name": "Evenes",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 68.417402,
+      "west": 16.552591,
+      "north": 68.572766,
+      "east": 17.361668
+    },
+    {
+      "id": "1841",
+      "name": "Fauske",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 67.016217,
+      "west": 14.969154,
+      "north": 67.453904,
+      "east": 16.4041
+    },
+    {
+      "id": "1859",
+      "name": "Flakstad",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 67.847965,
+      "west": 12.470103,
+      "north": 68.393179,
+      "east": 13.579708
+    },
+    {
+      "id": "1838",
+      "name": "Gildeskål",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 66.769394,
+      "west": 13.296277,
+      "north": 67.242473,
+      "east": 14.411348
+    },
+    {
+      "id": "1825",
+      "name": "Grane",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 65.099078,
+      "west": 12.933083,
+      "north": 65.78575,
+      "east": 13.876568
+    },
+    {
+      "id": "1866",
+      "name": "Hadsel",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 68.319077,
+      "west": 14.13608,
+      "north": 68.687969,
+      "east": 15.442854
+    },
+    {
+      "id": "1875",
+      "name": "Hamarøy",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 67.534026,
+      "west": 15.060598,
+      "north": 68.315032,
+      "east": 16.929849
+    },
+    {
+      "id": "1826",
+      "name": "Hattfjelldal",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 65.108295,
+      "west": 13.62555,
+      "north": 65.891719,
+      "east": 14.625478
+    },
+    {
+      "id": "1832",
+      "name": "Hemnes",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 65.765834,
+      "west": 13.333799,
+      "north": 66.256935,
+      "east": 14.60231
+    },
+    {
+      "id": "1818",
+      "name": "Herøy",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 65.851942,
+      "west": 10.953886,
+      "north": 66.404485,
+      "east": 12.482357
+    },
+    {
+      "id": "1822",
+      "name": "Leirfjord",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 65.949221,
+      "west": 12.617038,
+      "north": 66.242404,
+      "east": 13.490494
+    },
+    {
+      "id": "1834",
+      "name": "Lurøy",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 66.232473,
+      "west": 11.994547,
+      "north": 66.644675,
+      "east": 13.262431
+    },
+    {
+      "id": "1851",
+      "name": "Lødingen",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 68.174988,
+      "west": 15.125967,
+      "north": 68.613898,
+      "east": 16.160819
+    },
+    {
+      "id": "1837",
+      "name": "Meløy",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 66.620421,
+      "west": 12.344136,
+      "north": 67.275405,
+      "east": 14.41897
+    },
+    {
+      "id": "1874",
+      "name": "Moskenes",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 67.674071,
+      "west": 12.166604,
+      "north": 68.152452,
+      "east": 13.694975
+    },
+    {
+      "id": "1806",
+      "name": "Narvik",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 67.96937,
+      "west": 15.901429,
+      "north": 68.608455,
+      "east": 18.151355
+    },
+    {
+      "id": "1828",
+      "name": "Nesna",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 66.148016,
+      "west": 12.627076,
+      "north": 66.331546,
+      "east": 13.324048
+    },
+    {
+      "id": "1833",
+      "name": "Rana",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 66.095559,
+      "west": 13.18827,
+      "north": 66.783877,
+      "east": 15.533365
+    },
+    {
+      "id": "1836",
+      "name": "Rødøy",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 66.397147,
+      "west": 11.667531,
+      "north": 67.124686,
+      "east": 13.872402
+    },
+    {
+      "id": "1856",
+      "name": "Røst",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 67.015597,
+      "west": 11.303062,
+      "north": 67.781821,
+      "east": 12.826535
+    },
+    {
+      "id": "1840",
+      "name": "Saltdal",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 66.557858,
+      "west": 14.969947,
+      "north": 67.20484,
+      "east": 16.306397
+    },
+    {
+      "id": "1870",
+      "name": "Sortland",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 68.525981,
+      "west": 14.787936,
+      "north": 69.008629,
+      "east": 16.112267
+    },
+    {
+      "id": "1848",
+      "name": "Steigen",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 67.586673,
+      "west": 13.59505,
+      "north": 68.121304,
+      "east": 15.911072
+    },
+    {
+      "id": "1812",
+      "name": "Sømna",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 65.183276,
+      "west": 10.608885,
+      "north": 65.53756,
+      "east": 12.464629
+    },
+    {
+      "id": "1845",
+      "name": "Sørfold",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 67.25555,
+      "west": 15.063617,
+      "north": 67.783244,
+      "east": 16.407568
+    },
+    {
+      "id": "1835",
+      "name": "Træna",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 66.312748,
+      "west": 11.297777,
+      "north": 66.815373,
+      "east": 12.43543
+    },
+    {
+      "id": "1824",
+      "name": "Vefsn",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 65.464112,
+      "west": 12.584748,
+      "north": 66.178541,
+      "east": 13.766029
+    },
+    {
+      "id": "1815",
+      "name": "Vega",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 65.487687,
+      "west": 10.674973,
+      "north": 65.993128,
+      "east": 12.23998
+    },
+    {
+      "id": "1860",
+      "name": "Vestvågøy",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 67.784421,
+      "west": 13.003693,
+      "north": 68.540985,
+      "east": 14.189592
+    },
+    {
+      "id": "1816",
+      "name": "Vevelstad",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 65.517372,
+      "west": 12.226927,
+      "north": 65.789751,
+      "east": 13.040993
+    },
+    {
+      "id": "1865",
+      "name": "Vågan",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 67.94409,
+      "west": 13.388009,
+      "north": 68.605307,
+      "east": 15.272002
+    },
+    {
+      "id": "1857",
+      "name": "Værøy",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 67.364961,
+      "west": 11.987723,
+      "north": 67.870078,
+      "east": 13.506679
+    },
+    {
+      "id": "1868",
+      "name": "Øksnes",
+      "fylke": "Nordland",
+      "fylkenummer": "18",
+      "south": 68.72356,
+      "west": 14.188904,
+      "north": 69.315972,
+      "east": 15.383794
+    },
+    {
+      "id": "0301",
+      "name": "Oslo",
+      "fylke": "Oslo",
+      "fylkenummer": "03",
+      "south": 59.809311,
+      "west": 10.489165,
+      "north": 60.135106,
+      "east": 10.951389
+    },
+    {
+      "id": "1114",
+      "name": "Bjerkreim",
+      "fylke": "Rogaland",
+      "fylkenummer": "11",
+      "south": 58.514164,
+      "west": 5.864072,
+      "north": 58.794876,
+      "east": 6.622801
+    },
+    {
+      "id": "1145",
+      "name": "Bokn",
+      "fylke": "Rogaland",
+      "fylkenummer": "11",
+      "south": 59.111723,
+      "west": 5.345684,
+      "north": 59.276242,
+      "east": 5.644643
+    },
+    {
+      "id": "1101",
+      "name": "Eigersund",
+      "fylke": "Rogaland",
+      "fylkenummer": "11",
+      "south": 58.158331,
+      "west": 5.519542,
+      "north": 58.649328,
+      "east": 6.497499
+    },
+    {
+      "id": "1122",
+      "name": "Gjesdal",
+      "fylke": "Rogaland",
+      "fylkenummer": "11",
+      "south": 58.672485,
+      "west": 5.798983,
+      "north": 58.989996,
+      "east": 6.665526
+    },
+    {
+      "id": "1106",
+      "name": "Haugesund",
+      "fylke": "Rogaland",
+      "fylkenummer": "11",
+      "south": 59.383122,
+      "west": 4.568916,
+      "north": 59.558164,
+      "east": 5.397258
+    },
+    {
+      "id": "1133",
+      "name": "Hjelmeland",
+      "fylke": "Rogaland",
+      "fylkenummer": "11",
+      "south": 59.036735,
+      "west": 5.952148,
+      "north": 59.375254,
+      "east": 6.865142
+    },
+    {
+      "id": "1119",
+      "name": "Hå",
+      "fylke": "Rogaland",
+      "fylkenummer": "11",
+      "south": 58.332509,
+      "west": 5.163251,
+      "north": 58.705323,
+      "east": 5.934703
+    },
+    {
+      "id": "1149",
+      "name": "Karmøy",
+      "fylke": "Rogaland",
+      "fylkenummer": "11",
+      "south": 58.955958,
+      "west": 4.531236,
+      "north": 59.50361,
+      "east": 5.430071
+    },
+    {
+      "id": "1120",
+      "name": "Klepp",
+      "fylke": "Rogaland",
+      "fylkenummer": "11",
+      "south": 58.623621,
+      "west": 5.071894,
+      "north": 58.84167,
+      "east": 5.73867
+    },
+    {
+      "id": "1144",
+      "name": "Kvitsøy",
+      "fylke": "Rogaland",
+      "fylkenummer": "11",
+      "south": 58.919333,
+      "west": 4.959117,
+      "north": 59.128276,
+      "east": 5.545405
+    },
+    {
+      "id": "1112",
+      "name": "Lund",
+      "fylke": "Rogaland",
+      "fylkenummer": "11",
+      "south": 58.299509,
+      "west": 6.2633,
+      "north": 58.627877,
+      "east": 6.63215
+    },
+    {
+      "id": "1127",
+      "name": "Randaberg",
+      "fylke": "Rogaland",
+      "fylkenummer": "11",
+      "south": 58.969619,
+      "west": 5.445116,
+      "north": 59.072445,
+      "east": 5.683491
+    },
+    {
+      "id": "1108",
+      "name": "Sandnes",
+      "fylke": "Rogaland",
+      "fylkenummer": "11",
+      "south": 58.776807,
+      "west": 5.609706,
+      "north": 59.19259,
+      "east": 6.939172
+    },
+    {
+      "id": "1135",
+      "name": "Sauda",
+      "fylke": "Rogaland",
+      "fylkenummer": "11",
+      "south": 59.562604,
+      "west": 6.178095,
+      "north": 59.844574,
+      "east": 6.693511
+    },
+    {
+      "id": "1111",
+      "name": "Sokndal",
+      "fylke": "Rogaland",
+      "fylkenummer": "11",
+      "south": 58.027855,
+      "west": 5.871745,
+      "north": 58.476866,
+      "east": 6.522636
+    },
+    {
+      "id": "1124",
+      "name": "Sola",
+      "fylke": "Rogaland",
+      "fylkenummer": "11",
+      "south": 58.782154,
+      "west": 5.007663,
+      "north": 58.982091,
+      "east": 5.70299
+    },
+    {
+      "id": "1103",
+      "name": "Stavanger",
+      "fylke": "Rogaland",
+      "fylkenummer": "11",
+      "south": 58.884659,
+      "west": 5.499033,
+      "north": 59.312104,
+      "east": 6.13131
+    },
+    {
+      "id": "1130",
+      "name": "Strand",
+      "fylke": "Rogaland",
+      "fylkenummer": "11",
+      "south": 58.896106,
+      "west": 5.783964,
+      "north": 59.143299,
+      "east": 6.248605
+    },
+    {
+      "id": "1134",
+      "name": "Suldal",
+      "fylke": "Rogaland",
+      "fylkenummer": "11",
+      "south": 59.301268,
+      "west": 5.874356,
+      "north": 59.782777,
+      "east": 7.214667
+    },
+    {
+      "id": "1121",
+      "name": "Time",
+      "fylke": "Rogaland",
+      "fylkenummer": "11",
+      "south": 58.612771,
+      "west": 5.603379,
+      "north": 58.801853,
+      "east": 5.930303
+    },
+    {
+      "id": "1146",
+      "name": "Tysvær",
+      "fylke": "Rogaland",
+      "fylkenummer": "11",
+      "south": 59.209059,
+      "west": 5.343575,
+      "north": 59.499676,
+      "east": 5.921972
+    },
+    {
+      "id": "1151",
+      "name": "Utsira",
+      "fylke": "Rogaland",
+      "fylkenummer": "11",
+      "south": 59.070878,
+      "west": 4.454272,
+      "north": 59.444299,
+      "east": 5.030813
+    },
+    {
+      "id": "1160",
+      "name": "Vindafjord",
+      "fylke": "Rogaland",
+      "fylkenummer": "11",
+      "south": 59.406512,
+      "west": 5.459929,
+      "north": 59.753563,
+      "east": 6.183812
+    },
+    {
+      "id": "4012",
+      "name": "Bamble",
+      "fylke": "Telemark",
+      "fylkenummer": "40",
+      "south": 58.913285,
+      "west": 9.302236,
+      "north": 59.125743,
+      "east": 9.783129
+    },
+    {
+      "id": "4016",
+      "name": "Drangedal",
+      "fylke": "Telemark",
+      "fylkenummer": "40",
+      "south": 58.88496,
+      "west": 8.579688,
+      "north": 59.296704,
+      "east": 9.398704
+    },
+    {
+      "id": "4032",
+      "name": "Fyresdal",
+      "fylke": "Telemark",
+      "fylkenummer": "40",
+      "south": 58.928631,
+      "west": 7.696159,
+      "north": 59.3604,
+      "east": 8.406092
+    },
+    {
+      "id": "4024",
+      "name": "Hjartdal",
+      "fylke": "Telemark",
+      "fylkenummer": "40",
+      "south": 59.528917,
+      "west": 8.370913,
+      "north": 59.854628,
+      "east": 9.022473
+    },
+    {
+      "id": "4014",
+      "name": "Kragerø",
+      "fylke": "Telemark",
+      "fylkenummer": "40",
+      "south": 58.603304,
+      "west": 9.160531,
+      "north": 59.000917,
+      "east": 9.969765
+    },
+    {
+      "id": "4028",
+      "name": "Kviteseid",
+      "fylke": "Telemark",
+      "fylkenummer": "40",
+      "south": 59.24279,
+      "west": 8.141209,
+      "north": 59.574132,
+      "east": 8.882791
+    },
+    {
+      "id": "4020",
+      "name": "Midt-Telemark",
+      "fylke": "Telemark",
+      "fylkenummer": "40",
+      "south": 59.322142,
+      "west": 8.819742,
+      "north": 59.535905,
+      "east": 9.471744
+    },
+    {
+      "id": "4030",
+      "name": "Nissedal",
+      "fylke": "Telemark",
+      "fylkenummer": "40",
+      "south": 58.831398,
+      "west": 8.286474,
+      "north": 59.267272,
+      "east": 8.834176
+    },
+    {
+      "id": "4018",
+      "name": "Nome",
+      "fylke": "Telemark",
+      "fylkenummer": "40",
+      "south": 59.142339,
+      "west": 8.820559,
+      "north": 59.385278,
+      "east": 9.442996
+    },
+    {
+      "id": "4005",
+      "name": "Notodden",
+      "fylke": "Telemark",
+      "fylkenummer": "40",
+      "south": 59.475802,
+      "west": 8.779281,
+      "north": 59.898287,
+      "east": 9.515264
+    },
+    {
+      "id": "4001",
+      "name": "Porsgrunn",
+      "fylke": "Telemark",
+      "fylkenummer": "40",
+      "south": 58.997812,
+      "west": 9.606332,
+      "north": 59.209232,
+      "east": 9.896416
+    },
+    {
+      "id": "4022",
+      "name": "Seljord",
+      "fylke": "Telemark",
+      "fylkenummer": "40",
+      "south": 59.351572,
+      "west": 8.206493,
+      "north": 59.795068,
+      "east": 8.917588
+    },
+    {
+      "id": "4010",
+      "name": "Siljan",
+      "fylke": "Telemark",
+      "fylkenummer": "40",
+      "south": 59.194806,
+      "west": 9.580576,
+      "north": 59.424901,
+      "east": 9.878123
+    },
+    {
+      "id": "4003",
+      "name": "Skien",
+      "fylke": "Telemark",
+      "fylkenummer": "40",
+      "south": 59.045256,
+      "west": 9.227647,
+      "north": 59.487254,
+      "east": 9.779704
+    },
+    {
+      "id": "4026",
+      "name": "Tinn",
+      "fylke": "Telemark",
+      "fylkenummer": "40",
+      "south": 59.762072,
+      "west": 7.853363,
+      "north": 60.188272,
+      "east": 9.192594
+    },
+    {
+      "id": "4034",
+      "name": "Tokke",
+      "fylke": "Telemark",
+      "fylkenummer": "40",
+      "south": 59.32664,
+      "west": 7.51455,
+      "north": 59.601069,
+      "east": 8.339962
+    },
+    {
+      "id": "4036",
+      "name": "Vinje",
+      "fylke": "Telemark",
+      "fylkenummer": "40",
+      "south": 59.487252,
+      "west": 7.096287,
+      "north": 60.126852,
+      "east": 8.324791
+    },
+    {
+      "id": "5532",
+      "name": "Balsfjord",
+      "fylke": "Troms",
+      "fylkenummer": "55",
+      "south": 69.032998,
+      "west": 18.360006,
+      "north": 69.52988,
+      "east": 19.991432
+    },
+    {
+      "id": "5520",
+      "name": "Bardu",
+      "fylke": "Troms",
+      "fylkenummer": "55",
+      "south": 68.356014,
+      "west": 17.984796,
+      "north": 69.050908,
+      "east": 20.226544
+    },
+    {
+      "id": "5528",
+      "name": "Dyrøy",
+      "fylke": "Troms",
+      "fylkenummer": "55",
+      "south": 68.902407,
+      "west": 17.243283,
+      "north": 69.149203,
+      "east": 18.052249
+    },
+    {
+      "id": "5516",
+      "name": "Gratangen",
+      "fylke": "Troms",
+      "fylkenummer": "55",
+      "south": 68.597008,
+      "west": 17.16189,
+      "north": 68.831787,
+      "east": 17.842898
+    },
+    {
+      "id": "5503",
+      "name": "Harstad",
+      "fylke": "Troms",
+      "fylkenummer": "55",
+      "south": 68.550366,
+      "west": 16.052314,
+      "north": 69.312598,
+      "east": 16.945814
+    },
+    {
+      "id": "5514",
+      "name": "Ibestad",
+      "fylke": "Troms",
+      "fylkenummer": "55",
+      "south": 68.701234,
+      "west": 16.71642,
+      "north": 68.973334,
+      "east": 17.53201
+    },
+    {
+      "id": "5534",
+      "name": "Karlsøy",
+      "fylke": "Troms",
+      "fylkenummer": "55",
+      "south": 69.798358,
+      "west": 17.805249,
+      "north": 70.703616,
+      "east": 20.622611
+    },
+    {
+      "id": "5510",
+      "name": "Kvæfjord",
+      "fylke": "Troms",
+      "fylkenummer": "55",
+      "south": 68.443342,
+      "west": 15.592542,
+      "north": 68.931785,
+      "east": 16.422474
+    },
+    {
+      "id": "5546",
+      "name": "Kvænangen",
+      "fylke": "Troms",
+      "fylkenummer": "55",
+      "south": 69.482295,
+      "west": 21.006623,
+      "north": 70.237505,
+      "east": 22.894466
+    },
+    {
+      "id": "5540",
+      "name": "Kåfjord",
+      "fylke": "Troms",
+      "fylkenummer": "55",
+      "south": 69.234309,
+      "west": 20.274429,
+      "north": 69.758701,
+      "east": 21.279318
+    },
+    {
+      "id": "5518",
+      "name": "Lavangen",
+      "fylke": "Troms",
+      "fylkenummer": "55",
+      "south": 68.599833,
+      "west": 17.426421,
+      "north": 68.83389,
+      "east": 18.051398
+    },
+    {
+      "id": "5536",
+      "name": "Lyngen",
+      "fylke": "Troms",
+      "fylkenummer": "55",
+      "south": 69.401478,
+      "west": 19.715769,
+      "north": 70.05773,
+      "east": 20.500568
+    },
+    {
+      "id": "5524",
+      "name": "Målselv",
+      "fylke": "Troms",
+      "fylkenummer": "55",
+      "south": 68.557942,
+      "west": 18.178279,
+      "north": 69.377186,
+      "east": 20.335873
+    },
+    {
+      "id": "5544",
+      "name": "Nordreisa",
+      "fylke": "Troms",
+      "fylkenummer": "55",
+      "south": 69.072887,
+      "west": 20.384408,
+      "north": 69.982102,
+      "east": 22.533009
+    },
+    {
+      "id": "5522",
+      "name": "Salangen",
+      "fylke": "Troms",
+      "fylkenummer": "55",
+      "south": 68.739089,
+      "west": 17.42913,
+      "north": 69.010624,
+      "east": 18.226945
+    },
+    {
+      "id": "5530",
+      "name": "Senja",
+      "fylke": "Troms",
+      "fylkenummer": "55",
+      "south": 68.951948,
+      "west": 16.254351,
+      "north": 69.811544,
+      "east": 18.548798
+    },
+    {
+      "id": "5542",
+      "name": "Skjervøy",
+      "fylke": "Troms",
+      "fylkenummer": "55",
+      "south": 69.81621,
+      "west": 20.222642,
+      "north": 70.579701,
+      "east": 21.438689
+    },
+    {
+      "id": "5538",
+      "name": "Storfjord",
+      "fylke": "Troms",
+      "fylkenummer": "55",
+      "south": 69.03629,
+      "west": 19.642217,
+      "north": 69.464281,
+      "east": 21.108675
+    },
+    {
+      "id": "5526",
+      "name": "Sørreisa",
+      "fylke": "Troms",
+      "fylkenummer": "55",
+      "south": 68.980401,
+      "west": 17.87682,
+      "north": 69.220748,
+      "east": 18.460829
+    },
+    {
+      "id": "5512",
+      "name": "Tjeldsund",
+      "fylke": "Troms",
+      "fylkenummer": "55",
+      "south": 68.372084,
+      "west": 15.996674,
+      "north": 68.736953,
+      "east": 17.547589
+    },
+    {
+      "id": "5501",
+      "name": "Tromsø",
+      "fylke": "Troms",
+      "fylkenummer": "55",
+      "south": 69.282089,
+      "west": 17.160047,
+      "north": 70.168417,
+      "east": 20.043639
+    },
+    {
+      "id": "5049",
+      "name": "Flatanger",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 64.280255,
+      "west": 9.699812,
+      "north": 64.778152,
+      "east": 11.108378
+    },
+    {
+      "id": "5036",
+      "name": "Frosta",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 63.490545,
+      "west": 10.488583,
+      "north": 63.693277,
+      "east": 10.946821
+    },
+    {
+      "id": "5014",
+      "name": "Frøya",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 63.598147,
+      "west": 7.648111,
+      "north": 64.547293,
+      "east": 9.731859
+    },
+    {
+      "id": "5045",
+      "name": "Grong",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 64.332358,
+      "west": 12.070877,
+      "north": 64.726366,
+      "east": 13.090966
+    },
+    {
+      "id": "5055",
+      "name": "Heim",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 63.012084,
+      "west": 8.102665,
+      "north": 63.481508,
+      "east": 9.454094
+    },
+    {
+      "id": "5056",
+      "name": "Hitra",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 63.359414,
+      "west": 8.108652,
+      "north": 63.773646,
+      "east": 9.445728
+    },
+    {
+      "id": "5026",
+      "name": "Holtålen",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 62.661491,
+      "west": 10.792362,
+      "north": 63.06387,
+      "east": 11.807863
+    },
+    {
+      "id": "5046",
+      "name": "Høylandet",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 64.52579,
+      "west": 12.023662,
+      "north": 64.987051,
+      "east": 12.733209
+    },
+    {
+      "id": "5053",
+      "name": "Inderøy",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 63.699626,
+      "west": 10.636524,
+      "north": 64.000339,
+      "east": 11.524493
+    },
+    {
+      "id": "5054",
+      "name": "Indre Fosen",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 63.454568,
+      "west": 9.742871,
+      "north": 63.86568,
+      "east": 10.87548
+    },
+    {
+      "id": "5052",
+      "name": "Leka",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 64.996193,
+      "west": 10.365946,
+      "north": 65.470175,
+      "east": 11.960207
+    },
+    {
+      "id": "5037",
+      "name": "Levanger",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 63.551223,
+      "west": 10.79529,
+      "north": 63.83599,
+      "east": 11.728514
+    },
+    {
+      "id": "5042",
+      "name": "Lierne",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 64.00797,
+      "west": 13.069497,
+      "north": 64.822121,
+      "east": 14.15711
+    },
+    {
+      "id": "5031",
+      "name": "Malvik",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 63.29505,
+      "west": 10.539321,
+      "north": 63.495294,
+      "east": 10.964594
+    },
+    {
+      "id": "5028",
+      "name": "Melhus",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 63.019686,
+      "west": 9.878378,
+      "north": 63.344632,
+      "east": 10.716164
+    },
+    {
+      "id": "5034",
+      "name": "Meråker",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 63.180687,
+      "west": 11.454562,
+      "north": 63.633154,
+      "east": 12.212878
+    },
+    {
+      "id": "5027",
+      "name": "Midtre Gauldal",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 62.645467,
+      "west": 9.987917,
+      "north": 63.143588,
+      "east": 10.998566
+    },
+    {
+      "id": "5007",
+      "name": "Namsos",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 64.097881,
+      "west": 10.738205,
+      "north": 64.835035,
+      "east": 12.216854
+    },
+    {
+      "id": "5044",
+      "name": "Namsskogan",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 64.50304,
+      "west": 12.516222,
+      "north": 65.11673,
+      "east": 13.62892
+    },
+    {
+      "id": "5060",
+      "name": "Nærøysund",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 64.588793,
+      "west": 9.803794,
+      "north": 65.265206,
+      "east": 12.580888
+    },
+    {
+      "id": "5021",
+      "name": "Oppdal",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 62.255727,
+      "west": 8.919962,
+      "north": 62.81605,
+      "east": 10.097583
+    },
+    {
+      "id": "5059",
+      "name": "Orkland",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 62.890431,
+      "west": 9.146867,
+      "north": 63.671842,
+      "east": 10.054117
+    },
+    {
+      "id": "5020",
+      "name": "Osen",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 64.16366,
+      "west": 9.325247,
+      "north": 64.728449,
+      "east": 10.927325
+    },
+    {
+      "id": "5047",
+      "name": "Overhalla",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 64.283517,
+      "west": 11.603293,
+      "north": 64.677726,
+      "east": 12.227975
+    },
+    {
+      "id": "5022",
+      "name": "Rennebu",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 62.558235,
+      "west": 9.421566,
+      "north": 62.974018,
+      "east": 10.325077
+    },
+    {
+      "id": "5061",
+      "name": "Rindal",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 62.794107,
+      "west": 8.959021,
+      "north": 63.211895,
+      "east": 9.583554
+    },
+    {
+      "id": "5025",
+      "name": "Røros",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 62.309888,
+      "west": 11.123426,
+      "north": 62.829155,
+      "east": 12.254667
+    },
+    {
+      "id": "5043",
+      "name": "Røyrvik",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 64.50304,
+      "west": 13.039464,
+      "north": 65.139249,
+      "east": 14.325986
+    },
+    {
+      "id": "5032",
+      "name": "Selbu",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 63.003845,
+      "west": 10.620397,
+      "north": 63.347894,
+      "east": 11.631772
+    },
+    {
+      "id": "5029",
+      "name": "Skaun",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 63.167339,
+      "west": 9.889994,
+      "north": 63.372984,
+      "east": 10.23098
+    },
+    {
+      "id": "5041",
+      "name": "Snåsa",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 63.956923,
+      "west": 11.955388,
+      "north": 64.433845,
+      "east": 13.248031
+    },
+    {
+      "id": "5006",
+      "name": "Steinkjer",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 63.771242,
+      "west": 10.451273,
+      "north": 64.33029,
+      "east": 12.377953
+    },
+    {
+      "id": "5035",
+      "name": "Stjørdal",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 63.326234,
+      "west": 10.653929,
+      "north": 63.600286,
+      "east": 11.728171
+    },
+    {
+      "id": "5001",
+      "name": "Trondheim",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 63.159899,
+      "west": 10.003526,
+      "north": 63.516595,
+      "east": 10.725199
+    },
+    {
+      "id": "5033",
+      "name": "Tydal",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 62.747917,
+      "west": 11.271896,
+      "north": 63.194226,
+      "east": 12.218233
+    },
+    {
+      "id": "5038",
+      "name": "Verdal",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 63.593418,
+      "west": 11.331921,
+      "north": 63.974222,
+      "east": 12.683568
+    },
+    {
+      "id": "5058",
+      "name": "Åfjord",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 63.771242,
+      "west": 9.61419,
+      "north": 64.395921,
+      "east": 10.880387
+    },
+    {
+      "id": "5057",
+      "name": "Ørland",
+      "fylke": "Trøndelag",
+      "fylkenummer": "50",
+      "south": 63.608347,
+      "west": 9.14906,
+      "north": 64.074679,
+      "east": 10.215627
+    },
+    {
+      "id": "3911",
+      "name": "Færder",
+      "fylke": "Vestfold",
+      "fylkenummer": "39",
+      "south": 58.76096,
+      "west": 10.330225,
+      "north": 59.271141,
+      "east": 10.67502
+    },
+    {
+      "id": "3903",
+      "name": "Holmestrand",
+      "fylke": "Vestfold",
+      "fylkenummer": "39",
+      "south": 59.444257,
+      "west": 9.915329,
+      "north": 59.674011,
+      "east": 10.455814
+    },
+    {
+      "id": "3901",
+      "name": "Horten",
+      "fylke": "Vestfold",
+      "fylkenummer": "39",
+      "south": 59.340936,
+      "west": 10.333497,
+      "north": 59.479883,
+      "east": 10.595275
+    },
+    {
+      "id": "3909",
+      "name": "Larvik",
+      "fylke": "Vestfold",
+      "fylkenummer": "39",
+      "south": 58.720455,
+      "west": 9.755336,
+      "north": 59.473029,
+      "east": 10.300922
+    },
+    {
+      "id": "3907",
+      "name": "Sandefjord",
+      "fylke": "Vestfold",
+      "fylkenummer": "39",
+      "south": 58.771279,
+      "west": 9.992562,
+      "north": 59.388518,
+      "east": 10.381293
+    },
+    {
+      "id": "3905",
+      "name": "Tønsberg",
+      "fylke": "Vestfold",
+      "fylkenummer": "39",
+      "south": 59.227584,
+      "west": 10.042614,
+      "north": 59.48245,
+      "east": 10.590795
+    },
+    {
+      "id": "4631",
+      "name": "Alver",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 60.495384,
+      "west": 4.776696,
+      "north": 60.852778,
+      "east": 5.713821
+    },
+    {
+      "id": "4645",
+      "name": "Askvoll",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 61.219511,
+      "west": 4.102968,
+      "north": 61.490967,
+      "east": 5.553389
+    },
+    {
+      "id": "4627",
+      "name": "Askøy",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 60.381775,
+      "west": 4.897877,
+      "north": 60.631893,
+      "east": 5.280258
+    },
+    {
+      "id": "4641",
+      "name": "Aurland",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 60.675548,
+      "west": 6.721027,
+      "north": 61.066348,
+      "east": 7.750377
+    },
+    {
+      "id": "4625",
+      "name": "Austevoll",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 59.913521,
+      "west": 4.547048,
+      "north": 60.188796,
+      "east": 5.331823
+    },
+    {
+      "id": "4632",
+      "name": "Austrheim",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 60.729947,
+      "west": 4.686246,
+      "north": 60.85822,
+      "east": 5.04709
+    },
+    {
+      "id": "4601",
+      "name": "Bergen",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 60.176091,
+      "west": 5.144578,
+      "north": 60.536093,
+      "east": 5.686791
+    },
+    {
+      "id": "4624",
+      "name": "Bjørnafjorden",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 60.033603,
+      "west": 5.253224,
+      "north": 60.353616,
+      "east": 5.961294
+    },
+    {
+      "id": "4648",
+      "name": "Bremanger",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 61.662164,
+      "west": 4.226498,
+      "north": 62.03194,
+      "east": 5.877187
+    },
+    {
+      "id": "4613",
+      "name": "Bømlo",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 59.496128,
+      "west": 4.603688,
+      "north": 59.938617,
+      "east": 5.472028
+    },
+    {
+      "id": "4619",
+      "name": "Eidfjord",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 60.098929,
+      "west": 6.783503,
+      "north": 60.592029,
+      "east": 7.732115
+    },
+    {
+      "id": "4611",
+      "name": "Etne",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 59.578968,
+      "west": 5.764224,
+      "north": 60.018186,
+      "east": 6.525484
+    },
+    {
+      "id": "4633",
+      "name": "Fedje",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 60.687822,
+      "west": 4.184769,
+      "north": 60.88722,
+      "east": 4.791178
+    },
+    {
+      "id": "4615",
+      "name": "Fitjar",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 59.807698,
+      "west": 5.078464,
+      "north": 59.999038,
+      "east": 5.499275
+    },
+    {
+      "id": "4646",
+      "name": "Fjaler",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 61.180065,
+      "west": 4.82128,
+      "north": 61.380919,
+      "east": 5.731789
+    },
+    {
+      "id": "4650",
+      "name": "Gloppen",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 61.585959,
+      "west": 5.636589,
+      "north": 61.86928,
+      "east": 6.758144
+    },
+    {
+      "id": "4635",
+      "name": "Gulen",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 60.80552,
+      "west": 4.610652,
+      "north": 61.117848,
+      "east": 5.624871
+    },
+    {
+      "id": "4637",
+      "name": "Hyllestad",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 61.052432,
+      "west": 4.917201,
+      "north": 61.282195,
+      "east": 5.450538
+    },
+    {
+      "id": "4638",
+      "name": "Høyanger",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 60.9515,
+      "west": 5.37386,
+      "north": 61.297819,
+      "east": 6.411118
+    },
+    {
+      "id": "4602",
+      "name": "Kinn",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 61.45633,
+      "west": 4.129896,
+      "north": 62.180844,
+      "east": 5.733439
+    },
+    {
+      "id": "4622",
+      "name": "Kvam",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 60.09979,
+      "west": 5.854798,
+      "north": 60.533603,
+      "east": 6.525602
+    },
+    {
+      "id": "4617",
+      "name": "Kvinnherad",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 59.686112,
+      "west": 5.569406,
+      "north": 60.217091,
+      "east": 6.483127
+    },
+    {
+      "id": "4644",
+      "name": "Luster",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 61.181745,
+      "west": 6.805758,
+      "north": 61.857509,
+      "east": 8.322053
+    },
+    {
+      "id": "4642",
+      "name": "Lærdal",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 60.841708,
+      "west": 6.998811,
+      "north": 61.235499,
+      "east": 8.282661
+    },
+    {
+      "id": "4634",
+      "name": "Masfjorden",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 60.70309,
+      "west": 5.109884,
+      "north": 60.985504,
+      "east": 5.865183
+    },
+    {
+      "id": "4629",
+      "name": "Modalen",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 60.724098,
+      "west": 5.650354,
+      "north": 61.035238,
+      "east": 6.210362
+    },
+    {
+      "id": "4630",
+      "name": "Osterøy",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 60.425414,
+      "west": 5.317432,
+      "north": 60.71644,
+      "east": 5.722934
+    },
+    {
+      "id": "4623",
+      "name": "Samnanger",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 60.285927,
+      "west": 5.570502,
+      "north": 60.526576,
+      "east": 5.991071
+    },
+    {
+      "id": "4640",
+      "name": "Sogndal",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 61.089729,
+      "west": 6.251984,
+      "north": 61.570247,
+      "east": 7.429801
+    },
+    {
+      "id": "4636",
+      "name": "Solund",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 60.833354,
+      "west": 4.087524,
+      "north": 61.252406,
+      "east": 5.155672
+    },
+    {
+      "id": "4649",
+      "name": "Stad",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 61.838269,
+      "west": 4.578925,
+      "north": 62.382396,
+      "east": 6.477322
+    },
+    {
+      "id": "4614",
+      "name": "Stord",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 59.723515,
+      "west": 5.32062,
+      "north": 59.92356,
+      "east": 5.650817
+    },
+    {
+      "id": "4651",
+      "name": "Stryn",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 61.609484,
+      "west": 6.256645,
+      "north": 62.034092,
+      "east": 7.414227
+    },
+    {
+      "id": "4647",
+      "name": "Sunnfjord",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 61.23469,
+      "west": 5.25815,
+      "north": 61.701688,
+      "east": 6.854307
+    },
+    {
+      "id": "4612",
+      "name": "Sveio",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 59.475421,
+      "west": 5.187412,
+      "north": 59.754632,
+      "east": 5.580725
+    },
+    {
+      "id": "4616",
+      "name": "Tysnes",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 59.858229,
+      "west": 5.322124,
+      "north": 60.124403,
+      "east": 5.769733
+    },
+    {
+      "id": "4618",
+      "name": "Ullensvang",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 59.69381,
+      "west": 6.026615,
+      "north": 60.459174,
+      "east": 7.488262
+    },
+    {
+      "id": "4620",
+      "name": "Ulvik",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 60.468472,
+      "west": 6.751088,
+      "north": 60.74084,
+      "east": 7.732115
+    },
+    {
+      "id": "4628",
+      "name": "Vaksdal",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 60.433749,
+      "west": 5.586851,
+      "north": 60.913971,
+      "east": 6.313996
+    },
+    {
+      "id": "4639",
+      "name": "Vik",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 60.880735,
+      "west": 6.135824,
+      "north": 61.190715,
+      "east": 7.030082
+    },
+    {
+      "id": "4621",
+      "name": "Voss",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 60.414507,
+      "west": 5.842739,
+      "north": 60.959552,
+      "east": 6.985868
+    },
+    {
+      "id": "4643",
+      "name": "Årdal",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 61.110875,
+      "west": 7.378078,
+      "north": 61.461198,
+      "east": 8.25145
+    },
+    {
+      "id": "4626",
+      "name": "Øygarden",
+      "fylke": "Vestland",
+      "fylkenummer": "46",
+      "south": 60.104053,
+      "west": 4.266135,
+      "north": 60.740906,
+      "east": 5.238022
+    },
+    {
+      "id": "3124",
+      "name": "Aremark",
+      "fylke": "Østfold",
+      "fylkenummer": "31",
+      "south": 59.033676,
+      "west": 11.553529,
+      "north": 59.338134,
+      "east": 11.829796
+    },
+    {
+      "id": "3107",
+      "name": "Fredrikstad",
+      "fylke": "Østfold",
+      "fylkenummer": "31",
+      "south": 59.044877,
+      "west": 10.605012,
+      "north": 59.324032,
+      "east": 11.130718
+    },
+    {
+      "id": "3101",
+      "name": "Halden",
+      "fylke": "Østfold",
+      "fylkenummer": "31",
+      "south": 58.876895,
+      "west": 11.153512,
+      "north": 59.259612,
+      "east": 11.710516
+    },
+    {
+      "id": "3110",
+      "name": "Hvaler",
+      "fylke": "Østfold",
+      "fylkenummer": "31",
+      "south": 58.76096,
+      "west": 10.593095,
+      "north": 59.139196,
+      "east": 11.167342
+    },
+    {
+      "id": "3118",
+      "name": "Indre Østfold",
+      "fylke": "Østfold",
+      "fylkenummer": "31",
+      "south": 59.450145,
+      "west": 10.771332,
+      "north": 59.770266,
+      "east": 11.551
+    },
+    {
+      "id": "3122",
+      "name": "Marker",
+      "fylke": "Østfold",
+      "fylkenummer": "31",
+      "south": 59.298176,
+      "west": 11.492274,
+      "north": 59.677216,
+      "east": 11.821529
+    },
+    {
+      "id": "3103",
+      "name": "Moss",
+      "fylke": "Østfold",
+      "fylkenummer": "31",
+      "south": 59.293879,
+      "west": 10.536679,
+      "north": 59.534581,
+      "east": 10.820767
+    },
+    {
+      "id": "3120",
+      "name": "Rakkestad",
+      "fylke": "Østfold",
+      "fylkenummer": "31",
+      "south": 59.236381,
+      "west": 11.188155,
+      "north": 59.484318,
+      "east": 11.597416
+    },
+    {
+      "id": "3112",
+      "name": "Råde",
+      "fylke": "Østfold",
+      "fylkenummer": "31",
+      "south": 59.252316,
+      "west": 10.590332,
+      "north": 59.411036,
+      "east": 10.977966
+    },
+    {
+      "id": "3105",
+      "name": "Sarpsborg",
+      "fylke": "Østfold",
+      "fylkenummer": "31",
+      "south": 59.092618,
+      "west": 10.947758,
+      "north": 59.417272,
+      "east": 11.348043
+    },
+    {
+      "id": "3116",
+      "name": "Skiptvet",
+      "fylke": "Østfold",
+      "fylkenummer": "31",
+      "south": 59.392866,
+      "west": 11.057182,
+      "north": 59.549251,
+      "east": 11.240905
+    },
+    {
+      "id": "3114",
+      "name": "Våler",
+      "fylke": "Østfold",
+      "fylkenummer": "31",
+      "south": 59.386987,
+      "west": 10.765774,
+      "north": 59.541973,
+      "east": 11.137917
+    }
+  ]
+}

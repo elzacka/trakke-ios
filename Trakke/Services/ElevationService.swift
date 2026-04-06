@@ -17,9 +17,18 @@ struct ElevationStats: Sendable {
     let average: Int
 }
 
+// MARK: - Protocol
+
+protocol ElevationFetching: Sendable {
+    func fetchElevationProfile(coordinates: [CLLocationCoordinate2D]) async throws -> [ElevationPoint]
+    nonisolated func calculateStats(from points: [ElevationPoint]) -> ElevationStats
+    func fetchElevation(coordinate: CLLocationCoordinate2D) async -> Double?
+    func clearCache() async
+}
+
 // MARK: - Elevation Service
 
-actor ElevationService {
+actor ElevationService: ElevationFetching {
     private static let baseURL = "https://ws.geonorge.no/hoydedata/v1/punkt"
     private static let batchSize = 50
     private static let sampleInterval = 100.0 // meters
@@ -38,6 +47,11 @@ actor ElevationService {
         let f = "\((first.latitude * 10000).rounded() / 10000),\((first.longitude * 10000).rounded() / 10000)"
         let l = "\((last.latitude * 10000).rounded() / 10000),\((last.longitude * 10000).rounded() / 10000)"
         return "\(f)|\(l)|\(count)"
+    }
+
+    func clearCache() {
+        profileCache.removeAll()
+        profileCacheOrder.removeAll()
     }
 
     private func cacheProfile(_ points: [ElevationPoint], forKey key: String) {
@@ -78,7 +92,7 @@ actor ElevationService {
         return points
     }
 
-    func calculateStats(from points: [ElevationPoint]) -> ElevationStats {
+    nonisolated func calculateStats(from points: [ElevationPoint]) -> ElevationStats {
         guard !points.isEmpty else {
             return ElevationStats(gain: 0, loss: 0, min: 0, max: 0, average: 0)
         }

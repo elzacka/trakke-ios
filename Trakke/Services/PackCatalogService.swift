@@ -36,7 +36,7 @@ actor PackCatalogService: PackCatalogFetching {
 
         // Try to fetch from network
         do {
-            let data = try await APIClient.fetchData(url: Self.catalogURL)
+            let data = try await APIClient.fetchData(url: Self.catalogURL, optional: true)
             let decoder = JSONDecoder()
             decoder.dateDecodingStrategy = .iso8601
             let catalog = try decoder.decode(PackCatalog.self, from: data)

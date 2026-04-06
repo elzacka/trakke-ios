@@ -60,11 +60,11 @@ import SwiftData
     #expect(abs(result!.coordinate.longitude - 10.752) < 0.01)
 }
 
-@Test func parseDDM() {
-    let result = CoordinateService.parse("59\u{00B0}54.833\u{2032}N, 10\u{00B0}45.132\u{2032}E")
+@Test func parseBareUTMZone33() {
+    let result = CoordinateService.parse("262560 6649444")
     #expect(result != nil)
-    #expect(abs(result!.coordinate.latitude - 59.9139) < 0.01)
-    #expect(abs(result!.coordinate.longitude - 10.7522) < 0.01)
+    #expect(abs(result!.coordinate.latitude - 59.91) < 0.1)
+    #expect(abs(result!.coordinate.longitude - 10.75) < 0.1)
 }
 
 @Test func parseUTM() {
@@ -96,14 +96,16 @@ import SwiftData
     let coord = CLLocationCoordinate2D(latitude: 59.9139, longitude: 10.7522)
     let formatted = CoordinateService.format(coordinate: coord, format: .dms)
     #expect(formatted.display.contains("59"))
-    #expect(formatted.display.contains("N"))
+    #expect(formatted.display.contains("54'"))
 }
 
 @Test func formatUTM() {
+    // UTM always uses zone 33 (EUREF89 UTM sone 33 — Norway's standard)
     let coord = CLLocationCoordinate2D(latitude: 59.9139, longitude: 10.7522)
     let formatted = CoordinateService.format(coordinate: coord, format: .utm)
-    #expect(formatted.display.contains("32"))
-    #expect(formatted.display.contains("V"))
+    #expect(formatted.display.contains("33V"))
+    #expect(formatted.display.contains("262"))
+    #expect(formatted.display.contains("6649"))
 }
 
 @Test func formatMGRS() {
@@ -572,7 +574,7 @@ import SwiftData
         ElevationPoint(coordinate: coord, elevation: 150, distance: 200),
         ElevationPoint(coordinate: coord, elevation: 300, distance: 300),
     ]
-    let stats = await service.calculateStats(from: points)
+    let stats = service.calculateStats(from: points)
 
     #expect(stats.gain == 250) // +100 + +150
     #expect(stats.loss == 50)  // -50
@@ -589,7 +591,7 @@ import SwiftData
         ElevationPoint(coordinate: coord, elevation: 50, distance: 100),
         ElevationPoint(coordinate: coord, elevation: 50, distance: 200),
     ]
-    let stats = await service.calculateStats(from: points)
+    let stats = service.calculateStats(from: points)
 
     #expect(stats.gain == 0)
     #expect(stats.loss == 0)
@@ -604,7 +606,7 @@ import SwiftData
     let points = [
         ElevationPoint(coordinate: coord, elevation: 250, distance: 0),
     ]
-    let stats = await service.calculateStats(from: points)
+    let stats = service.calculateStats(from: points)
 
     #expect(stats.gain == 0)
     #expect(stats.loss == 0)
@@ -615,7 +617,7 @@ import SwiftData
 
 @Test func elevationStatsEmpty() async {
     let service = ElevationService()
-    let stats = await service.calculateStats(from: [])
+    let stats = service.calculateStats(from: [])
 
     #expect(stats.gain == 0)
     #expect(stats.loss == 0)
@@ -632,7 +634,7 @@ import SwiftData
         ElevationPoint(coordinate: coord, elevation: 300, distance: 100),
         ElevationPoint(coordinate: coord, elevation: 100, distance: 200),
     ]
-    let stats = await service.calculateStats(from: points)
+    let stats = service.calculateStats(from: points)
 
     #expect(stats.gain == 0)
     #expect(stats.loss == 400)

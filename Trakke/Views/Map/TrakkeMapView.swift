@@ -145,6 +145,9 @@ struct TrakkeMapView: UIViewRepresentable {
     var onMeasurementPointDragged: ((Int, CLLocationCoordinate2D) -> Void)?
     var onSelectionCornerDragged: ((Int, CLLocationCoordinate2D) -> Void)?
 
+    // Offline pack boundaries
+    var offlinePackBounds: [(south: Double, west: Double, north: Double, east: Double)] = []
+
     // Navigation
     var navigationRouteCoordinates: [CLLocationCoordinate2D] = []
     var navigationSegmentIndex: Int = 0
@@ -238,14 +241,17 @@ struct TrakkeMapView: UIViewRepresentable {
         // Update overlay layers (stores desired state; reconciles if style is loaded)
         context.coordinator.updateOverlays(on: mapView, enabled: enabledOverlays)
 
-        // Center map on viewModel's current center/zoom
-        let vmCenter = viewModel.currentCenter
-        let currentCenter = mapView.centerCoordinate
-        let distance = CLLocation(latitude: currentCenter.latitude, longitude: currentCenter.longitude)
-            .distance(from: CLLocation(latitude: vmCenter.latitude, longitude: vmCenter.longitude))
+        // Center map on viewModel's current center/zoom — but only when
+        // the user is NOT actively panning/zooming (prevents snap-back)
+        if !context.coordinator.isUserInteracting {
+            let vmCenter = viewModel.currentCenter
+            let currentCenter = mapView.centerCoordinate
+            let distance = CLLocation(latitude: currentCenter.latitude, longitude: currentCenter.longitude)
+                .distance(from: CLLocation(latitude: vmCenter.latitude, longitude: vmCenter.longitude))
 
-        if distance > 5 || abs(mapView.zoomLevel - viewModel.currentZoom) > 0.5 {
-            mapView.setCenter(vmCenter, zoomLevel: viewModel.currentZoom, animated: true)
+            if distance > 5 || abs(mapView.zoomLevel - viewModel.currentZoom) > 0.5 {
+                mapView.setCenter(vmCenter, zoomLevel: viewModel.currentZoom, animated: true)
+            }
         }
 
         // Update POI annotations
@@ -280,6 +286,9 @@ struct TrakkeMapView: UIViewRepresentable {
 
         // Update search pin
         context.coordinator.updateSearchPin(on: mapView, coordinate: searchPinCoordinate)
+
+        // Update offline pack boundaries
+        context.coordinator.updateOfflineBounds(on: mapView, packBounds: offlinePackBounds)
 
         // Update navigation route/compass rendering
         context.coordinator.updateNavigation(
@@ -335,6 +344,7 @@ struct TrakkeMapView: UIViewRepresentable {
         var appliedBaseLayer: BaseLayer = .topo
         var desiredOverlays: Set<OverlayLayer> = []
         var appliedOverlays: Set<OverlayLayer> = []
+        var lastOfflinePackBounds: [(south: Double, west: Double, north: Double, east: Double)] = []
 
         // Custom pan drag state for selection corners, measurement points, and route points.
         // Replaces MapLibre's isDraggable system which conflicts with our gesture setup.
@@ -565,7 +575,16 @@ struct TrakkeMapView: UIViewRepresentable {
 
         // MARK: - Map Delegate
 
+        /// True while the user is actively panning/zooming the map.
+        /// Prevents updateUIView from snapping the map back to the old center.
+        var isUserInteracting = false
+
+        func mapView(_ mapView: MLNMapView, regionWillChangeAnimated animated: Bool) {
+            isUserInteracting = true
+        }
+
         func mapView(_ mapView: MLNMapView, regionDidChangeAnimated animated: Bool) {
+            isUserInteracting = false
             viewModel.currentZoom = mapView.zoomLevel
             viewModel.currentCenter = mapView.centerCoordinate
             viewModel.currentHeading = mapView.direction
@@ -605,6 +624,11 @@ struct TrakkeMapView: UIViewRepresentable {
             // Navigation layers are gone after style reload; reset so
             // the next updateUIView cycle recreates them.
             navLayersActive = false
+
+            // Reapply offline pack boundaries after style reload.
+            if !lastOfflinePackBounds.isEmpty {
+                updateOfflineBounds(on: mapView, packBounds: lastOfflinePackBounds)
+            }
         }
 
         // MARK: - Overlay Layer Management
@@ -616,6 +640,15 @@ struct TrakkeMapView: UIViewRepresentable {
 
         private func reconcileOverlays(with style: MLNStyle?) {
             guard let style else { return }
+
+            // Verify applied overlays actually exist in the style.
+            // If a style reload happened without going through didFinishLoading
+            // (e.g., fullScreenCover dismiss), layers may be gone but tracking stale.
+            let stale = appliedOverlays.filter { style.layer(withIdentifier: $0.layerID) == nil }
+            if !stale.isEmpty {
+                appliedOverlays.subtract(stale)
+            }
+
             guard desiredOverlays != appliedOverlays else { return }
 
             let toRemove = appliedOverlays.subtracting(desiredOverlays)

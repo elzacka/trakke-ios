@@ -45,7 +45,7 @@ struct WaypointDetailSheet: View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.vertical, 2)
+            .padding(.vertical, .Trakke.labelGap)
 
             if let elevation = waypoint.elevation {
                 Divider().padding(.leading, .Trakke.dividerLeading)

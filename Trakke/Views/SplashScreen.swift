@@ -7,12 +7,12 @@ struct SplashScreen: View {
     @Environment(\.horizontalSizeClass) private var sizeClass
 
     private var logoSize: CGFloat {
-        sizeClass == .regular ? 144 : 96
+        sizeClass == .regular ? 200 : 140
     }
 
     var body: some View {
         ZStack {
-            Color.Trakke.background
+            Color.Trakke.surface
                 .ignoresSafeArea()
 
             Image("SplashIcon")

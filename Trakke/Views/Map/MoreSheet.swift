@@ -3,25 +3,18 @@ import SwiftUI
 struct MoreSheet: View {
     // ViewModels for pushed destinations
     @Bindable var knowledgeViewModel: KnowledgeViewModel
-    @Bindable var routeViewModel: RouteViewModel
-    @Bindable var activityViewModel: ActivityViewModel
     @Bindable var mapViewModel: MapViewModel
 
     // Callbacks that dismiss the entire sheet and trigger map actions
     var onMeasurementTapped: (() -> Void)?
     var onOfflineTapped: (() -> Void)?
-    var onRouteSelected: ((Route) -> Void)?
-    var onNewRoute: (() -> Void)?
-    var onActivitySelected: ((Activity) -> Void)?
-    var onStartRecording: (() -> Void)?
+    var onDeleteAllData: (() -> Void)?
     @Environment(\.dismiss) private var dismiss
     @State private var navigationPath = NavigationPath()
     @State private var selectedDetent: PresentationDetent = .medium
 
     enum Destination: Hashable {
         case knowledge
-        case routes
-        case activities
         case info
         case preferences
     }
@@ -36,38 +29,10 @@ struct MoreSheet: View {
                     switch destination {
                     case .knowledge:
                         KnowledgeSheet(viewModel: knowledgeViewModel, isEmbedded: true)
-                    case .routes:
-                        RouteListSheet(
-                            viewModel: routeViewModel,
-                            onRouteSelected: { route in
-                                onRouteSelected?(route)
-                                dismiss()
-                            },
-                            onNewRoute: {
-                                onNewRoute?()
-                                dismiss()
-                            },
-                            isEmbedded: true,
-                            dismissSheet: { dismiss() }
-                        )
-                    case .activities:
-                        ActivityListSheet(
-                            viewModel: activityViewModel,
-                            onActivitySelected: { activity in
-                                onActivitySelected?(activity)
-                                dismiss()
-                            },
-                            onStartRecording: {
-                                onStartRecording?()
-                                dismiss()
-                            },
-                            isEmbedded: true,
-                            dismissSheet: { dismiss() }
-                        )
                     case .info:
                         InfoSheet(isEmbedded: true)
                     case .preferences:
-                        PreferencesSheet(mapViewModel: mapViewModel, knowledgeViewModel: knowledgeViewModel, isEmbedded: true)
+                        PreferencesSheet(mapViewModel: mapViewModel, knowledgeViewModel: knowledgeViewModel, onDeleteAllData: onDeleteAllData, isEmbedded: true)
                     }
                 }
                 .navigationDestination(for: KnowledgeDestination.self) { destination in
@@ -94,10 +59,6 @@ struct MoreSheet: View {
             VStack(spacing: .Trakke.cardGap) {
                 CardSection {
                     moreLink(icon: "book.closed", label: String(localized: "knowledge.title"), destination: .knowledge, expandSheet: true)
-                    Divider().padding(.leading, .Trakke.dividerLeading)
-                    moreLink(icon: "point.topleft.down.to.point.bottomright.curvepath", label: String(localized: "routes.title"), destination: .routes)
-                    Divider().padding(.leading, .Trakke.dividerLeading)
-                    moreLink(icon: "figure.hiking", label: String(localized: "activity.title"), destination: .activities)
                 }
 
                 CardSection {

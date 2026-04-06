@@ -147,6 +147,12 @@ struct InfoSheet: View {
                         )
                         Divider()
                         dataSourceRow(
+                            name: "NVE / Varsom",
+                            detail: String(localized: "info.nve.detail"),
+                            license: "NLOD 2.0"
+                        )
+                        Divider()
+                        dataSourceRow(
                             name: "OpenStreetMap",
                             detail: String(localized: "info.osm.detail"),
                             license: "ODbL"

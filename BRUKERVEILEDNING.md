@@ -9,7 +9,7 @@
 
 ## Rens kartet hurtig {#renskartet}
 
-**Langt trykk** på grønn menyknapp skjuler alle kontroller og kartlag. Gjenta for å vise dem igjen.
+**Langt trykk** på den grønne menyknappen skjuler alle kontroller og kartlag. Gjenta for å vise dem igjen.
 
 ## Søk {#sok}
 
@@ -17,31 +17,34 @@ Skriv inn stedsnavn eller adresse (minimum 2 tegn). Trykk på et resultat for å
 
 ## Kategorier {#kategorier}
 
-Kategorier som kan vises/skjules på kartet: Gapahuker/vindskjul, huler, krigsminner, kulturminner, tilfluktsrom og utsiktspunkter. Klikk på ikonene som vises på kartet for å se detaljer. Du må zoome litt inn før ikonene vises på kartet.
+Kategorier som kan vises/skjules på kartet: gapahuker/vindskjul, huler, krigsminner, kulturminner, tilfluktsrom og utsiktspunkter. Trykk på et ikon på kartet for å se detaljer. Du må zoome litt inn før ikonene vises.
 
-## Mine steder {#steder}
+De fleste kategorier er lagret lokalt og vises uten nettilgang. Kulturminner hentes fra nett.
+
+## Mine greier {#steder}
+
+Her finner du ruter, steder og turer samlet. Åpnes fra den grønne menyknappen.
 
 ### Legge til et sted
 
 1. Langt trykk på kartet
 2. Velg «Legg til sted»
-3. Gi stedet et navn og velg farge
+3. Gi stedet et navn
 4. Trykk «Lagre»
 
 ### Administrere steder
 
-- **Langt trykk** i listen: Vis/skjul eller slett
-- **Sveip til venstre**: Slett
+- **Sveip til venstre** i listen for å slette
 
 ## SOS og nød {#sos}
 
 ### Koordinater
 
-Viser posisjonen din i desimalgrader (DD, standard koordinatformat) og Universal Transverse Mercator (UTM). Trykk kopier-knappen for å kopiere. Koordinaten slettes fra utklippstavlen etter 5 minutter.
+Viser posisjonen din i desimalgrader (DD) og UTM. Trykk kopier-knappen for å kopiere. Koordinaten slettes fra utklippstavlen etter 5 minutter.
 
 ### SOS-signal
 
-Sender SOS i morsekode via lommelykten. Lydsignalet (2800 Hz) følger takten til blinkene fra lommelykten. Signalet gjentas til du trykker «Stopp».
+Sender SOS i morsekode via lommelykten. Lydsignalet (2800 Hz) følger takten til blinkene. Signalet gjentas til du trykker «Stopp».
 
 Skjermen kan ikke lukkes mens SOS er aktiv.
 
@@ -49,11 +52,21 @@ Skjermen kan ikke lukkes mens SOS er aktiv.
 
 Trykk for å ringe: 113 (ambulanse), 112 (politi), 110 (brann), 116 117 (legevakt).
 
+## Vær {#vaer}
+
+Åpne værmeldingen fra den grønne menyknappen eller værwidgeten på kartet.
+
+Trykk på vind, nedbør, luftfuktighet eller temperatur for å se en forklaring tilpasset friluftsliv.
+
+Når vinden gjør det kaldere enn lufttemperaturen, vises «Føles som»-temperaturen.
+
+### Snøskred- og flomvarsler
+
+Varsler fra NVE/Varsom vises i værmeldingen når de er aktive. Snøskredvarsler er basert på din posisjon.
+
 ## Mer-menyen {#mer}
 
 - **Kunnskap**: Artikler om friluftsliv og overlevelse
-- **Ruter**: Tegn, importer og administrer ruter
-- **Turer**: Logg turer og se statistikk
 - **Måleverktøy**: Mål avstand og areal
 - **Offlinekart**: Last ned kart for bruk uten dekning
 - **Informasjon**: Datakilder, lisenser og brukerveiledning
@@ -61,22 +74,22 @@ Trykk for å ringe: 113 (ambulanse), 112 (politi), 110 (brann), 116 117 (legevak
 
 ## Kunnskap {#kunnskap}
 
-Noen artikler har bilder. Trykk på et bilde i en artikkel for fullskjerm. Knip for å zoome, sveip ned for å lukke.
+Trykk på et bilde i en artikkel for fullskjerm. Knip for å zoome, sveip ned for å lukke.
 
 ## Ruter {#ruter}
 
 ### Tegne en rute
 
-1. Trykk +-knappen
-2. Trykk på kartet for å legge til punkter
-3. Dra et punkt for å flytte det
-4. Angre-knappen fjerner siste punkt
-5. Trykk «Ferdig» for å lagre
+1. Åpne Mine greier > Ruter
+2. Trykk +-knappen
+3. Trykk på kartet for å legge til punkter
+4. Dra et punkt for å flytte det
+5. Angre-knappen fjerner siste punkt
+6. Trykk «Ferdig» for å lagre
 
 ### Administrere ruter
 
-- **Langt trykk** i listen: Vis/skjul eller slett
-- **Sveip til venstre**: Slett
+- **Sveip til venstre** i listen for å slette
 
 ### Navigasjon {#navigasjon}
 
@@ -91,12 +104,12 @@ Under navigasjon: trykk kompasset for å bytte mellom nord opp og kursretning. V
 
 ### Import og eksport (GPX) {#gpx}
 
-- **Importere**: Trykk importer-knappen, velg en .gpx-fil
+- **Importere**: Trykk importer-knappen i rutelisten, velg en .gpx-fil
 - **Eksportere ruter**: Del-knappen eksporterer som GPX
-- **Eksportere steder**: Meny > Mine steder > del-knappen
+- **Eksportere steder**: Mine greier > Steder > del-knappen
 - **Eksportere turer**: Åpne en tur > «Eksporter som GPX»
 
-## Turer: Logg tur {#turlogging}
+## Turer {#turlogging}
 
 1. Trykk opptaksknappen
 2. Verktøylinjen viser varighet, avstand og høydemeter
@@ -117,12 +130,20 @@ Under navigasjon: trykk kompasset for å bytte mellom nord opp og kursretning. V
 
 ## Offlinekart {#offline}
 
+### Egendefinert område
+
 1. Dra i hjørnene for å velge område
 2. Trykk «Ferdig»
 3. Velg navn, bakgrunnskart og zoomnivå
 4. Trykk «Last ned»
 
+### Last ned per kommune
+
+Bla gjennom kommuner etter fylke, eller søk etter kommunenavn. Trykk på en kommune for å starte nedlasting.
+
 Du kan laste ned flere områder. Nedlastede kart brukes automatisk når du ikke har dekning.
+
+Når du er uten dekning, vises en stiplet firkant på kartet som markerer grensene til nedlastede kartområder.
 
 ## Innstillinger {#innstillinger}
 
@@ -135,6 +156,7 @@ Du kan laste ned flere områder. Nedlastede kart brukes automatisk når du ikke 
 ### Kartlag
 
 - **3D-relieff**: Terrengskygge
+- **Bratthetskart**: Helningsvinkler, nyttig for snøskredvurdering
 - **Naturskog**: Gammelskog, naturskogsannsynlighet eller nærhet til naturskog
 - **Naturvernområder**: Vernede naturområder
 - **Turruter**: Merkede turstier
@@ -146,7 +168,7 @@ Du kan laste ned flere områder. Nedlastede kart brukes automatisk når du ikke 
 
 ### Koordinatformat
 
-DD, DMS, DDM, UTM eller MGRS.
+DD, DMS, UTM eller MGRS. Trykk info-knappen ved hvert format for en forklaring.
 
 ### Slett alle data
 

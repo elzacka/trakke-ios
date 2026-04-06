@@ -43,6 +43,7 @@ enum OverlayLayer: String, CaseIterable, Identifiable, Sendable {
     case naturskogFoer1940
     case naturskogSannsynlighet
     case naturskogNaerhet
+    case bratthetskart
 
     var id: String { rawValue }
 
@@ -62,6 +63,7 @@ enum OverlayLayer: String, CaseIterable, Identifiable, Sendable {
         case .naturskogFoer1940: return String(localized: "map.overlay.naturskog.foer1940")
         case .naturskogSannsynlighet: return String(localized: "map.overlay.naturskog.sannsynlighet")
         case .naturskogNaerhet: return String(localized: "map.overlay.naturskog.naerhet")
+        case .bratthetskart: return String(localized: "map.overlay.bratthetskart")
         }
     }
 
@@ -72,6 +74,8 @@ enum OverlayLayer: String, CaseIterable, Identifiable, Sendable {
         case .naturvernomrader,
              .naturskogFoer1940, .naturskogSannsynlighet, .naturskogNaerhet:
             return "\u{00A9} Milj\u{00F8}direktoratet"
+        case .bratthetskart:
+            return "\u{00A9} NVE"
         }
     }
 
@@ -103,12 +107,14 @@ enum OverlayLayer: String, CaseIterable, Identifiable, Sendable {
         case .naturvernomrader: return 6
         case .naturskogFoer1940, .naturskogSannsynlighet, .naturskogNaerhet: return 8
         case .hillshading: return 3
+        case .bratthetskart: return 9
         }
     }
 
     var opacity: Double {
         switch self {
         case .naturvernomrader: return 0.5
+        case .bratthetskart: return 0.9
         default: return 0.7
         }
     }
@@ -132,6 +138,12 @@ enum OverlayLayer: String, CaseIterable, Identifiable, Sendable {
                 + "?bbox={bbox-epsg-3857}&bboxSR=3857&imageSR=3857"
                 + "&size=256,256&format=png32&transparent=true"
                 + "&layers=show:\(naturskogLayerID)&f=image"
+        case .bratthetskart:
+            return "https://nve.geodataonline.no/arcgis/services/Bratthet/MapServer/WMSServer"
+                + "?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap"
+                + "&LAYERS=Bratthet_snoskred&STYLES=&SRS=EPSG:3857"
+                + "&BBOX={bbox-epsg-3857}&WIDTH=256&HEIGHT=256"
+                + "&FORMAT=image/png&TRANSPARENT=TRUE"
         case .hillshading:
             preconditionFailure("Hillshading uses TerrainConstants, not WMS tileURL")
         }

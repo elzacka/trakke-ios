@@ -201,4 +201,8 @@ final class WaypointViewModel {
             importMessage = String(localized: "waypoints.importError")
         }
     }
+
+    func clearCaches() async {
+        await elevationService.clearCache()
+    }
 }

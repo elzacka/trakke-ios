@@ -7,7 +7,6 @@ import MGRS
 enum CoordinateFormat: String, CaseIterable, Identifiable, Codable, Sendable {
     case dd
     case dms
-    case ddm
     case utm
     case mgrs
 
@@ -15,10 +14,9 @@ enum CoordinateFormat: String, CaseIterable, Identifiable, Codable, Sendable {
 
     var displayName: String {
         switch self {
+        case .utm: return "UTM"
         case .dd: return "DD"
         case .dms: return "DMS"
-        case .ddm: return "DDM"
-        case .utm: return "UTM"
         case .mgrs: return "MGRS"
         }
     }
@@ -54,8 +52,6 @@ enum CoordinateService {
             return formatDD(lat: lat, lon: lon)
         case .dms:
             return formatDMS(lat: lat, lon: lon)
-        case .ddm:
-            return formatDDM(lat: lat, lon: lon)
         case .utm:
             return formatUTM(lat: lat, lon: lon)
         case .mgrs:
@@ -72,67 +68,36 @@ enum CoordinateService {
     }
 
     private static func formatDMS(lat: Double, lon: Double) -> FormattedCoordinate {
+        let (latD, latM, latS) = decimalToDMS(abs(lat))
+        let (lonD, lonM, lonS) = decimalToDMS(abs(lon))
         let latDir = lat >= 0 ? "N" : "S"
         let lonDir = lon >= 0 ? "E" : "W"
 
-        let (latD, latM, latS) = decimalToDMS(abs(lat))
-        let (lonD, lonM, lonS) = decimalToDMS(abs(lon))
-
         let display = String(
-            format: "%d\u{00B0}%d\u{2032}%.1f\u{2033}%@, %d\u{00B0}%d\u{2032}%.1f\u{2033}%@",
+            format: "%d\u{00B0}%d'%.2f\"%@, %d\u{00B0}%d'%.2f\"%@",
             latD, latM, latS, latDir, lonD, lonM, lonS, lonDir
         )
         return FormattedCoordinate(display: display, copyText: display)
     }
 
-    private static func formatDDM(lat: Double, lon: Double) -> FormattedCoordinate {
-        let latDir = lat >= 0 ? "N" : "S"
-        let lonDir = lon >= 0 ? "E" : "W"
-
-        let (latD, latDM) = decimalToDDM(abs(lat))
-        let (lonD, lonDM) = decimalToDDM(abs(lon))
-
-        let display = String(
-            format: "%d\u{00B0}%.3f\u{2032}%@, %d\u{00B0}%.3f\u{2032}%@",
-            latD, latDM, latDir, lonD, lonDM, lonDir
-        )
-        return FormattedCoordinate(display: display, copyText: display)
-    }
-
+    /// Norway's national standard: EUREF89 UTM sone 33 (EPSG:25833).
+    /// Always projects to zone 33 regardless of the coordinate's geographic UTM zone,
+    /// matching Norgeskart.no and Kartverket's recommendation for nationwide use.
     private static func formatUTM(lat: Double, lon: Double) -> FormattedCoordinate {
-        let zone = utmZone(longitude: lon)
+        let zone = 33  // EUREF89 UTM sone 33 — Norway's standard
         let band = utmBand(latitude: lat)
         let (easting, northing) = latLonToUTM(lat: lat, lon: lon, zone: zone)
 
-        let display = String(format: "%d%@ %.0fE %.0fN", zone, band, easting, northing)
-        let copy = String(format: "%d%@ %.0f %.0f", zone, band, easting, northing)
-        return FormattedCoordinate(display: display, copyText: copy)
+        let display = String(format: "%d%@ %.0f %.0f", zone, band, easting, northing)
+        return FormattedCoordinate(display: display, copyText: display)
     }
 
     private static func formatMGRS(lat: Double, lon: Double) -> FormattedCoordinate {
         let mgrsObj = MGRS.from(lon, lat)
         let mgrsString = mgrsObj.coordinate(GridType.METER)
-
-        // Format with spaces: "32V NM 97423 71394"
-        if mgrsString.count >= 5 {
-            let idx = mgrsString.startIndex
-            let zoneEnd = mgrsString.index(idx, offsetBy: mgrsString.count >= 3 && mgrsString[mgrsString.index(idx, offsetBy: 2)].isLetter ? 3 : 2)
-            let zone = String(mgrsString[idx..<zoneEnd])
-            let rest = String(mgrsString[zoneEnd...])
-
-            if rest.count >= 2 {
-                let square = String(rest.prefix(2))
-                let coords = String(rest.dropFirst(2))
-                let half = coords.count / 2
-                let easting = String(coords.prefix(half))
-                let northing = String(coords.suffix(half))
-
-                let display = "\(zone) \(square) \(easting) \(northing)"
-                return FormattedCoordinate(display: display, copyText: mgrsString)
-            }
-        }
-
-        return FormattedCoordinate(display: mgrsString, copyText: mgrsString)
+        // Continuous string without spaces — standard MGRS notation
+        let compact = mgrsString.replacingOccurrences(of: " ", with: "")
+        return FormattedCoordinate(display: compact, copyText: compact)
     }
 
     // MARK: - Parsing
@@ -143,7 +108,6 @@ enum CoordinateService {
         if let result = parseMGRS(trimmed) { return result }
         if let result = parseUTM(trimmed) { return result }
         if let result = parseDMS(trimmed) { return result }
-        if let result = parseDDM(trimmed) { return result }
         if let result = parseDD(trimmed) { return result }
 
         return nil
@@ -229,61 +193,44 @@ enum CoordinateService {
         return makeCoordinateResult(coordinate: coordinate, label: "DMS")
     }
 
-    // MARK: DDM Parsing
-
-    private static func parseDDM(_ input: String) -> SearchResult? {
-        let pattern = "(\\d+)[\u{00B0}]\\s*(\\d+\\.?\\d*)['\u{2032}]\\s*([NS])\\s*[,\\s]\\s*(\\d+)[\u{00B0}]\\s*(\\d+\\.?\\d*)['\u{2032}]\\s*([EW\u{00D8}])"
-        guard let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive),
-              let match = regex.firstMatch(in: input, range: NSRange(input.startIndex..., in: input)) else {
-            return nil
-        }
-
-        guard let latD = extractDouble(from: input, match: match, group: 1),
-              let latDM = extractDouble(from: input, match: match, group: 2),
-              let latDir = extractString(from: input, match: match, group: 3)?.uppercased(),
-              let lonD = extractDouble(from: input, match: match, group: 4),
-              let lonDM = extractDouble(from: input, match: match, group: 5),
-              let lonDir = extractString(from: input, match: match, group: 6)?.uppercased() else {
-            return nil
-        }
-
-        var lat = latD + latDM / 60.0
-        var lon = lonD + lonDM / 60.0
-
-        if latDir == "S" { lat = -lat }
-        if lonDir == "W" { lon = -lon }
-
-        guard isValidCoordinate(lat: lat, lon: lon) else { return nil }
-
-        let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: lon)
-        return makeCoordinateResult(coordinate: coordinate, label: "DDM")
-    }
-
     // MARK: UTM Parsing
 
     private static func parseUTM(_ input: String) -> SearchResult? {
-        let pattern = #"^(\d{1,2})\s*([C-HJ-NP-X])\s+(\d{5,7})\s*[EØ]?\s+(\d{6,8})\s*N?$"#
-        guard let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive),
-              let match = regex.firstMatch(in: input, range: NSRange(input.startIndex..., in: input)) else {
-            return nil
+        // Pattern with zone+band prefix: "32V 597982 6642924"
+        let zonePattern = #"^(\d{1,2})\s*([C-HJ-NP-X])\s+(\d{5,7})\s*[EØ]?\s+(\d{6,8})\s*N?$"#
+        if let regex = try? NSRegularExpression(pattern: zonePattern, options: .caseInsensitive),
+           let match = regex.firstMatch(in: input, range: NSRange(input.startIndex..., in: input)) {
+            guard let zone = extractInt(from: input, match: match, group: 1),
+                  let band = extractString(from: input, match: match, group: 2)?.uppercased(),
+                  let easting = extractDouble(from: input, match: match, group: 3),
+                  let northing = extractDouble(from: input, match: match, group: 4),
+                  (1...60).contains(zone) else { return nil }
+
+            let isNorth = "NPQRSTUVWX".contains(band)
+            let (lat, lon) = utmToLatLon(easting: easting, northing: northing, zone: zone, isNorth: isNorth)
+            guard isValidCoordinate(lat: lat, lon: lon) else { return nil }
+            return makeCoordinateResult(
+                coordinate: CLLocationCoordinate2D(latitude: lat, longitude: lon),
+                label: "UTM"
+            )
         }
 
-        guard let zone = extractInt(from: input, match: match, group: 1),
-              let band = extractString(from: input, match: match, group: 2)?.uppercased(),
-              let easting = extractDouble(from: input, match: match, group: 3),
-              let northing = extractDouble(from: input, match: match, group: 4) else {
-            return nil
+        // Bare easting/northing (no zone): assume EUREF89 UTM sone 33, northern hemisphere
+        let barePattern = #"^(\d{5,7})\s+(\d{6,8})$"#
+        if let regex = try? NSRegularExpression(pattern: barePattern),
+           let match = regex.firstMatch(in: input, range: NSRange(input.startIndex..., in: input)) {
+            guard let easting = extractDouble(from: input, match: match, group: 1),
+                  let northing = extractDouble(from: input, match: match, group: 2) else { return nil }
+
+            let (lat, lon) = utmToLatLon(easting: easting, northing: northing, zone: 33, isNorth: true)
+            guard isValidCoordinate(lat: lat, lon: lon), isInNorway(lat: lat, lon: lon) else { return nil }
+            return makeCoordinateResult(
+                coordinate: CLLocationCoordinate2D(latitude: lat, longitude: lon),
+                label: "UTM"
+            )
         }
 
-        guard (1...60).contains(zone) else { return nil }
-
-        let isNorth = "NPQRSTUVWX".contains(band)
-        let (lat, lon) = utmToLatLon(easting: easting, northing: northing, zone: zone, isNorth: isNorth)
-
-        guard isValidCoordinate(lat: lat, lon: lon) else { return nil }
-
-        let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: lon)
-        return makeCoordinateResult(coordinate: coordinate, label: "UTM")
+        return nil
     }
 
     // MARK: MGRS Parsing
@@ -381,11 +328,6 @@ enum CoordinateService {
         return (degrees, minutes, seconds)
     }
 
-    private static func decimalToDDM(_ decimal: Double) -> (Int, Double) {
-        let degrees = Int(decimal)
-        let minutes = (decimal - Double(degrees)) * 60
-        return (degrees, minutes)
-    }
 
     // MARK: - UTM Conversion
 

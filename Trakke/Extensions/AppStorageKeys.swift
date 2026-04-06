@@ -10,6 +10,7 @@ enum AppStorageKeys {
     static let overlayHillshading = "overlayHillshading"
     static let overlayNaturskog = "overlayNaturskog"
     static let overlayNaturvernomrader = "overlayNaturvernomrader"
+    static let overlayBratthetskart = "overlayBratthetskart"
     static let naturskogLayerType = "naturskogLayerType"
     static let coordinateFormat = "coordinateFormat"
     static let baseLayer = "baseLayer"

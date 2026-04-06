@@ -71,6 +71,10 @@ final class SearchViewModel {
         searchTask?.cancel()
     }
 
+    func clearCaches() async {
+        await searchService.clearCache()
+    }
+
     func formattedCoordinate(for coordinate: CLLocationCoordinate2D) -> String {
         CoordinateService.format(coordinate: coordinate, format: coordinateFormat).display
     }

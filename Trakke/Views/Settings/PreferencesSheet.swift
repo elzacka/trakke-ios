@@ -4,6 +4,7 @@ import SwiftData
 struct PreferencesSheet: View {
     @Bindable var mapViewModel: MapViewModel
     var knowledgeViewModel: KnowledgeViewModel?
+    var onDeleteAllData: (() -> Void)?
     var isEmbedded = false
     @AppStorage(AppStorageKeys.coordinateFormat) private var coordinateFormat: CoordinateFormat = .dd
     @AppStorage(AppStorageKeys.showWeatherWidget) private var showWeatherWidget = false
@@ -14,11 +15,13 @@ struct PreferencesSheet: View {
     @AppStorage(AppStorageKeys.overlayTurrutebasen) private var overlayTurrutebasen = false
     @AppStorage(AppStorageKeys.overlayHillshading) private var overlayHillshading = false
     @AppStorage(AppStorageKeys.overlayNaturvernomrader) private var overlayNaturvernomrader = false
+    @AppStorage(AppStorageKeys.overlayBratthetskart) private var overlayBratthetskart = false
     @AppStorage(AppStorageKeys.overlayNaturskog) private var overlayNaturskog = false
     @AppStorage(AppStorageKeys.naturskogLayerType) private var naturskogLayerType = OverlayLayer.naturskogSannsynlighet.rawValue
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var coordinateInfoFormat: CoordinateFormat?
     @State private var showDeleteAllConfirmation = false
 
     var body: some View {
@@ -48,29 +51,16 @@ struct PreferencesSheet: View {
                     // MARK: - Overlay Layers
                     CardSection(String(localized: "settings.overlays")) {
                         VStack(spacing: 0) {
-                            // Terrain overlays
-                            Text(String(localized: "settings.overlays.terrain"))
-                                .font(Font.Trakke.caption)
-                                .foregroundStyle(Color.Trakke.textTertiary)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.bottom, .Trakke.xs)
-
                             settingsToggle(
                                 label: OverlayLayer.hillshading.displayName,
                                 isOn: $overlayHillshading
                             )
-
                             Divider()
-                                .padding(.top, .Trakke.md)
-
-                            // Nature and travel overlays
-                            Text(String(localized: "settings.overlays.nature"))
-                                .font(Font.Trakke.caption)
-                                .foregroundStyle(Color.Trakke.textTertiary)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.top, .Trakke.md)
-                                .padding(.bottom, .Trakke.xs)
-
+                            settingsToggle(
+                                label: OverlayLayer.bratthetskart.displayName,
+                                isOn: $overlayBratthetskart
+                            )
+                            Divider()
                             settingsToggle(
                                 label: String(localized: "map.overlay.naturskog"),
                                 isOn: $overlayNaturskog
@@ -128,29 +118,7 @@ struct PreferencesSheet: View {
                                 if index > 0 {
                                     Divider().padding(.leading, .Trakke.dividerLeading)
                                 }
-                                Button {
-                                    coordinateFormat = format
-                                } label: {
-                                    HStack {
-                                        VStack(alignment: .leading, spacing: .Trakke.labelGap) {
-                                            Text(format.displayName)
-                                                .font(Font.Trakke.bodyMedium)
-                                                .foregroundStyle(Color.Trakke.text)
-                                            Text(format.formatDescription)
-                                                .font(Font.Trakke.caption)
-                                                .foregroundStyle(Color.Trakke.textTertiary)
-                                        }
-                                        Spacer()
-                                        if coordinateFormat == format {
-                                            Image(systemName: "checkmark")
-                                                .font(Font.Trakke.bodyMedium)
-                                                .foregroundStyle(Color.Trakke.brand)
-                                        }
-                                    }
-                                    .frame(minHeight: .Trakke.touchMin)
-                                    .contentShape(Rectangle())
-                                }
-                                .accessibilityAddTraits(coordinateFormat == format ? .isSelected : [])
+                                coordinateFormatRow(format)
                             }
                         }
                     }
@@ -167,6 +135,7 @@ struct PreferencesSheet: View {
                             overlayTurrutebasen = false
                             overlayHillshading = false
                             overlayNaturvernomrader = false
+                            overlayBratthetskart = false
                             overlayNaturskog = false
                             naturskogLayerType = OverlayLayer.naturskogSannsynlighet.rawValue
                             mapViewModel.baseLayer = .topo
@@ -236,6 +205,9 @@ struct PreferencesSheet: View {
         BundledPOIService.clearCache()
         Task { await ArtsdatabankenImageService.default.clearCache() }
 
+        // Clear remaining in-memory caches via callback (GDPR Art. 17)
+        onDeleteAllData?()
+
         // Clear all UserDefaults for the app (GDPR Art. 17 completeness)
         if let bundleId = Bundle.main.bundleIdentifier {
             UserDefaults.standard.removePersistentDomain(forName: bundleId)
@@ -266,6 +238,46 @@ struct PreferencesSheet: View {
 
     // MARK: - Toggle Row
 
+    private func coordinateFormatRow(_ format: CoordinateFormat) -> some View {
+        HStack {
+            Toggle(isOn: Binding(
+                get: { coordinateFormat == format },
+                set: { if $0 { coordinateFormat = format } }
+            )) {
+                HStack(spacing: .Trakke.xs) {
+                    Text(format.formatTitle)
+                        .font(Font.Trakke.bodyRegular)
+                        .lineLimit(1)
+
+                    Button {
+                        coordinateInfoFormat = format
+                    } label: {
+                        Image(systemName: "info.circle")
+                            .font(Font.Trakke.captionSoft)
+                            .foregroundStyle(Color.Trakke.textTertiary)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(String(localized: "settings.format.info"))
+                }
+            }
+            .tint(Color.Trakke.brand)
+        }
+        .padding(.vertical, .Trakke.xs)
+        .trakkeTooltip(isPresented: Binding(
+            get: { coordinateInfoFormat == format },
+            set: { if !$0 { coordinateInfoFormat = nil } }
+        )) {
+            TrakkeTooltip(
+                title: format.formatTitle,
+                text: format.formatTooltip,
+                sections: [(
+                    header: String(localized: "settings.format.example"),
+                    text: format.exampleCoordinate
+                )]
+            )
+        }
+    }
+
     private func settingsToggle(
         label: String,
         isOn: Binding<Bool>
@@ -282,13 +294,29 @@ struct PreferencesSheet: View {
 // MARK: - CoordinateFormat Description
 
 extension CoordinateFormat {
-    var formatDescription: String {
+    /// Short title shown in the settings row.
+    var formatTitle: String {
         switch self {
-        case .dd: return String(localized: "settings.format.dd.description")
-        case .dms: return String(localized: "settings.format.dms.description")
-        case .ddm: return String(localized: "settings.format.ddm.description")
-        case .utm: return String(localized: "settings.format.utm.description")
-        case .mgrs: return String(localized: "settings.format.mgrs.description")
+        case .dd: return "DD \u{2013} Desimalgrader (standard)"
+        case .dms: return "DMS \u{2013} Grader, minutter, sekunder"
+        case .utm: return "UTM \u{2013} Universal Transverse Mercator"
+        case .mgrs: return "MGRS \u{2013} Military Grid Reference System"
+        }
+    }
+
+    /// Tooltip description from reliable Norwegian sources.
+    var formatTooltip: String {
+        let key = "settings.format.\(rawValue).tooltip"
+        return Bundle.main.localizedString(forKey: key, value: nil, table: nil)
+    }
+
+    /// Example coordinate showing how the format looks.
+    var exampleCoordinate: String {
+        switch self {
+        case .dd: return "59.888051, 10.862804"
+        case .dms: return "59\u{00B0}53'16.98\"N, 10\u{00B0}51'46.09\"E"
+        case .utm: return "33V 604245 6482098"
+        case .mgrs: return "32V MK 25150 30400"
         }
     }
 }

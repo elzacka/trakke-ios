@@ -33,6 +33,7 @@ enum RoutingError: Error, LocalizedError {
 
 protocol RouteFetching: Sendable {
     func computeRoute(from origin: CLLocationCoordinate2D, to destination: CLLocationCoordinate2D) async throws -> ComputedRoute
+    func clearCache() async
 }
 
 /// Routes are computed via FOSSGIS's public Valhalla instance (valhalla1.openstreetmap.de).

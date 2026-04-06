@@ -35,9 +35,11 @@ actor SOSService {
         guard !isRunning else { return }
         isRunning = true
 
-        if withAudio {
-            startAudio()
-        }
+        // Always start the audio engine to keep the process alive when the screen
+        // locks (UIBackgroundModes audio). When the user has disabled audible tones,
+        // the engine runs silently (toneActive stays false during "off" periods and
+        // the render block outputs silence).
+        startAudio()
 
         await runSignalLoop(withAudio: withAudio)
     }

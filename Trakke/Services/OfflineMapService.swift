@@ -8,6 +8,7 @@ struct OfflinePackInfo: Identifiable, Sendable {
     let id: String
     let name: String
     let layer: String
+    let kommuneId: String?
     let bounds: (south: Double, west: Double, north: Double, east: Double)
     let minZoom: Int
     let maxZoom: Int
@@ -39,6 +40,14 @@ struct OfflinePackContext: Codable, Sendable {
     let id: String
     let name: String
     let layer: String
+    let kommuneId: String?
+
+    init(id: String, name: String, layer: String, kommuneId: String? = nil) {
+        self.id = id
+        self.name = name
+        self.layer = layer
+        self.kommuneId = kommuneId
+    }
 }
 
 // MARK: - Offline Map Managing
@@ -49,7 +58,8 @@ protocol OfflineMapManaging: AnyObject {
         name: String,
         layer: BaseLayer,
         south: Double, west: Double, north: Double, east: Double,
-        minZoom: Int, maxZoom: Int
+        minZoom: Int, maxZoom: Int,
+        kommuneId: String?
     )
     func getPacks() -> [OfflinePackInfo]
     func deletePack(_ info: OfflinePackInfo)
@@ -101,13 +111,23 @@ final class OfflineMapService: OfflineMapManaging {
         return "\(bytes) B"
     }
 
+    /// Human-readable description of what a max zoom level provides for hiking.
+    nonisolated static func zoomDescription(maxZoom: Int) -> String {
+        switch maxZoom {
+        case ...12: return String(localized: "offline.zoom.overview")
+        case 13...14: return String(localized: "offline.zoom.good")
+        default: return String(localized: "offline.zoom.detailed")
+        }
+    }
+
     // MARK: - Download
 
     func startDownload(
         name: String,
         layer: BaseLayer,
         south: Double, west: Double, north: Double, east: Double,
-        minZoom: Int, maxZoom: Int
+        minZoom: Int, maxZoom: Int,
+        kommuneId: String? = nil
     ) {
         let styleURL = KartverketTileService.styleURL(for: layer)
 
@@ -123,7 +143,7 @@ final class OfflineMapService: OfflineMapManaging {
         )
 
         let packId = "dl-\(Int(Date().timeIntervalSince1970))-\(String(Int.random(in: 0...999999), radix: 36))"
-        let context = OfflinePackContext(id: packId, name: name, layer: layer.rawValue)
+        let context = OfflinePackContext(id: packId, name: name, layer: layer.rawValue, kommuneId: kommuneId)
         guard let contextData = try? JSONEncoder().encode(context) else { return }
 
         MLNOfflineStorage.shared.addPack(for: region, withContext: contextData) { pack, error in
@@ -199,6 +219,7 @@ final class OfflineMapService: OfflineMapManaging {
             id: ctx.id,
             name: ctx.name,
             layer: ctx.layer,
+            kommuneId: ctx.kommuneId,
             bounds: (
                 south: region.bounds.sw.latitude,
                 west: region.bounds.sw.longitude,

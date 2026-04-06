@@ -11,12 +11,15 @@ final class SheetCoordinator {
     var showRouteList = false
     var showRouteDetail = false
     var showRouteSave = false
+    var showMyStuff = false
     var showWaypointList = false
     var showWaypointDetail = false
     var showWaypointEdit = false
     var editingWaypoint: Waypoint?
     var showOfflineManager = false
     var showDownloadArea = false
+    var showOfflineChoice = false
+    var showKommuneBrowser = false
     var showWeatherSheet = false
     var showMeasurementSheet = false
     var showPreferences = false
@@ -36,12 +39,15 @@ final class SheetCoordinator {
         showRouteList = false
         showRouteDetail = false
         showRouteSave = false
+        showMyStuff = false
         showWaypointList = false
         showWaypointDetail = false
         showWaypointEdit = false
         editingWaypoint = nil
         showOfflineManager = false
         showDownloadArea = false
+        showOfflineChoice = false
+        showKommuneBrowser = false
         showWeatherSheet = false
         showMeasurementSheet = false
         showPreferences = false

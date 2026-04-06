@@ -15,12 +15,70 @@ final class OfflineViewModel {
     var downloadMaxZoom = 15
     var isDownloading = false
 
+    // Kommune browsing
+    var kommuner: [KommuneRegion] = []
+    var kommuneSearchQuery = ""
+    var kommuneDownloadLayer: BaseLayer = .topo
+
     private let service: OfflineMapManaging
     private var progressObserver: NSObjectProtocol?
     private var errorObserver: NSObjectProtocol?
 
     init(service: OfflineMapManaging = OfflineMapService.shared) {
         self.service = service
+    }
+
+    // MARK: - Kommune
+
+    func loadKommuner() {
+        guard kommuner.isEmpty else { return }
+        guard let url = Bundle.main.url(forResource: "Kommuner", withExtension: "json"),
+              let data = try? Data(contentsOf: url),
+              let file = try? JSONDecoder().decode(KommuneFile.self, from: data) else {
+            Logger.offline.error("Failed to load Kommuner.json")
+            return
+        }
+        kommuner = file.kommuner
+    }
+
+    var filteredKommuner: [KommuneRegion] {
+        guard !kommuneSearchQuery.isEmpty else { return kommuner }
+        return kommuner.filter {
+            $0.name.localizedCaseInsensitiveContains(kommuneSearchQuery)
+        }
+    }
+
+    var kommunerByFylke: [(fylke: String, kommuner: [KommuneRegion])] {
+        let grouped = Dictionary(grouping: filteredKommuner, by: \.fylke)
+        return grouped.keys.sorted { $0.localizedStandardCompare($1) == .orderedAscending }
+            .map { fylke in
+                let sorted = grouped[fylke]!.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+                return (fylke: fylke, kommuner: sorted)
+            }
+    }
+
+    func isKommuneDownloaded(_ kommune: KommuneRegion) -> Bool {
+        packs.contains { $0.kommuneId == kommune.id }
+    }
+
+    func startKommuneDownload(_ kommune: KommuneRegion) {
+        let maxZoom = kommune.optimalMaxZoom()
+        isDownloading = true
+        service.startDownload(
+            name: kommune.name,
+            layer: kommuneDownloadLayer,
+            south: kommune.south, west: kommune.west,
+            north: kommune.north, east: kommune.east,
+            minZoom: 8, maxZoom: maxZoom,
+            kommuneId: kommune.id
+        )
+
+        Task { [weak self] in
+            try? await Task.sleep(for: .seconds(1))
+            guard let self else { return }
+            loadPacks()
+            isDownloading = false
+        }
     }
 
     var selectionBounds: (south: Double, west: Double, north: Double, east: Double)? {
@@ -45,6 +103,34 @@ final class OfflineViewModel {
         OfflineMapService.formatBytes(OfflineMapService.estimateSize(tileCount: estimatedTileCount))
     }
 
+    // MARK: - Offline Awareness
+
+    /// Whether the user's current position is inside any completed offline pack.
+    func isInsideOfflineArea(_ location: CLLocationCoordinate2D) -> Bool {
+        packs.filter(\.progress.isComplete).contains { pack in
+            location.latitude >= pack.bounds.south &&
+            location.latitude <= pack.bounds.north &&
+            location.longitude >= pack.bounds.west &&
+            location.longitude <= pack.bounds.east
+        }
+    }
+
+    private var wasInsideOfflineArea = true
+    var showLeftAreaWarning = false
+
+    /// Call when connectivity is lost and location updates. Shows a one-time warning
+    /// when the user moves outside all downloaded areas while offline.
+    func checkOfflineAreaBoundary(location: CLLocationCoordinate2D, isConnected: Bool) {
+        guard !isConnected, !packs.filter(\.progress.isComplete).isEmpty else { return }
+        let isInside = isInsideOfflineArea(location)
+        if wasInsideOfflineArea && !isInside {
+            showLeftAreaWarning = true
+        }
+        wasInsideOfflineArea = isInside
+    }
+
+    var completionMessage: String?
+
     // MARK: - Lifecycle
 
     func startObserving() {
@@ -56,7 +142,13 @@ final class OfflineViewModel {
             queue: .main
         ) { [weak self] _ in
             Task { @MainActor in
-                self?.loadPacks()
+                guard let self else { return }
+                let previousComplete = Set(self.packs.filter(\.progress.isComplete).map(\.id))
+                self.loadPacks()
+                let newlyComplete = self.packs.filter { $0.progress.isComplete && !previousComplete.contains($0.id) }
+                if let first = newlyComplete.first {
+                    self.completionMessage = first.name
+                }
             }
         }
 
@@ -154,7 +246,8 @@ final class OfflineViewModel {
             name: downloadName,
             layer: downloadLayer,
             south: b.south, west: b.west, north: b.north, east: b.east,
-            minZoom: downloadMinZoom, maxZoom: downloadMaxZoom
+            minZoom: downloadMinZoom, maxZoom: downloadMaxZoom,
+            kommuneId: nil
         )
 
         isSelectingArea = false

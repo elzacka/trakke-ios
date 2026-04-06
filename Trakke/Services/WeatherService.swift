@@ -29,6 +29,7 @@ struct WeatherForecast: Sendable {
 
 protocol WeatherFetching: Sendable {
     func getForecast(lat: Double, lon: Double) async throws -> WeatherForecast
+    func clearCache() async
 }
 
 actor WeatherService: WeatherFetching {
@@ -46,6 +47,10 @@ actor WeatherService: WeatherFetching {
     private static let maxCacheEntries = 10
 
     private var cache: [String: CachedForecast] = [:]
+
+    func clearCache() {
+        cache.removeAll()
+    }
 
     func getForecast(lat: Double, lon: Double) async throws -> WeatherForecast {
         let truncLat = (lat * 10000).rounded() / 10000
@@ -152,6 +157,70 @@ actor WeatherService: WeatherFetching {
         }
     }
 
+    // MARK: - Wind Chill (Følt temperatur)
+
+    /// Environment Canada wind chill formula. Returns nil when wind chill is not
+    /// meaningful (temperature > 10°C or wind < 4.8 km/h).
+    nonisolated static func windChill(temperature: Double, windSpeedMs: Double) -> Double? {
+        let windKmh = windSpeedMs * 3.6
+        guard temperature <= 10, windKmh >= 4.8 else { return nil }
+        let wc = 13.12 + 0.6215 * temperature
+            - 11.37 * pow(windKmh, 0.16)
+            + 0.3965 * temperature * pow(windKmh, 0.16)
+        return wc
+    }
+
+    // MARK: - Precipitation Intensity
+
+    /// Norwegian description of hourly precipitation amount.
+    nonisolated static func precipitationDescription(_ mm: Double) -> String {
+        switch mm {
+        case ..<0.1: return String(localized: "weather.precip.none")
+        case 0.1..<1.0: return String(localized: "weather.precip.light")
+        case 1.0..<4.0: return String(localized: "weather.precip.moderate")
+        default: return String(localized: "weather.precip.heavy")
+        }
+    }
+
+    // MARK: - Precipitation Outdoor Impact
+
+    /// Outdoor impact description for precipitation amount (mm/h).
+    nonisolated static func precipitationOutdoorImpact(_ mm: Double) -> String {
+        switch mm {
+        case ..<0.1: return String(localized: "weather.precip.impact.none")
+        case 0.1..<1.0: return String(localized: "weather.precip.impact.light")
+        case 1.0..<4.0: return String(localized: "weather.precip.impact.moderate")
+        default: return String(localized: "weather.precip.impact.heavy")
+        }
+    }
+
+    // MARK: - Humidity Outdoor Impact
+
+    /// Outdoor impact description for relative humidity.
+    nonisolated static func humidityOutdoorImpact(_ humidity: Double) -> String {
+        switch humidity {
+        case ..<40: return String(localized: "weather.humidity.impact.low")
+        case 40..<70: return String(localized: "weather.humidity.impact.moderate")
+        case 70..<90: return String(localized: "weather.humidity.impact.high")
+        default: return String(localized: "weather.humidity.impact.veryHigh")
+        }
+    }
+
+    // MARK: - Temperature Outdoor Impact
+
+    /// Outdoor safety description for temperature ranges.
+    nonisolated static func temperatureOutdoorImpact(_ temp: Double, windChill: Double?) -> String {
+        let effective = windChill ?? temp
+        switch effective {
+        case ..<(-20): return String(localized: "weather.temp.impact.extremeCold")
+        case (-20)..<(-10): return String(localized: "weather.temp.impact.veryCold")
+        case (-10)..<0: return String(localized: "weather.temp.impact.cold")
+        case 0..<10: return String(localized: "weather.temp.impact.cool")
+        case 10..<20: return String(localized: "weather.temp.impact.mild")
+        default: return String(localized: "weather.temp.impact.warm")
+        }
+    }
+
     // MARK: - Wind Direction
 
     static let windDirections = ["N", "NO", "O", "SO", "S", "SV", "V", "NV"]
@@ -159,6 +228,81 @@ actor WeatherService: WeatherFetching {
     nonisolated static func windDirectionName(_ degrees: Double) -> String {
         let index = ((Int((degrees / 45).rounded()) % 8) + 8) % 8
         return windDirections[index]
+    }
+
+    /// Unicode arrow showing the direction wind blows TOWARD (opposite of "from").
+    nonisolated static func windDirectionArrow(_ degrees: Double) -> String {
+        // Wind "from" north blows south, so rotate 180 degrees for "toward" arrow
+        let toward = (degrees + 180).truncatingRemainder(dividingBy: 360)
+        let arrows = ["\u{2191}", "\u{2197}", "\u{2192}", "\u{2198}", "\u{2193}", "\u{2199}", "\u{2190}", "\u{2196}"]
+        let index = ((Int((toward / 45).rounded()) % 8) + 8) % 8
+        return arrows[index]
+    }
+
+    /// Norwegian wind name based on Beaufort scale (Yr/MET standard).
+    /// Uses exact Yr names, grouped for compact display where adjacent levels
+    /// have similar outdoor impact.
+    nonisolated static func windDescription(_ speed: Double) -> String {
+        switch speed {
+        case ..<0.3: return String(localized: "weather.wind.0")   // Stille
+        case 0.3..<1.6: return String(localized: "weather.wind.1")  // Flau vind
+        case 1.6..<3.4: return String(localized: "weather.wind.2")  // Svak vind
+        case 3.4..<5.5: return String(localized: "weather.wind.3")  // Lett bris
+        case 5.5..<8.0: return String(localized: "weather.wind.4")  // Laber bris
+        case 8.0..<10.8: return String(localized: "weather.wind.5") // Frisk bris
+        case 10.8..<13.9: return String(localized: "weather.wind.6") // Liten kuling
+        case 13.9..<17.2: return String(localized: "weather.wind.7") // Stiv kuling
+        case 17.2..<20.8: return String(localized: "weather.wind.8") // Sterk kuling
+        case 20.8..<24.5: return String(localized: "weather.wind.9") // Liten storm
+        case 24.5..<28.5: return String(localized: "weather.wind.10") // Full storm
+        case 28.5..<32.7: return String(localized: "weather.wind.11") // Sterk storm
+        default: return String(localized: "weather.wind.12")          // Orkan
+        }
+    }
+
+    /// Beaufort level index for a given wind speed.
+    nonisolated static func beaufortLevel(_ speed: Double) -> Int {
+        switch speed {
+        case ..<0.3: return 0
+        case 0.3..<1.6: return 1
+        case 1.6..<3.4: return 2
+        case 3.4..<5.5: return 3
+        case 5.5..<8.0: return 4
+        case 8.0..<10.8: return 5
+        case 10.8..<13.9: return 6
+        case 13.9..<17.2: return 7
+        case 17.2..<20.8: return 8
+        case 20.8..<24.5: return 9
+        case 24.5..<28.5: return 10
+        case 28.5..<32.7: return 11
+        default: return 12
+        }
+    }
+
+    /// Land description for a Beaufort level (from Yr).
+    nonisolated static func windLandDescription(_ speed: Double) -> String {
+        let key = "weather.wind.land.\(beaufortLevel(speed))"
+        return Bundle.main.localizedString(forKey: key, value: nil, table: nil)
+    }
+
+    /// Mountain description for a Beaufort level (from Yr).
+    nonisolated static func windMountainDescription(_ speed: Double) -> String {
+        let key = "weather.wind.mountain.\(beaufortLevel(speed))"
+        return Bundle.main.localizedString(forKey: key, value: nil, table: nil)
+    }
+
+    /// Visual warning level for wind speed.
+    nonisolated static func windWarningLevel(_ speed: Double) -> WindWarningLevel {
+        switch speed {
+        case ..<10.8: return .none       // Bft 0-5: safe
+        case 10.8..<17.2: return .caution // Bft 6-7: be aware
+        case 17.2..<32.7: return .danger  // Bft 8-11: dangerous outdoors
+        default: return .extreme          // Bft 12: life-threatening
+        }
+    }
+
+    enum WindWarningLevel {
+        case none, caution, danger, extreme
     }
 
     // MARK: - Parsing
@@ -212,7 +356,7 @@ actor WeatherService: WeatherFetching {
         var dailyMap: [String: [(date: Date, data: WeatherData)]] = [:]
         for item in parsed where item.date > now {
             let components = calendar.dateComponents([.year, .month, .day], from: item.date)
-            let key = "\(components.year!)-\(components.month!)-\(components.day!)"
+            let key = String(format: "%04d-%02d-%02d", components.year!, components.month!, components.day!)
             dailyMap[key, default: []].append(item)
         }
 

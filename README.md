@@ -9,22 +9,23 @@ Tråkke er en kartapp for iPhone som bruker kartdata fra Kartverket. Appen er la
 - **Topografiske kart** fra Kartverket (topografisk, gråtone og toporaster/turkart)
 - **GPS-posisjon** med sanntidsvisning på kartet
 - **Stedsnavn- og adressesøk** via Kartverket
-- **Offline kart** - last ned områder for bruk uten nett
+- **Offline kart** - last ned områder eller hele kommuner for bruk uten nett
 - **Ruter og steder** - tegn, lagre, importer og eksporter som GPX
 - **Interessepunkter** - tilfluktsrom, huler, utsiktspunkter, krigsminner, gapahuker/vindskjul, kulturminner
-- **Kartlag** - turruter, 3D-relieff, naturvernområder og naturskog fra Kartverket og Miljødirektoratet
+- **Kartlag** - turruter, 3D-relieff, bratthetskart, naturvernområder og naturskog fra Kartverket, NVE og Miljødirektoratet
 - **Høydeprofiler** med data fra Kartverkets høydemodell
-- **Værmelding** fra Meteorologisk institutt
+- **Værmelding** fra Meteorologisk institutt med vindkjøleindeks, Beaufort-beskrivelser og interaktive tooltips
+- **Snø- og flomvarsler** fra NVE/Varsom for valgt posisjon
 - **Vanntemperatur** - havtemperatur (MET Oceanforecast) og badevannstemperatur (Havvarsel-Frost) med ferskhetsstatus
 - **Soloppgang og solnedgang** - dagslysinfo beregnet lokalt uten nett
 - **Måleverktøy** for avstand og areal
-- **Koordinatformater** - DD, DMS, DDM, UTM, MGRS
+- **Koordinatformater** - DD, DMS, UTM (EUREF89 sone 33), MGRS
 - **Navigasjon** - beregnet rute (via Valhalla) med sving-for-sving eller kompassretning til mål
 - **Turregistrering** - GPS-basert sporregistrering med avstand, høydemeter og varighet
 - **Eksport av turdata som GPX** - registrerte aktiviteter kan eksporteres som GPX-filer for dataportabilitet
 - **Kunnskap og overlevelse** - nedlastbare artikler om friluftsliv med artsbilder, tilgjengelig uten nett
 - **Nødkoordinater og SOS-signal** - vis posisjon i DD, UTM og MGRS, SOS-morsekode med lommelykt
-- **Slett alle data** - slett alle ruter og steder du har lagt til kart du har lastet ned (via Innstillinger)
+- **Slett alle data** - slett alle ruter og steder du har lagt til, kart du har lastet ned og alle mellomlagrede data (via Innstillinger)
 
 ## Krav
 
@@ -74,11 +75,10 @@ Alle brukerdata lagres lokalt på enheten. Ingen sporing, ingen analyse. Se [PER
 
 ## Dokumentasjon
 
-| Dokument                                                           | Innhold                        |
-| ------------------------------------------------------------------ | ------------------------------ |
-| [PERSONVERN.md](PERSONVERN.md)                                     | Personvernerklæring (GDPR)     |
-| [SECURITY.md](SECURITY.md)                                         | Sikkerhetspolicy               |
-| [CLAUDE.md](CLAUDE.md)                                             | Utviklerkontekst og arkitektur |
+| Dokument                       | Innhold                        |
+| ------------------------------ | ------------------------------ |
+| [PERSONVERN.md](PERSONVERN.md) | Personvernerklæring (GDPR)     |
+| [SECURITY.md](SECURITY.md)     | Sikkerhetspolicy               |
 
 ## Lisens
 
@@ -90,6 +90,7 @@ MIT License
 - Mapzen Terrain Tiles - terrengmodell for 3D-relieff (CC BY 4.0)
 - Meteorologisk institutt - vær- og havtemperaturdata (CC BY 4.0)
 - Havvarsel-Frost - badevannsdata (CC BY 4.0)
+- NVE / Varsom - snøskred- og flomvarsler (NLOD)
 - OpenStreetMap-bidragsytere - interessepunkter (ODbL)
 - Riksantikvaren - kulturminnedata (NLOD)
 - DSB - tilfluktsromdata (NLOD)

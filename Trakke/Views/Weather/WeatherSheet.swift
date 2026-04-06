@@ -37,7 +37,12 @@ struct WeatherSheet: View {
             VStack(spacing: .Trakke.cardGap) {
                 // Current conditions
                 CardSection(String(localized: "weather.current")) {
-                    currentWeatherCard(forecast.current)
+                    CurrentWeatherCard(data: forecast.current)
+                }
+
+                // Varsom warnings (avalanche/flood)
+                if !viewModel.varsomWarnings.isEmpty {
+                    varsomCard(viewModel.varsomWarnings)
                 }
 
                 // Sunrise / sunset
@@ -98,65 +103,160 @@ struct WeatherSheet: View {
 
     // MARK: - Current Weather Card
 
-    private func currentWeatherCard(_ data: WeatherData) -> some View {
-        VStack(spacing: .Trakke.lg) {
-            HStack(spacing: .Trakke.lg) {
-                Image(data.symbol)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: .Trakke.touchComfortable, height: .Trakke.touchComfortable)
-                    .accessibilityHidden(true)
+    /// Standalone view with its own @State so popovers work independently
+    /// in both the main sheet and pushed day detail views.
+    private struct CurrentWeatherCard: View {
+        let data: WeatherData
 
-                VStack(alignment: .leading, spacing: .Trakke.labelGap) {
-                    Text("\(Int(data.temperature.rounded()))°")
-                        .font(Font.Trakke.temperature)
-                        .foregroundStyle(Color.Trakke.text)
+        @State private var showWindDetail = false
+        @State private var showPrecipDetail = false
+        @State private var showHumidityDetail = false
+        @State private var showTempDetail = false
+
+        var body: some View {
+            let wc = WeatherService.windChill(temperature: data.temperature, windSpeedMs: data.windSpeed)
+            VStack(spacing: .Trakke.lg) {
+                HStack(spacing: .Trakke.lg) {
+                    Image(data.symbol)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: .Trakke.touchComfortable, height: .Trakke.touchComfortable)
+                        .accessibilityHidden(true)
+
+                    VStack(alignment: .leading, spacing: .Trakke.labelGap) {
+                        Text("\(Int(data.temperature.rounded()))\u{00B0}")
+                            .font(Font.Trakke.temperature)
+                            .foregroundStyle(Color.Trakke.text)
+
+                        if let wc {
+                            Text(String(localized: "weather.feelsLike \(Int(wc.rounded()))"))
+                                .font(Font.Trakke.caption)
+                                .foregroundStyle(wc < -10 ? Color.Trakke.red : Color.Trakke.textTertiary)
+                        }
+                    }
+                    .contentShape(Rectangle())
+                    .onTapGesture { showTempDetail = true }
+                    .trakkeTooltip(isPresented: $showTempDetail) {
+                        TrakkeTooltip(
+                            title: "\(Int(data.temperature.rounded()))\u{00B0}" + (wc != nil ? " (\(String(localized: "weather.feelsLike \(Int(wc!.rounded()))")))" : ""),
+                            text: WeatherService.temperatureOutdoorImpact(data.temperature, windChill: wc)
+                        )
+                    }
+
+                    Spacer()
 
                     Text(WeatherViewModel.conditionText(for: data.symbol))
                         .font(Font.Trakke.bodyRegular)
                         .foregroundStyle(Color.Trakke.textSecondary)
                 }
 
-                Spacer()
+                Divider()
+
+                LazyVGrid(columns: [
+                    GridItem(.flexible()),
+                    GridItem(.flexible()),
+                    GridItem(.flexible()),
+                ], spacing: .Trakke.sm) {
+                    windStat
+                    precipStat
+                    humidityStat
+                }
             }
+        }
 
-            Divider()
-
-            LazyVGrid(columns: [
-                GridItem(.flexible()),
-                GridItem(.flexible()),
-                GridItem(.flexible()),
-            ], spacing: .Trakke.sm) {
-                weatherStat(
-                    icon: "wind",
-                    value: String(format: "%.1f m/s", data.windSpeed),
-                    label: WeatherService.windDirectionName(data.windDirection)
-                )
-                weatherStat(
-                    icon: "drop",
-                    value: String(format: "%.0f%%", data.precipitationProbability),
-                    label: String(localized: "weather.precipitation")
-                )
-                weatherStat(
-                    icon: "humidity",
-                    value: String(format: "%.0f%%", data.humidity),
-                    label: String(localized: "weather.humidity")
+        private var windStat: some View {
+            let arrow = WeatherService.windDirectionArrow(data.windDirection)
+            let desc = WeatherService.windDescription(data.windSpeed)
+            let level = WeatherService.windWarningLevel(data.windSpeed)
+            let color: Color = switch level {
+            case .none: Color.Trakke.textTertiary
+            case .caution: Color.Trakke.warning
+            case .danger, .extreme: Color.Trakke.red
+            }
+            let valueColor: Color = switch level {
+            case .none: Color.Trakke.text
+            case .caution: Color.Trakke.warning
+            case .danger, .extreme: Color.Trakke.red
+            }
+            return VStack(spacing: .Trakke.xs) {
+                Image(systemName: "wind")
+                    .font(Font.Trakke.captionSoft)
+                    .foregroundStyle(color)
+                Text(String(format: "%.1f m/s %@", data.windSpeed, arrow))
+                    .font(Font.Trakke.bodyRegular.monospacedDigit())
+                    .foregroundStyle(valueColor)
+                tappableLabel(desc, color: color)
+            }
+            .contentShape(Rectangle())
+            .onTapGesture { showWindDetail = true }
+            .accessibilityHint(String(localized: "weather.wind.tapHint"))
+            .trakkeTooltip(isPresented: $showWindDetail) {
+                TrakkeTooltip(
+                    title: desc,
+                    text: "",
+                    sections: [
+                        (header: String(localized: "weather.wind.onLand"),
+                         text: WeatherService.windLandDescription(data.windSpeed)),
+                        (header: String(localized: "weather.wind.onMountain"),
+                         text: WeatherService.windMountainDescription(data.windSpeed)),
+                    ]
                 )
             }
         }
-    }
 
-    private func weatherStat(icon: String, value: String, label: String) -> some View {
-        VStack(spacing: .Trakke.xs) {
-            Image(systemName: icon)
-                .font(Font.Trakke.captionSoft)
-                .foregroundStyle(Color.Trakke.textTertiary)
-            Text(value)
-                .font(Font.Trakke.bodyRegular.monospacedDigit())
-                .foregroundStyle(Color.Trakke.text)
-            Text(label)
-                .font(Font.Trakke.captionSoft)
-                .foregroundStyle(Color.Trakke.textTertiary)
+        private var precipStat: some View {
+            let label = data.precipitation > 0
+                ? WeatherService.precipitationDescription(data.precipitation)
+                : String(localized: "weather.precipitation")
+            return VStack(spacing: .Trakke.xs) {
+                Image(systemName: "drop")
+                    .font(Font.Trakke.captionSoft)
+                    .foregroundStyle(Color.Trakke.textTertiary)
+                Text(String(format: "%.0f%%", data.precipitationProbability))
+                    .font(Font.Trakke.bodyRegular.monospacedDigit())
+                    .foregroundStyle(Color.Trakke.text)
+                tappableLabel(label)
+            }
+            .contentShape(Rectangle())
+            .onTapGesture { showPrecipDetail = true }
+            .accessibilityHint(String(localized: "weather.wind.tapHint"))
+            .trakkeTooltip(isPresented: $showPrecipDetail) {
+                TrakkeTooltip(
+                    title: label,
+                    text: WeatherService.precipitationOutdoorImpact(data.precipitation)
+                )
+            }
+        }
+
+        private var humidityStat: some View {
+            VStack(spacing: .Trakke.xs) {
+                Image(systemName: "humidity")
+                    .font(Font.Trakke.captionSoft)
+                    .foregroundStyle(Color.Trakke.textTertiary)
+                Text(String(format: "%.0f%%", data.humidity))
+                    .font(Font.Trakke.bodyRegular.monospacedDigit())
+                    .foregroundStyle(Color.Trakke.text)
+                tappableLabel(String(localized: "weather.humidity"))
+            }
+            .contentShape(Rectangle())
+            .onTapGesture { showHumidityDetail = true }
+            .accessibilityHint(String(localized: "weather.wind.tapHint"))
+            .trakkeTooltip(isPresented: $showHumidityDetail) {
+                TrakkeTooltip(
+                    title: String(format: "%.0f%% %@", data.humidity, String(localized: "weather.humidity.label")),
+                    text: WeatherService.humidityOutdoorImpact(data.humidity)
+                )
+            }
+        }
+
+        private func tappableLabel(_ text: String, color: Color = Color.Trakke.textTertiary) -> some View {
+            HStack(spacing: 2) {
+                Text(text)
+                Image(systemName: "info.circle")
+                    .imageScale(.small)
+            }
+            .font(Font.Trakke.captionSoft)
+            .foregroundStyle(color)
         }
     }
 
@@ -260,6 +360,57 @@ struct WeatherSheet: View {
         }
     }
 
+    // MARK: - Varsom Warnings
+
+    private func varsomCard(_ warnings: [VarsomWarning]) -> some View {
+        CardSection(String(localized: "weather.varsom")) {
+            VStack(spacing: 0) {
+                ForEach(Array(warnings.enumerated()), id: \.element.id) { index, warning in
+                    if index > 0 {
+                        Divider().padding(.leading, .Trakke.dividerLeading)
+                    }
+                    HStack(spacing: .Trakke.md) {
+                        Image(systemName: warning.type == .avalanche ? "mountain.2.fill" : "drop.triangle.fill")
+                            .font(Font.Trakke.bodyMedium)
+                            .foregroundStyle(varsomColor(warning.dangerLevel))
+                            .frame(width: 24)
+                            .accessibilityHidden(true)
+
+                        VStack(alignment: .leading, spacing: .Trakke.labelGap) {
+                            Text(warning.type == .avalanche
+                                ? String(localized: "weather.varsom.avalanche")
+                                : String(localized: "weather.varsom.flood"))
+                                .font(Font.Trakke.bodyMedium)
+                                .foregroundStyle(Color.Trakke.text)
+                            Text("\(warning.dangerName) – \(warning.regionName)")
+                                .font(Font.Trakke.caption)
+                                .foregroundStyle(Color.Trakke.textSecondary)
+                        }
+
+                        Spacer()
+
+                        Text(String(warning.dangerLevel))
+                            .font(Font.Trakke.bodyMedium.monospacedDigit())
+                            .foregroundStyle(.white)
+                            .frame(width: 28, height: 28)
+                            .background(varsomColor(warning.dangerLevel))
+                            .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.sm))
+                    }
+                    .padding(.vertical, .Trakke.xs)
+                }
+            }
+        }
+    }
+
+    private func varsomColor(_ level: Int) -> Color {
+        switch level {
+        case 2: return Color.Trakke.yellow
+        case 3: return Color.Trakke.warning
+        case 4, 5: return Color.Trakke.red
+        default: return Color.Trakke.green
+        }
+    }
+
     // MARK: - Daily Row
 
     private func dailyRow(_ day: WeatherData) -> some View {
@@ -341,11 +492,11 @@ struct WeatherSheet: View {
             VStack(spacing: .Trakke.cardGap) {
                 if hours.isEmpty {
                     CardSection(String(localized: "weather.daySummary")) {
-                        currentWeatherCard(day)
+                        CurrentWeatherCard(data: day)
                     }
                 } else {
                     CardSection(summaryTitle) {
-                        currentWeatherCard(day)
+                        CurrentWeatherCard(data: day)
                     }
 
                     CardSection(String(localized: "weather.hourly")) {
@@ -381,7 +532,7 @@ struct WeatherSheet: View {
     // MARK: - Hourly Row
 
     private func hourlyRow(_ hour: WeatherData) -> some View {
-        HStack(spacing: 0) {
+        HStack(spacing: .Trakke.sm) {
             Text(formatHour(hour.time))
                 .font(Font.Trakke.bodyRegular.monospacedDigit())
                 .foregroundStyle(Color.Trakke.textSecondary)
@@ -391,7 +542,6 @@ struct WeatherSheet: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 28, height: 28)
-                .frame(maxWidth: .infinity)
                 .accessibilityHidden(true)
 
             Text("\(Int(hour.temperature.rounded()))°")
@@ -399,7 +549,7 @@ struct WeatherSheet: View {
                 .foregroundStyle(Color.Trakke.text)
                 .frame(maxWidth: .infinity)
 
-            HStack(spacing: .Trakke.xs) {
+            HStack(spacing: .Trakke.sm) {
                 if hour.precipitation > 0 {
                     HStack(spacing: .Trakke.labelGap) {
                         Image(systemName: "drop.fill")
@@ -411,7 +561,7 @@ struct WeatherSheet: View {
                 }
 
                 Text(String(format: "%.0f m/s", hour.windSpeed))
-                    .font(Font.Trakke.caption)
+                    .font(Font.Trakke.caption.monospacedDigit())
                     .foregroundStyle(Color.Trakke.textTertiary)
             }
             .frame(maxWidth: .infinity, alignment: .trailing)
