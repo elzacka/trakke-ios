@@ -21,7 +21,13 @@ struct OverpassElement: Decodable {
     let lat: Double?
     let lon: Double?
     let nodes: [Int]?
+    let geometry: [OverpassCoord]? // from `out body geom;`
     let tags: [String: String]?
+}
+
+struct OverpassCoord: Decodable {
+    let lat: Double
+    let lon: Double
 }
 
 // MARK: - GeoJSON output types
@@ -174,11 +180,17 @@ for config in categories {
         if element.type == "node" {
             lat = element.lat
             lon = element.lon
-        } else if element.type == "way", let nodes = element.nodes {
-            let coords = nodes.compactMap { nodeMap[$0] }
-            guard !coords.isEmpty else { continue }
-            lat = coords.map(\.lat).reduce(0, +) / Double(coords.count)
-            lon = coords.map(\.lon).reduce(0, +) / Double(coords.count)
+        } else if element.type == "way" {
+            // Prefer inline geometry from `out body geom;`, fall back to node lookup
+            if let geom = element.geometry, !geom.isEmpty {
+                lat = geom.map(\.lat).reduce(0, +) / Double(geom.count)
+                lon = geom.map(\.lon).reduce(0, +) / Double(geom.count)
+            } else if let nodes = element.nodes {
+                let coords = nodes.compactMap { nodeMap[$0] }
+                guard !coords.isEmpty else { continue }
+                lat = coords.map(\.lat).reduce(0, +) / Double(coords.count)
+                lon = coords.map(\.lon).reduce(0, +) / Double(coords.count)
+            }
         }
 
         guard let finalLat = lat, let finalLon = lon else { continue }

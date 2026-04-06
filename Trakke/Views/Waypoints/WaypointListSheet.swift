@@ -4,15 +4,30 @@ import UniformTypeIdentifiers
 struct WaypointListSheet: View {
     @Bindable var viewModel: WaypointViewModel
     var onWaypointSelected: ((Waypoint) -> Void)?
+    var isEmbedded = false
+    var dismissSheet: (() -> Void)?
     @Environment(\.dismiss) private var dismiss
     @State private var showFileImporter = false
     @State private var shareURL: ShareableURL?
     @State private var expandedCategories: Set<String> = []
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
+    private func dismissFully() {
+        if let dismissSheet { dismissSheet() } else { dismiss() }
+    }
+
     var body: some View {
-        NavigationStack {
-            Group {
+        if isEmbedded {
+            waypointContent
+        } else {
+            NavigationStack {
+                waypointContent
+            }
+        }
+    }
+
+    private var waypointContent: some View {
+        Group {
                 if viewModel.waypoints.isEmpty {
                     EmptyStateView(
                         icon: "mappin",
@@ -47,7 +62,6 @@ struct WaypointListSheet: View {
                     importBanner
                 }
             }
-        }
     }
 
     // MARK: - Waypoint List
@@ -141,7 +155,7 @@ struct WaypointListSheet: View {
                         }
                         Button {
                             onWaypointSelected?(waypoint)
-                            dismiss()
+                            dismissFully()
                         } label: {
                             waypointRow(waypoint)
                         }

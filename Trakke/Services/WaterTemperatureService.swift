@@ -27,6 +27,7 @@ struct WaterTemperatureResult: Sendable {
 
 protocol WaterTemperatureFetching: Sendable {
     func getWaterTemperature(lat: Double, lon: Double) async throws -> WaterTemperatureResult
+    func clearCache() async
 }
 
 // MARK: - Service
@@ -48,6 +49,10 @@ actor WaterTemperatureService: WaterTemperatureFetching {
     private nonisolated(unsafe) static let iso8601Formatter = ISO8601DateFormatter()
     private var cache: [String: CachedResult] = [:]
 
+    func clearCache() {
+        cache.removeAll()
+    }
+
     private static let expiresFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss zzz"
@@ -57,8 +62,8 @@ actor WaterTemperatureService: WaterTemperatureFetching {
     }()
 
     private func cacheKey(lat: Double, lon: Double) -> String {
-        let truncLat = (lat * 100).rounded() / 100
-        let truncLon = (lon * 100).rounded() / 100
+        let truncLat = (lat * 10000).rounded() / 10000
+        let truncLon = (lon * 10000).rounded() / 10000
         return "\(truncLat),\(truncLon)"
     }
 

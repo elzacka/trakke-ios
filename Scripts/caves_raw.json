@@ -1,0 +1,2758 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API 0.7.62.11 87bfad18",
+  "osm3s": {
+    "timestamp_osm_base": "2026-04-02T18:35:15Z",
+    "timestamp_areas_base": "2026-04-02T09:50:53Z",
+    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+  },
+  "elements": [
+
+{
+  "type": "node",
+  "id": 276579864,
+  "lat": 62.5190338,
+  "lon": 6.1044560,
+  "tags": {
+    "name": "Skjonghellaren",
+    "natural": "cave_entrance",
+    "wikidata": "Q3426124",
+    "wikipedia": "no:Skjonghelleren"
+  }
+},
+{
+  "type": "node",
+  "id": 286847997,
+  "lat": 65.3982155,
+  "lon": 12.0922747,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 308230811,
+  "lat": 59.2642098,
+  "lon": 10.9785331,
+  "tags": {
+    "name": "Hattehulene",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 324491464,
+  "lat": 59.6082759,
+  "lon": 10.4031974,
+  "tags": {
+    "name": "Tyskerhula",
+    "natural": "cave_entrance",
+    "source": "GPS, Name by local knowledge"
+  }
+},
+{
+  "type": "node",
+  "id": 356340668,
+  "lat": 59.5740636,
+  "lon": 7.2810376,
+  "tags": {
+    "name": "Breive Pumpstasjon",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 379899388,
+  "lat": 63.4545063,
+  "lon": 10.4566586,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 497482392,
+  "lat": 59.2023392,
+  "lon": 9.5484770,
+  "tags": {
+    "name": "Hetia Gruva",
+    "natural": "cave_entrance",
+    "note": "Fra sporloggene til grenlandsmafiaen.com"
+  }
+},
+{
+  "type": "node",
+  "id": 499697685,
+  "lat": 59.2613866,
+  "lon": 9.5168177,
+  "tags": {
+    "name": "Bruberggruva",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 569632404,
+  "lat": 58.9872941,
+  "lon": 5.5966649,
+  "tags": {
+    "designation": "Historical site",
+    "historic": "archaeological_site",
+    "name": "Svarthola/Vistehålå",
+    "natural": "cave_entrance",
+    "source": "Stavanger Museum",
+    "tourism": "attraction",
+    "wheelchair": "yes",
+    "wikidata": "Q4580221",
+    "wikipedia": "en:Svarthola"
+  }
+},
+{
+  "type": "node",
+  "id": 597476577,
+  "lat": 59.8534763,
+  "lon": 10.8869038,
+  "tags": {
+    "alt_name": "Smalvannshula",
+    "name": "Milorghula",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 733218419,
+  "lat": 63.0794110,
+  "lon": 7.6460392,
+  "tags": {
+    "name": "Bremsneshula",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 737547605,
+  "lat": 59.2084488,
+  "lon": 10.8704844,
+  "tags": {
+    "historic": "memorial",
+    "name": "MILORG Våpenlager fra 2.verdenskrig",
+    "natural": "cave_entrance",
+    "tourism": "attraction"
+  }
+},
+{
+  "type": "node",
+  "id": 743075897,
+  "lat": 58.2144196,
+  "lon": 6.8743008,
+  "tags": {
+    "cave:access": "yes",
+    "description:no": "Ett relativt stort hulrom.",
+    "historic": "yes",
+    "name": "Poddelopthola Sør",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 765254821,
+  "lat": 61.3041298,
+  "lon": 7.2547837,
+  "tags": {
+    "comment": "This does not seem to be the cave described on the information board.",
+    "name": "Kaldehola",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 815039374,
+  "lat": 66.5138077,
+  "lon": 13.0271975,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 837837484,
+  "lat": 59.1596161,
+  "lon": 11.1059363,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 892290894,
+  "lat": 63.2764434,
+  "lon": 10.2629199,
+  "tags": {
+    "historic": "monument",
+    "name": "Jarlshola",
+    "natural": "cave_entrance",
+    "tourism": "attraction",
+    "wikidata": "Q6160343",
+    "wikipedia": "en:Jarlshola"
+  }
+},
+{
+  "type": "node",
+  "id": 919673943,
+  "lat": 60.6906646,
+  "lon": 7.6191994,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 967129537,
+  "lat": 58.1621415,
+  "lon": 6.6214597,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 1200863507,
+  "lat": 63.4204616,
+  "lon": 10.3494087,
+  "tags": {
+    "description": "Small cave",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 1250501486,
+  "lat": 60.0233377,
+  "lon": 5.8686587,
+  "tags": {
+    "name": "Hedlebergshidleren",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 1342730920,
+  "lat": 58.8342181,
+  "lon": 9.3091001,
+  "tags": {
+    "fixme": "position",
+    "natural": "cave_entrance",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 1360541434,
+  "lat": 59.7133629,
+  "lon": 10.7314433,
+  "tags": {
+    "disused": "yes",
+    "historic": "yes",
+    "image": "https://photos.app.goo.gl/MJqUZfFZoM2QbVkTA",
+    "man_made": "adit",
+    "name": "Gruven",
+    "natural": "cave_entrance",
+    "note": "Tag Cave_entrance was missing",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 1380788875,
+  "lat": 62.8887917,
+  "lon": 7.2678054,
+  "tags": {
+    "fee": "no",
+    "name": "Trollkyrkja",
+    "natural": "cave_entrance",
+    "tourism": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 1388675771,
+  "lat": 62.5492664,
+  "lon": 10.4269377,
+  "tags": {
+    "name": "Gabe Gottes",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 1388675772,
+  "lat": 62.5552812,
+  "lon": 10.4234910,
+  "tags": {
+    "name": "Nedre Setervangsgruve",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 1388675874,
+  "lat": 62.5548735,
+  "lon": 10.4209729,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 1388675876,
+  "lat": 62.5551294,
+  "lon": 10.4227244,
+  "tags": {
+    "natural": "cave_entrance",
+    "note": "very small"
+  }
+},
+{
+  "type": "node",
+  "id": 1388675888,
+  "lat": 62.5550378,
+  "lon": 10.4212963,
+  "tags": {
+    "access": "yes",
+    "name": "Øvre Setervangsgruve",
+    "natural": "cave_entrance",
+    "tourism": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 1411991350,
+  "lat": 65.3969989,
+  "lon": 12.0894870,
+  "tags": {
+    "name": "Torghatthullet",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 1435802249,
+  "lat": 62.8890714,
+  "lon": 7.2679668,
+  "tags": {
+    "fee": "no",
+    "name": "Trollkyrkja",
+    "natural": "cave_entrance",
+    "tourism": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 1435802272,
+  "lat": 62.8890077,
+  "lon": 7.2678728,
+  "tags": {
+    "fee": "no",
+    "name": "Trollkyrkja",
+    "natural": "cave_entrance",
+    "tourism": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 1435802321,
+  "lat": 62.8894091,
+  "lon": 7.2674658,
+  "tags": {
+    "fee": "no",
+    "natural": "cave_entrance",
+    "tourism": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 1443842758,
+  "lat": 58.8311588,
+  "lon": 9.3357281,
+  "tags": {
+    "fixme": "classification",
+    "name": "Lågåsmyrhelleren",
+    "natural": "cave_entrance",
+    "note": "Not a typical cave, but rock shelter formed by overhanging cliff",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 1500344108,
+  "lat": 59.9792785,
+  "lon": 10.3354601,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 1730361486,
+  "lat": 59.9214632,
+  "lon": 11.0248344,
+  "tags": {
+    "name": "Milorghula",
+    "natural": "cave_entrance",
+    "source": "knowledge",
+    "website": "http://www.lions.no/club/show/Str%C3%B8mmen/607/49595",
+    "website_1": "https://www.youtube.com/watch?v=ExhmAJI6q-U"
+  }
+},
+{
+  "type": "node",
+  "id": 1737831575,
+  "lat": 59.9015768,
+  "lon": 10.8578794,
+  "tags": {
+    "length": "2.5",
+    "name": "Kjerringhula",
+    "natural": "cave_entrance",
+    "source:name": "signpost"
+  }
+},
+{
+  "type": "node",
+  "id": 1758977854,
+  "lat": 61.5950384,
+  "lon": 9.7616016,
+  "tags": {
+    "FIXME": "location",
+    "name": "Tom Sawyers hule",
+    "natural": "cave_entrance",
+    "note": "small opening"
+  }
+},
+{
+  "type": "node",
+  "id": 1777300194,
+  "lat": 63.3739484,
+  "lon": 8.5357317,
+  "tags": {
+    "name": "Jutulholet",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 1813228062,
+  "lat": 63.4217985,
+  "lon": 10.3540775,
+  "tags": {
+    "description": "Small cave",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 1815599137,
+  "lat": 65.7644757,
+  "lon": 12.4139686,
+  "tags": {
+    "name": "Torjeråskjerka",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 1817401011,
+  "lat": 62.6442768,
+  "lon": 6.5284546,
+  "tags": {
+    "name": "Franskhellaren",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 1825830088,
+  "lat": 58.8694718,
+  "lon": 9.4092323,
+  "tags": {
+    "disused": "yes",
+    "historic": "yes",
+    "image": "https://images.mapillary.com/TAU9p0c_l4AhFhcwGdTtqA/thumb-2048.jpg",
+    "man_made": "adit",
+    "mapillary": "321041036063866",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 1825830098,
+  "lat": 58.8695507,
+  "lon": 9.4093396,
+  "tags": {
+    "disused": "yes",
+    "historic": "yes",
+    "image": "https://images.mapillary.com/CZfLh-TAeqZxaIe8i0TK9A/thumb-2048.jpg",
+    "man_made": "adit",
+    "mapillary": "889955878492063",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 1835092077,
+  "lat": 58.1623721,
+  "lon": 6.6219122,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 1847620330,
+  "lat": 66.8063104,
+  "lon": 13.2197446,
+  "tags": {
+    "name": "Bolgbørra",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 1964079428,
+  "lat": 58.9405110,
+  "lon": 6.6585052,
+  "tags": {
+    "amenity": "shelter",
+    "name": "Mohidler",
+    "natural": "cave_entrance",
+    "shelter_type": "rock_shelter",
+    "tourism": "attraction",
+    "wikidata": "Q11989777",
+    "wikipedia": "no:Mohidleren"
+  }
+},
+{
+  "type": "node",
+  "id": 2090406984,
+  "lat": 60.1214958,
+  "lon": 10.4145074,
+  "tags": {
+    "image": "https://photos.app.goo.gl/vcjRvGc8jaqtg35w7",
+    "name": "Helleramshula",
+    "natural": "cave_entrance",
+    "url": "https://youtu.be/vpL7u5j3GHU?si=WswFxTOR1O72k5uR&t=371",
+    "url:0": "https://www.ringeriksavisa.no/arkiv/item/4621-helleramshula-ved-damtjern"
+  }
+},
+{
+  "type": "node",
+  "id": 2208432120,
+  "lat": 67.2700496,
+  "lon": 14.4121066,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 2291810229,
+  "lat": 60.1342343,
+  "lon": 10.4986368,
+  "tags": {
+    "amenity": "shelter",
+    "fixme": "position",
+    "name": "Fleske-Lars' sommerhule",
+    "natural": "cave_entrance",
+    "shelter_type": "rock_shelter",
+    "tourism": "attraction"
+  }
+},
+{
+  "type": "node",
+  "id": 2301003574,
+  "lat": 63.3231495,
+  "lon": 10.6911044,
+  "tags": {
+    "amenity": "shelter",
+    "fireplace": "yes",
+    "name": "Finnpålstuggu",
+    "natural": "cave_entrance",
+    "shelter_type": "rock_shelter"
+  }
+},
+{
+  "type": "node",
+  "id": 2319418350,
+  "lat": 58.8308473,
+  "lon": 9.2994312,
+  "tags": {
+    "depth": "1.5",
+    "natural": "cave_entrance",
+    "note": "Minor cave",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 2385575371,
+  "lat": 59.9817787,
+  "lon": 10.9014966,
+  "tags": {
+    "capacity": "3-4",
+    "depth": "3",
+    "height": "1.8",
+    "image": "https://photos.app.goo.gl/DhHkffD1iCaJ2wzd8",
+    "lillomarkasvenner:iid": "N31",
+    "name": "Røverhulene",
+    "natural": "cave_entrance",
+    "shelter_type": "rock_shelter",
+    "source": "Lillomarkas Venner",
+    "source:position": "survey",
+    "width": "4"
+  }
+},
+{
+  "type": "node",
+  "id": 2385575372,
+  "lat": 59.9775577,
+  "lon": 10.7960579,
+  "tags": {
+    "image": "https://photos.app.goo.gl/tZN5ErQrPyRN2BSe8",
+    "name": "Tolvmannshula",
+    "natural": "cave_entrance",
+    "source:url": "http://www.lillomarkasvenner.no/kulturminner/kulturminner.shtml"
+  }
+},
+{
+  "type": "node",
+  "id": 2385575373,
+  "lat": 59.9806023,
+  "lon": 10.8063883,
+  "tags": {
+    "image": "https://photos.app.goo.gl/buHU76QJ1CENcGcV9",
+    "name": "Wernerhula",
+    "natural": "cave_entrance",
+    "source": "Lillomarkas Venner"
+  }
+},
+{
+  "type": "node",
+  "id": 2385575481,
+  "lat": 59.9619724,
+  "lon": 10.8067535,
+  "tags": {
+    "depth": "3",
+    "image": "https://photos.app.goo.gl/DektJLx5E5hyhH34A",
+    "natural": "cave_entrance",
+    "source": "Lillomarkas Venner;survey"
+  }
+},
+{
+  "type": "node",
+  "id": 2547404708,
+  "lat": 60.0617658,
+  "lon": 11.0122242,
+  "tags": {
+    "image": "https://photos.app.goo.gl/YG71yEc2s11yMrhC6",
+    "name": "Ulvedalshula",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 2597742077,
+  "lat": 59.0453641,
+  "lon": 11.7212207,
+  "tags": {
+    "fixme": "needs more nodes, more accurate placement of nodes (masts)",
+    "historic": "memorial",
+    "name": "Tomte-Elias hule",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 2667827330,
+  "lat": 66.2800555,
+  "lon": 14.7291098,
+  "tags": {
+    "fixme": "Somewhere in this small lake",
+    "location": "underwater",
+    "name": "Pluragrotta",
+    "natural": "cave_entrance",
+    "wikidata": "Q97682773",
+    "wikipedia": "no:Pluragrotta"
+  }
+},
+{
+  "type": "node",
+  "id": 2667827332,
+  "lat": 66.2726297,
+  "lon": 14.7342012,
+  "tags": {
+    "name": "Steinugleflåget",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 2908349293,
+  "lat": 58.8342737,
+  "lon": 9.3089414,
+  "tags": {
+    "fixme": "position",
+    "natural": "cave_entrance",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 2908350003,
+  "lat": 58.8342920,
+  "lon": 9.3087596,
+  "tags": {
+    "fixme": "position",
+    "natural": "cave_entrance",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 2967592142,
+  "lat": 58.1766769,
+  "lon": 6.6591399,
+  "tags": {
+    "name": "Gjest Bårdssons hole",
+    "natural": "cave_entrance",
+    "source": "GPS",
+    "website": "https://kulturminnesok.no/Lokaliteter/Vest-Agder/Farsund/Gjest-Baardssons-hole"
+  }
+},
+{
+  "type": "node",
+  "id": 2974479485,
+  "lat": 60.0287892,
+  "lon": 10.8372639,
+  "tags": {
+    "fixme": "Exact location. I found it, so I know it's on the cliff, about there, but don't know if that's the exact place.",
+    "name": "Catos gryte",
+    "natural": "cave_entrance",
+    "source": "contributed"
+  }
+},
+{
+  "type": "node",
+  "id": 3022134342,
+  "lat": 62.6188655,
+  "lon": 6.1509828,
+  "tags": {
+    "ele": "56",
+    "fee": "no",
+    "name": "Rønstadhellaren",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 3037146093,
+  "lat": 60.9702644,
+  "lon": 8.7504167,
+  "tags": {
+    "cave:access": "yes",
+    "cave:difficulty": "easy",
+    "cave:equipment": "light;guide",
+    "cave:size": "small",
+    "name": "Hulabakkhula",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 3058670582,
+  "lat": 60.3292070,
+  "lon": 9.9786547,
+  "tags": {
+    "name": "Tjuvenborghula",
+    "natural": "cave_entrance",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 3077812234,
+  "lat": 63.4306128,
+  "lon": 10.3526986,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 3106126304,
+  "lat": 59.9693448,
+  "lon": 10.8660360,
+  "tags": {
+    "depth": "4",
+    "natural": "cave_entrance",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 3127731880,
+  "lat": 66.9394599,
+  "lon": 15.1862605,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 3187095585,
+  "lat": 59.9816641,
+  "lon": 10.9016376,
+  "tags": {
+    "depth": "4",
+    "image": "https://photos.app.goo.gl/XhZ6kJWgHE2orhd19",
+    "lillomarkasvenner:iid": "N31",
+    "name": "Røverhulene",
+    "natural": "cave_entrance",
+    "source": "Lillomarkas Venner",
+    "source:position": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 3372977527,
+  "lat": 58.2398128,
+  "lon": 8.1175989,
+  "tags": {
+    "name": "Ole Høylands hule",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 3379724311,
+  "lat": 58.0513106,
+  "lon": 7.7046892,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 3379724312,
+  "lat": 58.0502979,
+  "lon": 7.7051519,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 3379724313,
+  "lat": 58.0506940,
+  "lon": 7.7033239,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 3379724361,
+  "lat": 58.0509751,
+  "lon": 7.7026481,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 3380514403,
+  "lat": 58.0506748,
+  "lon": 7.7025636,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 3468557500,
+  "lat": 60.3447625,
+  "lon": 5.1013748,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 3520145461,
+  "lat": 60.3495571,
+  "lon": 5.3354830,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 3625699913,
+  "lat": 60.2157897,
+  "lon": 5.3606222,
+  "tags": {
+    "alt_name": "Lysøgrotten",
+    "loc_name": "Grotten",
+    "name": "Lysøygrotta",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 3676732654,
+  "lat": 63.4331042,
+  "lon": 10.7102885,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 3676732674,
+  "lat": 63.4332877,
+  "lon": 10.7105471,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 3685871749,
+  "lat": 66.4214673,
+  "lon": 14.2539286,
+  "tags": {
+    "name": "Setergrotta",
+    "natural": "cave_entrance",
+    "url": "https://youtu.be/Nbdln9ha5lw?t=27",
+    "wikidata": "Q12000053",
+    "wikipedia": "no:Setergrotta"
+  }
+},
+{
+  "type": "node",
+  "id": 3685871909,
+  "lat": 66.4154926,
+  "lon": 14.2619189,
+  "tags": {
+    "fee": "yes",
+    "name": "Grønligrotta",
+    "natural": "cave_entrance",
+    "payment:cards": "yes",
+    "payment:cash": "yes",
+    "url": "https://youtu.be/YpOGCKO6JMY",
+    "wikidata": "Q1551739",
+    "wikipedia": "no:Grønligrotta"
+  }
+},
+{
+  "type": "node",
+  "id": 3692730354,
+  "lat": 59.2726883,
+  "lon": 10.4050127,
+  "tags": {
+    "name": "Bunker",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 3721594079,
+  "lat": 58.2144905,
+  "lon": 6.8742789,
+  "tags": {
+    "cave:access": "yes",
+    "description:no": "Trang adkomst ned stige. Smale passasjer videre.",
+    "fixme": "Hvor langt inn kommer man?",
+    "historic": "yes",
+    "name": "Poddelopthola Nord",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 3732891463,
+  "lat": 62.7253020,
+  "lon": 9.5092826,
+  "tags": {
+    "name": "Trollkyrkja",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 3742320448,
+  "lat": 59.7712036,
+  "lon": 10.0315849,
+  "tags": {
+    "access": "yes",
+    "fee": "no",
+    "name": "Svarttjernsgrotta",
+    "natural": "cave_entrance",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 3830654791,
+  "lat": 59.9389275,
+  "lon": 10.4643327,
+  "tags": {
+    "man_made": "adit",
+    "name": "Busopphola",
+    "natural": "cave_entrance",
+    "resource": "iron_ore"
+  }
+},
+{
+  "type": "node",
+  "id": 3917687382,
+  "lat": 66.8199413,
+  "lon": 15.4275513,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 3958131410,
+  "lat": 66.8786860,
+  "lon": 14.6446330,
+  "tags": {
+    "name": "Rønnågrotten",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 4151946777,
+  "lat": 78.1817271,
+  "lon": 15.5736088,
+  "tags": {
+    "natural": "cave_entrance",
+    "note": "Ice cave, open in winter"
+  }
+},
+{
+  "type": "node",
+  "id": 4152009620,
+  "lat": 78.1732481,
+  "lon": 15.4700783,
+  "tags": {
+    "name": "Isgrotta på Longyearbreen",
+    "natural": "cave_entrance",
+    "tourism": "attraction"
+  }
+},
+{
+  "type": "node",
+  "id": 4278610009,
+  "lat": 68.0905866,
+  "lon": 13.4189336,
+  "tags": {
+    "name": "Storbathellaren",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 4325364853,
+  "lat": 59.9977041,
+  "lon": 10.3428900,
+  "tags": {
+    "fixme": "position",
+    "name": "Finnegrotta",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 4325893960,
+  "lat": 58.4830299,
+  "lon": 8.2604399,
+  "tags": {
+    "name": "Råmundshelleren",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 4367876034,
+  "lat": 64.0630058,
+  "lon": 9.9788499,
+  "tags": {
+    "leisure": "firepit",
+    "name": "Iverhallen",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 4367876035,
+  "lat": 64.0727272,
+  "lon": 9.9798195,
+  "tags": {
+    "name": "Nyphogget",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 4459461700,
+  "lat": 69.7344602,
+  "lon": 18.4064570,
+  "tags": {
+    "name": "Heller",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 4551295881,
+  "lat": 64.0800315,
+  "lon": 10.0549231,
+  "tags": {
+    "alt_name": "Harbakshola",
+    "cave:height": "35",
+    "cave:length": "130",
+    "cave:size": "medium",
+    "name": "Harbakhula",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 4677845463,
+  "lat": 59.4651671,
+  "lon": 10.7476753,
+  "tags": {
+    "access": "yes",
+    "name": "Våpenhula",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 4843252028,
+  "lat": 59.7984770,
+  "lon": 7.2741034,
+  "tags": {
+    "name": "Hermods hule",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 4844517901,
+  "lat": 60.5394949,
+  "lon": 5.4861204,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 4844517908,
+  "lat": 60.5393165,
+  "lon": 5.4860744,
+  "tags": {
+    "image": "https://photos.app.goo.gl/CKmDbq7ynVQKx4eG6",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 4844518083,
+  "lat": 60.5379584,
+  "lon": 5.4888109,
+  "tags": {
+    "image": "https://photos.app.goo.gl/oqftSEJ8xMTW6XpU6",
+    "natural": "cave_entrance",
+    "website": "https://brage.bibsys.no/xmlui/bitstream/handle/11250/208090/3191_200dpi.pdf?sequence=2"
+  }
+},
+{
+  "type": "node",
+  "id": 4904016145,
+  "lat": 60.4931620,
+  "lon": 5.2603335,
+  "tags": {
+    "name": "Sigurd Slembe hola",
+    "natural": "cave_entrance",
+    "tourism": "attraction"
+  }
+},
+{
+  "type": "node",
+  "id": 4935955596,
+  "lat": 61.0458561,
+  "lon": 7.8031656,
+  "tags": {
+    "name": "Smihelleren",
+    "natural": "cave_entrance",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5074948012,
+  "lat": 67.5928198,
+  "lon": 14.7152900,
+  "tags": {
+    "fee": "no",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 5117581685,
+  "lat": 63.4546442,
+  "lon": 10.4578667,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 5157980162,
+  "lat": 59.2420727,
+  "lon": 9.5338639,
+  "tags": {
+    "access": "no",
+    "name": "Breigangen",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 5157984390,
+  "lat": 59.2525560,
+  "lon": 9.5319450,
+  "tags": {
+    "access": "yes",
+    "name": "Glasergruva",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 5273873367,
+  "lat": 58.0653111,
+  "lon": 6.9110495,
+  "tags": {
+    "name": "Trollkirka på Skarvøy",
+    "natural": "cave_entrance",
+    "source": "lister24"
+  }
+},
+{
+  "type": "node",
+  "id": 5291911755,
+  "lat": 58.0066114,
+  "lon": 6.9937527,
+  "tags": {
+    "name": "Kapteinhola",
+    "natural": "cave_entrance",
+    "ref": "KS-02-300",
+    "source:name": "Korshamn skole kystkultursenter"
+  }
+},
+{
+  "type": "node",
+  "id": 5292115220,
+  "lat": 58.9294330,
+  "lon": 5.6124473,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 5313637616,
+  "lat": 61.1639591,
+  "lon": 10.4066167,
+  "tags": {
+    "natural": "cave_entrance",
+    "note": "big ventilation outlet",
+    "source": "local_knowledge"
+  }
+},
+{
+  "type": "node",
+  "id": 5313637617,
+  "lat": 61.1538123,
+  "lon": 10.4183868,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 5382153500,
+  "lat": 62.5339470,
+  "lon": 6.2770490,
+  "tags": {
+    "name": "Hamnsundhellaren",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 5538402747,
+  "lat": 63.0463276,
+  "lon": 8.9602355,
+  "tags": {
+    "access": "yes",
+    "fee": "no",
+    "name": "Limåskjerka",
+    "natural": "cave_entrance",
+    "opening_hours": "24/7",
+    "wheelchair": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 5563646303,
+  "lat": 66.5358470,
+  "lon": 12.8000580,
+  "tags": {
+    "name": "Hestmonholet",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 5627431834,
+  "lat": 67.8412386,
+  "lon": 12.8187233,
+  "tags": {
+    "name": "Refsvikhula",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 5700376635,
+  "lat": 60.5616842,
+  "lon": 4.9910095,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 5737152987,
+  "lat": 59.5949313,
+  "lon": 9.6719798,
+  "tags": {
+    "image": "https://photos.app.goo.gl/8EAxUCEajqnUDe2h8",
+    "natural": "cave_entrance",
+    "tourism": "attraction",
+    "url": "https://www.youtube.com/watch?v=6FrXtMdTTsQ"
+  }
+},
+{
+  "type": "node",
+  "id": 5737152992,
+  "lat": 59.5955295,
+  "lon": 9.6717701,
+  "tags": {
+    "image": "https://photos.app.goo.gl/DmxC55UQdbvgehrG8",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 5737152993,
+  "lat": 59.5957585,
+  "lon": 9.6713746,
+  "tags": {
+    "natural": "cave_entrance",
+    "url": "https://www.youtube.com/watch?v=LFfF5i-Kw88"
+  }
+},
+{
+  "type": "node",
+  "id": 5813380337,
+  "lat": 63.3594417,
+  "lon": 8.5502704,
+  "tags": {
+    "fee": "no",
+    "name": "Kvitflekken",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 5823114703,
+  "lat": 78.1815121,
+  "lon": 15.5737822,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 5873904585,
+  "lat": 58.6885071,
+  "lon": 7.8126677,
+  "tags": {
+    "access": "yes",
+    "description": "30m deep natural cave",
+    "direction": "0",
+    "fee": "no",
+    "name": "Tjovhola",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 5895157973,
+  "lat": 64.0625540,
+  "lon": 9.9368501,
+  "tags": {
+    "name": "Kjølna",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 5895610104,
+  "lat": 64.0750550,
+  "lon": 9.9698540,
+  "tags": {
+    "name": "Hønheia",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 5895610105,
+  "lat": 64.0751980,
+  "lon": 10.0438711,
+  "tags": {
+    "name": "Snørrehallen",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 6284400232,
+  "lat": 60.4046370,
+  "lon": 5.3224101,
+  "tags": {
+    "access": "yes",
+    "fee": "no",
+    "name": "Mareminnehollet",
+    "natural": "cave_entrance",
+    "wheelchair": "no",
+    "wikidata": "Q11988120",
+    "wikipedia": "no:Mareminehollet"
+  }
+},
+{
+  "type": "node",
+  "id": 6404152068,
+  "lat": 62.4751232,
+  "lon": 6.1720245,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 6411355763,
+  "lat": 70.2825380,
+  "lon": 31.0174352,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 6415017407,
+  "lat": 59.4505627,
+  "lon": 10.4478618,
+  "tags": {
+    "access": "yes",
+    "fee": "no",
+    "name": "Røverhula",
+    "natural": "cave_entrance",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 6535768557,
+  "lat": 58.4745877,
+  "lon": 6.0020284,
+  "tags": {
+    "image": "https://images.mapillary.com/JISawua9Nr9ngXxZCyEwYA/thumb-2048.jpg",
+    "mapillary": "3971824236220396",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 6535768559,
+  "lat": 58.4744775,
+  "lon": 6.0021476,
+  "tags": {
+    "image": "https://images.mapillary.com/ogHvKFIdNO3-D2_c58kDng/thumb-2048.jpg",
+    "mapillary": "2019695761531616",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 6540763389,
+  "lat": 58.4638308,
+  "lon": 8.7665957,
+  "tags": {
+    "image": "https://images.mapillary.com/iC4j1hbrCHmAPkAV2PRXew/thumb-2048.jpg",
+    "mapillary": "934558840452584",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 6641164191,
+  "lat": 65.0584105,
+  "lon": 12.3314138,
+  "tags": {
+    "name": "Jenshola",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 6708243675,
+  "lat": 58.6782671,
+  "lon": 6.4291397,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 6708248590,
+  "lat": 58.6792663,
+  "lon": 6.4329614,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 6708248591,
+  "lat": 58.6791807,
+  "lon": 6.4320755,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 7143126313,
+  "lat": 62.2186873,
+  "lon": 7.1444473,
+  "tags": {
+    "fixme": "resurvey;DTM",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 7203656925,
+  "lat": 59.2002164,
+  "lon": 10.4142546,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 7255876976,
+  "lat": 59.0156966,
+  "lon": 6.2892491,
+  "tags": {
+    "name": "Smiehålå",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 7323613815,
+  "lat": 60.0745553,
+  "lon": 10.2593310,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 7425130722,
+  "lat": 59.1211384,
+  "lon": 11.2277721,
+  "tags": {
+    "name": "Bjørnehulen",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 7427432733,
+  "lat": 60.6475211,
+  "lon": 6.8172384,
+  "tags": {
+    "access": "yes",
+    "name": "Bjødnahiet",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 7608266350,
+  "lat": 63.3909619,
+  "lon": 10.3437942,
+  "tags": {
+    "fixme": "I did not manage to find a suitable tag, natural=cave_entrance is probably incorrect. It is a (concrete) entrance to a military bunker from the 1940's.",
+    "military": "bunker",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 7608266351,
+  "lat": 63.3911583,
+  "lon": 10.3437768,
+  "tags": {
+    "fixme": "I did not manage to find a suitable tag, natural=cave_entrance is probably incorrect. It is a (concrete) entrance to a military bunker from the 1940's.",
+    "military": "bunker",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 7652824675,
+  "lat": 65.4943883,
+  "lon": 12.2679948,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 7725984814,
+  "lat": 68.8414444,
+  "lon": 17.8462831,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 7843985775,
+  "lat": 59.7723802,
+  "lon": 5.5135965,
+  "tags": {
+    "name": "Gålo i Gullberg",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 7894820510,
+  "lat": 66.2565232,
+  "lon": 14.7419899,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 7898962074,
+  "lat": 66.2700657,
+  "lon": 14.7384578,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 8184860902,
+  "lat": 60.1842121,
+  "lon": 5.4830819,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 8286441918,
+  "lat": 63.7719051,
+  "lon": 9.6229937,
+  "tags": {
+    "name": "Duehallaren",
+    "natural": "cave_entrance",
+    "survey:date": "2021-01-03"
+  }
+},
+{
+  "type": "node",
+  "id": 8306129910,
+  "lat": 63.8405500,
+  "lon": 9.7529407,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 8462495180,
+  "lat": 60.1843017,
+  "lon": 5.4828421,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 8548471348,
+  "lat": 63.3924594,
+  "lon": 10.3359937,
+  "tags": {
+    "fixme": "I did not manage to find a suitable tag, natural=cave_entrance is probably incorrect. It is a (concrete) entrance to a military bunker from the 1940's.",
+    "military": "bunker",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 8669455717,
+  "lat": 58.9781694,
+  "lon": 9.3309885,
+  "tags": {
+    "access": "yes",
+    "fee": "no",
+    "name": "Dragens hule",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 8932727053,
+  "lat": 61.3627332,
+  "lon": 9.6450342,
+  "tags": {
+    "access": "yes",
+    "name": "Veslegruva",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 8937116295,
+  "lat": 67.2604555,
+  "lon": 15.4995473,
+  "tags": {
+    "name": "Okshola",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 9062679454,
+  "lat": 58.2088113,
+  "lon": 6.6102257,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 9308404396,
+  "lat": 66.2489465,
+  "lon": 14.7342003,
+  "tags": {
+    "name": "Jordbrugrotta",
+    "natural": "cave_entrance",
+    "wikidata": "Q15210706",
+    "wikipedia": "no:Jordbrugrotta"
+  }
+},
+{
+  "type": "node",
+  "id": 9308404397,
+  "lat": 59.7795941,
+  "lon": 5.8069900,
+  "tags": {
+    "name": "Radiohola",
+    "natural": "cave_entrance",
+    "wikidata": "Q7281271",
+    "wikipedia": "en:Radiohola"
+  }
+},
+{
+  "type": "node",
+  "id": 9352342588,
+  "lat": 62.9762562,
+  "lon": 8.8038502,
+  "tags": {
+    "name": "Jøtulomnen",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 9386440530,
+  "lat": 60.3484738,
+  "lon": 5.3310051,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 9403074337,
+  "lat": 67.2714432,
+  "lon": 14.4113240,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 9458292126,
+  "lat": 58.2682135,
+  "lon": 8.3165726,
+  "tags": {
+    "historic": "yes",
+    "name": "Ole Høilands hule",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 9631569206,
+  "lat": 59.9359003,
+  "lon": 10.4795220,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 9750441665,
+  "lat": 68.5417483,
+  "lon": 17.7768309,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 9750447565,
+  "lat": 68.5822804,
+  "lon": 17.7782519,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 9866797204,
+  "lat": 67.9049327,
+  "lon": 13.0183839,
+  "tags": {
+    "access": "yes",
+    "fee": "no",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 9867641797,
+  "lat": 68.4892556,
+  "lon": 16.6407834,
+  "tags": {
+    "alt_name": "Trollkjerka",
+    "name": "Trollkirka",
+    "natural": "cave_entrance",
+    "place": "locality",
+    "ssr:stedsnr": "259376"
+  }
+},
+{
+  "type": "node",
+  "id": 9917437615,
+  "lat": 59.0423555,
+  "lon": 10.2088713,
+  "tags": {
+    "description:no": "Hula kan til tider ha vært bebodd helt fra steinalderen (8000-9000 år siden). Hula ble brukt under 2. verdenskrig i korte periode for å skjule radiosendere, utstyr og flyktninger som skulle transporteres over til Sverige fra Fjellvik.",
+    "height": "2",
+    "length": "10",
+    "name": "Såtåshula",
+    "natural": "cave_entrance",
+    "note": "Approx 10 meter deep (horizontally)"
+  }
+},
+{
+  "type": "node",
+  "id": 9932269950,
+  "lat": 62.3708682,
+  "lon": 10.3801073,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 9939327459,
+  "lat": 59.8351217,
+  "lon": 8.7498868,
+  "tags": {
+    "name": "Hulderhola",
+    "natural": "cave_entrance",
+    "url": "https://youtu.be/Kpahz_Img3Q?t=500"
+  }
+},
+{
+  "type": "node",
+  "id": 10283141041,
+  "lat": 67.4367813,
+  "lon": 11.8953751,
+  "tags": {
+    "name": "Helvete",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 10665592996,
+  "lat": 58.4950842,
+  "lon": 5.8826232,
+  "tags": {
+    "name": "Ole Høylandshålå",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 10811763035,
+  "lat": 58.4877119,
+  "lon": 5.8617912,
+  "tags": {
+    "name": "Litla OleHøylandshålå",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 10882910750,
+  "lat": 59.3869836,
+  "lon": 8.4109506,
+  "tags": {
+    "name": "Futholet",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 10965646853,
+  "lat": 59.6809807,
+  "lon": 10.7524950,
+  "tags": {
+    "access": "yes",
+    "description": "Next to the gravel road",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 11044689860,
+  "lat": 59.8639820,
+  "lon": 10.9256024,
+  "tags": {
+    "alt_name": "Nilsehula",
+    "depth": "2.8",
+    "height": "2",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 11046785322,
+  "lat": 63.5899075,
+  "lon": 8.5962009,
+  "tags": {
+    "name": "Hestneshola",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 11093806579,
+  "lat": 66.5024466,
+  "lon": 12.0528576,
+  "tags": {
+    "cave:height": "32",
+    "cave:length": "45",
+    "cave:size": "medium",
+    "cave:width": "20",
+    "name": "Kirkhelleren",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 11094150188,
+  "lat": 62.2582535,
+  "lon": 5.4005025,
+  "tags": {
+    "name": "Dollsteinhola",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 11094518861,
+  "lat": 59.9071867,
+  "lon": 10.8736043,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 11144384533,
+  "lat": 61.7486621,
+  "lon": 9.7070808,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 11165632296,
+  "lat": 59.1625092,
+  "lon": 10.2353374,
+  "tags": {
+    "height": "1.2",
+    "length": "3",
+    "name": "Rottenikkens hule",
+    "natural": "cave_entrance",
+    "note": "approximate measurements",
+    "width": "1"
+  }
+},
+{
+  "type": "node",
+  "id": 11196390739,
+  "lat": 58.5095181,
+  "lon": 8.5193181,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 11258629337,
+  "lat": 59.1830084,
+  "lon": 8.0789135,
+  "tags": {
+    "name": "Munkhola",
+    "name:en": "The Monk Cave",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 11387623893,
+  "lat": 61.2964125,
+  "lon": 5.1875157,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 11471948269,
+  "lat": 69.9520268,
+  "lon": 23.2048282,
+  "tags": {
+    "name": "trollhula",
+    "name:no": "trollhula",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 11491242650,
+  "lat": 59.2197334,
+  "lon": 9.4758609,
+  "tags": {
+    "geology:rock": "marble",
+    "name": "Mikaelshulen",
+    "name:en": "Mikaelshulen",
+    "natural": "cave_entrance",
+    "source_ref": "https://ut.no/turforslag/1111590296/geotur-mikaelshula",
+    "tourism": "viewpoint",
+    "wikipedia": "no:Mikaelshulen"
+  }
+},
+{
+  "type": "node",
+  "id": 11662885803,
+  "lat": 69.3791257,
+  "lon": 20.5837603,
+  "tags": {
+    "name": "Baalsrudhula",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 11673318208,
+  "lat": 68.1587870,
+  "lon": 13.4918568,
+  "tags": {
+    "fixme": "Added based on an anonymous note. Please survey.",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 11718272678,
+  "lat": 62.2518370,
+  "lon": 5.4074254,
+  "tags": {
+    "name": "Lisjegjøtten",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 11718272679,
+  "lat": 62.2518987,
+  "lon": 5.4081483,
+  "tags": {
+    "name": "Storegjøtten",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 11718272719,
+  "lat": 62.2530985,
+  "lon": 5.4053787,
+  "tags": {
+    "name": "Sandgjøtten",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 11831676882,
+  "lat": 60.2392839,
+  "lon": 4.9832165,
+  "tags": {
+    "name": "Bekhilderen",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 11898530725,
+  "lat": 63.5073038,
+  "lon": 8.2689661,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 11898530726,
+  "lat": 63.5072774,
+  "lon": 8.2690714,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 11905246475,
+  "lat": 63.3191208,
+  "lon": 8.0278113,
+  "tags": {
+    "name": "Johannes Blank røverhola",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 11922112000,
+  "lat": 59.8955880,
+  "lon": 10.8642494,
+  "tags": {
+    "height": "2",
+    "length": "3",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 11926243967,
+  "lat": 58.5468964,
+  "lon": 5.7910339,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 11999097370,
+  "lat": 69.4115802,
+  "lon": 17.1670530,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 12013020040,
+  "lat": 64.5167413,
+  "lon": 10.7363332,
+  "tags": {
+    "name": "Håkkahelleren",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 12054341633,
+  "lat": 60.3123461,
+  "lon": 5.2432326,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 12054341637,
+  "lat": 60.3126828,
+  "lon": 5.2454479,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 12093136884,
+  "lat": 62.1058263,
+  "lon": 7.2081994,
+  "tags": {
+    "access": "yes",
+    "fee": "no",
+    "natural": "cave_entrance",
+    "opening_hours": "24/7"
+  }
+},
+{
+  "type": "node",
+  "id": 12153014140,
+  "lat": 62.5635481,
+  "lon": 7.6917034,
+  "tags": {
+    "description": "Locked by a gate.",
+    "natural": "cave_entrance",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 12299463653,
+  "lat": 59.0814918,
+  "lon": 5.6148354,
+  "tags": {
+    "name": "Svartahålå",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 12356219170,
+  "lat": 67.2593344,
+  "lon": 15.4977661,
+  "tags": {
+    "name": "Kristihola",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 12505187777,
+  "lat": 59.1745115,
+  "lon": 10.8282868,
+  "tags": {
+    "access": "yes",
+    "direction": "300",
+    "fee": "no",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 12507463973,
+  "lat": 59.1749635,
+  "lon": 10.8273230,
+  "tags": {
+    "access": "yes",
+    "direction": "140",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 12507463974,
+  "lat": 59.1755275,
+  "lon": 10.8271876,
+  "tags": {
+    "access": "yes",
+    "direction": "300",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 12507544148,
+  "lat": 59.1718717,
+  "lon": 10.8425718,
+  "tags": {
+    "access": "private",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 12896585901,
+  "lat": 58.2642381,
+  "lon": 6.8003598,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 12899129741,
+  "lat": 58.8325906,
+  "lon": 6.2126789,
+  "tags": {
+    "name": "Bjødnahiet",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 12927928775,
+  "lat": 62.3085631,
+  "lon": 6.3458933,
+  "tags": {
+    "name": "Holet",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 12952720645,
+  "lat": 64.7394378,
+  "lon": 11.5603825,
+  "tags": {
+    "fixme": "resurvey",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 12965905412,
+  "lat": 58.0817023,
+  "lon": 8.0260368,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 12965977752,
+  "lat": 58.0676047,
+  "lon": 8.0035576,
+  "tags": {
+    "name": "Kjetil Rasks ur",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 12970187817,
+  "lat": 58.5983202,
+  "lon": 7.8672182,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 12971326750,
+  "lat": 58.5960928,
+  "lon": 7.8690744,
+  "tags": {
+    "fixme": "Unsure about exact location",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 13013388028,
+  "lat": 59.3655762,
+  "lon": 8.9850327,
+  "tags": {
+    "name": "Svarttjønn hola",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 13069596345,
+  "lat": 65.9155404,
+  "lon": 12.4694234,
+  "tags": {
+    "name": "Grotta i Søvicskaret",
+    "natural": "cave_entrance",
+    "tourism": "attraction"
+  }
+},
+{
+  "type": "node",
+  "id": 13074996410,
+  "lat": 61.8828102,
+  "lon": 6.7166005,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 13093008191,
+  "lat": 66.7847132,
+  "lon": 14.1220054,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 13093008192,
+  "lat": 66.7809622,
+  "lon": 14.1323737,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 13177196926,
+  "lat": 69.5224104,
+  "lon": 17.4128841,
+  "tags": {
+    "name": "Russehola",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 13202260375,
+  "lat": 59.8496392,
+  "lon": 10.3847949,
+  "tags": {
+    "ele": "387",
+    "fee": "no",
+    "name": "Bjørnehiet",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 13202279392,
+  "lat": 59.8511937,
+  "lon": 10.3745624,
+  "tags": {
+    "alt_name": "Taterhula",
+    "ele": "338",
+    "fee": "no",
+    "name": "Krystallhula",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 13413122302,
+  "lat": 61.1148073,
+  "lon": 10.8050587,
+  "tags": {
+    "access": "yes",
+    "fixme": "Needs exact position.",
+    "name": "Tjuvolahula",
+    "natural": "cave_entrance",
+    "website": "https://www.rustadhotel.no/aktiviteter/sykkel/setersykling/moste-seter-og-tjuv-ola/"
+  }
+},
+{
+  "type": "node",
+  "id": 13441864259,
+  "lat": 64.4895423,
+  "lon": 10.8185721,
+  "tags": {
+    "name": "Hanshelleren",
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "node",
+  "id": 13502372883,
+  "lat": 68.5333646,
+  "lon": 18.1071649,
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "way",
+  "id": 658953127,
+  "bounds": {
+    "minlat": 67.2719334,
+    "minlon": 14.4319669,
+    "maxlat": 67.2720223,
+    "maxlon": 14.4321969
+  },
+  "nodes": [
+    6169632928,
+    6169632929,
+    6169632930,
+    6169632931,
+    6169632928
+  ],
+  "geometry": [
+    { "lat": 67.2720223, "lon": 14.4320571 },
+    { "lat": 67.2719631, "lon": 14.4321969 },
+    { "lat": 67.2719334, "lon": 14.4321248 },
+    { "lat": 67.2719910, "lon": 14.4319669 },
+    { "lat": 67.2720223, "lon": 14.4320571 }
+  ],
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "way",
+  "id": 658953128,
+  "bounds": {
+    "minlat": 67.2715859,
+    "minlon": 14.4307434,
+    "maxlat": 67.2717017,
+    "maxlon": 14.4310544
+  },
+  "nodes": [
+    6169632932,
+    6169632933,
+    6169632934,
+    6169632935,
+    6169632932
+  ],
+  "geometry": [
+    { "lat": 67.2716621, "lon": 14.4307434 },
+    { "lat": 67.2717017, "lon": 14.4308686 },
+    { "lat": 67.2716196, "lon": 14.4310544 },
+    { "lat": 67.2715859, "lon": 14.4309406 },
+    { "lat": 67.2716621, "lon": 14.4307434 }
+  ],
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "way",
+  "id": 658953129,
+  "bounds": {
+    "minlat": 67.2711986,
+    "minlon": 14.4175018,
+    "maxlat": 67.2714871,
+    "maxlon": 14.4179078
+  },
+  "nodes": [
+    6169632936,
+    6169632937,
+    6169632938,
+    6169632939,
+    6169632936
+  ],
+  "geometry": [
+    { "lat": 67.2714871, "lon": 14.4177273 },
+    { "lat": 67.2712222, "lon": 14.4175018 },
+    { "lat": 67.2711986, "lon": 14.4177121 },
+    { "lat": 67.2714767, "lon": 14.4179078 },
+    { "lat": 67.2714871, "lon": 14.4177273 }
+  ],
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "way",
+  "id": 658953132,
+  "bounds": {
+    "minlat": 67.2716874,
+    "minlon": 14.4199380,
+    "maxlat": 67.2717441,
+    "maxlon": 14.4204196
+  },
+  "nodes": [
+    6169632948,
+    6169632949,
+    6169632950,
+    6169632951,
+    6169632948
+  ],
+  "geometry": [
+    { "lat": 67.2717219, "lon": 14.4204196 },
+    { "lat": 67.2717441, "lon": 14.4199443 },
+    { "lat": 67.2716936, "lon": 14.4199380 },
+    { "lat": 67.2716874, "lon": 14.4203239 },
+    { "lat": 67.2717219, "lon": 14.4204196 }
+  ],
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "way",
+  "id": 658953134,
+  "bounds": {
+    "minlat": 67.2747446,
+    "minlon": 14.4273934,
+    "maxlat": 67.2749746,
+    "maxlon": 14.4277272
+  },
+  "nodes": [
+    6169632993,
+    6169632994,
+    6169632995,
+    6169632996,
+    6169632997,
+    6169632998,
+    6169632999,
+    6169633000,
+    6169632993
+  ],
+  "geometry": [
+    { "lat": 67.2747759, "lon": 14.4273934 },
+    { "lat": 67.2748787, "lon": 14.4275423 },
+    { "lat": 67.2749572, "lon": 14.4274656 },
+    { "lat": 67.2749746, "lon": 14.4276280 },
+    { "lat": 67.2748927, "lon": 14.4277227 },
+    { "lat": 67.2748387, "lon": 14.4277272 },
+    { "lat": 67.2747881, "lon": 14.4276596 },
+    { "lat": 67.2747446, "lon": 14.4275739 },
+    { "lat": 67.2747759, "lon": 14.4273934 }
+  ],
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "way",
+  "id": 663762678,
+  "bounds": {
+    "minlat": 67.2718232,
+    "minlon": 14.4329107,
+    "maxlat": 67.2720359,
+    "maxlon": 14.4339933
+  },
+  "nodes": [
+    6212797406,
+    6212797407,
+    6212797408,
+    6212797409,
+    6212797419,
+    6212797420,
+    6212797421,
+    6212797410,
+    6212797411,
+    6212797412,
+    6212797413,
+    6212797414,
+    6212797415,
+    6212797416,
+    6212797417,
+    6212797418,
+    6212797406
+  ],
+  "geometry": [
+    { "lat": 67.2718494, "lon": 14.4338444 },
+    { "lat": 67.2718319, "lon": 14.4338670 },
+    { "lat": 67.2718232, "lon": 14.4339211 },
+    { "lat": 67.2718337, "lon": 14.4339797 },
+    { "lat": 67.2718607, "lon": 14.4339933 },
+    { "lat": 67.2718864, "lon": 14.4339797 },
+    { "lat": 67.2718940, "lon": 14.4339143 },
+    { "lat": 67.2719034, "lon": 14.4338579 },
+    { "lat": 67.2720132, "lon": 14.4334520 },
+    { "lat": 67.2719888, "lon": 14.4333798 },
+    { "lat": 67.2719696, "lon": 14.4332580 },
+    { "lat": 67.2720359, "lon": 14.4329964 },
+    { "lat": 67.2720149, "lon": 14.4329107 },
+    { "lat": 67.2719261, "lon": 14.4332670 },
+    { "lat": 67.2719679, "lon": 14.4334475 },
+    { "lat": 67.2718773, "lon": 14.4337993 },
+    { "lat": 67.2718494, "lon": 14.4338444 }
+  ],
+  "tags": {
+    "natural": "cave_entrance"
+  }
+},
+{
+  "type": "way",
+  "id": 1411099217,
+  "bounds": {
+    "minlat": 58.0817023,
+    "minlon": 8.0259851,
+    "maxlat": 58.0817322,
+    "maxlon": 8.0260405
+  },
+  "nodes": [
+    12965856395,
+    12965856396,
+    12965856397,
+    12965856398,
+    12965856395
+  ],
+  "geometry": [
+    { "lat": 58.0817322, "lon": 8.0260054 },
+    { "lat": 58.0817155, "lon": 8.0259851 },
+    { "lat": 58.0817023, "lon": 8.0260179 },
+    { "lat": 58.0817214, "lon": 8.0260405 },
+    { "lat": 58.0817322, "lon": 8.0260054 }
+  ],
+  "tags": {
+    "natural": "cave_entrance"
+  }
+}
+
+  ]
+}

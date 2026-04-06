@@ -126,8 +126,8 @@ struct DownloadManagerSheet: View {
             }
 
             HStack {
-                Text("z\(pack.minZoom)-\(pack.maxZoom)")
-                    .font(Font.Trakke.caption.monospacedDigit())
+                Text(OfflineMapService.zoomDescription(maxZoom: pack.maxZoom))
+                    .font(Font.Trakke.caption)
                     .foregroundStyle(Color.Trakke.textTertiary)
 
                 Spacer()

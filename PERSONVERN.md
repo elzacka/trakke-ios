@@ -1,9 +1,6 @@
 # Personvernerklæring for Tråkke
 
-**Sist oppdatert:** 31. mars 2026
-**Behandlingsansvarlig:** Tazk
-**Kontakt:** hei@tazk.no
-
+**Sist oppdatert:** 6. april 2026
 ## Kort oppsummert
 
 Tråkke lagrer all data lokalt på enheten din. Appen samler ikke inn personopplysninger, og sporer ikke bruken din. Ingen data sendes til appens systemer eller til tredjeparter for analyse eller markedsføring.
@@ -49,6 +46,7 @@ Appen henter data fra følgende tjenester. Alle tjenester er norske eller europe
 | DSB (ogc.dsb.no) | Tilfluktsrom | Kartområde (bounding box) | Norge |
 | Riksantikvaren (api.ra.no) | Kulturminner | Kartområde (bounding box) | Norge |
 | Miljødirektoratet | Naturvernområder og naturskog | Kartområde (bounding box) | Norge |
+| NVE / Varsom (api01.nve.no, nve.geodataonline.no) | Snøskred- og flomvarsler, bratthetskart | Omtrentlig posisjon (snøskred), datoer (flom), kartområde (bratthetskart) | Norge |
 | FOSSGIS Valhalla (valhalla1.openstreetmap.de) | Ruteberegning | Start- og målkoordinater | Tyskland (EU) |
 | Artsdatabanken (ai.artsdatabanken.no) | Artsbilder i kunnskapsartikler | Vitenskapelige artsnavn | Norge |
 | Mapzen Terrain Tiles (s3.amazonaws.com) | Terrengmodell for 3D-relieff | Kartkoordinater (zoom, x, y) | USA* |

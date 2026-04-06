@@ -162,10 +162,20 @@ struct POIDetailSheet: View {
         case "fort": return "Festning"
         case "battlefield": return "Slagmark"
         // Wilderness shelters
+        case "lean_to": return "Gapahuk"
         case "basic_hut": return "Enkel hytte"
+        case "picnic_shelter": return "Rasteplass med tak"
         case "weather_shelter": return "Vindskjul"
         case "rock_shelter": return "Heller"
+        case "gazebo": return "Lysthus"
+        case "pavilion": return "Paviljong"
         case "lavvu": return "Lavvo"
+        case "wildlife_hide": return "Fugleskjul"
+        case "field_shelter": return "Felthytte"
+        case "wilderness_hut": return "Fjellhytte"
+        case "tent": return "Teltplass"
+        case "turf_hut": return "Torvhytte"
+        case "public_transport": return "Leskur"
         default: return value
         }
     }

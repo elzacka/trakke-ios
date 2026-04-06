@@ -101,6 +101,7 @@ private let outdoorTypes = Set(["fjell", "vann", "dal", "bre", "fjord", "øy"])
 
 protocol SearchFetching: Sendable {
     func search(query: String) async throws -> [SearchResult]
+    func clearCache() async
 }
 
 actor SearchService: SearchFetching {
@@ -116,6 +117,10 @@ actor SearchService: SearchFetching {
     private static let cacheTTL: TimeInterval = 300 // 5 minutes
 
     private var queryCache: [String: (results: [SearchResult], cachedAt: Date)] = [:]
+
+    func clearCache() {
+        queryCache.removeAll()
+    }
 
     func search(query: String) async throws -> [SearchResult] {
         let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)

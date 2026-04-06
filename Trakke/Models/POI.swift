@@ -83,10 +83,19 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
         }
     }
 
+    /// Whether offline bundled data exists for this category.
     var isBundled: Bool {
         switch self {
-        case .caves, .viewpoints, .warMemorials, .wildernessShelters: return true
-        case .shelters, .kulturminner: return false
+        case .caves, .viewpoints, .warMemorials, .wildernessShelters, .shelters: return true
+        case .kulturminner: return false
+        }
+    }
+
+    /// Whether this category should also refresh from a live API when online.
+    var isLive: Bool {
+        switch self {
+        case .shelters, .kulturminner: return true
+        case .caves, .viewpoints, .warMemorials, .wildernessShelters: return false
         }
     }
 }

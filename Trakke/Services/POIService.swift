@@ -4,6 +4,7 @@ import OSLog
 
 protocol POIFetching: Sendable {
     func fetchPOIs(category: POICategory, bounds: ViewportBounds, zoom: Double) async -> [POI]
+    func clearCache() async
 }
 
 // MARK: - POI Service
@@ -31,17 +32,22 @@ actor POIService: POIFetching {
 
         let buffered = bounds.buffered()
 
-        // Bundled categories are handled synchronously -- no network needed
-        if category.isBundled {
+        // Bundled-only categories are handled synchronously -- no network needed
+        if category.isBundled && !category.isLive {
             return await BundledPOIService.pois(for: category, in: buffered)
         }
 
-        // Live categories use network + cache
+        // Live categories use network + cache, with bundled fallback
         let key = "\(category.rawValue)-\(buffered.cacheKey)-z\(Int(zoom))"
 
         if let cached = cache[key], Date().timeIntervalSince(cached.timestamp) < Self.cacheTTL {
             return cached.pois
         }
+
+        // For hybrid categories (bundled + live), get bundled data as baseline
+        let bundledFallback: [POI] = category.isBundled
+            ? await BundledPOIService.pois(for: category, in: buffered)
+            : []
 
         do {
             try Task.checkCancellation()
@@ -53,19 +59,19 @@ actor POIService: POIFetching {
             case .kulturminner:
                 pois = try await fetchKulturminner(bounds: buffered)
             default:
-                return []
+                return bundledFallback
             }
 
             cache[key] = CacheEntry(pois: pois, timestamp: Date())
             cleanCache()
             return pois
         } catch is CancellationError {
-            return cache[key]?.pois ?? []
+            return cache[key]?.pois ?? bundledFallback
         } catch let urlError as URLError where urlError.code == .cancelled {
-            return cache[key]?.pois ?? []
+            return cache[key]?.pois ?? bundledFallback
         } catch {
             Logger.poi.error("POI fetch error (\(category.rawValue, privacy: .public)): \(error, privacy: .private)")
-            return cache[key]?.pois ?? []
+            return cache[key]?.pois ?? bundledFallback
         }
     }
 

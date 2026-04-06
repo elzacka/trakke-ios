@@ -9,17 +9,21 @@ final class WeatherViewModel {
     var error: String?
     var daylight: SolarCalculator.DaylightInfo?
     var waterTemperature: WaterTemperatureResult?
+    var varsomWarnings: [VarsomWarning] = []
 
     private let service: any WeatherFetching
     private let waterService: any WaterTemperatureFetching
+    private let varsomService: any VarsomFetching
     private var lastFetchCoordinate: CLLocationCoordinate2D?
 
     init(
         service: any WeatherFetching = WeatherService(),
-        waterService: any WaterTemperatureFetching = WaterTemperatureService()
+        waterService: any WaterTemperatureFetching = WaterTemperatureService(),
+        varsomService: any VarsomFetching = VarsomService()
     ) {
         self.service = service
         self.waterService = waterService
+        self.varsomService = varsomService
     }
     private var fetchTask: Task<Void, Never>?
     private static let debounceInterval: Duration = .seconds(2)
@@ -55,6 +59,9 @@ final class WeatherViewModel {
                 // Water temperature is best-effort — never block weather display
                 waterTemperature = try? await waterResult
 
+                // Varsom warnings are best-effort
+                varsomWarnings = await varsomService.fetchWarnings(at: coordinate)
+
                 isLoading = false
             } catch is CancellationError {
                 // Debounce cancelled, ignore
@@ -70,6 +77,16 @@ final class WeatherViewModel {
         guard let coord = lastFetchCoordinate else { return }
         lastFetchCoordinate = nil
         fetchForecast(for: coord)
+    }
+
+    func clearCaches() async {
+        await service.clearCache()
+        await waterService.clearCache()
+        await varsomService.clearCache()
+        forecast = nil
+        waterTemperature = nil
+        varsomWarnings = []
+        lastFetchCoordinate = nil
     }
 
     // MARK: - Norwegian Condition Text

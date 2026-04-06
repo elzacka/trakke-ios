@@ -19,7 +19,7 @@ enum BundledPOIService {
     /// Pre-load all bundled categories into the cache. Call once at app launch.
     static func preloadAll() {
         Task.detached(priority: .utility) {
-            let allCategories: [POICategory] = [.caves, .viewpoints, .warMemorials, .wildernessShelters]
+            let allCategories: [POICategory] = [.caves, .viewpoints, .warMemorials, .wildernessShelters, .shelters]
             for category in allCategories {
                 let pois = loadFromBundle(category)
                 await MainActor.run {
@@ -52,6 +52,7 @@ enum BundledPOIService {
             .viewpoints: "viewpoints",
             .warMemorials: "war_memorials",
             .wildernessShelters: "wilderness_shelters",
+            .shelters: "shelters",
         ]
         guard let filename = filenames[category] else { return [] }
 

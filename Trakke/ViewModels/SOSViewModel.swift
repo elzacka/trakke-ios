@@ -16,6 +16,7 @@ final class SOSViewModel {
     func activate() {
         guard !isActive else { return }
         isActive = true
+        UIApplication.shared.isIdleTimerDisabled = true
         let withAudio = audioEnabled
         signalTask = Task { [weak self] in
             await self?.service.start(withAudio: withAudio)
@@ -25,6 +26,7 @@ final class SOSViewModel {
     func deactivate() {
         guard isActive else { return }
         isActive = false
+        UIApplication.shared.isIdleTimerDisabled = false
         signalTask?.cancel()
         signalTask = nil
         Task { [weak self] in await self?.service.stop() }

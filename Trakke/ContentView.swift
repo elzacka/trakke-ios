@@ -38,6 +38,7 @@ struct ContentView: View {
     @AppStorage(AppStorageKeys.overlayHillshading) private var overlayHillshading = false
     @AppStorage(AppStorageKeys.overlayNaturvernomrader) private var overlayNaturvernomrader = false
     @AppStorage(AppStorageKeys.overlayNaturskog) private var overlayNaturskog = false
+    @AppStorage(AppStorageKeys.overlayBratthetskart) private var overlayBratthetskart = false
     @AppStorage(AppStorageKeys.naturskogLayerType) private var naturskogLayerType = OverlayLayer.naturskogSannsynlighet.rawValue
     @Environment(\.modelContext) private var modelContext
 
@@ -63,6 +64,7 @@ struct ContentView: View {
         .onChange(of: overlayHillshading) { syncOverlays() }
         .onChange(of: overlayNaturvernomrader) { syncOverlays() }
         .onChange(of: overlayNaturskog) { syncOverlays() }
+        .onChange(of: overlayBratthetskart) { syncOverlays() }
         .onChange(of: naturskogLayerType) { syncOverlays() }
         .onDisappear {
             offlineViewModel.stopObserving()
@@ -79,9 +81,18 @@ struct ContentView: View {
             }
         }
         .onChange(of: scenePhase) {
-            if scenePhase == .background, navigationViewModel.isActive {
-                // Ensure idle timer is restored if system terminates
+            if scenePhase == .background, navigationViewModel.isActive, !sosViewModel.isActive {
+                // Ensure idle timer is restored if system terminates,
+                // but keep it disabled when SOS signal is active
                 UIApplication.shared.isIdleTimerDisabled = false
+            }
+        }
+        .onChange(of: mapViewModel.userLocation) {
+            if let loc = mapViewModel.userLocation {
+                offlineViewModel.checkOfflineAreaBoundary(
+                    location: loc.coordinate,
+                    isConnected: connectivityMonitor.isConnected
+                )
             }
         }
     }
@@ -93,6 +104,7 @@ struct ContentView: View {
         if overlayTurrutebasen { overlays.insert(.turrutebasen) }
         if overlayHillshading { overlays.insert(.hillshading) }
         if overlayNaturvernomrader { overlays.insert(.naturvernomrader) }
+        if overlayBratthetskart { overlays.insert(.bratthetskart) }
         if overlayNaturskog, let layer = OverlayLayer(rawValue: naturskogLayerType), layer.isNaturskog {
             overlays.insert(layer)
         }
@@ -187,6 +199,7 @@ struct ContentView: View {
                 onSelectionCornerDragged: { index, coord in
                     offlineViewModel.moveSelectionCorner(at: index, to: coord)
                 },
+                offlinePackBounds: connectivityMonitor.isConnected ? [] : offlineViewModel.packs.filter(\.progress.isComplete).map(\.bounds),
                 navigationRouteCoordinates: navigationViewModel.routeCoordinates,
                 navigationSegmentIndex: navigationViewModel.snapResult?.segmentIndex ?? 0,
                 isNavigating: navigationViewModel.isActive,
@@ -201,7 +214,7 @@ struct ContentView: View {
                 viewModel: mapViewModel,
                 onSearchTapped: { sheets.showSearchSheet = true },
                 onCategoryTapped: { sheets.showCategoryPicker = true },
-                onMyPlacesTapped: { sheets.showWaypointList = true },
+                onMyStuffTapped: { sheets.showMyStuff = true },
                 onWeatherTapped: { sheets.showWeatherSheet = true },
                 onEmergencyTapped: { sheets.showEmergency = true },
                 onMoreTapped: { sheets.showMore = true },
@@ -220,7 +233,8 @@ struct ContentView: View {
                 hideMenuAndZoom: routeViewModel.isDrawing || measurementViewModel.isActive || offlineViewModel.isSelectingArea || navigationViewModel.isActive || activityViewModel.isRecording,
                 isConnected: connectivityMonitor.isConnected,
                 isCleanMapActive: isCleanMapActive,
-                onCleanMapToggle: toggleCleanMap
+                onCleanMapToggle: toggleCleanMap,
+                isInsideOfflineArea: !connectivityMonitor.isConnected && offlineViewModel.isInsideOfflineArea(mapViewModel.userLocation?.coordinate ?? mapViewModel.currentCenter)
             )
 
             if navigationViewModel.isActive {
@@ -324,6 +338,16 @@ struct ContentView: View {
                 )
                 .transition(.opacity)
             }
+
+            // Offline area warning toast
+            if offlineViewModel.showLeftAreaWarning {
+                offlineWarningToast
+            }
+
+            // Download completion toast
+            if offlineViewModel.completionMessage != nil {
+                downloadCompleteToast
+            }
         }
         .tint(Color.Trakke.brand)
         .sheet(isPresented: $sheets.showSearchSheet) {
@@ -388,10 +412,7 @@ struct ContentView: View {
             DownloadManagerSheet(
                 viewModel: offlineViewModel,
                 onNewDownload: {
-                    offlineViewModel.startSelection(
-                        center: mapViewModel.currentCenter,
-                        zoom: mapViewModel.currentZoom
-                    )
+                    sheets.showOfflineChoice = true
                 }
             )
             .presentationDetents([.medium, .large])
@@ -399,6 +420,30 @@ struct ContentView: View {
         }
         .sheet(isPresented: $sheets.showDownloadArea) {
             DownloadAreaSheet(viewModel: offlineViewModel)
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
+        }
+        .sheet(isPresented: $sheets.showOfflineChoice) {
+            OfflineChoiceSheet(
+                onCustom: {
+                    offlineViewModel.startSelection(
+                        center: mapViewModel.currentCenter,
+                        zoom: mapViewModel.currentZoom
+                    )
+                },
+                onKommune: {
+                    sheets.showKommuneBrowser = true
+                },
+                onManageDownloads: {
+                    sheets.showOfflineManager = true
+                },
+                hasDownloads: !offlineViewModel.packs.isEmpty
+            )
+            .presentationDetents([.medium])
+            .presentationDragIndicator(.visible)
+        }
+        .sheet(isPresented: $sheets.showKommuneBrowser) {
+            KommuneBrowserSheet(viewModel: offlineViewModel)
                 .presentationDetents([.medium, .large])
                 .presentationDragIndicator(.visible)
         }
@@ -416,7 +461,7 @@ struct ContentView: View {
             if isActive { sheets.showMeasurementSheet = false }
         }
         .sheet(isPresented: $sheets.showPreferences) {
-            PreferencesSheet(mapViewModel: mapViewModel, knowledgeViewModel: knowledgeViewModel)
+            PreferencesSheet(mapViewModel: mapViewModel, knowledgeViewModel: knowledgeViewModel, onDeleteAllData: clearAllServiceCaches)
                 .presentationDetents([.large])
                 .presentationDragIndicator(.visible)
         }
@@ -424,6 +469,31 @@ struct ContentView: View {
             InfoSheet()
                 .presentationDetents([.large])
                 .presentationDragIndicator(.visible)
+        }
+        .sheet(isPresented: $sheets.showMyStuff) {
+            MineGreierSheet(
+                routeViewModel: routeViewModel,
+                waypointViewModel: waypointViewModel,
+                activityViewModel: activityViewModel,
+                onRouteSelected: { route in
+                    routeViewModel.selectRoute(route)
+                    sheets.showRouteDetail = true
+                },
+                onNewRoute: {
+                    routeViewModel.startDrawing()
+                },
+                onWaypointSelected: { wp in
+                    waypointViewModel.selectedWaypoint = wp
+                    sheets.showWaypointDetail = true
+                },
+                onActivitySelected: { activity in
+                    activityViewModel.selectedActivity = activity
+                    sheets.showActivityDetail = true
+                },
+                onStartRecording: {
+                    startActivityRecording()
+                }
+            )
         }
         .sheet(isPresented: $sheets.showWaypointList) {
             WaypointListSheet(
@@ -532,34 +602,12 @@ struct ContentView: View {
         .sheet(isPresented: $sheets.showMore) {
             MoreSheet(
                 knowledgeViewModel: knowledgeViewModel,
-                routeViewModel: routeViewModel,
-                activityViewModel: activityViewModel,
                 mapViewModel: mapViewModel,
                 onMeasurementTapped: { sheets.showMeasurementSheet = true },
                 onOfflineTapped: {
-                    if offlineViewModel.packs.isEmpty {
-                        offlineViewModel.startSelection(
-                            center: mapViewModel.currentCenter,
-                            zoom: mapViewModel.currentZoom
-                        )
-                    } else {
-                        sheets.showOfflineManager = true
-                    }
+                    sheets.showOfflineChoice = true
                 },
-                onRouteSelected: { route in
-                    routeViewModel.selectRoute(route)
-                    sheets.showRouteDetail = true
-                },
-                onNewRoute: {
-                    routeViewModel.startDrawing()
-                },
-                onActivitySelected: { activity in
-                    activityViewModel.selectedActivity = activity
-                    sheets.showActivityDetail = true
-                },
-                onStartRecording: {
-                    startActivityRecording()
-                }
+                onDeleteAllData: clearAllServiceCaches
             )
             .presentationDragIndicator(.visible)
         }
@@ -609,8 +657,64 @@ struct ContentView: View {
         }
     }
 
+    // MARK: - GDPR Cache Clearing
+
+    private func clearAllServiceCaches() {
+        Task {
+            await weatherViewModel.clearCaches()
+            await searchViewModel.clearCaches()
+            await routeViewModel.clearCaches()
+            await poiViewModel.clearCaches()
+            await waypointViewModel.clearCaches()
+        }
+    }
+
     // MARK: - Navigation
     // See ContentView+Navigation.swift for navigation method implementations.
+
+    // MARK: - Toast Views
+
+    private var offlineWarningToast: some View {
+        Text(String(localized: "offline.leftArea"))
+            .font(Font.Trakke.caption)
+            .foregroundStyle(.white)
+            .padding(.horizontal, .Trakke.lg)
+            .padding(.vertical, .Trakke.sm)
+            .background(Color.Trakke.warning)
+            .clipShape(Capsule())
+            .frame(maxHeight: .infinity, alignment: .bottom)
+            .padding(.bottom, 80)
+            .transition(reduceMotion ? .opacity : .move(edge: .bottom).combined(with: .opacity))
+            .task {
+                try? await Task.sleep(for: .seconds(5))
+                withAnimation(reduceMotion ? nil : .default) {
+                    offlineViewModel.showLeftAreaWarning = false
+                }
+            }
+    }
+
+    private var downloadCompleteToast: some View {
+        HStack(spacing: .Trakke.sm) {
+            Image(systemName: "checkmark.circle.fill")
+            Text(String(localized: "offline.downloadComplete \(offlineViewModel.completionMessage ?? "")"))
+                .font(Font.Trakke.caption)
+        }
+        .foregroundStyle(.white)
+        .padding(.horizontal, .Trakke.lg)
+        .padding(.vertical, .Trakke.sm)
+        .background(Color.Trakke.brand)
+        .clipShape(Capsule())
+        .trakkeControlShadow()
+        .frame(maxHeight: .infinity, alignment: .bottom)
+        .padding(.bottom, 80)
+        .transition(reduceMotion ? .opacity : .move(edge: .bottom).combined(with: .opacity))
+        .task {
+            try? await Task.sleep(for: .seconds(4))
+            withAnimation(reduceMotion ? nil : .default) {
+                offlineViewModel.completionMessage = nil
+            }
+        }
+    }
 }
 
 #Preview {

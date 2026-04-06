@@ -57,6 +57,7 @@ struct EmergencySheet: View {
 private struct CoordinatesContent: View {
     let userLocation: CLLocation?
     @State private var copiedId: String?
+    @State private var showCoordinateInfo = false
 
     private var coordinate: CLLocationCoordinate2D? {
         guard let loc = userLocation,
@@ -74,7 +75,23 @@ private struct CoordinatesContent: View {
                     noPositionView
                 }
 
-                instructionCard
+                HStack {
+                    Spacer()
+                    Button {
+                        showCoordinateInfo = true
+                    } label: {
+                        Image(systemName: "info.circle")
+                            .font(Font.Trakke.caption)
+                            .foregroundStyle(Color.Trakke.textTertiary)
+                    }
+                    .accessibilityLabel(String(localized: "emergency.coordinates.infoLabel"))
+                    .trakkeTooltip(isPresented: $showCoordinateInfo) {
+                        TrakkeTooltip(
+                            title: "",
+                            text: String(localized: "emergency.coordinates.instruction")
+                        )
+                    }
+                }
 
                 emergencyNumbersSection
 
@@ -153,6 +170,7 @@ private struct CoordinatesContent: View {
         }
     }
 
+
     // MARK: - Emergency Numbers
 
     private var emergencyNumbersSection: some View {
@@ -224,14 +242,6 @@ private struct CoordinatesContent: View {
         .accessibilityHint(String(localized: "emergency.numbers.callHint"))
     }
 
-    private var instructionCard: some View {
-        CardSection("") {
-            Text(String(localized: "emergency.coordinates.instruction"))
-                .font(Font.Trakke.caption)
-                .foregroundStyle(Color.Trakke.textSecondary)
-                .fixedSize(horizontal: false, vertical: true)
-        }
-    }
 }
 
 // MARK: - SOS Content
@@ -240,6 +250,7 @@ private struct SOSContent: View {
     @Bindable var viewModel: SOSViewModel
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @ScaledMetric(relativeTo: .title) private var morseSize: CGFloat = 28
+    @State private var showSOSInfo = false
 
     var body: some View {
         VStack(spacing: .Trakke.cardGap) {
@@ -259,11 +270,23 @@ private struct SOSContent: View {
 
     private var inactiveState: some View {
         VStack(spacing: .Trakke.lg) {
-            Text(String(localized: "sos.description"))
-                .font(Font.Trakke.bodyRegular)
-                .foregroundStyle(Color.Trakke.textSecondary)
-                .multilineTextAlignment(.leading)
-                .fixedSize(horizontal: false, vertical: true)
+            HStack {
+                Spacer()
+                Button {
+                    showSOSInfo = true
+                } label: {
+                    Image(systemName: "info.circle")
+                        .font(Font.Trakke.caption)
+                        .foregroundStyle(Color.Trakke.textTertiary)
+                }
+                .accessibilityLabel(String(localized: "sos.infoLabel"))
+                .trakkeTooltip(isPresented: $showSOSInfo) {
+                    TrakkeTooltip(
+                        title: "",
+                        text: String(localized: "sos.description")
+                    )
+                }
+            }
 
             Toggle(isOn: $viewModel.audioEnabled) {
                 Label {

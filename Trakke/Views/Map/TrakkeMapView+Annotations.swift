@@ -587,4 +587,62 @@ extension TrakkeMapView.Coordinator {
 
         return view
     }
+
+    // MARK: - Offline Pack Boundaries
+
+    private static let offlineBoundsSrcID = "offline-bounds-src"
+    private static let offlineBoundsLyrID = "offline-bounds-lyr"
+
+    func updateOfflineBounds(
+        on mapView: MLNMapView,
+        packBounds: [(south: Double, west: Double, north: Double, east: Double)]
+    ) {
+        lastOfflinePackBounds = packBounds
+        guard let style = mapView.style else { return }
+
+        if packBounds.isEmpty {
+            if let layer = style.layer(withIdentifier: Self.offlineBoundsLyrID) {
+                style.removeLayer(layer)
+            }
+            if let source = style.source(withIdentifier: Self.offlineBoundsSrcID) {
+                style.removeSource(source)
+            }
+            return
+        }
+
+        let features = packBounds.map { bounds -> MLNPolylineFeature in
+            var coords = [
+                CLLocationCoordinate2D(latitude: bounds.south, longitude: bounds.west),
+                CLLocationCoordinate2D(latitude: bounds.north, longitude: bounds.west),
+                CLLocationCoordinate2D(latitude: bounds.north, longitude: bounds.east),
+                CLLocationCoordinate2D(latitude: bounds.south, longitude: bounds.east),
+                CLLocationCoordinate2D(latitude: bounds.south, longitude: bounds.west),
+            ]
+            return MLNPolylineFeature(coordinates: &coords, count: UInt(coords.count))
+        }
+
+        let collection = MLNShapeCollectionFeature(shapes: features)
+
+        if let source = style.source(withIdentifier: Self.offlineBoundsSrcID) as? MLNShapeSource {
+            source.shape = collection
+        } else {
+            let source = MLNShapeSource(
+                identifier: Self.offlineBoundsSrcID,
+                shape: collection,
+                options: nil
+            )
+            style.addSource(source)
+
+            let layer = MLNLineStyleLayer(
+                identifier: Self.offlineBoundsLyrID,
+                source: source
+            )
+            layer.lineColor = NSExpression(forConstantValue: UIColor.Trakke.brand)
+            layer.lineWidth = NSExpression(forConstantValue: 2)
+            layer.lineOpacity = NSExpression(forConstantValue: 0.6)
+            layer.lineDashPattern = NSExpression(forConstantValue: [4, 4])
+            layer.lineCap = NSExpression(forConstantValue: "round")
+            style.addLayer(layer)
+        }
+    }
 }
