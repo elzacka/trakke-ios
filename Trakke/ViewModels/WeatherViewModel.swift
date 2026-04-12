@@ -1,5 +1,6 @@
 import Foundation
 import CoreLocation
+import OSLog
 
 @MainActor
 @Observable
@@ -106,57 +107,57 @@ final class WeatherViewModel {
         // Names match Yr's official symbol names:
         // https://hjelp.yr.no/hc/no/articles/203786121-Værsymbolene-på-Yr
         switch base {
-        case "clearsky_day", "clearsky_night": return String(localized: "weather.clearsky")
-        case "fair_day", "fair_night": return String(localized: "weather.fair")
-        case "partlycloudy_day", "partlycloudy_night": return String(localized: "weather.partlycloudy")
+        case "clearsky", "clearsky_day", "clearsky_night": return String(localized: "weather.clearsky")
+        case "fair", "fair_day", "fair_night": return String(localized: "weather.fair")
+        case "partlycloudy", "partlycloudy_day", "partlycloudy_night": return String(localized: "weather.partlycloudy")
         case "cloudy": return String(localized: "weather.cloudy")
         case "fog": return String(localized: "weather.fog")
         // Rain
         case "lightrain": return String(localized: "weather.lightrain")
         case "rain": return String(localized: "weather.rain")
         case "heavyrain": return String(localized: "weather.heavyrain")
-        case "lightrainshowers_day", "lightrainshowers_night": return String(localized: "weather.lightrainshowers")
-        case "rainshowers_day", "rainshowers_night": return String(localized: "weather.rainshowers")
-        case "heavyrainshowers_day", "heavyrainshowers_night": return String(localized: "weather.heavyrainshowers")
+        case "lightrainshowers", "lightrainshowers_day", "lightrainshowers_night": return String(localized: "weather.lightrainshowers")
+        case "rainshowers", "rainshowers_day", "rainshowers_night": return String(localized: "weather.rainshowers")
+        case "heavyrainshowers", "heavyrainshowers_day", "heavyrainshowers_night": return String(localized: "weather.heavyrainshowers")
         // Sleet
         case "lightsleet": return String(localized: "weather.lightsleet")
         case "sleet": return String(localized: "weather.sleet")
         case "heavysleet": return String(localized: "weather.heavysleet")
-        case "lightsleetshowers_day", "lightsleetshowers_night": return String(localized: "weather.lightsleetshowers")
-        case "sleetshowers_day", "sleetshowers_night": return String(localized: "weather.sleetshowers")
-        case "heavysleetshowers_day", "heavysleetshowers_night": return String(localized: "weather.heavysleetshowers")
+        case "lightsleetshowers", "lightsleetshowers_day", "lightsleetshowers_night": return String(localized: "weather.lightsleetshowers")
+        case "sleetshowers", "sleetshowers_day", "sleetshowers_night": return String(localized: "weather.sleetshowers")
+        case "heavysleetshowers", "heavysleetshowers_day", "heavysleetshowers_night": return String(localized: "weather.heavysleetshowers")
         // Snow
         case "lightsnow": return String(localized: "weather.lightsnow")
         case "snow": return String(localized: "weather.snow")
         case "heavysnow": return String(localized: "weather.heavysnow")
-        case "lightsnowshowers_day", "lightsnowshowers_night": return String(localized: "weather.lightsnowshowers")
-        case "snowshowers_day", "snowshowers_night": return String(localized: "weather.snowshowers")
-        case "heavysnowshowers_day", "heavysnowshowers_night": return String(localized: "weather.heavysnowshowers")
+        case "lightsnowshowers", "lightsnowshowers_day", "lightsnowshowers_night": return String(localized: "weather.lightsnowshowers")
+        case "snowshowers", "snowshowers_day", "snowshowers_night": return String(localized: "weather.snowshowers")
+        case "heavysnowshowers", "heavysnowshowers_day", "heavysnowshowers_night": return String(localized: "weather.heavysnowshowers")
         // Rain + thunder
         case "lightrainandthunder": return String(localized: "weather.lightrainandthunder")
         case "rainandthunder": return String(localized: "weather.rainandthunder")
         case "heavyrainandthunder": return String(localized: "weather.heavyrainandthunder")
-        case "lightrainshowersandthunder_day", "lightrainshowersandthunder_night": return String(localized: "weather.lightrainshowersandthunder")
-        case "rainshowersandthunder_day", "rainshowersandthunder_night": return String(localized: "weather.rainshowersandthunder")
-        case "heavyrainshowersandthunder_day", "heavyrainshowersandthunder_night": return String(localized: "weather.heavyrainshowersandthunder")
+        case "lightrainshowersandthunder", "lightrainshowersandthunder_day", "lightrainshowersandthunder_night": return String(localized: "weather.lightrainshowersandthunder")
+        case "rainshowersandthunder", "rainshowersandthunder_day", "rainshowersandthunder_night": return String(localized: "weather.rainshowersandthunder")
+        case "heavyrainshowersandthunder", "heavyrainshowersandthunder_day", "heavyrainshowersandthunder_night": return String(localized: "weather.heavyrainshowersandthunder")
         // Snow + thunder (MET API uses double-s typo in lightssnow/lightssleet)
         case "lightsnowandthunder": return String(localized: "weather.lightsnowandthunder")
         case "snowandthunder": return String(localized: "weather.snowandthunder")
         case "heavysnowandthunder": return String(localized: "weather.heavysnowandthunder")
-        case "lightsnowshowersandthunder_day", "lightssnowshowersandthunder_day",
+        case "lightsnowshowersandthunder", "lightsnowshowersandthunder_day", "lightssnowshowersandthunder_day",
              "lightsnowshowersandthunder_night", "lightssnowshowersandthunder_night": return String(localized: "weather.lightsnowshowersandthunder")
-        case "snowshowersandthunder_day", "snowshowersandthunder_night": return String(localized: "weather.snowshowersandthunder")
-        case "heavysnowshowersandthunder_day", "heavysnowshowersandthunder_night": return String(localized: "weather.heavysnowshowersandthunder")
+        case "snowshowersandthunder", "snowshowersandthunder_day", "snowshowersandthunder_night": return String(localized: "weather.snowshowersandthunder")
+        case "heavysnowshowersandthunder", "heavysnowshowersandthunder_day", "heavysnowshowersandthunder_night": return String(localized: "weather.heavysnowshowersandthunder")
         // Sleet + thunder
         case "lightsleetandthunder": return String(localized: "weather.lightsleetandthunder")
         case "sleetandthunder": return String(localized: "weather.sleetandthunder")
         case "heavysleetandthunder": return String(localized: "weather.heavysleetandthunder")
-        case "lightsleetshowersandthunder_day", "lightssleetshowersandthunder_day",
+        case "lightsleetshowersandthunder", "lightsleetshowersandthunder_day", "lightssleetshowersandthunder_day",
              "lightsleetshowersandthunder_night", "lightssleetshowersandthunder_night": return String(localized: "weather.lightsleetshowersandthunder")
-        case "sleetshowersandthunder_day", "sleetshowersandthunder_night": return String(localized: "weather.sleetshowersandthunder")
-        case "heavysleetshowersandthunder_day", "heavysleetshowersandthunder_night": return String(localized: "weather.heavysleetshowersandthunder")
+        case "sleetshowersandthunder", "sleetshowersandthunder_day", "sleetshowersandthunder_night": return String(localized: "weather.sleetshowersandthunder")
+        case "heavysleetshowersandthunder", "heavysleetshowersandthunder_day", "heavysleetshowersandthunder_night": return String(localized: "weather.heavysleetshowersandthunder")
         default:
-            assertionFailure("Unmapped MET weather symbol: \(base)")
+            Logger.weather.warning("Unmapped MET weather symbol: \(base)")
             return String(localized: "weather.cloudy")
         }
     }
