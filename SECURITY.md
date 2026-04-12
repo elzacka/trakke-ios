@@ -59,7 +59,7 @@ APIClient retries on HTTP 429 (rate limited) with `Retry-After` header support, 
 - SwiftData store protected with `NSFileProtectionComplete` (encrypted at rest, locked when device is locked)
 - Logger output uses `privacy: .private` for all user data interpolations
 - ModelContainer crash recovery: corrupted store is deleted and recreated rather than crashing
-- GDPR Art. 17 "right to erasure": In-app "Slett alle data" in Preferences deletes all SwiftData records (including WAL/SHM journal files), offline map packs, MapLibre tile cache (`clearTileCache()`), knowledge packs, temp GPX files, clears URLCache (may contain coordinates from API requests), uses `removePersistentDomain` for complete UserDefaults erasure, and clears all in-memory service caches via an `onDeleteAllData` callback: WeatherService, WaterTemperatureService, VarsomService, SearchService, RoutingService, ElevationService, POIService, BundledPOIService, and ArtsdatabankenImageService. This ensures no coordinate or location data survives in memory after deletion
+- GDPR Art. 17 "right to erasure": In-app "Slett alle data" in Preferences deletes all SwiftData records (including WAL/SHM journal files), offline map packs, MapLibre tile cache (`clearTileCache()`), knowledge packs, temp GPX files, clears URLCache (may contain coordinates from API requests), uses `removePersistentDomain` for complete UserDefaults erasure, and clears all in-memory service caches via an `onDeleteAllData` callback: WeatherService, WaterTemperatureService, AirQualityService, VarsomService, SearchService, RoutingService, ElevationService, POIService, BundledPOIService, and ArtsdatabankenImageService. This ensures no coordinate or location data survives in memory after deletion
 - GPX temp files are cleaned up automatically after share sheet dismissal and at app launch (orphaned files from previous sessions)
 - GPX temp export files are additionally protected with `NSFileProtectionComplete` (encrypted at rest)
 - SwiftData save failures are surfaced to the user via alerts rather than silently logged
@@ -69,6 +69,19 @@ APIClient retries on HTTP 429 (rate limited) with `Retry-After` header support, 
 - Logger categories use `privacy: .private` consistently for all user data across all services (centralized categories in Logger+Trakke.swift, including dedicated `Logger.sos` for SOSService)
 - Clipboard security: all coordinate copy actions (EmergencySheet, POIDetailSheet, WaypointDetailSheet, KnowledgeDetailSheet) use `UIPasteboard.setItems(_:options:)` with `"public.utf8-plain-text"` type and 5-minute expiration instead of persisting indefinitely
 - Activity GPX export uses the same XML escaping, coordinate validation (`.isFinite`), and `NSFileProtectionComplete` as route GPX export
+
+### External API: MET Air Quality
+
+`AirQualityService` fetches air quality forecasts from MET Norway (`api.met.no/weatherapi/airqualityforecast/0.1/`). This is a Norwegian government service.
+
+- Coordinates are truncated to 2 decimal places (~1.1 km precision) before transmission. Air quality data is per grunnkrets or kommune -- higher precision is not meaningful and would over-share location.
+- Only truncated coordinates are sent; no user identity, no session data.
+- Tries `areaclass=grunnkrets` first; falls back to `areaclass=kommune` on failure.
+- Auth: None. Uses standard User-Agent header.
+- `If-Modified-Since` / `Expires` header handling is implemented as required by MET API ToS.
+- Responses are held in a single-entry in-memory cache (keyed on 2dp coordinate string); cache is cleared in "Slett alle data" via `AirQualityFetching.clearCache()`.
+- Service uses the `AirQualityFetching` protocol for dependency injection and testability.
+- The NAAF Pollenvarsel URL shown in the AQ card is a static HTTPS link opened via `UIApplication.open`. It is not used to transmit any app data.
 
 ### External API: Artsdatabanken
 
@@ -114,9 +127,9 @@ APIClient retries on HTTP 429 (rate limited) with `Retry-After` header support, 
 
 | Version | Supported |
 |---------|-----------|
-| 1.3.1   | Current release |
-| 1.2.x   | Security fixes only |
-| < 1.2   | End of life |
+| 1.4.0   | Current release |
+| 1.3.x   | Security fixes only |
+| < 1.3   | End of life |
 
 ## Reporting a Vulnerability
 
@@ -146,11 +159,12 @@ Please do not open public GitHub issues for security vulnerabilities.
 - [ ] Clipboard copies use time-limited expiry (5 minutes) with `"public.utf8-plain-text"` at all 4 sites
 - [ ] `nonisolated(unsafe)` used only for read-only static instances (never mutable state)
 - [ ] Non-essential network requests marked `optional` (skipped in Low Data Mode)
-- [ ] All in-memory service caches cleared in "Slett alle data" (Weather, WaterTemperature, Varsom, Search, Routing, Elevation, POI, BundledPOI, Artsdatabanken)
+- [ ] All in-memory service caches cleared in "Slett alle data" (Weather, WaterTemperature, AirQuality, Varsom, Search, Routing, Elevation, POI, BundledPOI, Artsdatabanken)
 - [ ] GDPR deletion removes WAL/SHM files and MapLibre tile cache
 - [ ] Knowledge pack metadata files written with `.completeFileProtection`
 - [ ] GPX import validates coordinate ranges in addition to `.isFinite`
 - [ ] GPX temp files cleaned up at app launch
 - [ ] VarsomService truncates coordinates to 4 decimal places before transmission
+- [ ] AirQualityService truncates coordinates to 2 decimal places before transmission (grunnkrets/kommune precision)
 - [ ] VarsomService DateFormatters use POSIX locale (non-Gregorian calendar safety)
 - [ ] Knowledge pack catalog fetch marked `optional` (skipped in Low Data Mode)

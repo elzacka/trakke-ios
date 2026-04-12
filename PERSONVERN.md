@@ -1,6 +1,6 @@
 # Personvernerklæring for Tråkke
 
-**Sist oppdatert:** 6. april 2026
+**Sist oppdatert:** 12. april 2026
 ## Kort oppsummert
 
 Tråkke lagrer all data lokalt på enheten din. Appen samler ikke inn personopplysninger, og sporer ikke bruken din. Ingen data sendes til appens systemer eller til tredjeparter for analyse eller markedsføring.
@@ -19,6 +19,7 @@ Tråkke lagrer følgende lokalt:
 - **Nedlastede kartområder** for offline-bruk
 - **Kunnskapspakker** for offline-bruk
 - **Midlertidige værdata** (buffer i opptil 2 timer)
+- **Midlertidige luftkvalitetsdata** (buffer i minnet, inkludert stedsnavn fra API-et)
 
 Disse dataene forlater aldri enheten din.
 
@@ -41,7 +42,7 @@ Appen henter data fra følgende tjenester. Alle tjenester er norske eller europe
 | Kartverket (cache.kartverket.no) | Kartfliser | Kartkoordinater (zoom, x, y) | Norge |
 | Kartverket WMS (wms.geonorge.no) | Turruter-kartlag | Kartområde (bounding box) | Norge |
 | Geonorge (ws.geonorge.no) | Stedsnavn, adresser, høydedata | Søketekst eller koordinater | Norge |
-| Meteorologisk institutt (api.met.no) | Værmelding og havtemperatur | Omtrentlig posisjon | Norge |
+| Meteorologisk institutt (api.met.no) | Værmelding, havtemperatur og luftkvalitet | Omtrentlig posisjon (luftkvalitet: redusert til 2 desimaler, ca. 1,1 km nøyaktighet) | Norge |
 | Havvarsel-Frost (havvarsel-frost.met.no) | Badevannstemperatur | Omtrentlig posisjon | Norge |
 | DSB (ogc.dsb.no) | Tilfluktsrom | Kartområde (bounding box) | Norge |
 | Riksantikvaren (api.ra.no) | Kulturminner | Kartområde (bounding box) | Norge |

@@ -293,7 +293,7 @@ import SwiftData
 
 @Test func weatherWindDirection() {
     #expect(WeatherService.windDirectionName(0) == "N")
-    #expect(WeatherService.windDirectionName(90) == "O")
+    #expect(WeatherService.windDirectionName(90) == "Ø")
     #expect(WeatherService.windDirectionName(180) == "S")
     #expect(WeatherService.windDirectionName(270) == "V")
 }
@@ -301,8 +301,8 @@ import SwiftData
 @Test func weatherWindDirectionBoundaries() {
     // Values at exact boundary between sectors (45-degree increments)
     #expect(WeatherService.windDirectionName(22) == "N")
-    #expect(WeatherService.windDirectionName(23) == "NO")
-    #expect(WeatherService.windDirectionName(45) == "NO")
+    #expect(WeatherService.windDirectionName(23) == "NØ")
+    #expect(WeatherService.windDirectionName(45) == "NØ")
     #expect(WeatherService.windDirectionName(337) == "NV")
     #expect(WeatherService.windDirectionName(338) == "N")
     // Full circle wraps to N
@@ -314,7 +314,7 @@ import SwiftData
     #expect(WeatherService.windDirectionName(-45) == "NV")   // -45 = 315
     #expect(WeatherService.windDirectionName(-90) == "V")    // -90 = 270
     #expect(WeatherService.windDirectionName(-180) == "S")   // -180 = 180
-    #expect(WeatherService.windDirectionName(-270) == "O")   // -270 = 90
+    #expect(WeatherService.windDirectionName(-270) == "Ø")   // -270 = 90
     #expect(WeatherService.windDirectionName(-360) == "N")   // -360 = 0
     #expect(WeatherService.windDirectionName(-22) == "N")    // Near-zero negative
     #expect(WeatherService.windDirectionName(-23) == "NV")   // Just past boundary
@@ -1320,6 +1320,95 @@ func kartverketStyleJSON(layer: BaseLayer) {
 @Test func sosPatternEndsWithInterWordGap() {
     // The pattern must end with an inter-word gap (-7) so the loop pauses before repeating
     #expect(SOSService.sosPattern.last == -7, "Pattern must end with inter-word gap (-7)")
+}
+
+// MARK: - AQI Class Tests
+
+@Test func aqiClassBoundaries() {
+    #expect(AQIClass(aqi: 0.5) == .low)
+    #expect(AQIClass(aqi: 1.0) == .low)
+    #expect(AQIClass(aqi: 1.99) == .low)
+    #expect(AQIClass(aqi: 2.0) == .moderate)
+    #expect(AQIClass(aqi: 2.99) == .moderate)
+    #expect(AQIClass(aqi: 3.0) == .high)
+    #expect(AQIClass(aqi: 3.99) == .high)
+    #expect(AQIClass(aqi: 4.0) == .veryHigh)
+    #expect(AQIClass(aqi: 4.999) == .veryHigh)
+}
+
+// MARK: - Precipitation Type Tests
+
+@Test func precipitationTypeFromSymbol() {
+    #expect(WeatherService.precipitationType(for: "lightrain") == .rain)
+    #expect(WeatherService.precipitationType(for: "heavyrainshowers_day") == .rain)
+    #expect(WeatherService.precipitationType(for: "rainandthunder") == .rain)
+    #expect(WeatherService.precipitationType(for: "lightsnow") == .snow)
+    #expect(WeatherService.precipitationType(for: "heavysnowshowers_night") == .snow)
+    #expect(WeatherService.precipitationType(for: "snowandthunder") == .snow)
+    #expect(WeatherService.precipitationType(for: "sleet") == .sleet)
+    #expect(WeatherService.precipitationType(for: "lightsleetshowers_day") == .sleet)
+    #expect(WeatherService.precipitationType(for: "sleetandthunder") == .sleet)
+}
+
+// MARK: - Weather Condition Text Coverage
+
+@Test func weatherConditionTextSleetVariants() {
+    #expect(WeatherViewModel.conditionText(for: "lightsleet") == String(localized: "weather.lightsleet"))
+    #expect(WeatherViewModel.conditionText(for: "sleet") == String(localized: "weather.sleet"))
+    #expect(WeatherViewModel.conditionText(for: "heavysleet") == String(localized: "weather.heavysleet"))
+    #expect(WeatherViewModel.conditionText(for: "lightsleetshowers_day") == String(localized: "weather.lightsleetshowers"))
+    #expect(WeatherViewModel.conditionText(for: "heavysleetshowers_night") == String(localized: "weather.heavysleetshowers"))
+}
+
+@Test func weatherConditionTextSnowVariants() {
+    #expect(WeatherViewModel.conditionText(for: "lightsnow") == String(localized: "weather.lightsnow"))
+    #expect(WeatherViewModel.conditionText(for: "snow") == String(localized: "weather.snow"))
+    #expect(WeatherViewModel.conditionText(for: "heavysnow") == String(localized: "weather.heavysnow"))
+    #expect(WeatherViewModel.conditionText(for: "lightsnowshowers_day") == String(localized: "weather.lightsnowshowers"))
+    #expect(WeatherViewModel.conditionText(for: "heavysnowshowers_night") == String(localized: "weather.heavysnowshowers"))
+}
+
+@Test func weatherConditionTextThunderVariants() {
+    #expect(WeatherViewModel.conditionText(for: "lightrainandthunder") == String(localized: "weather.lightrainandthunder"))
+    #expect(WeatherViewModel.conditionText(for: "heavyrainandthunder") == String(localized: "weather.heavyrainandthunder"))
+    #expect(WeatherViewModel.conditionText(for: "lightrainshowersandthunder_day") == String(localized: "weather.lightrainshowersandthunder"))
+    #expect(WeatherViewModel.conditionText(for: "heavyrainshowersandthunder_night") == String(localized: "weather.heavyrainshowersandthunder"))
+    #expect(WeatherViewModel.conditionText(for: "lightsnowandthunder") == String(localized: "weather.lightsnowandthunder"))
+    #expect(WeatherViewModel.conditionText(for: "snowshowersandthunder_day") == String(localized: "weather.snowshowersandthunder"))
+    #expect(WeatherViewModel.conditionText(for: "sleetandthunder") == String(localized: "weather.sleetandthunder"))
+    #expect(WeatherViewModel.conditionText(for: "sleetshowersandthunder_night") == String(localized: "weather.sleetshowersandthunder"))
+}
+
+@Test func weatherConditionTextPolartwilight() {
+    // Polartwilight suffix should be stripped — maps to base symbol
+    #expect(WeatherViewModel.conditionText(for: "clearsky_polartwilight") == String(localized: "weather.clearsky"))
+    #expect(WeatherViewModel.conditionText(for: "fair_polartwilight") == String(localized: "weather.fair"))
+    #expect(WeatherViewModel.conditionText(for: "partlycloudy_polartwilight") == String(localized: "weather.partlycloudy"))
+}
+
+@Test func weatherConditionTextDoubleS() {
+    // MET API uses double-s typo in these symbol codes
+    #expect(WeatherViewModel.conditionText(for: "lightssnowshowersandthunder_day") == String(localized: "weather.lightsnowshowersandthunder"))
+    #expect(WeatherViewModel.conditionText(for: "lightssleetshowersandthunder_night") == String(localized: "weather.lightsleetshowersandthunder"))
+}
+
+// MARK: - Knowledge Articles Tests
+
+@MainActor @Test func bundledArticlesContainVaerCategory() {
+    let articles = KnowledgeViewModel.loadBundledArticles()
+    let vaerArticles = articles.filter { $0.category == "vaer" }
+    #expect(!vaerArticles.isEmpty, "Expected at least one article with category 'vaer'")
+    #expect(vaerArticles.count >= 6, "Expected at least 6 weather articles")
+}
+
+@MainActor @Test func bundledArticlesHaveValidCategories() {
+    let articles = KnowledgeViewModel.loadBundledArticles()
+    for article in articles {
+        #expect(
+            ArticleCategory(rawValue: article.category) != nil,
+            "Article '\(article.title)' has invalid category '\(article.category)'"
+        )
+    }
 }
 
 // MARK: - Helpers

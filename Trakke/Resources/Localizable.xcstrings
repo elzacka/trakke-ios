@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "nb",
   "strings" : {
+    "–" : {
+
+    },
     "··· — — — ···" : {
 
     },
@@ -1235,7 +1238,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vær og havtemperatur"
+            "value" : "Vær, havtemperatur og luftkvalitet"
           }
         }
       }
@@ -1246,18 +1249,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Naturvernområder og naturskog"
-          }
-        }
-      }
-    },
-    "info.nve.detail" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Snøskred- og flomvarsler, bratthetskart"
+            "value" : "Naturvernområder, naturskog og luftkvalitet"
           }
         }
       }
@@ -1269,6 +1261,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Koordinatkonvertering"
+          }
+        }
+      }
+    },
+    "info.nve.detail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Snøskred- og flomvarsler, bratthetskart"
           }
         }
       }
@@ -1456,6 +1459,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Redningssignaler"
+          }
+        }
+      }
+    },
+    "knowledge.article.vaer" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vær"
           }
         }
       }
@@ -1778,6 +1792,9 @@
           }
         }
       }
+    },
+    "Les om %@ i Kunnskap" : {
+
     },
     "location.primer.allow" : {
       "extractionState" : "manual",
@@ -2119,6 +2136,9 @@
           }
         }
       }
+    },
+    "NAAF — Pollenvarsel" : {
+
     },
     "navigation.arrived" : {
       "extractionState" : "manual",
@@ -3991,6 +4011,9 @@
         }
       }
     },
+    "varsom.no" : {
+
+    },
     "waypoints.addWaypoint" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4256,6 +4279,303 @@
         }
       }
     },
+    "weather.airQuality" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Luftkvalitet"
+          }
+        }
+      }
+    },
+    "weather.aqi.advice.high" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Barn, gravide, syke og eldre bør vurdere å begrense utendørs fysisk aktivitet."
+          }
+        }
+      }
+    },
+    "weather.aqi.advice.low" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utendørs aktivitet anbefales."
+          }
+        }
+      }
+    },
+    "weather.aqi.advice.moderate" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utendørs aktivitet anbefales for de fleste."
+          }
+        }
+      }
+    },
+    "weather.aqi.advice.veryHigh" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Begrens opphold utendørs. Barn, gravide, syke og eldre må være spesielt forsiktige."
+          }
+        }
+      }
+    },
+    "weather.aqi.high" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Høy luftforurensning"
+          }
+        }
+      }
+    },
+    "weather.aqi.low" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lite luftforurensning"
+          }
+        }
+      }
+    },
+    "weather.aqi.moderate" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Moderat luftforurensning"
+          }
+        }
+      }
+    },
+    "weather.aqi.veryHigh" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Svært høy luftforurensning"
+          }
+        }
+      }
+    },
+    "weather.assessment.cold" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaldt. Kle deg godt i lag med ullundertøy og vindtett ytterlag."
+          }
+        }
+      }
+    },
+    "weather.assessment.cool" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kjølig. Et ekstra lag og lue kan være lurt."
+          }
+        }
+      }
+    },
+    "weather.assessment.dangerousWind" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Farlig vind. Unngå eksponerte steder og høyfjell."
+          }
+        }
+      }
+    },
+    "weather.assessment.evidence.dueTo" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "pga. vind"
+          }
+        }
+      }
+    },
+    "weather.assessment.evidence.feelsLike" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "føles som"
+          }
+        }
+      }
+    },
+    "weather.assessment.evidence.precip" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nedbør"
+          }
+        }
+      }
+    },
+    "weather.assessment.evidence.temp" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temperatur"
+          }
+        }
+      }
+    },
+    "weather.assessment.evidence.wind" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vind"
+          }
+        }
+      }
+    },
+    "weather.assessment.extreme" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Livsfarlige vindforhold. Ikke gå ut."
+          }
+        }
+      }
+    },
+    "weather.assessment.extremeCold" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Farlig kulde. Fare for forfrysning på kort tid."
+          }
+        }
+      }
+    },
+    "weather.assessment.good" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Greie forhold. Kle deg etter temperatur og ta med ekstra lag."
+          }
+        }
+      }
+    },
+    "weather.assessment.great" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flott turdag! Nyt været."
+          }
+        }
+      }
+    },
+    "weather.assessment.heavyPrecip" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kraftig nedbør. Ta med regnklær og vurder kortere tur."
+          }
+        }
+      }
+    },
+    "weather.assessment.likelyRain" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trolig nedbør. Ha regnklær tilgjengelig."
+          }
+        }
+      }
+    },
+    "weather.assessment.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Været i dag"
+          }
+        }
+      }
+    },
+    "weather.assessment.veryCold" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Svært kaldt. Kle deg i lag og dekk all hud."
+          }
+        }
+      }
+    },
+    "weather.assessment.windAndRain" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kuling og nedbør. Gode skallklær og vindtett utstyr er nødvendig."
+          }
+        }
+      }
+    },
+    "weather.assessment.windyCaution" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mye vind. Ta med vindtette klær og vær varsom på eksponerte strekninger."
+          }
+        }
+      }
+    },
     "weather.bathingSpot" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4306,7 +4626,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sol"
+            "value" : "Dagslys"
           }
         }
       }
@@ -4388,6 +4708,17 @@
         }
       }
     },
+    "weather.forecast.uncertainty" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mer usikkert etter dag 4"
+          }
+        }
+      }
+    },
     "weather.heavyrain" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -4395,6 +4726,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kraftig regn"
+          }
+        }
+      }
+    },
+    "weather.heavyrainandthunder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kraftig regn og torden"
           }
         }
       }
@@ -4410,6 +4752,17 @@
         }
       }
     },
+    "weather.heavyrainshowersandthunder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kraftige regnbyger og torden"
+          }
+        }
+      }
+    },
     "weather.heavysleet" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -4421,6 +4774,39 @@
         }
       }
     },
+    "weather.heavysleetandthunder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kraftig sludd og torden"
+          }
+        }
+      }
+    },
+    "weather.heavysleetshowers" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kraftige sluddbyger"
+          }
+        }
+      }
+    },
+    "weather.heavysleetshowersandthunder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kraftige sluddbyger og torden"
+          }
+        }
+      }
+    },
     "weather.heavysnow" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -4428,6 +4814,39 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kraftig snøfall"
+          }
+        }
+      }
+    },
+    "weather.heavysnowandthunder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kraftig snø og torden"
+          }
+        }
+      }
+    },
+    "weather.heavysnowshowers" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kraftige snøbyger"
+          }
+        }
+      }
+    },
+    "weather.heavysnowshowersandthunder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kraftige snøbyger og torden"
           }
         }
       }
@@ -4520,6 +4939,17 @@
         }
       }
     },
+    "weather.lightrainandthunder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lett regn og torden"
+          }
+        }
+      }
+    },
     "weather.lightrainshowers" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -4527,6 +4957,105 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lette regnbyger"
+          }
+        }
+      }
+    },
+    "weather.lightrainshowersandthunder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lette regnbyger og torden"
+          }
+        }
+      }
+    },
+    "weather.lightsleet" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lett sludd"
+          }
+        }
+      }
+    },
+    "weather.lightsleetandthunder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lett sludd og torden"
+          }
+        }
+      }
+    },
+    "weather.lightsleetshowers" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lette sluddbyger"
+          }
+        }
+      }
+    },
+    "weather.lightsleetshowersandthunder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lette sluddbyger og torden"
+          }
+        }
+      }
+    },
+    "weather.lightsnow" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lett snø"
+          }
+        }
+      }
+    },
+    "weather.lightsnowandthunder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lett snø og torden"
+          }
+        }
+      }
+    },
+    "weather.lightsnowshowers" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lette snøbyger"
+          }
+        }
+      }
+    },
+    "weather.lightsnowshowersandthunder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lette snøbyger og torden"
           }
         }
       }
@@ -4593,6 +5122,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Delvis skyet"
+          }
+        }
+      }
+    },
+    "weather.precip.feels.drizzle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yr eller lett snø — du kjenner det i ansiktet, men blir knapt våt."
+          }
+        }
+      }
+    },
+    "weather.precip.feels.heavy" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kraftig nedbør — dårlig sikt og vanskelige forhold. Full regnbekledning og gamasjer er nødvendig."
+          }
+        }
+      }
+    },
+    "weather.precip.feels.light" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lett nedbør — du merker det godt. Skalljakke holder deg tørr."
+          }
+        }
+      }
+    },
+    "weather.precip.feels.moderate" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jevn nedbør — du blir våt uten skallklær. Stier blir glatte og det kan bli mer vann i bekker og elver."
+          }
+        }
+      }
+    },
+    "weather.precip.feels.none" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tørt — ingen nedbør å merke."
+          }
+        }
+      }
+    },
+    "weather.precip.feels.torrential" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Svært kraftig nedbør — farevarsel-nivå. Fare for flom i bekker og elver. Søk ly og hold avstand til vassdrag."
           }
         }
       }
@@ -4696,6 +5291,149 @@
         }
       }
     },
+    "weather.precipitation.none" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingen"
+          }
+        }
+      }
+    },
+    "weather.pressure" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lufttrykk"
+          }
+        }
+      }
+    },
+    "weather.pressure.falling" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fallende"
+          }
+        }
+      }
+    },
+    "weather.pressure.impact.falling" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trykket faller — dårligere vær er på vei. Regn og sterk vind kan komme. Vurder å snu tidlig."
+          }
+        }
+      }
+    },
+    "weather.pressure.impact.noTrend" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ikke nok data til å vise utviklingen ennå. Sjekk igjen litt senere."
+          }
+        }
+      }
+    },
+    "weather.pressure.impact.rising" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trykket stiger — været bedrer seg. Skyene letter, og vinden roer seg."
+          }
+        }
+      }
+    },
+    "weather.pressure.impact.stable" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trykket er stabilt. Været holder seg trolig som nå."
+          }
+        }
+      }
+    },
+    "weather.pressure.last3h" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "siste 3 t"
+          }
+        }
+      }
+    },
+    "weather.pressure.meaning.falling" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vær på vei"
+          }
+        }
+      }
+    },
+    "weather.pressure.meaning.rising" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bedring i sikte"
+          }
+        }
+      }
+    },
+    "weather.pressure.meaning.stable" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stabilt vær"
+          }
+        }
+      }
+    },
+    "weather.pressure.rising" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stigende"
+          }
+        }
+      }
+    },
+    "weather.pressure.stable" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stabilt"
+          }
+        }
+      }
+    },
     "weather.rain" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -4736,6 +5474,116 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Regnbyger og torden"
+          }
+        }
+      }
+    },
+    "weather.ref.precip.body" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nedbør måles i millimeter per time (mm/t). Prosenten angir sannsynligheten for at det kommer nedbør i perioden.\n\nUnder 0,5 mm/t: Yr eller duskregn\n0,5–4 mm/t: Lett nedbør\n4–10 mm/t: Moderat nedbør — regnklær nødvendig\n10–30 mm/t: Kraftig nedbør — bekker stiger, dårlig sikt\nOver 30 mm/t: Svært kraftig nedbør — fare for flom\n\nNedbørstype avhenger av temperaturen: regn over 2–3°, sludd rundt 0–2°, snø under 0°.\n\nKilde: MET varselkriterier, WMO"
+          }
+        }
+      }
+    },
+    "weather.ref.precip.header" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nedbørsintensitet"
+          }
+        }
+      }
+    },
+    "weather.ref.pressure.body" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lufttrykk måles i hektopascal (hPa). Normalt havnivåtrykk er 1013 hPa.\n\nUnder 1 hPa endring på 3 timer: Stabilt — rolig vær\n1–3 hPa endring: Gradvis værskifte\n3–6 hPa endring: Raskt værskifte — følg med\nOver 6 hPa fall: Kraftig lavtrykk — mulig storm\n\nFallende trykk betyr ofte dårligere vær. Stigende trykk betyr vanligvis bedring — men ikke alltid.\n\nKilde: WMO, METs synoptiske praksis"
+          }
+        }
+      }
+    },
+    "weather.ref.pressure.header" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lufttrykk"
+          }
+        }
+      }
+    },
+    "weather.ref.temp.body" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Følt temperatur kombinerer lufttemperatur og vind. Gjelder under 10° og vind over 1,3 m/s.\n\n0 til −9°: Ubehagelig — kle deg godt\n−10 til −27°: Risiko for forfrysning ved langvarig eksponering\n−28 til −39°: Forfrysning mulig på 10–30 minutter\n−40 til −47°: Forfrysning mulig på 5–10 minutter\nUnder −48°: Livsfarlig — forfrysning på under 2 minutter\n\nVåte klær, mangel på mat og utmattelse gjør deg mer sårbar for kulde enn tallene alene tilsier.\n\nKilde: JAG/TI vindavkjølingsformel (2001), brukt av MET og Yr"
+          }
+        }
+      }
+    },
+    "weather.ref.temp.header" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Følt temperatur (vindavkjøling)"
+          }
+        }
+      }
+    },
+    "weather.ref.uv.body" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UV-indeksen måler styrken på solens ultrafiolette stråling.\n\n0–2: Lav — beskyttelse ikke nødvendig\n3–5: Moderat — solbriller og solkrem anbefalt\n6–7: Høy — solbeskyttelse nødvendig\n8–10: Svært høy — unngå sol midt på dagen\n11+: Ekstrem — full beskyttelse påkrevd\n\nSnø reflekterer opptil 80 % av UV-strålingen. Skyer demper UV, men stopper den ikke helt.\n\nKilde: WHO Global Solar UV Index"
+          }
+        }
+      }
+    },
+    "weather.ref.uv.header" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UV-indeks (WHO-skalaen)"
+          }
+        }
+      }
+    },
+    "weather.ref.wind.body" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vind måles i meter per sekund (m/s) og beskrives med Beaufortskalaen (0–12).\n\n0: Stille — under 0,3 m/s\n1: Flau vind — 0,3–1,5 m/s\n2: Svak vind — 1,6–3,3 m/s\n3: Lett bris — 3,4–5,4 m/s\n4: Laber bris — 5,5–7,9 m/s\n5: Frisk bris — 8,0–10,7 m/s\n6: Liten kuling — 10,8–13,8 m/s\n7: Stiv kuling — 13,9–17,1 m/s\n8: Sterk kuling — 17,2–20,7 m/s\n9: Liten storm — 20,8–24,4 m/s\n10: Full storm — 24,5–28,4 m/s\n11: Sterk storm — 28,5–32,6 m/s\n12: Orkan — over 32,7 m/s\n\nVindkast er korte vindstøt som kan være vesentlig sterkere enn den jevne vinden.\n\nKilde: Yr/MET, WMO"
+          }
+        }
+      }
+    },
+    "weather.ref.wind.header" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vindstyrke (Beaufortskalaen)"
           }
         }
       }
@@ -4784,6 +5632,17 @@
         }
       }
     },
+    "weather.sleetshowersandthunder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sluddbyger og torden"
+          }
+        }
+      }
+    },
     "weather.snow" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -4817,6 +5676,17 @@
         }
       }
     },
+    "weather.snowshowersandthunder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Snøbyger og torden"
+          }
+        }
+      }
+    },
     "weather.sunrise" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4835,6 +5705,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Solnedgang"
+          }
+        }
+      }
+    },
+    "weather.tapHint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trykk for forklaring"
           }
         }
       }
@@ -4905,6 +5786,17 @@
         }
       }
     },
+    "weather.temp.windChillExplain" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vindkjøling"
+          }
+        }
+      }
+    },
     "weather.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4916,6 +5808,83 @@
         }
       }
     },
+    "weather.upcoming.heavyRain %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kraftig regn fra kl. %@"
+          }
+        }
+      }
+    },
+    "weather.upcoming.heavySleet %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kraftig sludd fra kl. %@"
+          }
+        }
+      }
+    },
+    "weather.upcoming.heavySnow %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kraftig snø fra kl. %@"
+          }
+        }
+      }
+    },
+    "weather.upcoming.rain %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regn fra kl. %@"
+          }
+        }
+      }
+    },
+    "weather.upcoming.sleet %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sludd fra kl. %@"
+          }
+        }
+      }
+    },
+    "weather.upcoming.snow %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Snø fra kl. %@"
+          }
+        }
+      }
+    },
+    "weather.upcoming.wind %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mer vind fra kl. %@"
+          }
+        }
+      }
+    },
     "weather.updated %@" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4923,6 +5892,160 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Oppdatert %@"
+          }
+        }
+      }
+    },
+    "weather.uv.clearSky" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skyfri himmel"
+          }
+        }
+      }
+    },
+    "weather.uv.cloudNote" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verdien gjelder skyfri himmel. Skyer reduserer UV, men spredt skydekke kan likevel gi sterk eksponering."
+          }
+        }
+      }
+    },
+    "weather.uv.extreme" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ekstrem"
+          }
+        }
+      }
+    },
+    "weather.uv.high" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sterk"
+          }
+        }
+      }
+    },
+    "weather.uv.impact.extreme" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ekstremt sterk UV-stråling. Unngå å oppholde deg ute midt på dagen. Ubeskyttet hud forbrenner på under 15 minutter."
+          }
+        }
+      }
+    },
+    "weather.uv.impact.high" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solkrem (SPF 15+), solbriller og hatt er nødvendig. Unngå direkte sol midt på dagen. Ubeskyttet hud forbrenner på 30–60 minutter."
+          }
+        }
+      }
+    },
+    "weather.uv.impact.low" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingen spesiell beskyttelse nødvendig for de fleste."
+          }
+        }
+      }
+    },
+    "weather.uv.impact.moderate" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bruk solkrem, solbriller og hatt. Ubeskyttet hud kan forbrenne på 1–2 timer. Snø og høyde forsterker UV."
+          }
+        }
+      }
+    },
+    "weather.uv.impact.veryHigh" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sterk UV-stråling. Ubeskyttet hud kan forbrenne på 15–30 minutter. Søk skygge mellom kl. 12 og 15. Solkrem, hatt og solbriller er påkrevd."
+          }
+        }
+      }
+    },
+    "weather.uv.low" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lav"
+          }
+        }
+      }
+    },
+    "weather.uv.moderate" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Moderat"
+          }
+        }
+      }
+    },
+    "weather.uv.snowNote" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Snø reflekterer opptil 80 % av UV-strålingen. I fjellet med snø kan reell eksponering være vesentlig høyere."
+          }
+        }
+      }
+    },
+    "weather.uv.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UV-indeks"
+          }
+        }
+      }
+    },
+    "weather.uv.veryHigh" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Svært sterk"
           }
         }
       }
@@ -4960,6 +6083,17 @@
         }
       }
     },
+    "weather.varsom.level %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Faregrad %lld"
+          }
+        }
+      }
+    },
     "weather.waterTemperature" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4988,7 +6122,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Flau vind"
+            "value" : "Nesten stille"
           }
         }
       }
@@ -5110,6 +6244,138 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Orkan"
+          }
+        }
+      }
+    },
+    "weather.wind.context.east" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tørr innlandsluft betyr ofte lite nedbør, men vinterstid kan det bli bitende kaldt."
+          }
+        }
+      }
+    },
+    "weather.wind.context.north" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kald luft fra Arktis betyr ofte skarpt vær — ta med varme lag uansett årstid."
+          }
+        }
+      }
+    },
+    "weather.wind.context.northeast" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tørr og kald kontinentalluft gir gjerne klart vær, men bitt i lufta. Ekstra hansker og lue er lurt."
+          }
+        }
+      }
+    },
+    "weather.wind.context.northwest" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ustabil og kald havluft gir gjerne raskskiftende vær med byger — det kan gå fra sol til sludd på en halvtime."
+          }
+        }
+      }
+    },
+    "weather.wind.context.south" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mild luft gir gjerne behagelig temperatur, men ofte skyer og litt nedbør."
+          }
+        }
+      }
+    },
+    "weather.wind.context.southeast" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Varm og tørr luft fra kontinentet gir gjerne fint vær om sommeren, men kan bli trykkende varmt i lavlandet."
+          }
+        }
+      }
+    },
+    "weather.wind.context.southwest" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fuktig Atlanterhavsluft gir gjerne regn og vind. Ha regnjakka lett tilgjengelig, ikke i bunnen av sekken."
+          }
+        }
+      }
+    },
+    "weather.wind.context.west" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kraftig Atlanterhavspåvirkning betyr ofte mye nedbør og kuling, særlig på fjellet og langs vestkysten."
+          }
+        }
+      }
+    },
+    "weather.wind.from %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "fra %@"
+          }
+        }
+      }
+    },
+    "weather.wind.gust" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vindkast"
+          }
+        }
+      }
+    },
+    "weather.wind.gustLabel %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kast %@ m/s"
+          }
+        }
+      }
+    },
+    "weather.wind.gustRatio" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sterkere enn middelvind"
           }
         }
       }
@@ -5285,7 +6551,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Godt følbar i sterk kulde. Snøfillene beveger seg mer horisontalt enn vertikalt."
+            "value" : "Merkes godt når det er kaldt. Snøfillene beveger seg mer horisontalt enn vertikalt."
           }
         }
       }
@@ -5329,7 +6595,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Det er meget slitsomt å ta seg fram mot været. Snøfokk setter ned sikten til under 1 km. Vanskelig å holde ubeskyttet ansikt mot vinden i lengre tid. Folk flest bør ikke legge ut på tur over snaufjellet ved denne og høyere vindstyrker."
+            "value" : "Svært slitsomt å ta seg fram mot været. Snøfokk setter ned sikten til under 1 km. Vanskelig å holde ubeskyttet ansikt mot vinden i lengre tid. De fleste bør ikke legge ut på tur over snaufjellet i slik vind."
           }
         }
       }
@@ -5340,7 +6606,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "I motvind må en lute seg fram over skiene og legge stor kraft i stavtakene, selv på flat mark. Det kan være vanskelig å holde se på bena. Snøfokk setter ned sikten til få hundre meter. Vanskelig å orientere seg i terrenget. En skitur i fjellet ved vindstyrke 7 er en stor påkjenning for de fleste."
+            "value" : "I motvind må en lute seg fram over skiene og legge stor kraft i stavtakene, selv på flat mark. Det kan være vanskelig å holde seg på bena. Snøfokk setter ned sikten til få hundre meter. Vanskelig å orientere seg i terrenget. En skitur i fjellet i slik vind er en stor påkjenning for de fleste."
           }
         }
       }

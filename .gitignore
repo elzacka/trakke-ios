@@ -43,12 +43,11 @@ Thumbs.db
 .env
 .env.local
 
-# AI developer context
-CLAUDE.md
+# Developer context
+.obsidian/
+.claude/
 dev_only/
 
-# Obsidian
-.obsidian/
 
 # Fastlane
 fastlane/report.xml

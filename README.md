@@ -1,6 +1,6 @@
 # Tråkke - Norsk friluftslivsapp for iOS
 
-**Versjon 1.3.1** | iOS 26.0+ | Swift 6.2
+**Versjon 1.4.0** | iOS 26.0+ | Swift 6.2
 
 Tråkke er en kartapp for iPhone som bruker kartdata fra Kartverket. Appen er laget for turgåere og friluftsfolk i Norge, med fokus på personvern og offline bruk.
 
@@ -14,7 +14,8 @@ Tråkke er en kartapp for iPhone som bruker kartdata fra Kartverket. Appen er la
 - **Interessepunkter** - tilfluktsrom, huler, utsiktspunkter, krigsminner, gapahuker/vindskjul, kulturminner
 - **Kartlag** - turruter, 3D-relieff, bratthetskart, naturvernområder og naturskog fra Kartverket, NVE og Miljødirektoratet
 - **Høydeprofiler** med data fra Kartverkets høydemodell
-- **Værmelding** fra Meteorologisk institutt med vindkjøleindeks, Beaufort-beskrivelser og interaktive tooltips
+- **Værmelding** fra Meteorologisk institutt med vindkjøleindeks, Beaufort-beskrivelser og interaktive tooltips med lenker til kunnskapsartikler
+- **Luftkvalitet** fra Meteorologisk institutt (MET airqualityforecast) med helseråd og lenke til NAAF Pollenvarsel
 - **Snø- og flomvarsler** fra NVE/Varsom for valgt posisjon
 - **Vanntemperatur** - havtemperatur (MET Oceanforecast) og badevannstemperatur (Havvarsel-Frost) med ferskhetsstatus
 - **Soloppgang og solnedgang** - dagslysinfo beregnet lokalt uten nett
@@ -23,7 +24,7 @@ Tråkke er en kartapp for iPhone som bruker kartdata fra Kartverket. Appen er la
 - **Navigasjon** - beregnet rute (via Valhalla) med sving-for-sving eller kompassretning til mål
 - **Turregistrering** - GPS-basert sporregistrering med avstand, høydemeter og varighet
 - **Eksport av turdata som GPX** - registrerte aktiviteter kan eksporteres som GPX-filer for dataportabilitet
-- **Kunnskap og overlevelse** - nedlastbare artikler om friluftsliv med artsbilder, tilgjengelig uten nett
+- **Kunnskap og overlevelse** - nedlastbare artikler om friluftsliv med artsbilder, tilgjengelig uten nett. Inneholder 7 artikler om vær (Følt temperatur, Luftkvalitet, Lufttrykk, Nedbør, UV-stråling, Vind m.fl.)
 - **Nødkoordinater og SOS-signal** - vis posisjon i DD, UTM og MGRS, SOS-morsekode med lommelykt
 - **Slett alle data** - slett alle ruter og steder du har lagt til, kart du har lastet ned og alle mellomlagrede data (via Innstillinger)
 
@@ -88,7 +89,7 @@ MIT License
 
 - (c) Kartverket - kartdata, terrengdata, turruter og tjenester (NLOD 2.0)
 - Mapzen Terrain Tiles - terrengmodell for 3D-relieff (CC BY 4.0)
-- Meteorologisk institutt - vær- og havtemperaturdata (CC BY 4.0)
+- Meteorologisk institutt - vær-, havtemperatur- og luftkvalitetsdata (CC BY 4.0)
 - Havvarsel-Frost - badevannsdata (CC BY 4.0)
 - NVE / Varsom - snøskred- og flomvarsler (NLOD)
 - OpenStreetMap-bidragsytere - interessepunkter (ODbL)

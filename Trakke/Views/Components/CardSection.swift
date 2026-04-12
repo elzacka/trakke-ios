@@ -12,7 +12,7 @@ struct CardSection<Content: View>: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             if !title.isEmpty {
-                Text(title.uppercased())
+                Text(title)
                     .font(Font.Trakke.sectionHeader)
                     .foregroundStyle(Color.Trakke.textTertiary)
                     .padding(.horizontal, .Trakke.xs)

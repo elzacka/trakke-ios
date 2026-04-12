@@ -42,5 +42,7 @@ extension CGFloat {
         static let md: CGFloat = 8
         static let lg: CGFloat = 12
         static let xl: CGFloat = 16
+        /// Matches iOS 26 system default; set explicitly to prevent future regressions
+        static let sheet: CGFloat = 20
     }
 }
