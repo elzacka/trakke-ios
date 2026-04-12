@@ -69,7 +69,8 @@ actor VarsomService: VarsomFetching {
         async let avalanche = fetchAvalanche(lat: coordinate.latitude, lon: coordinate.longitude)
         async let flood = fetchFlood(lat: coordinate.latitude, lon: coordinate.longitude)
 
-        let warnings = await avalanche + flood
+        let allWarnings = await avalanche + flood
+        let warnings = Self.deduplicateByRegion(allWarnings)
         cache = (warnings: warnings, fetchedAt: Date(), coordinate: coordinate)
         return warnings
     }
@@ -138,6 +139,26 @@ actor VarsomService: VarsomFetching {
             Logger.weather.error("Varsom flood fetch error: \(error, privacy: .private)")
             return []
         }
+    }
+
+    // MARK: - Deduplication
+
+    /// The API returns one forecast per time period (e.g. today, tomorrow),
+    /// so the same region can appear multiple times. Keep only the highest
+    /// danger level per region+type combination.
+    private static func deduplicateByRegion(_ warnings: [VarsomWarning]) -> [VarsomWarning] {
+        var best: [String: VarsomWarning] = [:]
+        for warning in warnings {
+            let key = "\(warning.type.rawValue)-\(warning.regionName)"
+            if let existing = best[key] {
+                if warning.dangerLevel > existing.dangerLevel {
+                    best[key] = warning
+                }
+            } else {
+                best[key] = warning
+            }
+        }
+        return Array(best.values).sorted { $0.dangerLevel > $1.dangerLevel }
     }
 
     // MARK: - Helpers

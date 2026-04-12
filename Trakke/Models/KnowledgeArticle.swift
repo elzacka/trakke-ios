@@ -12,6 +12,7 @@ enum ArticleCategory: String, CaseIterable, Identifiable, Sendable {
     case orientering
     case rettigheter
     case signalering
+    case vaer
     case vann
     case varme
 
@@ -27,6 +28,7 @@ enum ArticleCategory: String, CaseIterable, Identifiable, Sendable {
         case .orientering: return String(localized: "knowledge.article.orientering")
         case .forstehjelp: return String(localized: "knowledge.article.forstehjelp")
         case .signalering: return String(localized: "knowledge.article.signalering")
+        case .vaer: return String(localized: "knowledge.article.vaer")
         case .dyr: return String(localized: "knowledge.article.dyr")
         case .rettigheter: return String(localized: "knowledge.article.rettigheter")
         }
@@ -42,6 +44,7 @@ enum ArticleCategory: String, CaseIterable, Identifiable, Sendable {
         case .orientering: return "safari.fill"
         case .forstehjelp: return "cross.case.fill"
         case .signalering: return "antenna.radiowaves.left.and.right"
+        case .vaer: return "cloud.sun.fill"
         case .dyr: return "pawprint.fill"
         case .rettigheter: return nil
         }

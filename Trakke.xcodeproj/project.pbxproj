@@ -16,6 +16,7 @@
 		07EF3A5CB1E670E2E5581620 /* MoreSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15E64B03DA7B98D4A32DFE4D /* MoreSheet.swift */; };
 		09A79DCA43FB500CAB668321 /* TrakkeMapView+Annotations.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E2C88B67EF2819E60B5DEE /* TrakkeMapView+Annotations.swift */; };
 		09D957D62C3C2BC629516232 /* NaturskogSubPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F2114F04FF6BB7D485A84C1 /* NaturskogSubPickerView.swift */; };
+		0C214B9D0F7831BCDBF60E62 /* AirQualityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D4162FC25505243AB8F9DF9 /* AirQualityService.swift */; };
 		0F051C209281F38C528947D9 /* Route.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0D13322F67F86A945E22BC /* Route.swift */; };
 		0FCAB2E0C251794C34AC48AE /* MeasurementViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F6D928AD7D002ECC5E284AE /* MeasurementViewModel.swift */; };
 		114B3348F8F39431E4AF33A3 /* viewpoints.geojson in Resources */ = {isa = PBXBuildFile; fileRef = A1F9C343CDA8510C0C705666 /* viewpoints.geojson */; };
@@ -361,6 +362,7 @@
 		7A1BDD96E4A2516102CF07D9 /* lightssleetshowersandthunder_night.svg */ = {isa = PBXFileReference; path = lightssleetshowersandthunder_night.svg; sourceTree = "<group>"; };
 		7A343A959D49B61F0D7D11BB /* RouteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteViewModel.swift; sourceTree = "<group>"; };
 		7C7CC07ECBFFF2A606A4FD1D /* TrakkeButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrakkeButtonStyle.swift; sourceTree = "<group>"; };
+		7D4162FC25505243AB8F9DF9 /* AirQualityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirQualityService.swift; sourceTree = "<group>"; };
 		7D98545EADB9E8AFE4CDBC64 /* KartverketTileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KartverketTileService.swift; sourceTree = "<group>"; };
 		7EA142B392856DFB169FC608 /* caves.geojson */ = {isa = PBXFileReference; path = caves.geojson; sourceTree = "<group>"; };
 		7F3D5743FBA803DD0C876EE3 /* heavyrainshowers_polartwilight.svg */ = {isa = PBXFileReference; path = heavyrainshowers_polartwilight.svg; sourceTree = "<group>"; };
@@ -502,6 +504,7 @@
 			isa = PBXGroup;
 			children = (
 				44E67DF50AC72B5B791232E2 /* ActivityTrackingService.swift */,
+				7D4162FC25505243AB8F9DF9 /* AirQualityService.swift */,
 				C0807CEACE5F08F12855256A /* ArtsdatabankenImageService.swift */,
 				2E6E4C26D5FE9797521FAE65 /* BundledPOIService.swift */,
 				1E0BEDBF7D60BD5AE002820D /* ConnectivityMonitor.swift */,
@@ -1197,6 +1200,7 @@
 				16981343887CA8C81F1D7B60 /* ActivitySaveSheet.swift in Sources */,
 				537E36F8EA95441DB8B13A83 /* ActivityTrackingService.swift in Sources */,
 				179B0EBCF39D2951E91EEC48 /* ActivityViewModel.swift in Sources */,
+				0C214B9D0F7831BCDBF60E62 /* AirQualityService.swift in Sources */,
 				C2D6A15EB1563C55A80D07DF /* AppStorageKeys.swift in Sources */,
 				C50B63725E5C28EE88A96865 /* ArticleDetailSheet.swift in Sources */,
 				82BDA1DC1399BED61581C814 /* ArticleSuggestionChip.swift in Sources */,
@@ -1403,7 +1407,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -1418,7 +1422,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 1.3.1;
+				MARKETING_VERSION = 1.4.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1492,7 +1496,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -1511,7 +1515,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 1.3.1;
+				MARKETING_VERSION = 1.4.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;

@@ -24,6 +24,9 @@ extension Font {
         static var caption: Font { .caption }
         static var captionSoft: Font { .caption2 }
 
+        // Tooltip body — larger than caption for readable explanations outdoors
+        static var tooltipBody: Font { .footnote }
+
         // Section headers (CardSection)
         static var sectionHeader: Font { .caption }
 

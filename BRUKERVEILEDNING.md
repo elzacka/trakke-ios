@@ -56,13 +56,37 @@ Trykk for å ringe: 113 (ambulanse), 112 (politi), 110 (brann), 116 117 (legevak
 
 Åpne værmeldingen fra den grønne menyknappen eller værwidgeten på kartet.
 
-Trykk på vind, nedbør, luftfuktighet eller temperatur for å se en forklaring tilpasset friluftsliv.
+### Trykk for forklaring
 
-Når vinden gjør det kaldere enn lufttemperaturen, vises «Føles som»-temperaturen.
+Trykk på temperatur, vind, nedbør eller lufttrykk for å se en forklaring tilpasset friluftsliv. Forklaringen beskriver hva tallene betyr for turen din — ikke bare hva de er.
+
+Nederst i hver forklaring finner du en lenke til en artikkel i Kunnskap med mer utdypende informasjon, skalaer og referansetabeller.
+
+### Følt temperatur
+
+Når vinden gjør det kaldere enn lufttemperaturen, vises «Føles som»-temperaturen under graden.
+
+### UV-varsel
+
+Når UV-indeksen er 3 eller høyere, vises et varsel med beskyttelsesråd. Trykk for mer informasjon.
+
+### Turanbefaling
+
+Øverst i værmeldingen vises en vurdering av forholdene for utendørs aktivitet — basert på temperatur, vind, vindkast og nedbør. Trykk for å se forklaringen bak vurderingen.
+
+Hvis været endrer seg vesentlig de neste timene, vises et eget varsel — for eksempel «Snø fra kl. 14» eller «Mer vind fra kl. 03».
+
+### Luftkvalitet
+
+Luftkvalitet vises når data er tilgjengelig, med et nivå fra lite til svært høy forurensning og helseråd. En lenke til NAAF Pollenvarsel er alltid synlig.
 
 ### Snøskred- og flomvarsler
 
-Varsler fra NVE/Varsom vises i værmeldingen når de er aktive. Snøskredvarsler er basert på din posisjon.
+Varsler fra NVE/Varsom vises i værmeldingen når de er aktive. Snøskredvarsler er basert på din posisjon. Trykk på et varsel for å lese beskrivelsen fra varsom.no.
+
+### 7-dagers varsel
+
+Trykk på en dag for å se timevarsel med temperatur, vind og nedbør. Den beste turdagen er markert.
 
 ## Mer-menyen {#mer}
 

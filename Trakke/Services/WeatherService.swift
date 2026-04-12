@@ -7,11 +7,16 @@ struct WeatherData: Sendable {
     let temperature: Double
     let temperatureMin: Double?
     let temperatureMax: Double?
+    let overnightLow: Double?
+    let overnightWindChill: Double?
     let precipitation: Double
     let precipitationProbability: Double
     let windSpeed: Double
+    let windGust: Double?
     let windDirection: Double
     let humidity: Double
+    let pressure: Double?
+    let uvIndex: Double?
     let cloudCoverage: Double
     let symbol: String
     let time: Date
@@ -194,6 +199,21 @@ actor WeatherService: WeatherFetching {
         }
     }
 
+    /// Concrete sensory description of what a precipitation amount looks/feels like.
+    /// Thresholds: < 1 mm/h is drizzle range per SNL (yr = up to 1 mm/h in heavy
+    /// drizzle). > 20 mm/h is MET yellow warning level for intense rain (SNL/skybrudd).
+    /// Mid-range (1-20 mm/h) has no official Norwegian classification, so descriptions
+    /// are based on general outdoor experience.
+    nonisolated static func precipitationFeelsLike(_ mm: Double) -> String {
+        switch mm {
+        case ..<0.1: return String(localized: "weather.precip.feels.none")
+        case 0.1..<1.0: return String(localized: "weather.precip.feels.drizzle")
+        case 1.0..<5.0: return String(localized: "weather.precip.feels.moderate")
+        case 5.0..<20.0: return String(localized: "weather.precip.feels.heavy")
+        default: return String(localized: "weather.precip.feels.torrential")
+        }
+    }
+
     // MARK: - Humidity Outdoor Impact
 
     /// Outdoor impact description for relative humidity.
@@ -223,11 +243,46 @@ actor WeatherService: WeatherFetching {
 
     // MARK: - Wind Direction
 
-    static let windDirections = ["N", "NO", "O", "SO", "S", "SV", "V", "NV"]
+    static let windDirections = ["N", "NØ", "Ø", "SØ", "S", "SV", "V", "NV"]
+    static let windDirectionsFull = ["nord", "nordøst", "øst", "sørøst", "sør", "sørvest", "vest", "nordvest"]
 
     nonisolated static func windDirectionName(_ degrees: Double) -> String {
         let index = ((Int((degrees / 45).rounded()) % 8) + 8) % 8
         return windDirections[index]
+    }
+
+    /// Full Norwegian name for wind direction (e.g., "sørøst"). For use in tooltips.
+    nonisolated static func windDirectionFullName(_ degrees: Double) -> String {
+        let index = ((Int((degrees / 45).rounded()) % 8) + 8) % 8
+        return windDirectionsFull[index]
+    }
+
+    /// Explains why the wind direction matters for weather and trip planning.
+    /// Wind direction determines what type of air masses arrive — wet oceanic air
+    /// from the west vs. cold continental air from the east, etc.
+    /// Source: MET/Yr general meteorology, verified against SNL (vindretning).
+    nonisolated static func windDirectionContext(_ degrees: Double) -> String {
+        let index = ((Int((degrees / 45).rounded()) % 8) + 8) % 8
+        return switch index {
+        case 0: // N
+            String(localized: "weather.wind.context.north")
+        case 1: // NE
+            String(localized: "weather.wind.context.northeast")
+        case 2: // E
+            String(localized: "weather.wind.context.east")
+        case 3: // SE
+            String(localized: "weather.wind.context.southeast")
+        case 4: // S
+            String(localized: "weather.wind.context.south")
+        case 5: // SW
+            String(localized: "weather.wind.context.southwest")
+        case 6: // W
+            String(localized: "weather.wind.context.west")
+        case 7: // NW
+            String(localized: "weather.wind.context.northwest")
+        default:
+            ""
+        }
     }
 
     /// Unicode arrow showing the direction wind blows TOWARD (opposite of "from").
@@ -245,7 +300,7 @@ actor WeatherService: WeatherFetching {
     nonisolated static func windDescription(_ speed: Double) -> String {
         switch speed {
         case ..<0.3: return String(localized: "weather.wind.0")   // Stille
-        case 0.3..<1.6: return String(localized: "weather.wind.1")  // Flau vind
+        case 0.3..<1.6: return String(localized: "weather.wind.1")  // Nesten stille
         case 1.6..<3.4: return String(localized: "weather.wind.2")  // Svak vind
         case 3.4..<5.5: return String(localized: "weather.wind.3")  // Lett bris
         case 5.5..<8.0: return String(localized: "weather.wind.4")  // Laber bris
@@ -301,8 +356,269 @@ actor WeatherService: WeatherFetching {
         }
     }
 
-    enum WindWarningLevel {
-        case none, caution, danger, extreme
+    enum WindWarningLevel: Int, Comparable {
+        case none = 0, caution = 1, danger = 2, extreme = 3
+
+        static func < (lhs: WindWarningLevel, rhs: WindWarningLevel) -> Bool {
+            lhs.rawValue < rhs.rawValue
+        }
+    }
+
+    /// Warning level based on gust speed (m/s). Uses the same thresholds as
+    /// sustained wind, but gusts at these speeds are more dangerous because
+    /// they hit without warning.
+    nonisolated static func gustWarningLevel(_ gustSpeed: Double) -> WindWarningLevel {
+        switch gustSpeed {
+        case ..<10.8: return .none
+        case 10.8..<17.2: return .caution
+        case 17.2..<32.7: return .danger
+        default: return .extreme
+        }
+    }
+
+    // MARK: - Pressure Trend
+
+    enum PressureTrend: String {
+        case rising, falling, stable
+    }
+
+    /// Full pressure analysis with trend and supporting evidence.
+    struct PressureInfo: Sendable {
+        let trend: PressureTrend
+        let currentHPa: Double
+        let earlierHPa: Double
+        let changeHPa: Double
+    }
+
+    /// Determine pressure trend from hourly data. Compares current pressure
+    /// to the value 3 hours ago. A change > 1 hPa is significant.
+    nonisolated static func pressureTrend(current: Double?, hourly: [WeatherData]) -> PressureTrend? {
+        pressureInfo(current: current, hourly: hourly)?.trend
+    }
+
+    /// Full pressure analysis including the raw change for verifiable display.
+    nonisolated static func pressureInfo(current: Double?, hourly: [WeatherData]) -> PressureInfo? {
+        guard let current else { return nil }
+        let threeHoursAgo = Date().addingTimeInterval(-10800)
+        guard let earlier = hourly.min(by: {
+            abs($0.time.timeIntervalSince(threeHoursAgo)) < abs($1.time.timeIntervalSince(threeHoursAgo))
+        }), let earlierPressure = earlier.pressure else { return nil }
+        let diff = current - earlierPressure
+        let trend: PressureTrend
+        if diff > 1 { trend = .rising }
+        else if diff < -1 { trend = .falling }
+        else { trend = .stable }
+        return PressureInfo(
+            trend: trend,
+            currentHPa: current,
+            earlierHPa: earlierPressure,
+            changeHPa: diff
+        )
+    }
+
+    // MARK: - Pressure Outdoor Impact
+
+    nonisolated static func pressureOutdoorImpact(_ trend: PressureTrend) -> String {
+        switch trend {
+        case .rising: return String(localized: "weather.pressure.impact.rising")
+        case .falling: return String(localized: "weather.pressure.impact.falling")
+        case .stable: return String(localized: "weather.pressure.impact.stable")
+        }
+    }
+
+    // MARK: - UV Index (WHO/SNL scale)
+
+    enum UVLevel: Int {
+        case low = 0        // 0-2
+        case moderate = 1   // 3-5
+        case high = 2       // 6-7
+        case veryHigh = 3   // 8-10
+        case extreme = 4    // 11+
+    }
+
+    nonisolated static func uvLevel(_ index: Double) -> UVLevel {
+        switch index {
+        case ..<3: return .low
+        case 3..<6: return .moderate
+        case 6..<8: return .high
+        case 8..<11: return .veryHigh
+        default: return .extreme
+        }
+    }
+
+    nonisolated static func uvDescription(_ index: Double) -> String {
+        switch uvLevel(index) {
+        case .low: return String(localized: "weather.uv.low")
+        case .moderate: return String(localized: "weather.uv.moderate")
+        case .high: return String(localized: "weather.uv.high")
+        case .veryHigh: return String(localized: "weather.uv.veryHigh")
+        case .extreme: return String(localized: "weather.uv.extreme")
+        }
+    }
+
+    nonisolated static func uvOutdoorImpact(_ index: Double) -> String {
+        switch uvLevel(index) {
+        case .low: return String(localized: "weather.uv.impact.low")
+        case .moderate: return String(localized: "weather.uv.impact.moderate")
+        case .high: return String(localized: "weather.uv.impact.high")
+        case .veryHigh: return String(localized: "weather.uv.impact.veryHigh")
+        case .extreme: return String(localized: "weather.uv.impact.extreme")
+        }
+    }
+
+    // MARK: - Upcoming Weather Change
+
+    struct UpcomingChange: Sendable {
+        let description: String
+        let hour: String
+        let severity: WindWarningLevel
+    }
+
+    /// Precipitation type derived from MET weather symbol.
+    enum PrecipitationType {
+        case rain, snow, sleet
+    }
+
+    /// Determines precipitation type from a MET symbol code.
+    /// Snow and sleet require different clothing and preparation than rain.
+    nonisolated static func precipitationType(for symbol: String) -> PrecipitationType {
+        let base = symbol.lowercased()
+        if base.contains("snow") { return .snow }
+        if base.contains("sleet") { return .sleet }
+        return .rain
+    }
+
+    /// Scans the next 6 hours for significant weather transitions:
+    /// precipitation starting, wind picking up, or gusts becoming dangerous.
+    /// Returns the most important upcoming change, or nil if conditions are stable.
+    nonisolated static func upcomingChange(current: WeatherData, hourly: [WeatherData]) -> UpcomingChange? {
+        let now = Date()
+        let sixHoursLater = now.addingTimeInterval(21600)
+        let upcoming = hourly.filter { $0.time > now && $0.time <= sixHoursLater }
+        guard !upcoming.isEmpty else { return nil }
+
+        let hourFormatter = DateFormatter()
+        hourFormatter.dateFormat = "HH"
+
+        // Check for precipitation starting (currently dry → precipitation within 6h)
+        if current.precipitation < 0.1 {
+            if let precipStart = upcoming.first(where: { $0.precipitationProbability > 50 && $0.precipitation > 0.5 }) {
+                let hour = hourFormatter.string(from: precipStart.time)
+                let severity: WindWarningLevel = precipStart.precipitation > 4 ? .caution : .none
+                let key: String.LocalizationValue = switch precipitationType(for: precipStart.symbol) {
+                case .snow: "weather.upcoming.snow \(hour)"
+                case .sleet: "weather.upcoming.sleet \(hour)"
+                case .rain: "weather.upcoming.rain \(hour)"
+                }
+                return UpcomingChange(
+                    description: String(localized: key),
+                    hour: hour,
+                    severity: severity
+                )
+            }
+        }
+
+        // Check for wind increasing significantly (gusts becoming dangerous)
+        let currentWorstWind = max(
+            windWarningLevel(current.windSpeed),
+            gustWarningLevel(current.windGust ?? current.windSpeed)
+        )
+        for point in upcoming {
+            let futureWorstWind = max(
+                windWarningLevel(point.windSpeed),
+                gustWarningLevel(point.windGust ?? point.windSpeed)
+            )
+            if futureWorstWind > currentWorstWind && futureWorstWind >= .caution {
+                let hour = hourFormatter.string(from: point.time)
+                return UpcomingChange(
+                    description: String(localized: "weather.upcoming.wind \(hour)"),
+                    hour: hour,
+                    severity: futureWorstWind
+                )
+            }
+        }
+
+        // Check for heavy precipitation increase
+        if current.precipitation < 1 {
+            if let heavyStart = upcoming.first(where: { $0.precipitation > 4 }) {
+                let hour = hourFormatter.string(from: heavyStart.time)
+                let key: String.LocalizationValue = switch precipitationType(for: heavyStart.symbol) {
+                case .snow: "weather.upcoming.heavySnow \(hour)"
+                case .sleet: "weather.upcoming.heavySleet \(hour)"
+                case .rain: "weather.upcoming.heavyRain \(hour)"
+                }
+                return UpcomingChange(
+                    description: String(localized: key),
+                    hour: hour,
+                    severity: .caution
+                )
+            }
+        }
+
+        return nil
+    }
+
+    // MARK: - Outdoor Assessment
+
+    /// One-line combined outdoor assessment based on temperature, wind, gusts, and precipitation.
+    /// Answers the question: "Should I go outside, and what should I prepare for?"
+    nonisolated static func outdoorAssessment(
+        temperature: Double,
+        windSpeed: Double,
+        windGust: Double?,
+        precipitation: Double,
+        precipitationProbability: Double
+    ) -> String {
+        let wc = windChill(temperature: temperature, windSpeedMs: windSpeed)
+        let effectiveTemp = wc ?? temperature
+        let gustLevel = gustWarningLevel(windGust ?? windSpeed)
+        let windLevel = windWarningLevel(windSpeed)
+        let worstWind = max(gustLevel, windLevel)
+
+        // Life-threatening conditions first
+        if worstWind == .extreme {
+            return String(localized: "weather.assessment.extreme")
+        }
+        if effectiveTemp < -25 {
+            return String(localized: "weather.assessment.extremeCold")
+        }
+
+        // Dangerous conditions
+        if worstWind == .danger {
+            return String(localized: "weather.assessment.dangerousWind")
+        }
+        if effectiveTemp < -15 {
+            return String(localized: "weather.assessment.veryCold")
+        }
+
+        // Caution
+        if worstWind == .caution && precipitation > 1 {
+            return String(localized: "weather.assessment.windAndRain")
+        }
+        if worstWind == .caution {
+            return String(localized: "weather.assessment.windyCaution")
+        }
+        if precipitation > 4 || (precipitationProbability > 70 && precipitation > 1) {
+            return String(localized: "weather.assessment.heavyPrecip")
+        }
+        if effectiveTemp < 0 {
+            return String(localized: "weather.assessment.cold")
+        }
+
+        // Moderate
+        if precipitationProbability > 50 {
+            return String(localized: "weather.assessment.likelyRain")
+        }
+        if effectiveTemp < 10 {
+            return String(localized: "weather.assessment.cool")
+        }
+
+        // Good conditions
+        if precipitationProbability < 20 && windSpeed < 5.5 && effectiveTemp >= 10 {
+            return String(localized: "weather.assessment.great")
+        }
+
+        return String(localized: "weather.assessment.good")
     }
 
     // MARK: - Parsing
@@ -328,11 +644,16 @@ actor WeatherService: WeatherFetching {
                 temperature: instant.air_temperature,
                 temperatureMin: nil,
                 temperatureMax: nil,
+                overnightLow: nil,
+                overnightWindChill: nil,
                 precipitation: precip,
                 precipitationProbability: precipProb,
                 windSpeed: instant.wind_speed,
+                windGust: instant.wind_speed_of_gust,
                 windDirection: instant.wind_from_direction,
                 humidity: instant.relative_humidity,
+                pressure: instant.air_pressure_at_sea_level,
+                uvIndex: instant.ultraviolet_index_clear_sky,
                 cloudCoverage: instant.cloud_area_fraction ?? 0,
                 symbol: symbol,
                 time: date
@@ -343,8 +664,10 @@ actor WeatherService: WeatherFetching {
         // Current: closest to now
         let current = parsed.min(by: { abs($0.date.timeIntervalSince(now)) < abs($1.date.timeIntervalSince(now)) })?.data
             ?? WeatherData(temperature: 0, temperatureMin: nil, temperatureMax: nil,
+                          overnightLow: nil, overnightWindChill: nil,
                           precipitation: 0, precipitationProbability: 0,
-                          windSpeed: 0, windDirection: 0, humidity: 0, cloudCoverage: 0,
+                          windSpeed: 0, windGust: nil, windDirection: 0,
+                          humidity: 0, pressure: nil, uvIndex: nil, cloudCoverage: 0,
                           symbol: "cloudy", time: now)
 
         // Hourly: next 24 hours
@@ -373,15 +696,34 @@ actor WeatherService: WeatherFetching {
             let minTemp = temps.min()
             let maxTemp = temps.max()
 
+            // Use the strongest gust across the entire day (worst-case for safety)
+            let maxGust = points.compactMap(\.data.windGust).max()
+            let maxUV = points.compactMap(\.data.uvIndex).max()
+
+            // Overnight low: night hours (20:00-06:00) for camping safety
+            let nightPoints = points.filter {
+                let hour = calendar.component(.hour, from: $0.date)
+                return hour >= 20 || hour <= 6
+            }
+            let overnightLow = nightPoints.map(\.data.temperature).min()
+            let overnightWindChill: Double? = nightPoints.min(by: { $0.data.temperature < $1.data.temperature }).flatMap {
+                Self.windChill(temperature: $0.data.temperature, windSpeedMs: $0.data.windSpeed)
+            }
+
             return WeatherData(
                 temperature: noon.temperature,
                 temperatureMin: minTemp,
                 temperatureMax: maxTemp,
+                overnightLow: overnightLow,
+                overnightWindChill: overnightWindChill,
                 precipitation: noon.precipitation,
                 precipitationProbability: noon.precipitationProbability,
                 windSpeed: noon.windSpeed,
+                windGust: maxGust,
                 windDirection: noon.windDirection,
                 humidity: noon.humidity,
+                pressure: noon.pressure,
+                uvIndex: maxUV,
                 cloudCoverage: noon.cloudCoverage,
                 symbol: noon.symbol,
                 time: noon.time
@@ -425,8 +767,11 @@ private struct MetApiResponse: Decodable {
     struct MetDetails: Decodable {
         let air_temperature: Double
         let wind_speed: Double
+        let wind_speed_of_gust: Double?
         let wind_from_direction: Double
         let relative_humidity: Double
+        let air_pressure_at_sea_level: Double?
+        let ultraviolet_index_clear_sky: Double?
         let cloud_area_fraction: Double?
     }
 
