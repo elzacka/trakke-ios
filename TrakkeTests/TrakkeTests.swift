@@ -1334,6 +1334,7 @@ func kartverketStyleJSON(layer: BaseLayer) {
     #expect(AQIClass(aqi: 3.99) == .high)
     #expect(AQIClass(aqi: 4.0) == .veryHigh)
     #expect(AQIClass(aqi: 4.999) == .veryHigh)
+    #expect(AQIClass(aqi: 5.0) == .veryHigh)
 }
 
 // MARK: - Precipitation Type Tests
@@ -1408,6 +1409,23 @@ func kartverketStyleJSON(layer: BaseLayer) {
             ArticleCategory(rawValue: article.category) != nil,
             "Article '\(article.title)' has invalid category '\(article.category)'"
         )
+    }
+}
+
+@MainActor @Test func bundledArticlesHaveUniqueIDs() {
+    let articles = KnowledgeViewModel.loadBundledArticles()
+    let ids = articles.map { $0.id }
+    let uniqueIDs = Set(ids)
+    #expect(ids.count == uniqueIDs.count, "Duplicate article IDs found: \(ids.count) total, \(uniqueIDs.count) unique")
+}
+
+@MainActor @Test func bundledArticlesHaveRequiredFields() {
+    let articles = KnowledgeViewModel.loadBundledArticles()
+    #expect(!articles.isEmpty, "No bundled articles loaded")
+    for article in articles {
+        #expect(!article.title.isEmpty, "Article id \(article.id) has empty title")
+        #expect(!article.body.isEmpty, "Article id \(article.id) '\(article.title)' has empty body")
+        #expect(!article.category.isEmpty, "Article id \(article.id) '\(article.title)' has empty category")
     }
 }
 
