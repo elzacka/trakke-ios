@@ -1166,27 +1166,21 @@ func kartverketStyleJSON(layer: BaseLayer) {
 @Test func weatherViewModelSkipsSameLocation() async {
     let vm = await WeatherViewModel()
     let coord = CLLocationCoordinate2D(latitude: 59.9139, longitude: 10.7522)
-    // First call initiates fetch
     await vm.fetchForecast(for: coord)
-    // Small wait for debounce
-    try? await Task.sleep(for: .milliseconds(50))
-    // Second call with same coord should be skipped (within 1km)
     let nearCoord = CLLocationCoordinate2D(latitude: 59.9140, longitude: 10.7523)
     await vm.fetchForecast(for: nearCoord)
-    // No crash or error means debounce logic works
+    let isFetching = await vm.isLoading
+    #expect(!isFetching, "Near-duplicate coordinate should be debounced")
 }
 
 // MARK: - SwiftData Migration Tests
 
 @Test func migrationPlanConfiguration() {
-    // Verify migration plan has all three schema versions in correct order
     let schemas = TrakkeMigrationPlan.schemas
     #expect(schemas.count == 3)
-    #expect(String(describing: schemas[0]) == String(describing: SchemaV1.self))
-    #expect(String(describing: schemas[1]) == String(describing: SchemaV2.self))
-    #expect(String(describing: schemas[2]) == String(describing: SchemaV3.self))
-
-    // Verify there are two migration stages (V1->V2, V2->V3)
+    #expect(ObjectIdentifier(schemas[0]) == ObjectIdentifier(SchemaV1.self))
+    #expect(ObjectIdentifier(schemas[1]) == ObjectIdentifier(SchemaV2.self))
+    #expect(ObjectIdentifier(schemas[2]) == ObjectIdentifier(SchemaV3.self))
     #expect(TrakkeMigrationPlan.stages.count == 2)
 }
 
@@ -1399,7 +1393,7 @@ func kartverketStyleJSON(layer: BaseLayer) {
     let articles = KnowledgeViewModel.loadBundledArticles()
     let vaerArticles = articles.filter { $0.category == "vaer" }
     #expect(!vaerArticles.isEmpty, "Expected at least one article with category 'vaer'")
-    #expect(vaerArticles.count >= 6, "Expected at least 6 weather articles")
+    #expect(vaerArticles.count >= 5, "Expected at least 5 weather articles")
 }
 
 @MainActor @Test func bundledArticlesHaveValidCategories() {

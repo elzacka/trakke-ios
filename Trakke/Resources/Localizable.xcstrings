@@ -1386,6 +1386,28 @@
         }
       }
     },
+    "knowledge.article.beredskap" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beredskap"
+          }
+        }
+      }
+    },
+    "knowledge.article.fjellvettreglene" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fjellvettreglene"
+          }
+        }
+      }
+    },
     "knowledge.article.forstehjelp" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1430,6 +1452,28 @@
         }
       }
     },
+    "knowledge.article.mentaleStrategier" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mentale strategier"
+          }
+        }
+      }
+    },
+    "knowledge.article.nodprosedyrer" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nødprosedyrer"
+          }
+        }
+      }
+    },
     "knowledge.article.orientering" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1459,6 +1503,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Redningssignaler"
+          }
+        }
+      }
+    },
+    "knowledge.article.utstyr" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utstyr"
           }
         }
       }
@@ -1935,6 +1990,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bratthetskart"
+          }
+        }
+      }
+    },
+    "map.overlay.utmRunenett" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UTM-rutenett"
           }
         }
       }
@@ -4011,9 +4077,6 @@
         }
       }
     },
-    "varsom.no" : {
-
-    },
     "waypoints.addWaypoint" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4642,6 +4705,17 @@
         }
       }
     },
+    "weather.dayAssessment %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ på tur"
+          }
+        }
+      }
+    },
     "weather.daySummary" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4858,6 +4932,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Timevarsel"
+          }
+        }
+      }
+    },
+    "weather.overnightLow %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "natt: %lld°"
           }
         }
       }

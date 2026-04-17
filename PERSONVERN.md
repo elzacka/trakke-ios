@@ -1,6 +1,6 @@
 # Personvernerklæring for Tråkke
 
-**Sist oppdatert:** 12. april 2026
+**Sist oppdatert:** 17. april 2026
 ## Kort oppsummert
 
 Tråkke lagrer all data lokalt på enheten din. Appen samler ikke inn personopplysninger, og sporer ikke bruken din. Ingen data sendes til appens systemer eller til tredjeparter for analyse eller markedsføring.
@@ -18,6 +18,7 @@ Tråkke lagrer følgende lokalt:
 - **Kartinnstillinger** (valgt kartlag, koordinatformat, preferanser)
 - **Nedlastede kartområder** for offline-bruk
 - **Kunnskapspakker** for offline-bruk
+- **Kunnskapsartikler nedlastet fra GitHub** (lagret i Application Support for offline-bruk)
 - **Midlertidige værdata** (buffer i opptil 2 timer)
 - **Midlertidige luftkvalitetsdata** (buffer i minnet, inkludert stedsnavn fra API-et)
 
@@ -52,6 +53,7 @@ Appen henter data fra følgende tjenester. Alle tjenester er norske eller europe
 | Artsdatabanken (ai.artsdatabanken.no) | Artsbilder i kunnskapsartikler | Vitenskapelige artsnavn | Norge |
 | Mapzen Terrain Tiles (s3.amazonaws.com) | Terrengmodell for 3D-relieff | Kartkoordinater (zoom, x, y) | USA* |
 | GitHub Releases (github.com) | Kunnskapspakker | Ingen brukerdata | USA* |
+| GitHub (raw.githubusercontent.com) | Kunnskapsartikler | Ingen brukerdata (kun filnavn) | USA* |
 
 *Terrengdata og kunnskapspakker hentes som anonyme nedlastinger uten brukeridentifikasjon. Kun kartkoordinater eller filnavn sendes.
 

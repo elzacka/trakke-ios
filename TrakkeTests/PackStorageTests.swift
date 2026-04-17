@@ -88,14 +88,12 @@ import CryptoKit
 
 @Test @MainActor func loadBundledArticlesReturnsNonEmpty() {
     let articles = KnowledgeViewModel.loadBundledArticles()
-    // If SurvivalArticles.json exists in the test bundle, this should return articles
-    // If not available in test context, at least verify the function doesn't crash
-    #expect(articles.count >= 0)
+    #expect(!articles.isEmpty, "SurvivalArticles.json should produce at least one article")
 }
 
 @Test @MainActor func loadBundledArticlesHaveRequiredFields() {
     let articles = KnowledgeViewModel.loadBundledArticles()
-    guard !articles.isEmpty else { return } // Resource may not be in test bundle
+    #expect(!articles.isEmpty)
     for article in articles {
         #expect(!article.title.isEmpty)
         #expect(!article.body.isEmpty)

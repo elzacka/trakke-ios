@@ -24,7 +24,8 @@ Tråkke er en kartapp for iPhone som bruker kartdata fra Kartverket. Appen er la
 - **Navigasjon** - beregnet rute (via Valhalla) med sving-for-sving eller kompassretning til mål
 - **Turregistrering** - GPS-basert sporregistrering med avstand, høydemeter og varighet
 - **Eksport av turdata som GPX** - registrerte aktiviteter kan eksporteres som GPX-filer for dataportabilitet
-- **Kunnskap og overlevelse** - nedlastbare artikler om friluftsliv med artsbilder, tilgjengelig uten nett. Inneholder 7 artikler om vær (Følt temperatur, Luftkvalitet, Lufttrykk, Nedbør, UV-stråling, Vind m.fl.)
+- **Kunnskap og overlevelse** - nedlastbare artikler om friluftsliv med artsbilder, tilgjengelig uten nett. Inneholder 7 artikler om vær (Følt temperatur, Luftkvalitet, Lufttrykk, Nedbør, UV-stråling, Vind m.fl.). Artiklene oppdateres automatisk i bakgrunnen.
+- **Fjernoppdaterte kunnskapsartikler** - appen henter nye og oppdaterte artikler fra GitHub i bakgrunnen og lagrer dem lokalt for offline-bruk
 - **Nødkoordinater og SOS-signal** - vis posisjon i DD, UTM og MGRS, SOS-morsekode med lommelykt
 - **Slett alle data** - slett alle ruter og steder du har lagt til, kart du har lastet ned og alle mellomlagrede data (via Innstillinger)
 
@@ -32,7 +33,7 @@ Tråkke er en kartapp for iPhone som bruker kartdata fra Kartverket. Appen er la
 
 - iOS 26.0 eller nyere
 - iPhone eller iPad
-- Xcode 26.3 (for utvikling)
+- Xcode 26.3 eller 26.4 (for utvikling)
 
 ## Kom i gang (utvikling)
 
@@ -55,7 +56,7 @@ xcodebuild -project Trakke.xcodeproj -scheme Trakke \
   -skipMacroValidation test
 ```
 
-**Forutsetninger:** Xcode 26.3, xcodegen (`brew install xcodegen`)
+**Forutsetninger:** Xcode 26.3 eller 26.4, xcodegen (`brew install xcodegen`)
 
 ## Teknisk stack
 
@@ -80,6 +81,10 @@ Alle brukerdata lagres lokalt på enheten. Ingen sporing, ingen analyse. Se [PER
 | ------------------------------ | ------------------------------ |
 | [PERSONVERN.md](PERSONVERN.md) | Personvernerklæring (GDPR)     |
 | [SECURITY.md](SECURITY.md)     | Sikkerhetspolicy               |
+| [dev_only/CLAUDE.md](dev_only/CLAUDE.md) | Utviklerkontekst |
+| [dev_only/API-JOURNAL.md](dev_only/API-JOURNAL.md) | API-referanse |
+| [dev_only/APP-STORE-CHECKLIST.md](dev_only/APP-STORE-CHECKLIST.md) | App Store-sjekkliste |
+| [dev_only/KUNNSKAP-VEDLIKEHOLD.md](dev_only/KUNNSKAP-VEDLIKEHOLD.md) | Vedlikehold av artikler |
 
 ## Lisens
 

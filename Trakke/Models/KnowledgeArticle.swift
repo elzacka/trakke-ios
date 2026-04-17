@@ -1,17 +1,20 @@
 import Foundation
-import GRDB
 
 // MARK: - Article Category
 
 enum ArticleCategory: String, CaseIterable, Identifiable, Sendable {
+    case beredskap
     case dyr
+    case fjellvettreglene
     case forstehjelp
     case giftigeArter
     case ly
     case mat
+    case mentaleStrategier
+    case nodprosedyrer
     case orientering
     case rettigheter
-    case signalering
+    case utstyr
     case vaer
     case vann
     case varme
@@ -22,12 +25,16 @@ enum ArticleCategory: String, CaseIterable, Identifiable, Sendable {
         switch self {
         case .vann: return String(localized: "knowledge.article.vann")
         case .mat: return String(localized: "knowledge.article.mat")
+        case .beredskap: return String(localized: "knowledge.article.beredskap")
+        case .fjellvettreglene: return String(localized: "knowledge.article.fjellvettreglene")
         case .giftigeArter: return String(localized: "knowledge.article.giftigeArter")
         case .varme: return String(localized: "knowledge.article.varme")
         case .ly: return String(localized: "knowledge.article.ly")
+        case .mentaleStrategier: return String(localized: "knowledge.article.mentaleStrategier")
         case .orientering: return String(localized: "knowledge.article.orientering")
         case .forstehjelp: return String(localized: "knowledge.article.forstehjelp")
-        case .signalering: return String(localized: "knowledge.article.signalering")
+        case .nodprosedyrer: return String(localized: "knowledge.article.nodprosedyrer")
+        case .utstyr: return String(localized: "knowledge.article.utstyr")
         case .vaer: return String(localized: "knowledge.article.vaer")
         case .dyr: return String(localized: "knowledge.article.dyr")
         case .rettigheter: return String(localized: "knowledge.article.rettigheter")
@@ -38,12 +45,16 @@ enum ArticleCategory: String, CaseIterable, Identifiable, Sendable {
         switch self {
         case .vann: return "drop.fill"
         case .mat: return "leaf.fill"
+        case .beredskap: return "shield.checkered"
+        case .fjellvettreglene: return "mountain.2.fill"
         case .giftigeArter: return "exclamationmark.octagon.fill"
         case .varme: return "flame.fill"
         case .ly: return "house.fill"
+        case .mentaleStrategier: return "brain.head.profile.fill"
         case .orientering: return "safari.fill"
         case .forstehjelp: return "cross.case.fill"
-        case .signalering: return "antenna.radiowaves.left.and.right"
+        case .nodprosedyrer: return "exclamationmark.triangle.fill"
+        case .utstyr: return "wrench.and.screwdriver.fill"
         case .vaer: return "cloud.sun.fill"
         case .dyr: return "pawprint.fill"
         case .rettigheter: return nil
@@ -77,25 +88,3 @@ struct KnowledgeArticle: Identifiable, Hashable, Sendable {
     }
 }
 
-// MARK: - GRDB FetchableRecord
-
-extension KnowledgeArticle: FetchableRecord {
-    // ISO8601DateFormatter is not Sendable but this instance is never mutated after init
-    nonisolated(unsafe) private static let dateFormatter: ISO8601DateFormatter = {
-        let formatter = ISO8601DateFormatter()
-        return formatter
-    }()
-
-    init(row: Row) {
-        id = row["id"]
-        theme = row["theme"]
-        category = row["category"]
-        title = row["title"]
-        body = row["body"]
-        source = row["source"]
-        sourceURL = row["source_url"]
-        let dateString: String = row["verified_at"]
-        verifiedAt = Self.dateFormatter.date(from: dateString) ?? Date()
-        sortOrder = row["sort_order"]
-    }
-}

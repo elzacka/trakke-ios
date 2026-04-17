@@ -163,7 +163,7 @@ actor VarsomService: VarsomFetching {
 
     // MARK: - Helpers
 
-    private nonisolated(unsafe) static let iso8601 = ISO8601DateFormatter()
+    nonisolated(unsafe) private static let iso8601 = ISO8601DateFormatter()
 
     private static let urlDateFormatter: DateFormatter = {
         let f = DateFormatter()

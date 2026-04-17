@@ -179,7 +179,6 @@ struct WeatherSheet: View {
                     .accessibilityHint(String(localized: "weather.tapHint"))
                     .trakkeTooltip(isPresented: $showTempDetail) {
                         temperatureTooltipContent(windChill: wc)
-                        TooltipArticleLink(articleId: 26)
                     }
 
                     Spacer()
@@ -311,6 +310,7 @@ struct WeatherSheet: View {
             return HStack(spacing: .Trakke.sm) {
                 Image(systemName: "clock.badge.exclamationmark")
                     .font(Font.Trakke.captionSoft)
+                    .accessibilityHidden(true)
                 Text(change.description)
                     .font(Font.Trakke.caption)
                 Spacer()
@@ -321,6 +321,7 @@ struct WeatherSheet: View {
             .background(color.opacity(0.08), in: RoundedRectangle(cornerRadius: .TrakkeRadius.sm))
             .frame(maxWidth: .infinity, alignment: .leading)
             .accessibilityElement(children: .combine)
+            .accessibilityLabel(change.description)
         }
 
         // MARK: - UV Banner (contextual, only when UV ≥ 3)
@@ -366,7 +367,7 @@ struct WeatherSheet: View {
             .accessibilityHint(String(localized: "weather.tapHint"))
             .trakkeTooltip(isPresented: $showUVDetail) {
                 uvTooltipContent(uv: uv)
-                TooltipArticleLink(articleId: 25)
+                TooltipArticleLink(articleId: 36)
             }
         }
 
@@ -459,11 +460,13 @@ struct WeatherSheet: View {
             }
             .contentShape(Rectangle())
             .onTapGesture { showWindDetail = true }
+            .accessibilityElement(children: .ignore)
             .accessibilityAddTraits(.isButton)
+            .accessibilityLabel("\(desc), \(String(format: "%.0f", data.windSpeed)) m/s, fra \(dirName)")
             .accessibilityHint(String(localized: "weather.tapHint"))
             .trakkeTooltip(isPresented: $showWindDetail) {
                 windTooltipContent
-                TooltipArticleLink(articleId: 22)
+                TooltipArticleLink(articleId: 37)
             }
         }
 
@@ -543,11 +546,13 @@ struct WeatherSheet: View {
             }
             .contentShape(Rectangle())
             .onTapGesture { showPrecipDetail = true }
+            .accessibilityElement(children: .ignore)
             .accessibilityAddTraits(.isButton)
+            .accessibilityLabel("\(label), \(valueText)")
             .accessibilityHint(String(localized: "weather.tapHint"))
             .trakkeTooltip(isPresented: $showPrecipDetail) {
                 precipTooltipContent(label: label)
-                TooltipArticleLink(articleId: 23)
+                TooltipArticleLink(articleId: 35)
             }
         }
 
@@ -598,11 +603,21 @@ struct WeatherSheet: View {
             }
             .contentShape(Rectangle())
             .onTapGesture { showPressureDetail = true }
+            .accessibilityElement(children: .ignore)
             .accessibilityAddTraits(.isButton)
+            .accessibilityLabel({
+                if let info {
+                    return "\(String(localized: "weather.pressure")), \(String(format: "%.0f", info.currentHPa)) hPa, \(trendText)"
+                } else if let pressure = data.pressure {
+                    return "\(String(localized: "weather.pressure")), \(String(format: "%.0f", pressure)) hPa"
+                } else {
+                    return String(localized: "weather.pressure")
+                }
+            }())
             .accessibilityHint(String(localized: "weather.tapHint"))
             .trakkeTooltip(isPresented: $showPressureDetail) {
                 pressureTooltipContent(info: info)
-                TooltipArticleLink(articleId: 24)
+                TooltipArticleLink(articleId: 34)
             }
         }
 
@@ -715,6 +730,7 @@ struct WeatherSheet: View {
             Image(systemName: icon)
                 .font(Font.Trakke.captionSoft)
                 .foregroundStyle(Color.Trakke.textTertiary)
+                .accessibilityHidden(true)
             Text(value)
                 .font(Font.Trakke.bodyRegular.monospacedDigit())
                 .foregroundStyle(Color.Trakke.text)
@@ -722,6 +738,8 @@ struct WeatherSheet: View {
                 .font(Font.Trakke.captionSoft)
                 .foregroundStyle(Color.Trakke.textTertiary)
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(label), \(value)")
     }
 
     // MARK: - Water Temperature Card
@@ -863,7 +881,7 @@ struct WeatherSheet: View {
 
                 Text(String(warning.dangerLevel))
                     .font(Font.Trakke.bodyMedium.monospacedDigit())
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Color.Trakke.textInverse)
                     .frame(width: 28, height: 28)
                     .background(varsomColor(warning.dangerLevel))
                     .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.sm))
@@ -993,7 +1011,7 @@ struct WeatherSheet: View {
 
                 // Overnight low — critical for campers
                 if let nightLow = day.overnightLow, nightLow < 5 {
-                    Text(String(format: "natt: %d°", Int(nightLow.rounded())))
+                    Text(String(localized: "weather.overnightLow \(Int(nightLow.rounded()))"))
                         .font(Font.Trakke.captionSoft.monospacedDigit())
                         .foregroundStyle(nightLow < -5 ? Color.Trakke.red : Color.Trakke.textTertiary)
                 }
@@ -1075,7 +1093,7 @@ struct WeatherSheet: View {
             formatter.locale = Locale(identifier: "nb_NO")
             formatter.dateFormat = "EEEE"
             let dayName = formatter.string(from: day.time).capitalized
-            return "\(dayName) på tur"
+            return String(localized: "weather.dayAssessment \(dayName)")
         }()
 
         return ScrollView {

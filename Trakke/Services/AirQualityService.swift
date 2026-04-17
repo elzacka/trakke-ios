@@ -89,10 +89,10 @@ actor AirQualityService: AirQualityFetching {
         }
 
         // Try grunnkrets first (finest resolution), fall back to kommune on failure
-        if let result = try? await fetchAQ(lat: lat, lon: lon, areaclass: "grunnkrets") {
+        if let result = await fetchAQ(lat: lat, lon: lon, areaclass: "grunnkrets") {
             return result
         }
-        if let result = try? await fetchAQ(lat: lat, lon: lon, areaclass: "kommune") {
+        if let result = await fetchAQ(lat: lat, lon: lon, areaclass: "kommune") {
             return result
         }
         return nil
@@ -119,7 +119,7 @@ actor AirQualityService: AirQualityFetching {
             request.setValue(lastModified, forHTTPHeaderField: "If-Modified-Since")
         }
 
-        guard let (data, urlResponse) = try? await URLSession.shared.data(for: request),
+        guard let (data, urlResponse) = try? await APIClient.session.data(for: request),
               let httpResponse = urlResponse as? HTTPURLResponse else {
             return nil
         }
@@ -175,12 +175,16 @@ actor AirQualityService: AirQualityFetching {
 
     // MARK: - HTTP Header Parsing
 
-    private static func parseExpires(_ response: HTTPURLResponse) -> Date? {
-        guard let expires = response.value(forHTTPHeaderField: "Expires") else { return nil }
+    private static let expiresFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss zzz"
         formatter.locale = Locale(identifier: "en_US_POSIX")
-        return formatter.date(from: expires)
+        return formatter
+    }()
+
+    private static func parseExpires(_ response: HTTPURLResponse) -> Date? {
+        guard let expires = response.value(forHTTPHeaderField: "Expires") else { return nil }
+        return expiresFormatter.date(from: expires)
     }
 }
 
