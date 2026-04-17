@@ -44,6 +44,7 @@ enum OverlayLayer: String, CaseIterable, Identifiable, Sendable {
     case naturskogSannsynlighet
     case naturskogNaerhet
     case bratthetskart
+    case utmRunenett
 
     var id: String { rawValue }
 
@@ -64,6 +65,7 @@ enum OverlayLayer: String, CaseIterable, Identifiable, Sendable {
         case .naturskogSannsynlighet: return String(localized: "map.overlay.naturskog.sannsynlighet")
         case .naturskogNaerhet: return String(localized: "map.overlay.naturskog.naerhet")
         case .bratthetskart: return String(localized: "map.overlay.bratthetskart")
+        case .utmRunenett: return String(localized: "map.overlay.utmRunenett")
         }
     }
 
@@ -76,6 +78,8 @@ enum OverlayLayer: String, CaseIterable, Identifiable, Sendable {
             return "\u{00A9} Milj\u{00F8}direktoratet"
         case .bratthetskart:
             return "\u{00A9} NVE"
+        case .utmRunenett:
+            return "\u{00A9} Kartverket"
         }
     }
 
@@ -108,6 +112,7 @@ enum OverlayLayer: String, CaseIterable, Identifiable, Sendable {
         case .naturskogFoer1940, .naturskogSannsynlighet, .naturskogNaerhet: return 8
         case .hillshading: return 3
         case .bratthetskart: return 9
+        case .utmRunenett: return 7
         }
     }
 
@@ -115,6 +120,7 @@ enum OverlayLayer: String, CaseIterable, Identifiable, Sendable {
         switch self {
         case .naturvernomrader: return 0.5
         case .bratthetskart: return 0.9
+        case .utmRunenett: return 0.8
         default: return 0.7
         }
     }
@@ -142,6 +148,12 @@ enum OverlayLayer: String, CaseIterable, Identifiable, Sendable {
             return "https://nve.geodataonline.no/arcgis/services/Bratthet/MapServer/WMSServer"
                 + "?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap"
                 + "&LAYERS=Bratthet_snoskred&STYLES=&SRS=EPSG:3857"
+                + "&BBOX={bbox-epsg-3857}&WIDTH=256&HEIGHT=256"
+                + "&FORMAT=image/png&TRANSPARENT=TRUE"
+        case .utmRunenett:
+            return "https://wms.geonorge.no/skwms1/wms.rutenett"
+                + "?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap"
+                + "&LAYERS=10km_rutelinje,1km_rutelinje&STYLES=&SRS=EPSG:3857"
                 + "&BBOX={bbox-epsg-3857}&WIDTH=256&HEIGHT=256"
                 + "&FORMAT=image/png&TRANSPARENT=TRUE"
         case .hillshading:
@@ -204,7 +216,8 @@ enum KartverketTileService {
     }
 
     static func styleURL(for layer: BaseLayer) -> URL {
-        let fileName = "kartverket-style-\(layer.rawValue).json"
+        let tileHash = String(layer.tileURL.hashValue, radix: 36)
+        let fileName = "kartverket-style-\(layer.rawValue)-\(tileHash).json"
         let cacheDir = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first
             ?? FileManager.default.temporaryDirectory
         let fileURL = cacheDir.appendingPathComponent(fileName)

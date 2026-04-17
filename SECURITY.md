@@ -29,7 +29,7 @@ See [PERSONVERN.md](PERSONVERN.md) for the complete list of external services an
 
 ### Low Data Mode
 
-APIClient supports an `optional` parameter that sets `allowsConstrainedNetworkAccess = false` on the URLRequest. Non-essential requests (Artsdatabanken species images, user guide remote fetch, knowledge pack catalog fetch) are marked optional and silently skipped when the user has enabled Low Data Mode in iOS Settings. Core APIs (weather, search, routing, elevation, map tiles) remain unaffected.
+APIClient supports an `optional` parameter that sets `allowsConstrainedNetworkAccess = false` on the URLRequest. Non-essential requests (Artsdatabanken species images, user guide remote fetch, knowledge pack catalog fetch, remote article fetch) are marked optional and silently skipped when the user has enabled Low Data Mode in iOS Settings. Core APIs (weather, search, routing, elevation, map tiles) remain unaffected.
 
 APIClient retries on HTTP 429 (rate limited) with `Retry-After` header support, capped at 30 seconds. Only one retry is attempted before surfacing the error.
 
@@ -48,6 +48,7 @@ APIClient retries on HTTP 429 (rate limited) with `Retry-After` header support, 
 - Route computation is rate-limited client-side (1.5 s minimum interval) to prevent abuse of the public Valhalla server
 - Route computation cancellation is properly propagated (CancellationError not swallowed by rate limiter)
 - `nonisolated(unsafe)` is used only for read-only static instances: `ISO8601DateFormatter` in `KnowledgeArticle`, `WeatherService`, `WaterTemperatureService`, and `VarsomService`, plus a `PreferenceKey.defaultValue` in `UserGuideSheet`. All are initialized once and never mutated, so no data race risk under Swift strict concurrency. VarsomService additionally uses plain `static let` for `DateFormatter` instances (Sendable-safe, POSIX locale to prevent locale-dependent parsing on non-Gregorian devices)
+- Remote article file paths sanitized via `sanitizeFileName()` in `RemoteArticleService`: strips path separators, allows only alphanumerics plus `-`, `_`, `.`; truncated to 120 characters. Prevents path traversal from malicious catalog entries
 - Knowledge pack file paths use allowlist sanitization in PackStorageHelper: only `CharacterSet.alphanumerics` plus hyphens and underscores pass through; all other characters are stripped. Empty results fall back to `"unknown"`. This prevents path traversal via `..`, `/`, null bytes, or other special characters
 - Knowledge pack downloads verified via SHA256 checksum (PackDownloadManager.verifyChecksum)
 - Knowledge pack databases opened as read-only with `immutable=1` URI flag (prevents WAL/SHM file creation)
@@ -59,7 +60,8 @@ APIClient retries on HTTP 429 (rate limited) with `Retry-After` header support, 
 - SwiftData store protected with `NSFileProtectionComplete` (encrypted at rest, locked when device is locked)
 - Logger output uses `privacy: .private` for all user data interpolations
 - ModelContainer crash recovery: corrupted store is deleted and recreated rather than crashing
-- GDPR Art. 17 "right to erasure": In-app "Slett alle data" in Preferences deletes all SwiftData records (including WAL/SHM journal files), offline map packs, MapLibre tile cache (`clearTileCache()`), knowledge packs, temp GPX files, clears URLCache (may contain coordinates from API requests), uses `removePersistentDomain` for complete UserDefaults erasure, and clears all in-memory service caches via an `onDeleteAllData` callback: WeatherService, WaterTemperatureService, AirQualityService, VarsomService, SearchService, RoutingService, ElevationService, POIService, BundledPOIService, and ArtsdatabankenImageService. This ensures no coordinate or location data survives in memory after deletion
+- GDPR Art. 17 "right to erasure": In-app "Slett alle data" in Preferences deletes all SwiftData records (including WAL/SHM journal files), offline map packs, MapLibre tile cache (`clearTileCache()`), knowledge packs, temp GPX files, clears URLCache (may contain coordinates from API requests), uses `removePersistentDomain` for complete UserDefaults erasure, and clears all in-memory service caches via an `onDeleteAllData` callback: WeatherService, WaterTemperatureService, AirQualityService, VarsomService, SearchService, RoutingService, ElevationService, POIService, BundledPOIService, and ArtsdatabankenImageService. Remote article cache (`RemoteArticleService`) is always cleared during data deletion, even when `knowledgeViewModel` is nil -- a fallback instance is created to ensure cache removal. This ensures no coordinate or location data survives in memory after deletion
+- Remote article cache stored in Application Support/Trakke/articles/
 - GPX temp files are cleaned up automatically after share sheet dismissal and at app launch (orphaned files from previous sessions)
 - GPX temp export files are additionally protected with `NSFileProtectionComplete` (encrypted at rest)
 - SwiftData save failures are surfaced to the user via alerts rather than silently logged
@@ -78,6 +80,7 @@ APIClient retries on HTTP 429 (rate limited) with `Retry-After` header support, 
 - Only truncated coordinates are sent; no user identity, no session data.
 - Tries `areaclass=grunnkrets` first; falls back to `areaclass=kommune` on failure.
 - Auth: None. Uses standard User-Agent header.
+- Requests use `APIClient.session` (shared `URLSession` with 15 s request timeout and standard headers).
 - `If-Modified-Since` / `Expires` header handling is implemented as required by MET API ToS.
 - Responses are held in a single-entry in-memory cache (keyed on 2dp coordinate string); cache is cleared in "Slett alle data" via `AirQualityFetching.clearCache()`.
 - Service uses the `AirQualityFetching` protocol for dependency injection and testability.
@@ -93,6 +96,16 @@ APIClient retries on HTTP 429 (rate limited) with `Retry-After` header support, 
 - Images are held in a 30-entry LRU in-memory cache with eviction; cache cleared in "Slett alle data"
 - The catalog (species name to media ID mapping) is fetched once per session and not persisted to disk
 - Service uses the `ArtsdatabankenImageProviding` protocol for dependency injection and testability
+
+### External API: GitHub Content (Remote Articles)
+
+`RemoteArticleService` fetches article content updates from a GitHub content repository (`raw.githubusercontent.com`).
+
+- No user data transmitted; only article file paths and checksums
+- File paths from remote catalog are sanitized before disk operations (path traversal prevention)
+- Requests routed through `APIClient.fetchData(optional: true)` -- skipped in Low Data Mode
+- Cached in Application Support with GDPR deletion support
+- Service uses the `RemoteArticleFetching` protocol for dependency injection and testability
 
 ### External API: NVE / Varsom
 
@@ -145,7 +158,7 @@ Please do not open public GitHub issues for security vulnerabilities.
 
 ## Security Checklist (Development)
 
-- [ ] All network calls use HTTPS (enforced by ATS)
+- [ ] All network calls use HTTPS (ATS enforced)
 - [ ] No hardcoded secrets or API keys in source code
 - [ ] User location data never leaves the device
 - [ ] SwiftData storage is device-local only
@@ -153,18 +166,20 @@ Please do not open public GitHub issues for security vulnerabilities.
 - [ ] Input validation on all user-facing text fields
 - [ ] Dependencies reviewed and pinned to specific versions
 - [ ] Knowledge pack paths use allowlist sanitization against traversal attacks
+- [ ] Remote article file paths sanitized against path traversal (sanitizeFileName)
 - [ ] Knowledge databases opened read-only (immutable)
 - [ ] Activity GPS data never leaves the device
 - [ ] Pack download checksums verified before installation
-- [ ] Clipboard copies use time-limited expiry (5 minutes) with `"public.utf8-plain-text"` at all 4 sites
-- [ ] `nonisolated(unsafe)` used only for read-only static instances (never mutable state)
-- [ ] Non-essential network requests marked `optional` (skipped in Low Data Mode)
-- [ ] All in-memory service caches cleared in "Slett alle data" (Weather, WaterTemperature, AirQuality, Varsom, Search, Routing, Elevation, POI, BundledPOI, Artsdatabanken)
+- [ ] Clipboard copies use 5-minute expiry at all copy sites
+- [ ] `nonisolated(unsafe)` used only for read-only static instances
+- [ ] Non-essential network requests marked `optional` (Low Data Mode)
+- [ ] All in-memory service caches cleared in "Slett alle data"
+- [ ] Remote article cache cleared in GDPR deletion (including nil-knowledgeViewModel fallback)
 - [ ] GDPR deletion removes WAL/SHM files and MapLibre tile cache
 - [ ] Knowledge pack metadata files written with `.completeFileProtection`
-- [ ] GPX import validates coordinate ranges in addition to `.isFinite`
+- [ ] GPX import validates coordinate ranges and `.isFinite`
 - [ ] GPX temp files cleaned up at app launch
-- [ ] VarsomService truncates coordinates to 4 decimal places before transmission
-- [ ] AirQualityService truncates coordinates to 2 decimal places before transmission (grunnkrets/kommune precision)
-- [ ] VarsomService DateFormatters use POSIX locale (non-Gregorian calendar safety)
-- [ ] Knowledge pack catalog fetch marked `optional` (skipped in Low Data Mode)
+- [ ] VarsomService truncates coordinates to 4dp before transmission
+- [ ] AirQualityService truncates coordinates to 2dp before transmission
+- [ ] AirQualityService uses APIClient.session (15s timeout enforced)
+- [ ] VarsomService DateFormatters use POSIX locale

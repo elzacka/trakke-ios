@@ -39,7 +39,11 @@ struct ContentView: View {
     @AppStorage(AppStorageKeys.overlayNaturvernomrader) private var overlayNaturvernomrader = false
     @AppStorage(AppStorageKeys.overlayNaturskog) private var overlayNaturskog = false
     @AppStorage(AppStorageKeys.overlayBratthetskart) private var overlayBratthetskart = false
+    @AppStorage(AppStorageKeys.overlayUtmRunenett) private var overlayUtmRunenett = false
     @AppStorage(AppStorageKeys.naturskogLayerType) private var naturskogLayerType = OverlayLayer.naturskogSannsynlighet.rawValue
+    private var overlayFingerprint: String {
+        "\(overlayTurrutebasen)\(overlayHillshading)\(overlayNaturvernomrader)\(overlayNaturskog)\(overlayBratthetskart)\(overlayUtmRunenett)\(naturskogLayerType)"
+    }
     @Environment(\.modelContext) private var modelContext
 
     var body: some View {
@@ -60,12 +64,7 @@ struct ContentView: View {
                 showDbRecoveryAlert = true
             }
         }
-        .onChange(of: overlayTurrutebasen) { syncOverlays() }
-        .onChange(of: overlayHillshading) { syncOverlays() }
-        .onChange(of: overlayNaturvernomrader) { syncOverlays() }
-        .onChange(of: overlayNaturskog) { syncOverlays() }
-        .onChange(of: overlayBratthetskart) { syncOverlays() }
-        .onChange(of: naturskogLayerType) { syncOverlays() }
+        .onChange(of: overlayFingerprint) { syncOverlays() }
         .onDisappear {
             offlineViewModel.stopObserving()
             connectivityMonitor.stop()
@@ -105,6 +104,7 @@ struct ContentView: View {
         if overlayHillshading { overlays.insert(.hillshading) }
         if overlayNaturvernomrader { overlays.insert(.naturvernomrader) }
         if overlayBratthetskart { overlays.insert(.bratthetskart) }
+        if overlayUtmRunenett { overlays.insert(.utmRunenett) }
         if overlayNaturskog, let layer = OverlayLayer(rawValue: naturskogLayerType), layer.isNaturskog {
             overlays.insert(layer)
         }
@@ -254,7 +254,12 @@ struct ContentView: View {
                             if !success { stopNavigation(); showRouteError = true }
                         }
                     },
-                    onToggleCamera: { navigationViewModel.toggleCameraMode() }
+                    onToggleCamera: { navigationViewModel.toggleCameraMode() },
+                    onSearchTapped: { sheets.showSearchSheet = true },
+                    onCategoryTapped: { sheets.showCategoryPicker = true },
+                    onEmergencyTapped: { sheets.showEmergency = true },
+                    onWeatherTapped: { sheets.showWeatherSheet = true },
+                    onMoreTapped: { sheets.showMore = true }
                 )
                 .confirmationDialog(
                     String(localized: "navigation.stopConfirmTitle"),

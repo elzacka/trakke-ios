@@ -16,6 +16,7 @@ struct PreferencesSheet: View {
     @AppStorage(AppStorageKeys.overlayHillshading) private var overlayHillshading = false
     @AppStorage(AppStorageKeys.overlayNaturvernomrader) private var overlayNaturvernomrader = false
     @AppStorage(AppStorageKeys.overlayBratthetskart) private var overlayBratthetskart = false
+    @AppStorage(AppStorageKeys.overlayUtmRunenett) private var overlayUtmRunenett = false
     @AppStorage(AppStorageKeys.overlayNaturskog) private var overlayNaturskog = false
     @AppStorage(AppStorageKeys.naturskogLayerType) private var naturskogLayerType = OverlayLayer.naturskogSannsynlighet.rawValue
     @Environment(\.dismiss) private var dismiss
@@ -77,6 +78,11 @@ struct PreferencesSheet: View {
                             settingsToggle(
                                 label: OverlayLayer.turrutebasen.displayName,
                                 isOn: $overlayTurrutebasen
+                            )
+                            Divider()
+                            settingsToggle(
+                                label: OverlayLayer.utmRunenett.displayName,
+                                isOn: $overlayUtmRunenett
                             )
                         }
                     }
@@ -198,8 +204,13 @@ struct PreferencesSheet: View {
         OfflineMapService.shared.deleteAllPacks()
         OfflineMapService.shared.clearTileCache()
 
-        // Delete knowledge packs (SQLite databases, metadata, catalog cache)
+        // Delete knowledge packs (SQLite databases, metadata, catalog cache, remote articles)
         knowledgeViewModel?.deleteAllPacks()
+
+        // Ensure remote article cache is cleared even if knowledgeViewModel is nil (GDPR Art. 17)
+        if knowledgeViewModel == nil {
+            Task { await RemoteArticleService().clearCache() }
+        }
 
         // Clear in-memory service caches
         BundledPOIService.clearCache()

@@ -80,6 +80,7 @@ struct KnowledgeSheet: View {
         .navigationBarTitleDisplayMode(.inline)
         .task {
             await viewModel.loadArticles()
+            viewModel.fetchRemoteArticleUpdates()
         }
     }
 

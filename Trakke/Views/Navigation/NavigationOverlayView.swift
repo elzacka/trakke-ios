@@ -8,7 +8,13 @@ struct NavigationOverlayView: View {
     var onSwitchToCompass: () -> Void
     var onSwitchToRoute: () -> Void
     var onToggleCamera: () -> Void
+    var onSearchTapped: () -> Void
+    var onCategoryTapped: () -> Void
+    var onEmergencyTapped: () -> Void
+    var onWeatherTapped: () -> Void
+    var onMoreTapped: () -> Void
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var showNavigationMenu = false
     @ScaledMetric(relativeTo: .title) private var compassArrowSize: CGFloat = 48
 
     var body: some View {
@@ -46,6 +52,35 @@ struct NavigationOverlayView: View {
             .background(.regularMaterial)
             .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.xl))
             .padding(.horizontal, .Trakke.sheetHorizontal)
+
+            // Compact menu button below navigation HUD
+            HStack {
+                Spacer()
+                Button {
+                    showNavigationMenu = true
+                } label: {
+                    Image(systemName: "ellipsis")
+                        .font(Font.Trakke.bodyMedium)
+                        .foregroundStyle(Color.Trakke.textInverse)
+                        .frame(width: .Trakke.touchMin, height: .Trakke.touchMin)
+                        .background(Color.Trakke.brand.opacity(0.85))
+                        .clipShape(Circle())
+                        .trakkeControlShadow()
+                }
+                .accessibilityLabel(String(localized: "fab.menu"))
+                .padding(.trailing, .Trakke.xxl)
+                .confirmationDialog(
+                    String(localized: "fab.menu"),
+                    isPresented: $showNavigationMenu,
+                    titleVisibility: .hidden
+                ) {
+                    Button(String(localized: "search.title")) { delayedAction(onSearchTapped) }
+                    Button(String(localized: "categories.title")) { delayedAction(onCategoryTapped) }
+                    Button(String(localized: "emergency.title")) { delayedAction(onEmergencyTapped) }
+                    Button(String(localized: "weather.title")) { delayedAction(onWeatherTapped) }
+                    Button(String(localized: "more.title")) { delayedAction(onMoreTapped) }
+                }
+            }
             .padding(.bottom, .Trakke.sm)
         }
         .safeAreaPadding(.bottom)
@@ -182,7 +217,7 @@ struct NavigationOverlayView: View {
                     onToggleCamera()
                 } label: {
                     Image(systemName: navigationVM.cameraMode == .northUp
-                          ? "location.north" : "location.north.line")
+                          ? "location.viewfinder" : "location.north.fill")
                         .font(Font.Trakke.bodyRegular)
                 }
                 .frame(minWidth: .Trakke.touchMin, minHeight: .Trakke.touchMin)
@@ -205,6 +240,20 @@ struct NavigationOverlayView: View {
                     }
                     .frame(minWidth: .Trakke.touchMin, minHeight: .Trakke.touchMin)
                 }
+
+                Button {
+                    onToggleCamera()
+                } label: {
+                    Image(systemName: navigationVM.cameraMode == .northUp
+                          ? "location.viewfinder" : "location.north.fill")
+                        .font(Font.Trakke.bodyRegular)
+                }
+                .frame(minWidth: .Trakke.touchMin, minHeight: .Trakke.touchMin)
+                .accessibilityLabel(
+                    navigationVM.cameraMode == .northUp
+                        ? String(localized: "navigation.cameraMode.courseUp")
+                        : String(localized: "navigation.cameraMode.northUp")
+                )
             }
 
             Spacer()
@@ -255,7 +304,7 @@ struct NavigationOverlayView: View {
     private var arrivalBanner: some View {
         Text(String(localized: "navigation.arrived"))
             .font(Font.Trakke.bodyMedium)
-            .foregroundStyle(.white)
+            .foregroundStyle(Color.Trakke.textInverse)
             .padding(.horizontal, .Trakke.lg)
             .padding(.vertical, .Trakke.sm)
             .background(Color.Trakke.brand)
@@ -297,8 +346,13 @@ struct NavigationOverlayView: View {
         return "\(minutes) min"
     }
 
-    /// Relative bearing from user's heading to the destination.
-    /// Normalized to -180...180 so SwiftUI animates the shortest rotation path.
+    private func delayedAction(_ action: @escaping () -> Void) {
+        Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(300))
+            action()
+        }
+    }
+
     private func computeRelativeBearing() -> Double {
         let heading = userHeading ?? 0
         var delta = navigationVM.compassBearing - heading
@@ -342,3 +396,5 @@ struct NavigationOverlayView: View {
         }
     }
 }
+
+

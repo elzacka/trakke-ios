@@ -208,7 +208,7 @@ struct MarkdownTableView: View {
             // Header row
             HStack(spacing: 0) {
                 ForEach(Array(headers.enumerated()), id: \.offset) { _, header in
-                    Text(header)
+                    Self.markdownText(header)
                         .font(Font.Trakke.bodyMedium)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.vertical, .Trakke.xs)
@@ -226,7 +226,7 @@ struct MarkdownTableView: View {
                 }
                 HStack(alignment: .top, spacing: 0) {
                     ForEach(Array(row.prefix(headers.count).enumerated()), id: \.offset) { _, cell in
-                        Text(cell)
+                        Self.markdownText(cell)
                             .font(Font.Trakke.caption)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.vertical, .Trakke.xs)
@@ -240,5 +240,12 @@ struct MarkdownTableView: View {
             RoundedRectangle(cornerRadius: .TrakkeRadius.md)
                 .stroke(Color(.separator), lineWidth: 0.5)
         )
+    }
+
+    private static func markdownText(_ text: String) -> Text {
+        if let attributed = try? AttributedString(markdown: text) {
+            return Text(attributed)
+        }
+        return Text(text)
     }
 }
