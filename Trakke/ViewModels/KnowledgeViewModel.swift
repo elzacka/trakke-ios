@@ -39,6 +39,7 @@ final class KnowledgeViewModel {
     private let remoteArticleService: any RemoteArticleFetching
     private var queryTask: Task<Void, Never>?
     private var downloadTasks: [String: Task<Void, Never>] = [:]
+    private var remoteUpdateTask: Task<Void, Never>?
     private var lastBounds: ViewportBounds?
     private var lastZoom: Double = 0
     private static let debounceInterval: Duration = .milliseconds(500)
@@ -254,22 +255,25 @@ final class KnowledgeViewModel {
 
         // Merge remote articles — remote overrides bundled by matching ID
         let remote = await remoteArticleService.cachedArticles()
+        var seenIDs = Set<Int64>(result.map { $0.id })
         if !remote.isEmpty {
             let remoteByID = Dictionary(remote.map { ($0.id, $0) }, uniquingKeysWith: { _, new in new })
-            var seenIDs = Set<Int64>()
             result = result.map { bundled in
-                seenIDs.insert(bundled.id)
-                return remoteByID[bundled.id] ?? bundled
+                remoteByID[bundled.id] ?? bundled
             }
             for r in remote where !seenIDs.contains(r.id) {
                 result.append(r)
+                seenIDs.insert(r.id)
             }
         }
 
-        // Also load articles from downloaded packs (if any have articles table)
+        // Also load articles from downloaded packs (skip IDs already present)
         do {
             let packArticles = try await queryService.articles(for: category)
-            result.append(contentsOf: packArticles)
+            for article in packArticles where !seenIDs.contains(article.id) {
+                result.append(article)
+                seenIDs.insert(article.id)
+            }
         } catch {
             Logger.knowledge.error("Pack article load error: \(error, privacy: .private)")
         }
@@ -283,10 +287,12 @@ final class KnowledgeViewModel {
     }
 
     func fetchRemoteArticleUpdates() {
-        Task { [weak self] in
+        guard remoteUpdateTask == nil else { return }
+        remoteUpdateTask = Task { [weak self] in
             guard let self else { return }
             await remoteArticleService.fetchUpdates()
             await loadArticles()
+            remoteUpdateTask = nil
         }
     }
 

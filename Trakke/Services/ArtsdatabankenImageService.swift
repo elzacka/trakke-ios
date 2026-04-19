@@ -63,16 +63,19 @@ actor ArtsdatabankenImageService: ArtsdatabankenImageProviding {
 
     // MARK: - Private
 
-    /// Look up media ID from the catalog, fetching it if needed.
     private func mediaID(for scientificName: String) async -> String? {
-        if catalog == nil {
+        if catalog == nil, !isLoadingCatalog {
             await loadCatalog()
         }
         return catalog?[scientificName]
     }
 
+    private var isLoadingCatalog = false
+
     private func loadCatalog() async {
-        guard let url = URL(string: Self.catalogURL) else { return }
+        isLoadingCatalog = true
+        defer { isLoadingCatalog = false }
+        guard catalog == nil, let url = URL(string: Self.catalogURL) else { return }
 
         do {
             let data = try await APIClient.fetchData(url: url, optional: true)
@@ -80,7 +83,6 @@ actor ArtsdatabankenImageService: ArtsdatabankenImageProviding {
             Logger.knowledge.info("Loaded Artsdatabanken image catalog: \(self.catalog?.count ?? 0) species")
         } catch {
             Logger.knowledge.error("Failed to load Artsdatabanken catalog: \(error.localizedDescription, privacy: .private)")
-            // Leave catalog as nil so next call retries
         }
     }
 
