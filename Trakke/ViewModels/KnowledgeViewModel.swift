@@ -252,25 +252,17 @@ final class KnowledgeViewModel {
         // Load bundled articles (always available, no download required)
         var result = Self.loadBundledArticles()
 
-        // Merge remote articles — remote overrides bundled by matching category + title
+        // Merge remote articles — remote overrides bundled by matching ID
         let remote = await remoteArticleService.cachedArticles()
         if !remote.isEmpty {
-            var bundledKeys = Set(result.map { "\($0.category)|\($0.title)" })
-            // Replace matching bundled articles with remote versions
+            let remoteByID = Dictionary(remote.map { ($0.id, $0) }, uniquingKeysWith: { _, new in new })
+            var seenIDs = Set<Int64>()
             result = result.map { bundled in
-                let key = "\(bundled.category)|\(bundled.title)"
-                if let remoteVersion = remote.first(where: { "\($0.category)|\($0.title)" == key }) {
-                    return remoteVersion
-                }
-                return bundled
+                seenIDs.insert(bundled.id)
+                return remoteByID[bundled.id] ?? bundled
             }
-            // Add new remote articles that don't exist in bundled
-            for r in remote {
-                let key = "\(r.category)|\(r.title)"
-                if !bundledKeys.contains(key) {
-                    result.append(r)
-                    bundledKeys.insert(key)
-                }
+            for r in remote where !seenIDs.contains(r.id) {
+                result.append(r)
             }
         }
 
