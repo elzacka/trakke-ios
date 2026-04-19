@@ -171,8 +171,8 @@ actor RoutingService: RouteFetching {
     ) -> Data? {
         let body: [String: Any] = [
             "locations": [
-                ["lat": origin.latitude, "lon": origin.longitude],
-                ["lat": destination.latitude, "lon": destination.longitude],
+                ["lat": (origin.latitude * 10000).rounded() / 10000, "lon": (origin.longitude * 10000).rounded() / 10000],
+                ["lat": (destination.latitude * 10000).rounded() / 10000, "lon": (destination.longitude * 10000).rounded() / 10000],
             ],
             "costing": "pedestrian",
             "costing_options": [

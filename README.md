@@ -1,6 +1,6 @@
 # Tråkke - Norsk friluftslivsapp for iOS
 
-**Versjon 1.4.0** | iOS 26.0+ | Swift 6.2
+**Versjon 1.4.0** | iOS 26.0+ | Swift 6.3
 
 Tråkke er en kartapp for iPhone som bruker kartdata fra Kartverket. Appen er laget for turgåere og friluftsfolk i Norge, med fokus på personvern og offline bruk.
 
@@ -33,7 +33,7 @@ Tråkke er en kartapp for iPhone som bruker kartdata fra Kartverket. Appen er la
 
 - iOS 26.0 eller nyere
 - iPhone eller iPad
-- Xcode 26.3 eller 26.4 (for utvikling)
+- Xcode 26.4.1 (for utvikling)
 
 ## Kom i gang (utvikling)
 
@@ -56,13 +56,13 @@ xcodebuild -project Trakke.xcodeproj -scheme Trakke \
   -skipMacroValidation test
 ```
 
-**Forutsetninger:** Xcode 26.3 eller 26.4, xcodegen (`brew install xcodegen`)
+**Forutsetninger:** Xcode 26.4.1, xcodegen (`brew install xcodegen`)
 
 ## Teknisk stack
 
 | Komponent | Teknologi |
 |-----------|-----------|
-| Språk | Swift 6.2 |
+| Språk | Swift 6.3 |
 | UI | SwiftUI (iOS 26, Liquid Glass) |
 | Arkitektur | MVVM med @Observable |
 | Kart | MapLibre Native 6.23.0 |

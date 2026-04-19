@@ -1,69 +1,47 @@
 import Foundation
+import OSLog
 
 enum GPXExportService {
     static func exportRoute(_ route: Route, waypoints: [Waypoint] = []) -> String {
-        var gpx = """
-        <?xml version="1.0" encoding="UTF-8"?>
-        <gpx version="1.1" creator="Tråkke"
-          xmlns="http://www.topografix.com/GPX/1/1"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
-          <metadata>
-            <name>\(escapeXML(route.name))</name>
-            <time>\(iso8601(route.createdAt))</time>
-          </metadata>
-        """
+        var body = ""
 
-        // Waypoints
         for wp in waypoints {
             guard wp.coordinates.count >= 2 else { continue }
             let lon = wp.coordinates[0]
             let lat = wp.coordinates[1]
             guard lon.isFinite, lat.isFinite else { continue }
-            gpx += "\n  <wpt lat=\"\(lat)\" lon=\"\(lon)\">"
+            body += "\n  <wpt lat=\"\(lat)\" lon=\"\(lon)\">"
             if let elevation = wp.elevation {
-                gpx += "\n    <ele>\(elevation)</ele>"
+                body += "\n    <ele>\(elevation)</ele>"
             }
-            gpx += "\n    <time>\(iso8601(wp.createdAt))</time>"
-            gpx += "\n    <name>\(escapeXML(wp.name))</name>"
+            body += "\n    <time>\(iso8601(wp.createdAt))</time>"
+            body += "\n    <name>\(escapeXML(wp.name))</name>"
             if let category = wp.category {
-                gpx += "\n    <type>\(escapeXML(category))</type>"
+                body += "\n    <type>\(escapeXML(category))</type>"
             }
-            gpx += "\n  </wpt>"
+            body += "\n  </wpt>"
         }
 
-        // Track
-        gpx += "\n  <trk>"
-        gpx += "\n    <name>\(escapeXML(route.name))</name>"
-        gpx += "\n    <trkseg>"
+        body += "\n  <trk>"
+        body += "\n    <name>\(escapeXML(route.name))</name>"
+        body += "\n    <trkseg>"
 
         for coord in route.coordinates {
             guard coord.count >= 2 else { continue }
             let lon = coord[0]
             let lat = coord[1]
             guard lon.isFinite, lat.isFinite else { continue }
-            gpx += "\n      <trkpt lat=\"\(lat)\" lon=\"\(lon)\"></trkpt>"
+            body += "\n      <trkpt lat=\"\(lat)\" lon=\"\(lon)\"></trkpt>"
         }
 
-        gpx += "\n    </trkseg>"
-        gpx += "\n  </trk>"
-        gpx += "\n</gpx>\n"
+        body += "\n    </trkseg>"
+        body += "\n  </trk>"
 
-        return gpx
+        return gpxDocument(name: route.name, createdAt: route.createdAt, body: body)
     }
 
     static func exportWaypoints(_ waypoints: [Waypoint], name: String = "Mine steder") -> String {
-        var gpx = """
-        <?xml version="1.0" encoding="UTF-8"?>
-        <gpx version="1.1" creator="Tråkke"
-          xmlns="http://www.topografix.com/GPX/1/1"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
-          <metadata>
-            <name>\(escapeXML(name))</name>
-            <time>\(iso8601(Date()))</time>
-          </metadata>
-        """
+        var body = ""
 
         let sorted = waypoints.sorted {
             $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
@@ -74,59 +52,45 @@ enum GPXExportService {
             let lon = wp.coordinates[0]
             let lat = wp.coordinates[1]
             guard lon.isFinite, lat.isFinite else { continue }
-            gpx += "\n  <wpt lat=\"\(lat)\" lon=\"\(lon)\">"
+            body += "\n  <wpt lat=\"\(lat)\" lon=\"\(lon)\">"
             if let elevation = wp.elevation {
-                gpx += "\n    <ele>\(elevation)</ele>"
+                body += "\n    <ele>\(elevation)</ele>"
             }
-            gpx += "\n    <time>\(iso8601(wp.createdAt))</time>"
-            gpx += "\n    <name>\(escapeXML(wp.name))</name>"
+            body += "\n    <time>\(iso8601(wp.createdAt))</time>"
+            body += "\n    <name>\(escapeXML(wp.name))</name>"
             if let category = wp.category {
-                gpx += "\n    <type>\(escapeXML(category))</type>"
+                body += "\n    <type>\(escapeXML(category))</type>"
             }
-            gpx += "\n  </wpt>"
+            body += "\n  </wpt>"
         }
 
-        gpx += "\n</gpx>\n"
-        return gpx
+        return gpxDocument(name: name, createdAt: Date(), body: body)
     }
 
     static func exportActivity(_ activity: Activity) -> String {
-        var gpx = """
-        <?xml version="1.0" encoding="UTF-8"?>
-        <gpx version="1.1" creator="Tråkke"
-          xmlns="http://www.topografix.com/GPX/1/1"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
-          <metadata>
-            <name>\(escapeXML(activity.name))</name>
-            <time>\(iso8601(activity.startedAt))</time>
-          </metadata>
-        """
-
-        gpx += "\n  <trk>"
-        gpx += "\n    <name>\(escapeXML(activity.name))</name>"
-        gpx += "\n    <trkseg>"
+        var body = "\n  <trk>"
+        body += "\n    <name>\(escapeXML(activity.name))</name>"
+        body += "\n    <trkseg>"
 
         for point in activity.trackPoints {
             guard point.count >= 2 else { continue }
             let lon = point[0]
             let lat = point[1]
             guard lon.isFinite, lat.isFinite else { continue }
-            gpx += "\n      <trkpt lat=\"\(lat)\" lon=\"\(lon)\">"
+            body += "\n      <trkpt lat=\"\(lat)\" lon=\"\(lon)\">"
             if point.count >= 3, point[2].isFinite {
-                gpx += "\n        <ele>\(point[2])</ele>"
+                body += "\n        <ele>\(point[2])</ele>"
             }
             if point.count >= 4, point[3].isFinite {
-                gpx += "\n        <time>\(iso8601(Date(timeIntervalSince1970: point[3])))</time>"
+                body += "\n        <time>\(iso8601(Date(timeIntervalSince1970: point[3])))</time>"
             }
-            gpx += "\n      </trkpt>"
+            body += "\n      </trkpt>"
         }
 
-        gpx += "\n    </trkseg>"
-        gpx += "\n  </trk>"
-        gpx += "\n</gpx>\n"
+        body += "\n    </trkseg>"
+        body += "\n  </trk>"
 
-        return gpx
+        return gpxDocument(name: activity.name, createdAt: activity.startedAt, body: body)
     }
 
     static func sanitizeFilename(_ name: String) -> String {
@@ -149,11 +113,27 @@ enum GPXExportService {
             )
             return fileURL
         } catch {
+            Logger.routes.error("GPX export write failed: \(error, privacy: .private)")
             return nil
         }
     }
 
     // MARK: - Helpers
+
+    private static func gpxDocument(name: String, createdAt: Date, body: String) -> String {
+        """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <gpx version="1.1" creator="Tråkke"
+          xmlns="http://www.topografix.com/GPX/1/1"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+          <metadata>
+            <name>\(escapeXML(name))</name>
+            <time>\(iso8601(createdAt))</time>
+          </metadata>\(body)
+        </gpx>
+        """
+    }
 
     private static func escapeXML(_ string: String) -> String {
         string

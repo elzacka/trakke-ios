@@ -82,7 +82,7 @@ struct RouteSaveSheet: View {
                                     .frame(width: 32, height: 32)
                                     .overlay(
                                         Circle()
-                                            .strokeBorder(.primary, lineWidth: selectedColor == color ? 2 : 0)
+                                            .strokeBorder(Color.Trakke.text, lineWidth: selectedColor == color ? 2 : 0)
                                     )
                             }
                             .buttonStyle(.plain)

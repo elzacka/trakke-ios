@@ -94,7 +94,7 @@ actor RemoteArticleService: RemoteArticleFetching {
     private func downloadArticle(_ entry: CatalogEntry) async -> Bool {
         let safeFile = Self.sanitizeFileName(entry.file)
         guard !safeFile.isEmpty,
-              let url = URL(string: Self.rawBaseURL + entry.file) else { return false }
+              let url = URL(string: Self.rawBaseURL + safeFile) else { return false }
 
         guard let data = try? await APIClient.fetchData(url: url, optional: true),
               let content = String(data: data, encoding: .utf8) else {

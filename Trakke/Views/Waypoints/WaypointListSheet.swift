@@ -258,7 +258,7 @@ struct WaypointListSheet: View {
     private var importBanner: some View {
         Text(viewModel.importMessage ?? "")
             .font(Font.Trakke.caption)
-            .foregroundStyle(.white)
+            .foregroundStyle(Color.Trakke.textInverse)
             .padding(.horizontal, .Trakke.lg)
             .padding(.vertical, .Trakke.sm)
             .background(Color.Trakke.brand)

@@ -46,9 +46,9 @@ class POIAnnotation: MLNPointAnnotation {
     }
 }
 
-// MARK: - Route Drawing Point
+// MARK: - Indexed Point Annotations
 
-class RoutePointAnnotation: MLNPointAnnotation {
+class IndexedPointAnnotation: MLNPointAnnotation {
     let index: Int
 
     init(coordinate: CLLocationCoordinate2D, index: Int) {
@@ -62,37 +62,9 @@ class RoutePointAnnotation: MLNPointAnnotation {
     }
 }
 
-// MARK: - Measurement Point
-
-class MeasurementPointAnnotation: MLNPointAnnotation {
-    let index: Int
-
-    init(coordinate: CLLocationCoordinate2D, index: Int) {
-        self.index = index
-        super.init()
-        self.coordinate = coordinate
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) not supported")
-    }
-}
-
-// MARK: - Selection Corner Annotation
-
-class SelectionCornerAnnotation: MLNPointAnnotation {
-    let index: Int
-
-    init(coordinate: CLLocationCoordinate2D, index: Int) {
-        self.index = index
-        super.init()
-        self.coordinate = coordinate
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) not supported")
-    }
-}
+final class RoutePointAnnotation: IndexedPointAnnotation {}
+final class MeasurementPointAnnotation: IndexedPointAnnotation {}
+final class SelectionCornerAnnotation: IndexedPointAnnotation {}
 
 // MARK: - Waypoint Annotation
 
@@ -246,8 +218,7 @@ struct TrakkeMapView: UIViewRepresentable {
         if !context.coordinator.isUserInteracting {
             let vmCenter = viewModel.currentCenter
             let currentCenter = mapView.centerCoordinate
-            let distance = CLLocation(latitude: currentCenter.latitude, longitude: currentCenter.longitude)
-                .distance(from: CLLocation(latitude: vmCenter.latitude, longitude: vmCenter.longitude))
+            let distance = Haversine.distance(from: currentCenter, to: vmCenter)
 
             if distance > 5 || abs(mapView.zoomLevel - viewModel.currentZoom) > 0.5 {
                 mapView.setCenter(vmCenter, zoomLevel: viewModel.currentZoom, animated: true)
@@ -670,11 +641,12 @@ struct TrakkeMapView: UIViewRepresentable {
                 return
             }
 
-            guard style.source(withIdentifier: overlay.sourceID) == nil else { return }
+            guard style.source(withIdentifier: overlay.sourceID) == nil,
+                  let tileURL = overlay.tileURL else { return }
 
             let source = MLNRasterTileSource(
                 identifier: overlay.sourceID,
-                tileURLTemplates: [overlay.tileURL],
+                tileURLTemplates: [tileURL],
                 options: [
                     .tileSize: 256,
                     .minimumZoomLevel: overlay.minZoom,

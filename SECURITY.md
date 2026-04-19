@@ -47,7 +47,7 @@ APIClient retries on HTTP 429 (rate limited) with `Retry-After` header support, 
 - Valhalla routing responses are decoded through `Codable` with coordinate validation; polyline6 decoded coordinates are checked for `.isFinite`
 - Route computation is rate-limited client-side (1.5 s minimum interval) to prevent abuse of the public Valhalla server
 - Route computation cancellation is properly propagated (CancellationError not swallowed by rate limiter)
-- `nonisolated(unsafe)` is used only for read-only static instances: `ISO8601DateFormatter` in `KnowledgeArticle`, `WeatherService`, `WaterTemperatureService`, and `VarsomService`, plus a `PreferenceKey.defaultValue` in `UserGuideSheet`. All are initialized once and never mutated, so no data race risk under Swift strict concurrency. VarsomService additionally uses plain `static let` for `DateFormatter` instances (Sendable-safe, POSIX locale to prevent locale-dependent parsing on non-Gregorian devices)
+- `ISO8601DateFormatter` and `DateFormatter` instances in actor services (VarsomService, WeatherService, WaterTemperatureService) are actor-isolated instance properties, ensuring thread safety without `nonisolated(unsafe)`. `nonisolated(unsafe)` is used only for the `hourFormatter` static in `WeatherService.upcomingChange()` (a `nonisolated static` function) and a `PreferenceKey.defaultValue` in `UserGuideSheet`. VarsomService DateFormatters use POSIX locale to prevent locale-dependent parsing on non-Gregorian devices
 - Remote article file paths sanitized via `sanitizeFileName()` in `RemoteArticleService`: strips path separators, allows only alphanumerics plus `-`, `_`, `.`; truncated to 120 characters. Prevents path traversal from malicious catalog entries
 - Knowledge pack file paths use allowlist sanitization in PackStorageHelper: only `CharacterSet.alphanumerics` plus hyphens and underscores pass through; all other characters are stripped. Empty results fall back to `"unknown"`. This prevents path traversal via `..`, `/`, null bytes, or other special characters
 - Knowledge pack downloads verified via SHA256 checksum (PackDownloadManager.verifyChecksum)
@@ -171,7 +171,7 @@ Please do not open public GitHub issues for security vulnerabilities.
 - [ ] Activity GPS data never leaves the device
 - [ ] Pack download checksums verified before installation
 - [ ] Clipboard copies use 5-minute expiry at all copy sites
-- [ ] `nonisolated(unsafe)` used only for read-only static instances
+- [ ] `nonisolated(unsafe)` used only for read-only static instances (hourFormatter, PreferenceKey.defaultValue)
 - [ ] Non-essential network requests marked `optional` (Low Data Mode)
 - [ ] All in-memory service caches cleared in "Slett alle data"
 - [ ] Remote article cache cleared in GDPR deletion (including nil-knowledgeViewModel fallback)

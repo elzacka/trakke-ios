@@ -125,7 +125,7 @@ enum OverlayLayer: String, CaseIterable, Identifiable, Sendable {
         }
     }
 
-    var tileURL: String {
+    var tileURL: String? {
         switch self {
         case .turrutebasen:
             return "https://wms.geonorge.no/skwms1/wms.friluftsruter2"
@@ -157,7 +157,7 @@ enum OverlayLayer: String, CaseIterable, Identifiable, Sendable {
                 + "&BBOX={bbox-epsg-3857}&WIDTH=256&HEIGHT=256"
                 + "&FORMAT=image/png&TRANSPARENT=TRUE"
         case .hillshading:
-            preconditionFailure("Hillshading uses TerrainConstants, not WMS tileURL")
+            return nil
         }
     }
 }
@@ -216,8 +216,9 @@ enum KartverketTileService {
     }
 
     static func styleURL(for layer: BaseLayer) -> URL {
+        let styleVersion = 1
         let tileHash = String(layer.tileURL.hashValue, radix: 36)
-        let fileName = "kartverket-style-\(layer.rawValue)-\(tileHash).json"
+        let fileName = "kartverket-style-\(layer.rawValue)-\(tileHash)-v\(styleVersion).json"
         let cacheDir = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first
             ?? FileManager.default.temporaryDirectory
         let fileURL = cacheDir.appendingPathComponent(fileName)
