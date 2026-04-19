@@ -491,14 +491,17 @@ actor WeatherService: WeatherFetching {
     /// Scans the next 6 hours for significant weather transitions:
     /// precipitation starting, wind picking up, or gusts becoming dangerous.
     /// Returns the most important upcoming change, or nil if conditions are stable.
+    private nonisolated(unsafe) static let hourFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "HH"
+        return f
+    }()
+
     nonisolated static func upcomingChange(current: WeatherData, hourly: [WeatherData]) -> UpcomingChange? {
         let now = Date()
         let sixHoursLater = now.addingTimeInterval(21600)
         let upcoming = hourly.filter { $0.time > now && $0.time <= sixHoursLater }
         guard !upcoming.isEmpty else { return nil }
-
-        let hourFormatter = DateFormatter()
-        hourFormatter.dateFormat = "HH"
 
         // Check for precipitation starting (currently dry → precipitation within 6h)
         if current.precipitation < 0.1 {
@@ -623,12 +626,12 @@ actor WeatherService: WeatherFetching {
 
     // MARK: - Parsing
 
-    private nonisolated(unsafe) static let iso8601Formatter = ISO8601DateFormatter()
+    private let iso8601Formatter = ISO8601DateFormatter()
 
     private func parseMetData(_ response: MetApiResponse, lat: Double, lon: Double) -> WeatherForecast {
         let timeseries = response.properties.timeseries
         let now = Date()
-        let formatter = Self.iso8601Formatter
+        let formatter = iso8601Formatter
 
         let parsed: [(date: Date, data: WeatherData)] = timeseries.compactMap { point in
             guard let date = formatter.date(from: point.time) else { return nil }

@@ -52,6 +52,7 @@ struct NavigationStartSheet: View {
                         .buttonStyle(.trakkeSecondary)
                         .disabled(!isConnected)
                         .opacity(isConnected ? 1 : 0.5)
+                        .accessibilityHint(isConnected ? "" : String(localized: "navigation.offlineHint"))
 
                         Button {
                             dismiss()

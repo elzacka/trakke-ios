@@ -46,7 +46,7 @@ actor WaterTemperatureService: WaterTemperatureFetching {
     }
 
     private static let maxCacheEntries = 10
-    private nonisolated(unsafe) static let iso8601Formatter = ISO8601DateFormatter()
+    private let iso8601Formatter = ISO8601DateFormatter()
     private var cache: [String: CachedResult] = [:]
 
     func clearCache() {
@@ -192,7 +192,7 @@ actor WaterTemperatureService: WaterTemperatureFetching {
         }
 
         let now = Date.now
-        let formatter = Self.iso8601Formatter
+        let formatter = iso8601Formatter
 
         var closestTemp: Double?
         var closestDistance: TimeInterval = .greatestFiniteMagnitude
@@ -227,8 +227,10 @@ actor WaterTemperatureService: WaterTemperatureFetching {
     // MARK: - Havvarsel-Frost Badevann
 
     private func fetchBathingSpots(lat: Double, lon: Double) async throws -> [WaterTemperature] {
+        let truncLat = (lat * 10000).rounded() / 10000
+        let truncLon = (lon * 10000).rounded() / 10000
         let nearestParam = """
-        {"points":[{"lat":\(lat),"lon":\(lon)}],"maxdist":30000,"maxcount":5}
+        {"points":[{"lat":\(truncLat),"lon":\(truncLon)}],"maxdist":30000,"maxcount":5}
         """
 
         guard let encoded = nearestParam.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),

@@ -1,5 +1,6 @@
 import Foundation
 import CoreLocation
+import OSLog
 
 // MARK: - Air Quality Data
 
@@ -119,8 +120,15 @@ actor AirQualityService: AirQualityFetching {
             request.setValue(lastModified, forHTTPHeaderField: "If-Modified-Since")
         }
 
-        guard let (data, urlResponse) = try? await APIClient.session.data(for: request),
-              let httpResponse = urlResponse as? HTTPURLResponse else {
+        let data: Data
+        let httpResponse: HTTPURLResponse
+        do {
+            let (responseData, urlResponse) = try await APIClient.session.data(for: request)
+            guard let http = urlResponse as? HTTPURLResponse else { return nil }
+            data = responseData
+            httpResponse = http
+        } catch {
+            Logger.weather.warning("Air quality fetch (\(areaclass)) failed: \(error.localizedDescription, privacy: .private)")
             return nil
         }
 

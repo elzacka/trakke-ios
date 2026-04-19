@@ -640,6 +640,8 @@ struct ContentView: View {
             )
         ) {
             Button(String(localized: "common.ok")) {}
+        } message: {
+            Text(routeViewModel.saveError ?? waypointViewModel.saveError ?? activityViewModel.saveError ?? "")
         }
         .confirmationDialog(
             "",
@@ -671,6 +673,7 @@ struct ContentView: View {
             await routeViewModel.clearCaches()
             await poiViewModel.clearCaches()
             await waypointViewModel.clearCaches()
+            knowledgeViewModel.deleteAllPacks()
         }
     }
 
@@ -682,7 +685,7 @@ struct ContentView: View {
     private var offlineWarningToast: some View {
         Text(String(localized: "offline.leftArea"))
             .font(Font.Trakke.caption)
-            .foregroundStyle(.white)
+            .foregroundStyle(Color.Trakke.textInverse)
             .padding(.horizontal, .Trakke.lg)
             .padding(.vertical, .Trakke.sm)
             .background(Color.Trakke.warning)
@@ -704,7 +707,7 @@ struct ContentView: View {
             Text(String(localized: "offline.downloadComplete \(offlineViewModel.completionMessage ?? "")"))
                 .font(Font.Trakke.caption)
         }
-        .foregroundStyle(.white)
+        .foregroundStyle(Color.Trakke.textInverse)
         .padding(.horizontal, .Trakke.lg)
         .padding(.vertical, .Trakke.sm)
         .background(Color.Trakke.brand)

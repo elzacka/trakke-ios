@@ -29,7 +29,7 @@ struct SelectionToolbar: View {
                             .foregroundStyle(Color.Trakke.textTertiary)
                     }
                     .accessibilityElement(children: .combine)
-                    .foregroundStyle(estimatedTileCount > 20_000 ? Color.Trakke.red : .primary)
+                    .foregroundStyle(estimatedTileCount > 20_000 ? Color.Trakke.red : Color.Trakke.text)
                     .accessibilityLabel(estimatedTileCount > 20_000
                         ? String(localized: "offline.tooManyTiles")
                         : String(localized: "offline.tiles \(estimatedTileCount)")
@@ -62,7 +62,7 @@ struct SelectionToolbar: View {
                             .padding(.vertical, .Trakke.sm)
                             .frame(minHeight: .Trakke.touchMin)
                             .background(Color.Trakke.brand)
-                            .foregroundStyle(.white)
+                            .foregroundStyle(Color.Trakke.textInverse)
                             .clipShape(Capsule())
                     }
                     .disabled(!hasValidSelection)

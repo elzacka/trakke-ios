@@ -10,14 +10,13 @@ extension ContentView {
                 await navigationViewModel?.processLocationUpdate(location)
             }
         }
-        Task {
+        Task { @MainActor in
             let success = await navigationViewModel.startRouteNavigation(
                 from: userLocation.coordinate, to: destination
             )
             if success {
                 UIApplication.shared.isIdleTimerDisabled = true
             } else {
-                // Route computation failed -- clean up half-started state
                 mapViewModel.stopNavigation()
                 showRouteError = true
             }

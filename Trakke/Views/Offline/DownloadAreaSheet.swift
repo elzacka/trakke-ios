@@ -146,7 +146,7 @@ struct DownloadAreaSheet: View {
                         }
                         Text("\(viewModel.estimatedTileCount)")
                             .font(Font.Trakke.bodyRegular.monospacedDigit())
-                            .foregroundStyle(viewModel.estimatedTileCount > 20_000 ? Color.Trakke.red : .primary)
+                            .foregroundStyle(viewModel.estimatedTileCount > 20_000 ? Color.Trakke.red : Color.Trakke.text)
                     }
                 }
                 .padding(.vertical, .Trakke.xs)

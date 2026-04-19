@@ -56,7 +56,7 @@ struct OfflineChoiceSheet: View {
         Button(action: action) {
             HStack(spacing: .Trakke.lg) {
                 Image(systemName: icon)
-                    .font(.title2)
+                    .font(Font.Trakke.numeralLarge)
                     .foregroundStyle(Color.Trakke.brand)
                     .frame(width: .Trakke.iconSlotLarge)
 

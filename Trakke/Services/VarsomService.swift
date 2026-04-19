@@ -88,8 +88,8 @@ actor VarsomService: VarsomFetching {
             let items = try JSONDecoder().decode([AvalancheResponse].self, from: data)
             return items.compactMap { item -> VarsomWarning? in
                 guard item.dangerLevel > 0,
-                      let from = Self.parseDate(item.ValidFrom),
-                      let to = Self.parseDate(item.ValidTo) else { return nil }
+                      let from = parseDate(item.ValidFrom),
+                      let to = parseDate(item.ValidTo) else { return nil }
                 return VarsomWarning(
                     id: "avalanche-\(item.RegionId)-\(item.ValidFrom)",
                     type: .avalanche,
@@ -111,9 +111,9 @@ actor VarsomService: VarsomFetching {
     private func fetchFlood(lat: Double, lon: Double) async -> [VarsomWarning] {
         let calendar = Calendar.current
         let today = Date()
-        let startDate = Self.urlDateFormatter.string(from: today)
+        let startDate = urlDateFormatter.string(from: today)
         guard let endDate = calendar.date(byAdding: .day, value: 3, to: today) else { return [] }
-        let endStr = Self.urlDateFormatter.string(from: endDate)
+        let endStr = urlDateFormatter.string(from: endDate)
 
         let urlString = "https://api01.nve.no/hydrology/forecast/flood/v1.0.6/api/Warning/County/nb/\(startDate)/\(endStr)"
         guard let url = URL(string: urlString) else { return [] }
@@ -123,8 +123,8 @@ actor VarsomService: VarsomFetching {
             let items = try JSONDecoder().decode([FloodResponse].self, from: data)
             return items.compactMap { item -> VarsomWarning? in
                 guard item.activityLevelInt > 1,
-                      let fromStr = item.ValidFrom, let from = Self.parseDate(fromStr),
-                      let toStr = item.ValidTo, let to = Self.parseDate(toStr) else { return nil }
+                      let fromStr = item.ValidFrom, let from = parseDate(fromStr),
+                      let toStr = item.ValidTo, let to = parseDate(toStr) else { return nil }
                 return VarsomWarning(
                     id: "flood-\(item.CountyName ?? "")-\(fromStr)",
                     type: .flood,
@@ -163,9 +163,9 @@ actor VarsomService: VarsomFetching {
 
     // MARK: - Helpers
 
-    nonisolated(unsafe) private static let iso8601 = ISO8601DateFormatter()
+    private let iso8601 = ISO8601DateFormatter()
 
-    private static let urlDateFormatter: DateFormatter = {
+    private let urlDateFormatter: DateFormatter = {
         let f = DateFormatter()
         f.dateFormat = "yyyy-MM-dd"
         f.locale = Locale(identifier: "en_US_POSIX")
@@ -173,7 +173,7 @@ actor VarsomService: VarsomFetching {
         return f
     }()
 
-    private static let localDateTimeFormatter: DateFormatter = {
+    private let localDateTimeFormatter: DateFormatter = {
         let f = DateFormatter()
         f.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
         f.locale = Locale(identifier: "en_US_POSIX")
@@ -181,8 +181,7 @@ actor VarsomService: VarsomFetching {
         return f
     }()
 
-    private static func parseDate(_ string: String) -> Date? {
-        // NVE uses "2026-04-05T07:00:00" format (no timezone)
+    private func parseDate(_ string: String) -> Date? {
         let cleaned = string.replacingOccurrences(of: "+00:00", with: "Z")
         if let date = iso8601.date(from: cleaned) { return date }
         return localDateTimeFormatter.date(from: string)

@@ -72,7 +72,7 @@ struct DrawingToolbar: View {
                             .padding(.vertical, .Trakke.sm)
                             .frame(minHeight: .Trakke.touchMin)
                             .background(Color.Trakke.brand)
-                            .foregroundStyle(.white)
+                            .foregroundStyle(Color.Trakke.textInverse)
                             .clipShape(Capsule())
                     }
                     .disabled(pointCount < 2)

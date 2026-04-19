@@ -2,11 +2,6 @@ import Foundation
 import GRDB
 
 extension KnowledgeArticle: FetchableRecord {
-    nonisolated(unsafe) private static let dateFormatter: ISO8601DateFormatter = {
-        let formatter = ISO8601DateFormatter()
-        return formatter
-    }()
-
     init(row: Row) {
         id = row["id"]
         theme = row["theme"]
@@ -16,7 +11,7 @@ extension KnowledgeArticle: FetchableRecord {
         source = row["source"]
         sourceURL = row["source_url"]
         let dateString: String = row["verified_at"]
-        verifiedAt = Self.dateFormatter.date(from: dateString) ?? Date()
+        verifiedAt = (try? Date(dateString, strategy: .iso8601)) ?? Date()
         sortOrder = row["sort_order"]
     }
 }

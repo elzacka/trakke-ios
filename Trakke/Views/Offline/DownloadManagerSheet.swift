@@ -107,8 +107,8 @@ struct DownloadManagerSheet: View {
                 Text(layerDisplayName(pack.layer))
                     .font(Font.Trakke.captionSoft)
                     .foregroundStyle(Color.Trakke.textTertiary)
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 2)
+                    .padding(.horizontal, .Trakke.badgePadH)
+                    .padding(.vertical, .Trakke.badgePadV)
                     .background(Color.Trakke.brandTint)
                     .clipShape(Capsule())
 

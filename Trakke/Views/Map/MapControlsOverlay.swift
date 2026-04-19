@@ -134,7 +134,7 @@ struct MapControlsOverlay<WeatherContent: View>: View {
                     .frame(width: 24, height: 24)
             }
         }
-        .foregroundStyle(.white)
+        .foregroundStyle(Color.Trakke.textInverse)
         .frame(width: 56, height: 56)
         .background(Color.Trakke.brand)
         .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.xl))
