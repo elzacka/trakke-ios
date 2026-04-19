@@ -24,8 +24,8 @@ Tråkke er en kartapp for iPhone som bruker kartdata fra Kartverket. Appen er la
 - Interessepunkter: tilfluktsrom, huler, kulturminner og mer
 
 **Kunnskap og sikkerhet**
-- Artikler om friluftsliv og vær, tilgjengelig offline
-- Nødkoordinater i flere formater og SOS-signal med lommelykt
+- Artikler om friluftsliv, vær, m.m. – tilgjengelig offline
+- Nødkoordinater i flere formater og SOS-signal med lys og lyd
 - Måleverktøy for avstand og areal
 
 ## Personvern
@@ -45,7 +45,6 @@ xcodebuild -project Trakke.xcodeproj -scheme Trakke \
   -skipMacroValidation build
 ```
 
-Se [dev_only/CLAUDE.md](dev_only/CLAUDE.md) for teknisk dokumentasjon.
 
 ## Lisens
 
