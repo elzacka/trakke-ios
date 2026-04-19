@@ -2,7 +2,7 @@
 
 ## Secure by Design
 
-Tråkke follows Secure by Design principles. Security is embedded from the start -- in the code, the configuration, and the defaults.
+Tråkke follows Secure by Design principles. Security is embedded from the start. In the code, the configuration, and the defaults.
 
 ## Security Architecture
 
