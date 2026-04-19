@@ -17,8 +17,7 @@ Tråkke lagrer følgende lokalt:
 - **Turdata** (GPS-spor, avstand, høydemeter) fra registrerte turer
 - **Kartinnstillinger** (valgt kartlag, koordinatformat, preferanser)
 - **Nedlastede kartområder** for offline-bruk
-- **Kunnskapspakker** for offline-bruk
-- **Kunnskapsartikler nedlastet fra GitHub** (lagret i Application Support for offline-bruk)
+- **Kunnskapsartikler** for offline-bruk
 - **Midlertidige værdata** (buffer i opptil 2 timer)
 - **Midlertidige luftkvalitetsdata** (buffer i minnet, inkludert stedsnavn fra API-et)
 
