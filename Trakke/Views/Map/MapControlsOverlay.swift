@@ -25,9 +25,9 @@ struct MapControlsOverlay<WeatherContent: View>: View {
             ("magnifyingglass", String(localized: "search.title"), { onSearchTapped?() }),
             (viewModel.isTrackingUser ? "location.fill" : "location", String(localized: "map.controls.myPosition"), { viewModel.centerOnUser() }),
             ("square.grid.2x2", String(localized: "categories.title"), { onCategoryTapped?() }),
-            ("books.vertical", String(localized: "bibliotek.title"), { onBibliotekTapped?() }),
             ("light.beacon.max.fill", String(localized: "emergency.title"), { onEmergencyTapped?() }),
             ("cloud.sun", String(localized: "weather.title"), { onWeatherTapped?() }),
+            ("ellipsis", String(localized: "bibliotek.title"), { onBibliotekTapped?() }),
         ]
     }
 

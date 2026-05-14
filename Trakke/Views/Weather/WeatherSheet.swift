@@ -502,7 +502,8 @@ struct WeatherSheet: View {
                 .frame(width: 28, height: 28)
                 .accessibilityHidden(true)
 
-            VStack(spacing: 1) {
+            // Temp og føles-som vises som én linje for å unngå rad-linjeskift.
+            HStack(spacing: .Trakke.labelGap) {
                 Text("\(Int(hour.temperature.rounded()))°")
                     .font(Font.Trakke.bodyRegular.monospacedDigit())
                     .foregroundStyle(Color.Trakke.text)
@@ -513,6 +514,8 @@ struct WeatherSheet: View {
                         .foregroundStyle(wc < -10 ? Color.Trakke.red : Color.Trakke.textTertiary)
                 }
             }
+            .lineLimit(1)
+            .minimumScaleFactor(0.8)
             .frame(maxWidth: .infinity)
 
             VStack(alignment: .trailing, spacing: 1) {
@@ -834,8 +837,8 @@ private struct CurrentConditionsCard: View {
                 Spacer(minLength: .Trakke.sm)
 
                 Image(systemName: "arrow.up.right")
-                    .font(Font.Trakke.bodyRegular)
-                    .foregroundStyle(Color.Trakke.brand)
+                    .font(Font.Trakke.captionSoft)
+                    .foregroundStyle(Color.Trakke.textTertiary)
             }
             .padding(.vertical, .Trakke.sm)
             .contentShape(Rectangle())
