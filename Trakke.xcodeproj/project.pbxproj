@@ -127,7 +127,6 @@
 		8833C37EFA90E790240811B0 /* heavyrainshowersandthunder_polartwilight.svg in Resources */ = {isa = PBXBuildFile; fileRef = 4E8617026A86FBC27113BC81 /* heavyrainshowersandthunder_polartwilight.svg */; };
 		883A6C42896BEDEA62B4DBD2 /* heavysleetshowers_day.svg in Resources */ = {isa = PBXBuildFile; fileRef = E9DAF6F4A9C59304113A8AE8 /* heavysleetshowers_day.svg */; };
 		8849A14B9626E3465E8D30A5 /* Polyline6Decoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12856BDC73ABF49790605710 /* Polyline6Decoder.swift */; };
-		8886655AE807997990167C06 /* springs.geojson in Resources */ = {isa = PBXBuildFile; fileRef = C14D7DEEFF7DAD1ADF882D34 /* springs.geojson */; };
 		89C15D9F4F21D2569FFB1525 /* lightrainshowers_polartwilight.svg in Resources */ = {isa = PBXBuildFile; fileRef = 8C27590F4E623975560C24A9 /* lightrainshowers_polartwilight.svg */; };
 		8DA1BB017D081E951634550E /* KnowledgeDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C447DBFA7CF7038077D6F70 /* KnowledgeDetailSheet.swift */; };
 		8E1C27AF318FF72DA6C2E112 /* ActivityRecordingToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41564F1F3B99A090C488A2B /* ActivityRecordingToolbar.swift */; };
@@ -461,7 +460,6 @@
 		BEE62AFDC0B0B8666E1670EE /* NavigationOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationOverlayView.swift; sourceTree = "<group>"; };
 		C0807CEACE5F08F12855256A /* ArtsdatabankenImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtsdatabankenImageService.swift; sourceTree = "<group>"; };
 		C0F6E0B6654DE78D734D3B6A /* heavysleetandthunder.svg */ = {isa = PBXFileReference; path = heavysleetandthunder.svg; sourceTree = "<group>"; };
-		C14D7DEEFF7DAD1ADF882D34 /* springs.geojson */ = {isa = PBXFileReference; path = springs.geojson; sourceTree = "<group>"; };
 		C18516D4096D860B26F52A5B /* WeatherWidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherWidgetView.swift; sourceTree = "<group>"; };
 		C20D618C96BFC5002C9E90E1 /* sleetshowersandthunder_day.svg */ = {isa = PBXFileReference; path = sleetshowersandthunder_day.svg; sourceTree = "<group>"; };
 		C5A039CA699CC3F185292F7A /* ActivityDetailSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityDetailSheet.swift; sourceTree = "<group>"; };
@@ -815,7 +813,6 @@
 				B9BFDD35B4DAB7BB4947F296 /* oxbow_lakes.geojson */,
 				3FD95598E4CEB0775131A6ED /* rest_areas.geojson */,
 				0D3E81DAF66B1B3EBDFB3A5A /* shelters.geojson */,
-				C14D7DEEFF7DAD1ADF882D34 /* springs.geojson */,
 				638348A4A793DF01067BCA7F /* swimming_spots.geojson */,
 				7CED56C5B0F978DDE8262E22 /* tent_sites.geojson */,
 				A1F9C343CDA8510C0C705666 /* viewpoints.geojson */,
@@ -1238,7 +1235,6 @@
 				758321FB6EEFE81A469E76FA /* snowshowersandthunder_day.svg in Resources */,
 				2BE0927F183889B1AB865312 /* snowshowersandthunder_night.svg in Resources */,
 				7CD2AEF7664153C977F9599C /* snowshowersandthunder_polartwilight.svg in Resources */,
-				8886655AE807997990167C06 /* springs.geojson in Resources */,
 				E6600B668FB3134873B33C4A /* swimming_spots.geojson in Resources */,
 				C2A4DA910A6CF81070AC42AE /* tent_sites.geojson in Resources */,
 				114B3348F8F39431E4AF33A3 /* viewpoints.geojson in Resources */,

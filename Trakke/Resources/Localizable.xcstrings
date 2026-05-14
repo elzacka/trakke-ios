@@ -3600,17 +3600,6 @@
         }
       }
     },
-    "poi.kilder" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kilder"
-          }
-        }
-      }
-    },
     "poi.krigsminner" : {
       "extractionState" : "manual",
       "localizations" : {

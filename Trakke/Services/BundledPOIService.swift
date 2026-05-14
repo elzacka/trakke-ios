@@ -22,7 +22,7 @@ enum BundledPOIService {
             let allCategories: [POICategory] = [
                 .caves, .viewpoints, .warMemorials, .wildernessShelters, .shelters,
                 .swimmingSpot, .firePit, .waterfall, .hammock, .giantKettle,
-                .spring, .oxbowLake, .lagoon, .restStop, .tentSite, .hotSpring,
+                 .oxbowLake, .lagoon, .restStop, .tentSite, .hotSpring,
             ]
             for category in allCategories {
                 let pois = loadFromBundle(category)
@@ -62,7 +62,6 @@ enum BundledPOIService {
             .waterfall: "waterfalls",
             .hammock: "hammocks",
             .giantKettle: "giant_kettles",
-            .spring: "springs",
             .oxbowLake: "oxbow_lakes",
             .lagoon: "lagoons",
             .restStop: "rest_areas",

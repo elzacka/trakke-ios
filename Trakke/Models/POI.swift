@@ -15,7 +15,6 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
     case waterfall
     case hammock
     case giantKettle
-    case spring
     case oxbowLake
     case lagoon
     case restStop
@@ -37,7 +36,6 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
         case .waterfall: return String(localized: "poi.fosser")
         case .hammock: return String(localized: "poi.hengekoyeplasser")
         case .giantKettle: return String(localized: "poi.jettegryter")
-        case .spring: return String(localized: "poi.kilder")
         case .oxbowLake: return String(localized: "poi.kroksjoer")
         case .lagoon: return String(localized: "poi.laguner")
         case .restStop: return String(localized: "poi.rasteplasser")
@@ -61,7 +59,6 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
         case .waterfall: return "drop.fill"
         case .hammock: return "bed.double.fill"
         case .giantKettle: return "circle.fill"
-        case .spring: return "drop.degreesign.fill"
         case .oxbowLake: return "water.waves"
         case .lagoon: return "water.waves"
         case .restStop: return "chair.fill"
@@ -83,7 +80,6 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
         case .waterfall: return "#2d8590"
         case .hammock: return "#6b8e23"
         case .giantKettle: return "#8b7355"
-        case .spring: return "#4a98a8"
         case .oxbowLake: return "#3b6e8c"
         case .lagoon: return "#5fa8c4"
         case .restStop: return "#6b6b50"
@@ -105,7 +101,6 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
         case .waterfall: return 11
         case .hammock: return 10
         case .giantKettle: return 11
-        case .spring: return 11
         case .oxbowLake: return 11
         case .lagoon: return 11
         case .restStop: return 12          // 8964 features — krever høyere zoom for å unngå rot
@@ -118,7 +113,7 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
         switch self {
         case .shelters: return "DSB"
         case .caves, .viewpoints, .warMemorials, .wildernessShelters,
-             .hammock, .giantKettle, .spring, .oxbowLake, .lagoon, .hotSpring:
+             .hammock, .giantKettle, .oxbowLake, .lagoon, .hotSpring:
             return "OpenStreetMap contributors"
         case .kulturminner: return "Riksantikvaren"
         case .swimmingSpot, .firePit, .restStop, .tentSite:
@@ -131,7 +126,7 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
         switch self {
         case .shelters: return "NLOD 2.0"
         case .caves, .viewpoints, .warMemorials, .wildernessShelters,
-             .swimmingSpot, .firePit, .hammock, .giantKettle, .spring,
+             .swimmingSpot, .firePit, .hammock, .giantKettle,
              .oxbowLake, .lagoon, .restStop, .tentSite, .hotSpring: return "ODbL"
         case .kulturminner: return "NLOD 2.0"
         case .waterfall: return "CC0"
@@ -143,7 +138,7 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
         case .shelters: return .beredskap
         case .caves, .wildernessShelters, .swimmingSpot, .firePit,
              .hammock, .restStop, .tentSite: return .friluftsliv
-        case .viewpoints, .waterfall, .giantKettle, .spring, .oxbowLake,
+        case .viewpoints, .waterfall, .giantKettle, .oxbowLake,
              .lagoon, .hotSpring: return .landskap
         case .warMemorials, .kulturminner: return .kulturarv
         }
@@ -154,7 +149,7 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
         switch self {
         case .caves, .viewpoints, .warMemorials, .wildernessShelters, .shelters,
              .swimmingSpot, .firePit, .waterfall, .hammock, .giantKettle,
-             .spring, .oxbowLake, .lagoon, .restStop, .tentSite, .hotSpring:
+              .oxbowLake, .lagoon, .restStop, .tentSite, .hotSpring:
             return true
         case .kulturminner: return false
         }
@@ -166,7 +161,7 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
         case .shelters, .kulturminner: return true
         case .caves, .viewpoints, .warMemorials, .wildernessShelters,
              .swimmingSpot, .firePit, .waterfall, .hammock, .giantKettle,
-             .spring, .oxbowLake, .lagoon, .restStop, .tentSite, .hotSpring:
+              .oxbowLake, .lagoon, .restStop, .tentSite, .hotSpring:
             return false
         }
     }
