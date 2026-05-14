@@ -3535,6 +3535,116 @@
         }
       }
     },
+    "poi.balplasser" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bålplasser"
+          }
+        }
+      }
+    },
+    "poi.fosser" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fosser"
+          }
+        }
+      }
+    },
+    "poi.hengekoyeplasser" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hengekøyeplasser"
+          }
+        }
+      }
+    },
+    "poi.jettegryter" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jettegryter"
+          }
+        }
+      }
+    },
+    "poi.kilder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kilder"
+          }
+        }
+      }
+    },
+    "poi.kroksjoer" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kroksjøer"
+          }
+        }
+      }
+    },
+    "poi.laguner" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laguner"
+          }
+        }
+      }
+    },
+    "poi.rasteplasser" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rasteplasser"
+          }
+        }
+      }
+    },
+    "poi.teltplasser" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teltplasser"
+          }
+        }
+      }
+    },
+    "poi.varmeKilder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Varme kilder"
+          }
+        }
+      }
+    },
     "poi.medStrand" : {
       "extractionState" : "manual",
       "localizations" : {
