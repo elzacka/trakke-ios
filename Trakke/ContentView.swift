@@ -158,7 +158,7 @@ struct ContentView: View {
                 + (routeCount > 0 ? 1 : 0)
                 + (waypointCount > 0 ? 1 : 0)
             if typesImported > 1 {
-                sheets.active = .myStuff
+                sheets.openBibliotek(at: .myStuff)
             } else if activityCount > 0 {
                 sheets.active = .activityList
             } else if routeCount > 0 {
@@ -298,10 +298,10 @@ struct ContentView: View {
                 viewModel: mapViewModel,
                 onSearchTapped: { sheets.active = .search },
                 onCategoryTapped: { sheets.active = .categoryPicker },
-                onMyStuffTapped: { sheets.active = .myStuff },
+                onMyStuffTapped: { sheets.openBibliotek(at: .myStuff) },
                 onWeatherTapped: { sheets.active = .weather },
                 onEmergencyTapped: { sheets.active = .emergency },
-                onMoreTapped: { sheets.active = .more },
+                onMoreTapped: { sheets.openBibliotek(at: .more) },
                 enabledOverlays: effectiveOverlays,
                 isMenuOpen: $isFABMenuOpen,
                 weatherContent: Group {
@@ -350,7 +350,7 @@ struct ContentView: View {
                     onCategoryTapped: { sheets.active = .categoryPicker },
                     onEmergencyTapped: { sheets.active = .emergency },
                     onWeatherTapped: { sheets.active = .weather },
-                    onMoreTapped: { sheets.active = .more }
+                    onMoreTapped: { sheets.openBibliotek(at: .more) }
                 )
                 .confirmationDialog(
                     String(localized: "navigation.stopConfirmTitle"),
@@ -559,11 +559,15 @@ struct ContentView: View {
                 .presentationDetents([.medium])
                 .presentationDragIndicator(.visible)
 
-        case .myStuff:
-            MineGreierSheet(
+        case .bibliotek:
+            BibliotekSheet(
+                initialTab: sheets.bibliotekInitialTab,
                 routeViewModel: routeViewModel,
                 waypointViewModel: waypointViewModel,
                 activityViewModel: activityViewModel,
+                poiViewModel: poiViewModel,
+                knowledgeViewModel: knowledgeViewModel,
+                mapViewModel: mapViewModel,
                 onRouteSelected: { route in
                     startFollowingRoute(route)
                 },
@@ -589,7 +593,10 @@ struct ContentView: View {
                 },
                 onStartRecording: {
                     startActivityRecording()
-                }
+                },
+                onMeasurementTapped: { sheets.active = .measurement },
+                onOfflineTapped: { sheets.active = .offlineChoice },
+                onDeleteAllData: clearAllServiceCaches
             )
 
         case .waypointList:
@@ -729,16 +736,6 @@ struct ContentView: View {
             ActivitySaveSheet(viewModel: activityViewModel)
                 .presentationDetents([.medium])
                 .presentationDragIndicator(.visible)
-
-        case .more:
-            MoreSheet(
-                knowledgeViewModel: knowledgeViewModel,
-                mapViewModel: mapViewModel,
-                onMeasurementTapped: { sheets.active = .measurement },
-                onOfflineTapped: { sheets.active = .offlineChoice },
-                onDeleteAllData: clearAllServiceCaches
-            )
-            .presentationDragIndicator(.visible)
         }
     }
 
