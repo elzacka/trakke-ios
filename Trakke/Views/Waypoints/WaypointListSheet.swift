@@ -69,13 +69,16 @@ struct WaypointListSheet: View {
                 WaypointDetailSheet(
                     viewModel: viewModel,
                     waypoint: waypoint,
+                    // Ikke dismiss her — onEdit/onNavigate setter
+                    // sheets.active til en ny verdi, og SwiftUIs
+                    // .sheet(item:) tar seg av overgangen automatisk.
+                    // Manuell dismiss ville sette sheets.active = nil og
+                    // kansellere den nye sheeten.
                     onEdit: { wp in
                         onWaypointEdit?(wp)
-                        dismissFully()
                     },
                     onNavigate: { coordinate in
                         onWaypointNavigate?(coordinate)
-                        dismissFully()
                     },
                     isEmbedded: true
                 )

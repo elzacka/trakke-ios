@@ -149,12 +149,12 @@ struct MerSheet: View {
             RouteListSheet(
                 viewModel: routeViewModel,
                 onRouteSelected: { route in
-                    onRouteSelected?(route)
                     dismiss()
+                    onRouteSelected?(route)
                 },
                 onNewRoute: {
-                    onNewRoute?()
                     dismiss()
+                    onNewRoute?()
                 },
                 isEmbedded: true,
                 dismissSheet: { dismiss() }
@@ -164,12 +164,15 @@ struct MerSheet: View {
                 viewModel: waypointViewModel,
                 onWaypointSelected: { _ in },
                 onWaypointEdit: { wp in
+                    // Ikke kall dismiss() etter dette — onWaypointEdit endrer
+                    // sheets.active = .waypointEdit, og SwiftUIs .sheet(item:)
+                    // bytter automatisk fra .merSheet til .waypointEdit. Et
+                    // ekstra dismiss-kall ville sette sheets.active = nil og
+                    // kansellere den nye sheeten.
                     onWaypointEdit?(wp)
-                    dismiss()
                 },
                 onWaypointNavigate: { coord in
                     onWaypointNavigate?(coord)
-                    dismiss()
                 },
                 isEmbedded: true,
                 dismissSheet: { dismiss() }
@@ -180,16 +183,17 @@ struct MerSheet: View {
                 routeViewModel: routeViewModel,
                 onActivitySelected: { _ in },
                 onStartRecording: {
-                    onStartRecording?()
                     dismiss()
+                    onStartRecording?()
                 },
                 onRetrace: { coord in
+                    // Samme mønster: onRetrace setter sheets.active =
+                    // .navigationStart — SwiftUI håndterer overgangen.
                     onActivityRetrace?(coord)
-                    dismiss()
                 },
                 onFollowAgain: { activity in
-                    onActivityFollow?(activity)
                     dismiss()
+                    onActivityFollow?(activity)
                 },
                 isEmbedded: true,
                 dismissSheet: { dismiss() }
