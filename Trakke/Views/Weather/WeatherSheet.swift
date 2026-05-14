@@ -598,7 +598,7 @@ private struct CurrentConditionsCard: View {
         let wc = WeatherService.windChill(temperature: data.temperature, windSpeedMs: data.windSpeed)
 
         VStack(alignment: .leading, spacing: .Trakke.md) {
-            assessmentPill
+            assessmentText
 
             HStack(alignment: .center, spacing: .Trakke.lg) {
                 Image(data.symbol)
@@ -631,13 +631,11 @@ private struct CurrentConditionsCard: View {
 
             VStack(spacing: 0) {
                 statRow(
-                    icon: "wind",
                     label: String(localized: "weather.wind"),
                     value: windValue
                 )
                 Divider().padding(.leading, .Trakke.dividerLeading)
                 statRow(
-                    icon: "drop.fill",
                     label: String(localized: "weather.precipitation"),
                     value: precipValue
                 )
@@ -646,13 +644,11 @@ private struct CurrentConditionsCard: View {
                     Divider().padding(.leading, .Trakke.dividerLeading)
                     if let spot = water.bathingSpots.first {
                         statRow(
-                            icon: "figure.open.water.swim",
                             label: spot.name ?? String(localized: "weather.bathingSpot"),
                             value: String(format: "%.1f°", spot.temperature)
                         )
                     } else if let ocean = water.oceanTemperature {
                         statRow(
-                            icon: "water.waves",
                             label: String(localized: "weather.seaTemperature"),
                             value: String(format: "%.1f°", ocean.temperature)
                         )
@@ -669,9 +665,13 @@ private struct CurrentConditionsCard: View {
         }
     }
 
-    // MARK: Assessment Pill
+    // MARK: Assessment Text
+    //
+    // Vurderingsteksten er primært informasjonsbærende — ikke en pille,
+    // ikke et banner. Bare en setning øverst i kortet. Fargen tar
+    // farge etter alvorlighetsgrad, men ingen bakgrunn, ingen ikon.
 
-    private var assessmentPill: some View {
+    private var assessmentText: some View {
         let assessment = WeatherService.outdoorAssessment(
             temperature: data.temperature,
             windSpeed: data.windSpeed,
@@ -683,29 +683,18 @@ private struct CurrentConditionsCard: View {
         let windLevel = WeatherService.windWarningLevel(data.windSpeed)
         let worstLevel = max(gustLevel, windLevel)
 
-        let (color, icon): (Color, String) = switch worstLevel {
-        case .extreme, .danger: (Color.Trakke.red, "exclamationmark.triangle.fill")
-        case .caution: (Color.Trakke.warning, "exclamationmark.triangle")
-        case .none:
-            data.precipitationProbability > 70 && data.precipitation > 1
-                ? (Color.Trakke.textSecondary, "cloud.rain")
-                : (Color.Trakke.brand, "figure.hiking")
+        let color: Color = switch worstLevel {
+        case .extreme, .danger: Color.Trakke.red
+        case .caution: Color.Trakke.warning
+        case .none: Color.Trakke.text
         }
 
-        return HStack(spacing: .Trakke.sm) {
-            Image(systemName: icon)
-                .font(Font.Trakke.captionSoft)
-            Text(assessment)
-                .font(Font.Trakke.caption)
-            Spacer()
-        }
-        .foregroundStyle(color)
-        .padding(.horizontal, .Trakke.sm)
-        .padding(.vertical, .Trakke.xs)
-        .background(color.opacity(0.08), in: RoundedRectangle(cornerRadius: .TrakkeRadius.sm))
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(String(localized: "weather.assessment.title") + ": " + assessment)
+        return Text(assessment)
+            .font(Font.Trakke.bodyRegular)
+            .foregroundStyle(color)
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .accessibilityLabel(String(localized: "weather.assessment.title") + ": " + assessment)
     }
 
     // MARK: Stats
@@ -731,26 +720,24 @@ private struct CurrentConditionsCard: View {
         }
     }
 
-    private func statRow(icon: String, label: String, value: String) -> some View {
+    private func statRow(label: String, value: String) -> some View {
         HStack(spacing: .Trakke.md) {
-            Image(systemName: icon)
-                .font(Font.Trakke.captionSoft)
-                .foregroundStyle(Color.Trakke.textTertiary)
-                .frame(width: .Trakke.iconSlot)
-                .accessibilityHidden(true)
-
             Text(label)
                 .font(Font.Trakke.bodyRegular)
                 .foregroundStyle(Color.Trakke.text)
+                .lineLimit(1)
+                .layoutPriority(1)
 
-            Spacer()
+            Spacer(minLength: .Trakke.sm)
 
             Text(value)
                 .font(Font.Trakke.bodyRegular.monospacedDigit())
                 .foregroundStyle(Color.Trakke.textSecondary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
                 .multilineTextAlignment(.trailing)
         }
-        .padding(.vertical, .Trakke.xs)
+        .padding(.vertical, .Trakke.sm)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(label), \(value)")
     }
@@ -788,7 +775,6 @@ private struct CurrentConditionsCard: View {
         VStack(spacing: 0) {
             if let uv = data.uvIndex, uv > 0 {
                 statRow(
-                    icon: "sun.max.fill",
                     label: String(localized: "weather.uv"),
                     value: String(format: "%.0f", uv)
                 )
@@ -797,7 +783,6 @@ private struct CurrentConditionsCard: View {
 
             if let pressure = data.pressure {
                 statRow(
-                    icon: "barometer",
                     label: String(localized: "weather.pressure"),
                     value: String(format: "%.0f hPa", pressure)
                 )
@@ -805,21 +790,18 @@ private struct CurrentConditionsCard: View {
             }
 
             statRow(
-                icon: "humidity",
                 label: String(localized: "weather.humidity"),
                 value: String(format: "%.0f %%", data.humidity)
             )
-            Divider().padding(.leading, .Trakke.dividerLeading)
 
             if let daylight {
+                Divider().padding(.leading, .Trakke.dividerLeading)
                 statRow(
-                    icon: "sunrise.fill",
                     label: String(localized: "weather.sunrise"),
                     value: daylight.sunriseFormatted
                 )
                 Divider().padding(.leading, .Trakke.dividerLeading)
                 statRow(
-                    icon: "sunset.fill",
                     label: String(localized: "weather.sunset"),
                     value: daylight.sunsetFormatted
                 )
@@ -828,27 +810,38 @@ private struct CurrentConditionsCard: View {
             if let aq = airQuality, aq.aqiClass.rawValue < 3 {
                 Divider().padding(.leading, .Trakke.dividerLeading)
                 statRow(
-                    icon: "aqi.medium",
                     label: String(localized: "weather.airQuality"),
                     value: aq.aqiClass.norwegianName
                 )
             }
 
-            Link(destination: URL(string: "https://www.naaf.no/pollenvarsel")!) {
-                HStack(spacing: .Trakke.xs) {
-                    Image(systemName: "leaf")
-                        .font(Font.Trakke.captionSoft)
-                        .foregroundStyle(Color.Trakke.textTertiary)
-                        .frame(width: .Trakke.iconSlot)
-                    Text("NAAF — Pollenvarsel")
-                        .font(Font.Trakke.caption)
-                    Image(systemName: "arrow.up.right")
-                        .font(Font.Trakke.captionSoft)
-                    Spacer()
-                }
-                .foregroundStyle(Color.Trakke.brand)
-                .padding(.vertical, .Trakke.xs)
-            }
+            Divider().padding(.leading, .Trakke.dividerLeading)
+            naafLinkRow
         }
+    }
+
+    /// NAAF-pollen-rad: full bredde, hele raden klikkbar, samme padding
+    /// som statRow over. Eneste forskjell mot data-rader er pil-ikonet
+    /// til høyre som signaliserer at lenken åpner ekstern side.
+    private var naafLinkRow: some View {
+        Link(destination: URL(string: "https://www.naaf.no/pollenvarsel")!) {
+            HStack(spacing: .Trakke.md) {
+                Text("NAAF — Pollenvarsel")
+                    .font(Font.Trakke.bodyRegular)
+                    .foregroundStyle(Color.Trakke.text)
+                    .lineLimit(1)
+
+                Spacer(minLength: .Trakke.sm)
+
+                Image(systemName: "arrow.up.right")
+                    .font(Font.Trakke.bodyRegular)
+                    .foregroundStyle(Color.Trakke.brand)
+            }
+            .padding(.vertical, .Trakke.sm)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("NAAF — Pollenvarsel")
+        .accessibilityHint(String(localized: "accessibility.opensExternalLink"))
     }
 }

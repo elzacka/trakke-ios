@@ -298,10 +298,9 @@ struct ContentView: View {
                 viewModel: mapViewModel,
                 onSearchTapped: { sheets.active = .search },
                 onCategoryTapped: { sheets.active = .categoryPicker },
-                onMyStuffTapped: { sheets.openBibliotek(at: .myStuff) },
+                onBibliotekTapped: { sheets.openBibliotek(at: .myStuff) },
                 onWeatherTapped: { sheets.active = .weather },
                 onEmergencyTapped: { sheets.active = .emergency },
-                onMoreTapped: { sheets.openBibliotek(at: .more) },
                 enabledOverlays: effectiveOverlays,
                 isMenuOpen: $isFABMenuOpen,
                 weatherContent: Group {
@@ -350,7 +349,7 @@ struct ContentView: View {
                     onCategoryTapped: { sheets.active = .categoryPicker },
                     onEmergencyTapped: { sheets.active = .emergency },
                     onWeatherTapped: { sheets.active = .weather },
-                    onMoreTapped: { sheets.openBibliotek(at: .more) }
+                    onBibliotekTapped: { sheets.openBibliotek(at: .myStuff) }
                 )
                 .confirmationDialog(
                     String(localized: "navigation.stopConfirmTitle"),

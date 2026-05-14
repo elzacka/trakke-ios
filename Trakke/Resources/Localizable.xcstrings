@@ -4,9 +4,6 @@
     " (%@)" : {
 
     },
-    "–" : {
-
-    },
     "··· — — — ···" : {
 
     },
@@ -712,6 +709,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lagre"
+          }
+        }
+      }
+    },
+    "common.showLess" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skjul"
+          }
+        }
+      }
+    },
+    "common.showMore" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vis mer"
           }
         }
       }
@@ -6411,6 +6430,17 @@
         }
       }
     },
+    "weather.uv" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UV-indeks"
+          }
+        }
+      }
+    },
     "weather.uv.clearSky" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6451,6 +6481,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sterk"
+          }
+        }
+      }
+    },
+    "weather.uv.high.advice" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bruk solkrem og søk skygge midt på dagen"
           }
         }
       }
@@ -6510,6 +6551,17 @@
         }
       }
     },
+    "weather.uv.label %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UV-indeks %@"
+          }
+        }
+      }
+    },
     "weather.uv.low" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6521,6 +6573,17 @@
         }
       }
     },
+    "weather.uv.low.advice" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beskytt eksponert hud"
+          }
+        }
+      }
+    },
     "weather.uv.moderate" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6528,6 +6591,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Moderat"
+          }
+        }
+      }
+    },
+    "weather.uv.moderate.advice" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bruk solkrem og hatt"
           }
         }
       }
@@ -6576,94 +6650,6 @@
         }
       }
     },
-    "weather.warnings" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Varsler"
-          }
-        }
-      }
-    },
-    "weather.uv" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "UV-indeks"
-          }
-        }
-      }
-    },
-    "weather.uv.label %@" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "UV-indeks %@"
-          }
-        }
-      }
-    },
-    "weather.uv.high.advice" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bruk solkrem og søk skygge midt på dagen"
-          }
-        }
-      }
-    },
-    "weather.uv.moderate.advice" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bruk solkrem og hatt"
-          }
-        }
-      }
-    },
-    "weather.uv.low.advice" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Beskytt eksponert hud"
-          }
-        }
-      }
-    },
-    "common.showMore" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vis mer"
-          }
-        }
-      }
-    },
-    "common.showLess" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Skjul"
-          }
-        }
-      }
-    },
     "weather.varsom.avalanche" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -6693,6 +6679,50 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Faregrad %lld"
+          }
+        }
+      }
+    },
+    "weather.warnings" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Varsler"
+          }
+        }
+      }
+    },
+    "weather.wind" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vind"
+          }
+        }
+      }
+    },
+    "bibliotek.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bibliotek"
+          }
+        }
+      }
+    },
+    "accessibility.opensExternalLink" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Åpner ekstern lenke"
           }
         }
       }

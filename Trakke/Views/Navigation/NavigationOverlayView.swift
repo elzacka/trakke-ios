@@ -13,7 +13,7 @@ struct NavigationOverlayView: View {
     var onCategoryTapped: () -> Void
     var onEmergencyTapped: () -> Void
     var onWeatherTapped: () -> Void
-    var onMoreTapped: () -> Void
+    var onBibliotekTapped: () -> Void
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var showNavigationMenu = false
     @ScaledMetric(relativeTo: .title) private var compassArrowSize: CGFloat = 48
@@ -81,7 +81,7 @@ struct NavigationOverlayView: View {
                     Button(String(localized: "categories.title")) { delayedAction(onCategoryTapped) }
                     Button(String(localized: "emergency.title")) { delayedAction(onEmergencyTapped) }
                     Button(String(localized: "weather.title")) { delayedAction(onWeatherTapped) }
-                    Button(String(localized: "more.title")) { delayedAction(onMoreTapped) }
+                    Button(String(localized: "bibliotek.title")) { delayedAction(onBibliotekTapped) }
                 }
             }
             .padding(.bottom, .Trakke.sm)
