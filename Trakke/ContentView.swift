@@ -2,6 +2,29 @@ import SwiftUI
 import SwiftData
 import CoreLocation
 
+/// Interaktiv modus for hovedkartet. Bare én av gangen.
+/// Rekkefølgen i `from(...)` definerer prioritet ved konflikt.
+enum MapMode: Equatable {
+    case idle
+    case drawing
+    case measuring
+    case selecting
+    case navigating
+
+    static func from(
+        isDrawing: Bool,
+        isMeasuring: Bool,
+        isSelecting: Bool,
+        isNavigating: Bool
+    ) -> MapMode {
+        if isNavigating { return .navigating }
+        if isSelecting { return .selecting }
+        if isDrawing { return .drawing }
+        if isMeasuring { return .measuring }
+        return .idle
+    }
+}
+
 struct ContentView: View {
     @State var mapViewModel = MapViewModel()
     @State private var searchViewModel = SearchViewModel()
@@ -176,23 +199,33 @@ struct ContentView: View {
         }
     }
 
+    // MARK: - Map Mode
+
+    /// Avledet av view-model-tilstandene. Én sannhetsverdi for hva
+    /// hovedkartet egentlig gjør akkurat nå.
+    private var mapMode: MapMode {
+        MapMode.from(
+            isDrawing: routeViewModel.isDrawing,
+            isMeasuring: measurementViewModel.isActive,
+            isSelecting: offlineViewModel.isSelectingArea,
+            isNavigating: navigationViewModel.isActive
+        )
+    }
+
     // MARK: - Map Tap Handler
 
     private func handleMapTap(_ coordinate: CLLocationCoordinate2D) {
-        if measurementViewModel.isActive {
-            measurementViewModel.addPoint(coordinate)
-        } else if routeViewModel.isDrawing {
-            routeViewModel.addPoint(coordinate)
+        switch mapMode {
+        case .measuring: measurementViewModel.addPoint(coordinate)
+        case .drawing: routeViewModel.addPoint(coordinate)
+        case .idle, .selecting, .navigating: break
         }
     }
 
     // MARK: - Long Press Handler
 
     private func handleMapLongPress(_ coordinate: CLLocationCoordinate2D) {
-        guard !routeViewModel.isDrawing,
-              !measurementViewModel.isActive,
-              !offlineViewModel.isSelectingArea,
-              !navigationViewModel.isActive else { return }
+        guard mapMode == .idle else { return }
         longPressCoordinate = coordinate
         showLongPressOptions = true
     }
@@ -281,7 +314,7 @@ struct ContentView: View {
                 showCompass: effectiveShowCompass,
                 showZoomControls: effectiveShowZoomControls,
                 showScaleBar: effectiveShowScaleBar,
-                hideMenuAndZoom: routeViewModel.isDrawing || measurementViewModel.isActive || offlineViewModel.isSelectingArea || navigationViewModel.isActive || activityViewModel.isRecording,
+                hideMenuAndZoom: mapMode != .idle || activityViewModel.isRecording,
                 isConnected: connectivityMonitor.isConnected,
                 isCleanMapActive: isCleanMapActive,
                 onCleanMapToggle: toggleCleanMap,
@@ -347,36 +380,7 @@ struct ContentView: View {
                 .safeAreaPadding(.bottom)
             }
 
-            if routeViewModel.isDrawing {
-                DrawingToolbar(
-                    pointCount: routeViewModel.drawingCoordinates.count,
-                    formattedDistance: routeViewModel.formattedDrawingDistance,
-                    onCancel: { routeViewModel.cancelDrawing() },
-                    onUndo: { routeViewModel.undoLastPoint() },
-                    onDone: { sheets.active = .routeSave }
-                )
-            }
-
-            if measurementViewModel.isActive {
-                MeasurementToolbar(
-                    mode: measurementViewModel.mode ?? .distance,
-                    formattedResult: measurementViewModel.formattedResult,
-                    hasPoints: !measurementViewModel.points.isEmpty,
-                    onCancel: { measurementViewModel.stop() },
-                    onUndo: { measurementViewModel.undoLastPoint() },
-                    onClear: { measurementViewModel.clearAll() }
-                )
-            }
-
-            if offlineViewModel.isSelectingArea {
-                SelectionToolbar(
-                    hasValidSelection: offlineViewModel.hasValidSelection,
-                    estimatedTileCount: offlineViewModel.estimatedTileCount,
-                    estimatedSize: offlineViewModel.estimatedSize,
-                    onCancel: { offlineViewModel.cancelSelection() },
-                    onDone: { sheets.active = .downloadArea }
-                )
-            }
+            modeToolbar
 
             if activityViewModel.isRecording {
                 ActivityRecordingToolbar(
@@ -464,6 +468,41 @@ struct ContentView: View {
                     sheets.active = .navigationStart
                 }
             }
+        }
+    }
+
+    // MARK: - Mode Toolbar
+
+    @ViewBuilder
+    private var modeToolbar: some View {
+        switch mapMode {
+        case .drawing:
+            DrawingToolbar(
+                pointCount: routeViewModel.drawingCoordinates.count,
+                formattedDistance: routeViewModel.formattedDrawingDistance,
+                onCancel: { routeViewModel.cancelDrawing() },
+                onUndo: { routeViewModel.undoLastPoint() },
+                onDone: { sheets.active = .routeSave }
+            )
+        case .measuring:
+            MeasurementToolbar(
+                mode: measurementViewModel.mode ?? .distance,
+                formattedResult: measurementViewModel.formattedResult,
+                hasPoints: !measurementViewModel.points.isEmpty,
+                onCancel: { measurementViewModel.stop() },
+                onUndo: { measurementViewModel.undoLastPoint() },
+                onClear: { measurementViewModel.clearAll() }
+            )
+        case .selecting:
+            SelectionToolbar(
+                hasValidSelection: offlineViewModel.hasValidSelection,
+                estimatedTileCount: offlineViewModel.estimatedTileCount,
+                estimatedSize: offlineViewModel.estimatedSize,
+                onCancel: { offlineViewModel.cancelSelection() },
+                onDone: { sheets.active = .downloadArea }
+            )
+        case .idle, .navigating:
+            EmptyView()
         }
     }
 
