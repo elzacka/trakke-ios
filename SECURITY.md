@@ -38,8 +38,8 @@ See [PERSONVERN.md](PERSONVERN.md) for the complete list of external services an
 
 - All API responses decoded through Swift `Codable` with strict type checking
 - Coordinate inputs validated against geographic bounds with `.isFinite` guards
-- GPX import validates coordinate ranges, enforces 50 MB file size limit
-- XXE prevention on all XML parsers
+- GPX and GeoJSON import validates coordinate ranges, enforces 50 MB file size limit and 50 000 point cap per feature
+- XXE prevention on all XML parsers (`shouldResolveExternalEntities = false`)
 - Knowledge pack downloads verified via SHA-256 checksum
 - File paths sanitized against path traversal attacks
 

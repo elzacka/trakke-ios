@@ -14,6 +14,7 @@ struct InfoSheet: View {
     }
 
     @State private var showUserGuide = false
+    @State private var showPrivacySheet = false
 
     private var infoContent: some View {
         ScrollView {
@@ -47,7 +48,9 @@ struct InfoSheet: View {
 
                         Divider()
 
-                        Link(destination: URL(string: "https://github.com/elzacka/trakke-ios/blob/main/PERSONVERN.md")!) {
+                        Button {
+                            showPrivacySheet = true
+                        } label: {
                             HStack(spacing: .Trakke.md) {
                                 Image(systemName: "hand.raised")
                                     .font(Font.Trakke.bodyMedium)
@@ -61,13 +64,14 @@ struct InfoSheet: View {
 
                                 Spacer()
 
-                                Image(systemName: "arrow.up.right")
+                                Image(systemName: "chevron.right")
                                     .font(Font.Trakke.captionSoft)
                                     .foregroundStyle(Color.Trakke.textTertiary)
                             }
                             .frame(minHeight: .Trakke.touchMin)
                             .contentShape(Rectangle())
                         }
+                        .buttonStyle(.plain)
                         .accessibilityLabel(String(localized: "info.privacy.policy"))
 
                         Divider()
@@ -216,6 +220,10 @@ struct InfoSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .sheet(isPresented: $showUserGuide) {
                 UserGuideSheet()
+                    .presentationDragIndicator(.visible)
+            }
+            .sheet(isPresented: $showPrivacySheet) {
+                PrivacySheet()
                     .presentationDragIndicator(.visible)
             }
     }

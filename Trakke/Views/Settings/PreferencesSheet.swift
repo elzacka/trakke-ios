@@ -233,7 +233,7 @@ struct PreferencesSheet: View {
         if let files = try? FileManager.default.contentsOfDirectory(
             at: tempDir, includingPropertiesForKeys: nil
         ) {
-            for file in files where file.pathExtension == "gpx" {
+            for file in files where file.pathExtension == "gpx" || file.pathExtension == "geojson" {
                 try? FileManager.default.removeItem(at: file)
             }
         }
