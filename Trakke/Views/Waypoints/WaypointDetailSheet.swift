@@ -156,14 +156,6 @@ struct WaypointDetailSheet: View {
             }
 
             Button {
-                onEdit?(waypoint)
-            } label: {
-                Label(String(localized: "common.edit"), systemImage: "pencil")
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .buttonStyle(.trakkeSecondary)
-
-            Button {
                 showDeleteConfirmation = true
             } label: {
                 Label(String(localized: "common.delete"), systemImage: "trash")
