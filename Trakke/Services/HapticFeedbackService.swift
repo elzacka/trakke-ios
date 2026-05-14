@@ -1,23 +1,37 @@
 import UIKit
 
-/// Thin wrapper around UINotificationFeedbackGenerator to keep UIKit out of ViewModels.
+/// Thin wrapper around feedback generators to keep UIKit out of ViewModels.
 @MainActor
 final class HapticFeedbackService {
-    private let generator = UINotificationFeedbackGenerator()
+    private let notification = UINotificationFeedbackGenerator()
+    private let lightImpact = UIImpactFeedbackGenerator(style: .light)
+    private let mediumImpact = UIImpactFeedbackGenerator(style: .medium)
 
     func prepare() {
-        generator.prepare()
+        notification.prepare()
+        lightImpact.prepare()
+        mediumImpact.prepare()
     }
 
     func success() {
-        generator.notificationOccurred(.success)
+        notification.notificationOccurred(.success)
     }
 
     func warning() {
-        generator.notificationOccurred(.warning)
+        notification.notificationOccurred(.warning)
     }
 
     func error() {
-        generator.notificationOccurred(.error)
+        notification.notificationOccurred(.error)
+    }
+
+    /// Subtle nudge for upcoming events (e.g., 50 m before a turn).
+    func tap() {
+        lightImpact.impactOccurred()
+    }
+
+    /// Firmer nudge for imminent events (e.g., 15 m before a turn).
+    func nudge() {
+        mediumImpact.impactOccurred()
     }
 }

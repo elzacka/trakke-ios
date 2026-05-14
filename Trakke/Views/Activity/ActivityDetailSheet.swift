@@ -6,29 +6,82 @@ struct ActivityDetailSheet: View {
     @Bindable var viewModel: ActivityViewModel
     let activity: Activity
     var onRetrace: ((CLLocationCoordinate2D) -> Void)?
+    var onFollowAgain: ((Activity) -> Void)?
+    var isEmbedded = false
     @Environment(\.dismiss) private var dismiss
     @State private var showDeleteConfirmation = false
+    @State private var shareURL: ShareableURL?
+    @State private var showEditDialog = false
 
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(spacing: .Trakke.cardGap) {
-                    statsCard
-                    elevationCard
-                    detailsCard
-                    retraceButton
-                    deleteButton
-
-                    Spacer(minLength: .Trakke.lg)
-                }
-                .padding(.horizontal, .Trakke.sheetHorizontal)
-                .padding(.top, .Trakke.sheetTop)
+        if isEmbedded {
+            content
+        } else {
+            NavigationStack {
+                content
             }
-            .background(Color(.systemGroupedBackground))
-            .tint(Color.Trakke.brand)
-            .navigationTitle(activity.name)
-            .navigationBarTitleDisplayMode(.inline)
         }
+    }
+
+    private var content: some View {
+        ScrollView {
+            VStack(spacing: .Trakke.cardGap) {
+                statsCard
+                elevationCard
+                detailsCard
+                followAgainButton
+                retraceButton
+                exportButton
+                deleteButton
+
+                Spacer(minLength: .Trakke.lg)
+            }
+            .padding(.horizontal, .Trakke.sheetHorizontal)
+            .padding(.top, .Trakke.sheetTop)
+        }
+        .background(Color(.systemGroupedBackground))
+        .tint(Color.Trakke.brand)
+        .navigationTitle(activity.name)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    showEditDialog = true
+                } label: {
+                    Label(String(localized: "common.edit"), systemImage: "pencil")
+                }
+            }
+        }
+        .sheet(isPresented: $showEditDialog) {
+            EditNameCategorySheet(
+                title: String(localized: "common.edit"),
+                initialName: activity.name,
+                initialCategory: activity.category ?? "",
+                categorySuggestions: viewModel.categories,
+                namePlaceholder: String(localized: "activity.save.namePlaceholder")
+            ) { newName, newCategory in
+                viewModel.edit(activity, name: newName, category: newCategory)
+            }
+            .presentationDetents([.medium, .large])
+            .presentationDragIndicator(.visible)
+        }
+        .sheet(item: $shareURL) { item in
+            ShareSheet(activityItems: [item.url])
+        }
+    }
+
+    // MARK: - Export Button
+
+    private var exportButton: some View {
+        Button {
+            if let url = viewModel.exportGPX(for: activity) {
+                shareURL = ShareableURL(url: url)
+            }
+        } label: {
+            Label(String(localized: "export.share"), systemImage: "square.and.arrow.down")
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .buttonStyle(.trakkeSecondary)
     }
 
     // MARK: - Stats Card
@@ -141,6 +194,22 @@ struct ActivityDetailSheet: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
             .buttonStyle(.trakkeSecondary)
+        }
+    }
+
+    // MARK: - Follow Again
+
+    @ViewBuilder
+    private var followAgainButton: some View {
+        if activity.trackPoints.count >= 2 {
+            Button {
+                dismiss()
+                onFollowAgain?(activity)
+            } label: {
+                Label(String(localized: "activity.followAgain"), systemImage: "location.north.fill")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .buttonStyle(.trakkePrimary)
         }
     }
 

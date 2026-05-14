@@ -1,9 +1,12 @@
 import SwiftUI
 import UniformTypeIdentifiers
+import CoreLocation
 
 struct WaypointListSheet: View {
     @Bindable var viewModel: WaypointViewModel
     var onWaypointSelected: ((Waypoint) -> Void)?
+    var onWaypointEdit: ((Waypoint) -> Void)?
+    var onWaypointNavigate: ((CLLocationCoordinate2D) -> Void)?
     var isEmbedded = false
     var dismissSheet: (() -> Void)?
     @Environment(\.dismiss) private var dismiss
@@ -33,7 +36,7 @@ struct WaypointListSheet: View {
                         icon: "mappin",
                         title: String(localized: "waypoints.empty.title"),
                         subtitle: String(localized: "waypoints.empty.subtitle"),
-                        actionLabel: String(localized: "waypoints.importGPX"),
+                        actionLabel: String(localized: "import.file"),
                         actionIcon: "square.and.arrow.up",
                         action: { showFileImporter = true }
                     )
@@ -47,11 +50,11 @@ struct WaypointListSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .fileImporter(
                 isPresented: $showFileImporter,
-                allowedContentTypes: [.gpx],
+                allowedContentTypes: [.gpx, .geoJSON],
                 allowsMultipleSelection: false
             ) { result in
                 if case .success(let urls) = result, let url = urls.first {
-                    viewModel.importGPX(from: url)
+                    Task { await viewModel.importFileAsync(from: url) }
                 }
             }
             .sheet(item: $shareURL) { item in
@@ -61,6 +64,21 @@ struct WaypointListSheet: View {
                 if viewModel.importMessage != nil {
                     importBanner
                 }
+            }
+            .navigationDestination(for: Waypoint.self) { waypoint in
+                WaypointDetailSheet(
+                    viewModel: viewModel,
+                    waypoint: waypoint,
+                    onEdit: { wp in
+                        onWaypointEdit?(wp)
+                        dismissFully()
+                    },
+                    onNavigate: { coordinate in
+                        onWaypointNavigate?(coordinate)
+                        dismissFully()
+                    },
+                    isEmbedded: true
+                )
             }
     }
 
@@ -100,10 +118,25 @@ struct WaypointListSheet: View {
                     Button {
                         showFileImporter = true
                     } label: {
-                        Label(String(localized: "waypoints.importGPX"), systemImage: "square.and.arrow.up")
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                        HStack(spacing: .Trakke.sm) {
+                            if viewModel.isImporting {
+                                ProgressView()
+                                    .controlSize(.small)
+                                    .tint(Color.Trakke.brand)
+                                Text(String(localized: "import.inProgress"))
+                            } else {
+                                Image(systemName: "square.and.arrow.up")
+                                Text(String(localized: "import.file"))
+                            }
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     .buttonStyle(.trakkeSecondary)
+                    .disabled(viewModel.isImporting)
+
+                    if viewModel.waypoints.count >= 2 {
+                        bulkVisibilityButton
+                    }
                 }
 
                 Spacer(minLength: .Trakke.lg)
@@ -119,33 +152,7 @@ struct WaypointListSheet: View {
 
     private func collapsibleCategory(title: String, category: String?, items: [Waypoint]) -> some View {
         VStack(alignment: .leading, spacing: 0) {
-            Button {
-                withAnimation(reduceMotion ? .none : .easeInOut(duration: 0.25)) {
-                    if expandedCategories.contains(title) {
-                        expandedCategories.remove(title)
-                    } else {
-                        expandedCategories.insert(title)
-                    }
-                }
-            } label: {
-                HStack {
-                    Text(title.uppercased())
-                        .font(Font.Trakke.sectionHeader)
-                        .foregroundStyle(Color.Trakke.textTertiary)
-
-                    Spacer()
-
-                    Image(systemName: "chevron.right")
-                        .font(Font.Trakke.captionSoft.weight(.semibold))
-                        .foregroundStyle(Color.Trakke.textTertiary)
-                        .rotationEffect(expandedCategories.contains(title) ? .degrees(90) : .degrees(0))
-                }
-                .padding(.horizontal, .Trakke.xs)
-                .frame(minHeight: 44)
-                .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .accessibilityAddTraits(expandedCategories.contains(title) ? .isSelected : [])
+            categoryHeader(title: title, category: category, count: items.count)
 
             if expandedCategories.contains(title) {
                 VStack(spacing: 0) {
@@ -153,20 +160,18 @@ struct WaypointListSheet: View {
                         if index > 0 {
                             Divider()
                         }
-                        Button {
-                            onWaypointSelected?(waypoint)
-                            dismissFully()
-                        } label: {
+                        NavigationLink(value: waypoint) {
                             waypointRow(waypoint)
+                                // Make the whole row hit-testable so long press
+                                // works on padding / Spacer area, not just the
+                                // label text.
+                                .contentShape(Rectangle())
                         }
+                        .buttonStyle(.plain)
                         .contextMenu {
                             contextMenuItems(for: waypoint)
                         }
                     }
-
-                    Divider()
-
-                    categoryVisibilityToggle(category: category, items: items)
                 }
                 .padding(.horizontal, .Trakke.cardPadH)
                 .padding(.vertical, .Trakke.cardPadV)
@@ -195,9 +200,13 @@ struct WaypointListSheet: View {
 
             Spacer()
 
-            Image(systemName: waypoint.isVisible ? "chevron.right" : "eye.slash")
-                .font(Font.Trakke.captionSoft)
-                .foregroundStyle(Color.Trakke.textTertiary)
+            // NavigationLink supplies its own disclosure chevron; only show the
+            // eye.slash pip when the waypoint is hidden from the map.
+            if !waypoint.isVisible {
+                Image(systemName: "eye.slash")
+                    .font(Font.Trakke.captionSoft)
+                    .foregroundStyle(Color.Trakke.textTertiary)
+            }
         }
         .padding(.vertical, .Trakke.rowVertical)
         .opacity(waypoint.isVisible ? 1 : 0.45)
@@ -216,25 +225,118 @@ struct WaypointListSheet: View {
         return parts.joined(separator: ", ")
     }
 
-    // MARK: - Category Visibility Toggle
+    // MARK: - Category Header
 
-    private func categoryVisibilityToggle(category: String?, items: [Waypoint]) -> some View {
+    /// Header with three discrete tap targets: collapse on title, eye toggle
+    /// for the whole category, chevron also collapses (accessibility-hidden
+    /// since the title button already announces collapsed/expanded).
+    @ViewBuilder
+    private func categoryHeader(title: String, category: String?, count: Int) -> some View {
         let allVisible = viewModel.isCategoryAllVisible(category)
-        return Toggle(isOn: Binding(
-            get: { allVisible },
-            set: { viewModel.setCategoryVisibility(category, visible: $0) }
-        )) {
-            Text(String(localized: "waypoints.showAllOnMap"))
-                .font(Font.Trakke.bodyRegular)
+        HStack(spacing: 0) {
+            Button {
+                withAnimation(reduceMotion ? .none : .easeInOut(duration: 0.25)) {
+                    if expandedCategories.contains(title) {
+                        expandedCategories.remove(title)
+                    } else {
+                        expandedCategories.insert(title)
+                    }
+                }
+            } label: {
+                HStack(spacing: 0) {
+                    Text(title.uppercased())
+                        .font(Font.Trakke.sectionHeader)
+                        .foregroundStyle(Color.Trakke.textTertiary)
+
+                    Text(" (\(count))")
+                        .font(Font.Trakke.captionSoft)
+                        .foregroundStyle(Color.Trakke.textTertiary)
+
+                    Spacer()
+                }
+                .padding(.leading, .Trakke.xs)
+                .frame(minHeight: 44)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("\(title), \(count)")
+            .accessibilityAddTraits(expandedCategories.contains(title) ? .isSelected : [])
+
+            Button {
+                viewModel.setCategoryVisibility(category, visible: !allVisible)
+            } label: {
+                Image(systemName: allVisible ? "eye" : "eye.slash")
+                    .font(Font.Trakke.captionSoft.weight(.semibold))
+                    .foregroundStyle(Color.Trakke.textTertiary)
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(
+                allVisible
+                    ? String(localized: "list.category.hideAll \(title)")
+                    : String(localized: "list.category.showAll \(title)")
+            )
+
+            Button {
+                withAnimation(reduceMotion ? .none : .easeInOut(duration: 0.25)) {
+                    if expandedCategories.contains(title) {
+                        expandedCategories.remove(title)
+                    } else {
+                        expandedCategories.insert(title)
+                    }
+                }
+            } label: {
+                Image(systemName: "chevron.right")
+                    .font(Font.Trakke.captionSoft.weight(.semibold))
+                    .foregroundStyle(Color.Trakke.textTertiary)
+                    .rotationEffect(expandedCategories.contains(title) ? .degrees(90) : .degrees(0))
+                    .padding(.trailing, .Trakke.xs)
+                    .frame(minHeight: 44)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityHidden(true)
         }
-        .tint(Color.Trakke.brand)
-        .padding(.vertical, .Trakke.rowVertical)
+    }
+
+    // MARK: - Bulk Visibility (footer)
+
+    private var bulkVisibilityButton: some View {
+        let anyVisible = viewModel.isAnyVisible
+        return Button {
+            viewModel.setAllVisible(!anyVisible)
+        } label: {
+            HStack(spacing: .Trakke.sm) {
+                Image(systemName: anyVisible ? "eye.slash" : "eye")
+                Text(
+                    anyVisible
+                        ? String(localized: "waypoints.hideAllOnMap")
+                        : String(localized: "waypoints.showAllOnMap")
+                )
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .buttonStyle(.trakkeSecondary)
     }
 
     // MARK: - Context Menu
 
     @ViewBuilder
     private func contextMenuItems(for waypoint: Waypoint) -> some View {
+        Button {
+            viewModel.showOnly(waypoint)
+            UIAccessibility.post(
+                notification: .announcement,
+                argument: String(localized: "list.showOnlyThis.announce \(waypoint.name)")
+            )
+        } label: {
+            Label(
+                String(localized: "waypoints.showOnlyThis"),
+                systemImage: "eye.circle"
+            )
+        }
+
         Button {
             viewModel.toggleVisibility(waypoint)
         } label: {

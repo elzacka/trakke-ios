@@ -85,7 +85,10 @@ actor VarsomService: VarsomFetching {
 
         do {
             let data = try await APIClient.fetchData(url: url, timeout: 15)
-            let items = try JSONDecoder().decode([AvalancheResponse].self, from: data)
+            // NVE's avalanche endpoint returns a bare JSON `null` (not `[]`) for
+            // coordinates with no current warning. Decoding as Optional avoids the
+            // valueNotFound crash and gives us an empty result instead.
+            let items = try JSONDecoder().decode([AvalancheResponse]?.self, from: data) ?? []
             return items.compactMap { item -> VarsomWarning? in
                 guard item.dangerLevel > 0,
                       let from = parseDate(item.ValidFrom),
@@ -108,7 +111,12 @@ actor VarsomService: VarsomFetching {
 
     // MARK: - Flood
 
-    private func fetchFlood(lat: Double, lon: Double) async -> [VarsomWarning] {
+    // NVE's flood forecast API is published per-county and has no
+    // coordinate-level endpoint. We return all active flood warnings nation-wide
+    // for the next 3 days. The caller's lat/lon are intentionally unused; we
+    // still accept them so the avalanche/flood interfaces stay symmetric and so
+    // the cache key in `fetchWarnings` can include coordinate context.
+    private func fetchFlood(lat _: Double, lon _: Double) async -> [VarsomWarning] {
         let calendar = Calendar.current
         let today = Date()
         let startDate = urlDateFormatter.string(from: today)
@@ -120,7 +128,7 @@ actor VarsomService: VarsomFetching {
 
         do {
             let data = try await APIClient.fetchData(url: url, timeout: 15)
-            let items = try JSONDecoder().decode([FloodResponse].self, from: data)
+            let items = try JSONDecoder().decode([FloodResponse]?.self, from: data) ?? []
             return items.compactMap { item -> VarsomWarning? in
                 guard item.activityLevelInt > 1,
                       let fromStr = item.ValidFrom, let from = parseDate(fromStr),

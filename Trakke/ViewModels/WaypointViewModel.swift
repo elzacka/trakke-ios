@@ -11,6 +11,7 @@ final class WaypointViewModel {
     var isPlacingWaypoint = false
     var placingCoordinate: CLLocationCoordinate2D?
     var importMessage: String?
+    var isImporting = false
     var saveError: String?
 
     private var modelContext: ModelContext?
@@ -86,9 +87,10 @@ final class WaypointViewModel {
         } else {
             items = uncategorizedWaypoints
         }
-        for wp in items {
+        let now = Date()
+        for wp in items where wp.isVisible != visible {
             wp.isVisible = visible
-            wp.updatedAt = Date()
+            wp.updatedAt = now
         }
         save("waypoint")
         loadWaypoints()
@@ -102,6 +104,36 @@ final class WaypointViewModel {
             items = uncategorizedWaypoints
         }
         return !items.isEmpty && items.allSatisfy(\.isVisible)
+    }
+
+    /// Show only this waypoint — hide everything else.
+    /// One SwiftData transaction so the map redraws once.
+    func showOnly(_ waypoint: Waypoint) {
+        let now = Date()
+        for wp in waypoints where wp.id != waypoint.id && wp.isVisible {
+            wp.isVisible = false
+            wp.updatedAt = now
+        }
+        if !waypoint.isVisible {
+            waypoint.isVisible = true
+            waypoint.updatedAt = now
+        }
+        save("show only waypoint")
+        loadWaypoints()
+    }
+
+    func setAllVisible(_ visible: Bool) {
+        let now = Date()
+        for wp in waypoints where wp.isVisible != visible {
+            wp.isVisible = visible
+            wp.updatedAt = now
+        }
+        save("set all waypoints visible")
+        loadWaypoints()
+    }
+
+    var isAnyVisible: Bool {
+        waypoints.contains(where: \.isVisible)
     }
 
     // MARK: - Computed
@@ -155,7 +187,7 @@ final class WaypointViewModel {
         }
     }
 
-    // MARK: - GPX Export
+    // MARK: - Export
 
     func exportAllGPX() -> URL? {
         let gpxString = GPXExportService.exportWaypoints(waypoints)
@@ -172,34 +204,120 @@ final class WaypointViewModel {
         return GPXExportService.writeToTemporaryFile(gpxString: gpxString, filename: filename)
     }
 
-    // MARK: - GPX Import
+    // MARK: - Import
 
-    func importGPX(from url: URL) {
-        guard let context = modelContext else { return }
+    /// Detects file format from extension and routes to the appropriate parser.
+    /// GPX and GeoJSON share the same `ImportedWaypoint` intermediate type so insertion
+    /// is uniform regardless of source format.
+    @discardableResult
+    func importFile(from url: URL) -> Int {
+        let ext = url.pathExtension.lowercased()
+        switch ext {
+        case "gpx":
+            return importGPX(from: url)
+        case "geojson", "json":
+            return importGeoJSON(from: url)
+        default:
+            importMessage = String(localized: "import.error.unsupportedFormat")
+            return 0
+        }
+    }
+
+    /// Async variant used by the in-app file importer flow. Parses off the main
+    /// actor so the UI can render the pending state (disabled button + progress).
+    @discardableResult
+    func importFileAsync(from url: URL) async -> Int {
+        isImporting = true
+        defer { isImporting = false }
+
+        let ext = url.pathExtension.lowercased()
+        switch ext {
+        case "gpx":
+            do {
+                let imported = try await Task.detached(priority: .userInitiated) {
+                    try GPXImportService.parseWaypoints(from: url)
+                }.value
+                return insertImported(imported, filename: url.importedItemName)
+            } catch {
+                importMessage = String(localized: "waypoints.importError")
+                Logger.waypoints.error("GPX waypoint import failed: \(error, privacy: .private)")
+                return 0
+            }
+        case "geojson", "json":
+            do {
+                let result = try await Task.detached(priority: .userInitiated) {
+                    try GeoJSONImportService.parse(from: url)
+                }.value
+                return insertImported(result.waypoints, filename: url.importedItemName)
+            } catch {
+                importMessage = String(localized: "waypoints.importError")
+                Logger.waypoints.error("GeoJSON waypoint import failed: \(error, privacy: .private)")
+                return 0
+            }
+        default:
+            importMessage = String(localized: "import.error.unsupportedFormat")
+            return 0
+        }
+    }
+
+    @discardableResult
+    func importGPX(from url: URL) -> Int {
         do {
             let imported = try GPXImportService.parseWaypoints(from: url)
-            guard !imported.isEmpty else {
-                importMessage = String(localized: "waypoints.importError")
-                return
-            }
-
-            var count = 0
-            for item in imported {
-                let wp = Waypoint(
-                    name: item.name,
-                    coordinates: [item.longitude, item.latitude],
-                    category: item.category,
-                    elevation: item.elevation
-                )
-                context.insert(wp)
-                count += 1
-            }
-            save("waypoint")
-            loadWaypoints()
-            importMessage = String(localized: "waypoints.importSuccess \(count)")
+            return insertImported(imported, filename: url.importedItemName)
         } catch {
             importMessage = String(localized: "waypoints.importError")
+            Logger.waypoints.error("GPX waypoint import failed: \(error, privacy: .private)")
+            return 0
         }
+    }
+
+    @discardableResult
+    func importGeoJSON(from url: URL) -> Int {
+        do {
+            let result = try GeoJSONImportService.parse(from: url)
+            return insertImported(result.waypoints, filename: url.importedItemName)
+        } catch {
+            importMessage = String(localized: "waypoints.importError")
+            Logger.waypoints.error("GeoJSON waypoint import failed: \(error, privacy: .private)")
+            return 0
+        }
+    }
+
+    @discardableResult
+    func insertImported(
+        _ imported: [GPXImportService.ImportedWaypoint],
+        filename: String? = nil
+    ) -> Int {
+        guard let context = modelContext else { return 0 }
+        guard !imported.isEmpty else {
+            importMessage = String(localized: "waypoints.importError")
+            return 0
+        }
+        var count = 0
+        for (i, item) in imported.enumerated() {
+            let name = ImportedName.resolve(
+                embedded: item.name,
+                filename: filename,
+                index: i,
+                total: imported.count
+            )
+            let wp = Waypoint(
+                name: name,
+                coordinates: [item.longitude, item.latitude],
+                category: item.category,
+                elevation: item.elevation
+            )
+            // Imported waypoints start hidden so a freshly imported file doesn't
+            // suddenly clutter the map with pins. User opts in via the list.
+            wp.isVisible = false
+            context.insert(wp)
+            count += 1
+        }
+        save("waypoint")
+        loadWaypoints()
+        importMessage = String(localized: "waypoints.importSuccess \(count)")
+        return count
     }
 
     func clearCaches() async {

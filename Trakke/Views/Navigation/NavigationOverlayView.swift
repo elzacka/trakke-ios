@@ -8,6 +8,7 @@ struct NavigationOverlayView: View {
     var onSwitchToCompass: () -> Void
     var onSwitchToRoute: () -> Void
     var onToggleCamera: () -> Void
+    var onReroute: () -> Void
     var onSearchTapped: () -> Void
     var onCategoryTapped: () -> Void
     var onEmergencyTapped: () -> Void
@@ -24,6 +25,8 @@ struct NavigationOverlayView: View {
             if navigationVM.isOffTrack {
                 DeviationChipView(
                     distance: navigationVM.offTrackDistance,
+                    canReroute: navigationVM.canReroute && isConnected,
+                    onReroute: onReroute,
                     onDismiss: { navigationVM.dismissDeviation() }
                 )
             }
@@ -98,8 +101,11 @@ struct NavigationOverlayView: View {
                     )
                     Divider().frame(height: 36)
                     statCell(
-                        label: String(localized: "navigation.elevationRemaining"),
-                        value: "+\(Int(progress.elevationGainRemaining)) m"
+                        label: String(localized: "navigation.elevationProfile"),
+                        value: formatElevation(
+                            gain: progress.elevationGainRemaining,
+                            loss: progress.elevationLossRemaining
+                        )
                     )
                     Divider().frame(height: 36)
                     statCell(
@@ -120,11 +126,32 @@ struct NavigationOverlayView: View {
                     .padding(.horizontal, .Trakke.cardPadH)
             }
 
-            if let instruction = navigationVM.nextInstruction {
+            if navigationVM.isComputingRoute {
                 Divider()
                 HStack(spacing: .Trakke.sm) {
+                    ProgressView()
+                        .controlSize(.small)
+                        .tint(Color.Trakke.brand)
+                        .accessibilityHidden(true)
+                    Text(String(localized: "navigation.computingRoute"))
+                        .font(Font.Trakke.bodyRegular)
+                        .foregroundStyle(Color.Trakke.textSecondary)
+                    Spacer()
+                }
+                .padding(.horizontal, .Trakke.cardPadH)
+                .padding(.vertical, .Trakke.sm)
+                .accessibilityElement(children: .combine)
+            } else if let instruction = navigationVM.nextInstruction {
+                Divider()
+                let distToTurn: Double? = {
+                    guard let progress = navigationVM.progress else { return nil }
+                    let d = instruction.distance - (progress.totalDistance - progress.distanceRemaining)
+                    return d > 0 ? d : nil
+                }()
+                let isImminent = (distToTurn ?? .infinity) < 100
+                HStack(spacing: .Trakke.sm) {
                     Image(systemName: turnIcon(instruction.type))
-                        .font(Font.Trakke.bodyMedium)
+                        .font(isImminent ? .title3.weight(.semibold) : Font.Trakke.bodyMedium)
                         .foregroundStyle(Color.Trakke.brand)
                         .frame(width: 32)
                         .accessibilityHidden(true)
@@ -133,13 +160,21 @@ struct NavigationOverlayView: View {
                         Text(instruction.text)
                             .font(Font.Trakke.bodyMedium)
                             .lineLimit(3)
-                        if let progress = navigationVM.progress {
-                            let distToTurn = instruction.distance - (progress.totalDistance - progress.distanceRemaining)
-                            if distToTurn > 0 {
-                                Text(formatDistance(distToTurn))
-                                    .font(Font.Trakke.caption)
-                                    .foregroundStyle(Color.Trakke.textTertiary)
-                            }
+                        if let distToTurn {
+                            Text(formatDistance(distToTurn))
+                                .font(
+                                    isImminent
+                                        ? Font.Trakke.bodyMedium.monospacedDigit().bold()
+                                        : Font.Trakke.caption.monospacedDigit()
+                                )
+                                .foregroundStyle(
+                                    isImminent ? Color.Trakke.brand : Color.Trakke.textTertiary
+                                )
+                                .contentTransition(.numericText(countsDown: true))
+                                .animation(
+                                    reduceMotion ? nil : .easeInOut(duration: 0.3),
+                                    value: Int(distToTurn / 5) * 5
+                                )
                         }
                     }
 
@@ -194,13 +229,14 @@ struct NavigationOverlayView: View {
             switch navigationVM.mode {
             case .route:
                 Button {
-                    navigationVM.reverseRoute()
+                    Task { _ = await navigationVM.reverseRoute() }
                 } label: {
                     Label(String(localized: "navigation.reverse"), systemImage: "arrow.uturn.right")
                         .font(Font.Trakke.bodyRegular)
                         .labelStyle(.iconOnly)
                 }
                 .frame(minWidth: .Trakke.touchMin, minHeight: .Trakke.touchMin)
+                .disabled(navigationVM.isComputingRoute)
                 .accessibilityLabel(String(localized: "navigation.reverse"))
 
                 Button {
@@ -213,19 +249,7 @@ struct NavigationOverlayView: View {
                 .frame(minWidth: .Trakke.touchMin, minHeight: .Trakke.touchMin)
                 .accessibilityLabel(String(localized: "navigation.switchToCompass"))
 
-                Button {
-                    onToggleCamera()
-                } label: {
-                    Image(systemName: navigationVM.cameraMode == .northUp
-                          ? "location.viewfinder" : "location.north.fill")
-                        .font(Font.Trakke.bodyRegular)
-                }
-                .frame(minWidth: .Trakke.touchMin, minHeight: .Trakke.touchMin)
-                .accessibilityLabel(
-                    navigationVM.cameraMode == .northUp
-                        ? String(localized: "navigation.cameraMode.courseUp")
-                        : String(localized: "navigation.cameraMode.northUp")
-                )
+                cameraModeButton
 
             case .compass:
                 if isConnected {
@@ -239,21 +263,10 @@ struct NavigationOverlayView: View {
                         .font(Font.Trakke.bodyRegular)
                     }
                     .frame(minWidth: .Trakke.touchMin, minHeight: .Trakke.touchMin)
+                    .disabled(navigationVM.isComputingRoute)
                 }
 
-                Button {
-                    onToggleCamera()
-                } label: {
-                    Image(systemName: navigationVM.cameraMode == .northUp
-                          ? "location.viewfinder" : "location.north.fill")
-                        .font(Font.Trakke.bodyRegular)
-                }
-                .frame(minWidth: .Trakke.touchMin, minHeight: .Trakke.touchMin)
-                .accessibilityLabel(
-                    navigationVM.cameraMode == .northUp
-                        ? String(localized: "navigation.cameraMode.courseUp")
-                        : String(localized: "navigation.cameraMode.northUp")
-                )
+                cameraModeButton
             }
 
             Spacer()
@@ -269,6 +282,26 @@ struct NavigationOverlayView: View {
         }
         .padding(.horizontal, .Trakke.cardPadH)
         .padding(.vertical, .Trakke.sm)
+    }
+
+    @ViewBuilder
+    private var cameraModeButton: some View {
+        Button {
+            onToggleCamera()
+        } label: {
+            // Distinct icons per direction:
+            // - In northUp: show a course-up indicator (the action target).
+            // - In courseUp: show a marked "N" (the action target).
+            Image(systemName: navigationVM.cameraMode == .northUp
+                  ? "location.north.line.fill" : "n.circle.fill")
+                .font(Font.Trakke.bodyRegular)
+        }
+        .frame(minWidth: .Trakke.touchMin, minHeight: .Trakke.touchMin)
+        .accessibilityLabel(
+            navigationVM.cameraMode == .northUp
+                ? String(localized: "navigation.cameraMode.courseUp")
+                : String(localized: "navigation.cameraMode.northUp")
+        )
     }
 
     // MARK: - GPS Indicator
@@ -328,13 +361,21 @@ struct NavigationOverlayView: View {
 
     private func statsAccessibilityLabel(_ progress: NavigationProgress) -> String {
         let distance = formatDistance(progress.distanceRemaining)
-        let elevation = "+\(Int(progress.elevationGainRemaining)) m"
+        let gain = Int(progress.elevationGainRemaining)
+        let loss = Int(progress.elevationLossRemaining)
+        let elevationLabel = String(
+            localized: "navigation.elevationProfile.a11y \(gain) \(loss)"
+        )
         let time = formatTime(progress.estimatedTimeRemaining)
-        return "\(distance) \(String(localized: "navigation.remaining")), \(elevation) \(String(localized: "navigation.elevationRemaining")), \(time) \(String(localized: "navigation.timeRemaining"))"
+        return "\(distance) \(String(localized: "navigation.remaining")), \(elevationLabel), \(time) \(String(localized: "navigation.timeRemaining"))"
     }
 
     private func formatDistance(_ meters: Double) -> String {
         MeasurementService.formatDistance(meters)
+    }
+
+    private func formatElevation(gain: Double, loss: Double) -> String {
+        "+\(Int(gain)) / −\(Int(loss)) m"
     }
 
     private func formatTime(_ seconds: TimeInterval) -> String {

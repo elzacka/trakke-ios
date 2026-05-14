@@ -22,12 +22,14 @@ jobs:
 
       - name: Select Xcode
         run: |
-          if [ -d /Applications/Xcode_26.4.app ]; then
+          if [ -d /Applications/Xcode_26.5.app ]; then
+            sudo xcode-select -s /Applications/Xcode_26.5.app/Contents/Developer
+          elif [ -d /Applications/Xcode_26.4.app ]; then
             sudo xcode-select -s /Applications/Xcode_26.4.app/Contents/Developer
           elif [ -d /Applications/Xcode_26.3.app ]; then
             sudo xcode-select -s /Applications/Xcode_26.3.app/Contents/Developer
           else
-            echo "::error::Xcode 26.3 or 26.4 not found on runner"; exit 1
+            echo "::error::Xcode 26.3, 26.4 or 26.5 not found on runner"; exit 1
           fi
           xcodebuild -version
 

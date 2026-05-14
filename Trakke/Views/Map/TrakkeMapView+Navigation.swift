@@ -1,6 +1,19 @@
 import CoreLocation
 @preconcurrency import MapLibre
 
+// MARK: - Navigation Destination Annotation
+
+/// Pin shown at the user's chosen destination in compass mode so the dashed
+/// line ends in something visible rather than empty terrain.
+final class NavigationDestinationAnnotation: NSObject, MLNAnnotation {
+    @objc dynamic var coordinate: CLLocationCoordinate2D
+    var title: String? { String(localized: "navigation.destinationLabel") }
+
+    init(coordinate: CLLocationCoordinate2D) {
+        self.coordinate = coordinate
+    }
+}
+
 // MARK: - Navigation Rendering
 
 extension TrakkeMapView.Coordinator {
@@ -31,6 +44,7 @@ extension TrakkeMapView.Coordinator {
         if !isNavigating {
             if navLayersActive {
                 clearAllNavLayers(from: style)
+                clearCompassDestinationPin(from: mapView)
                 navLayersActive = false
                 lastNavSegmentIndex = -1
                 lastNavCoordCount = 0
@@ -38,6 +52,16 @@ extension TrakkeMapView.Coordinator {
                 lastCompassUserLat = 0
                 lastCompassUserLon = 0
                 lastCameraHeading = -1
+            }
+            // Restore default camera state when navigation ends.
+            if lastAppliedNavCameraMode != nil {
+                if mapView.userTrackingMode != .none {
+                    mapView.userTrackingMode = .none
+                }
+                if mapView.direction != 0 {
+                    mapView.setDirection(0, animated: true)
+                }
+                lastAppliedNavCameraMode = nil
             }
             return
         }
@@ -55,7 +79,10 @@ extension TrakkeMapView.Coordinator {
 
         switch mode {
         case .route:
-            if lastNavMode == .compass { clearCompassNavLayers(from: style) }
+            if lastNavMode == .compass {
+                clearCompassNavLayers(from: style)
+                clearCompassDestinationPin(from: mapView)
+            }
             if needsRender {
                 renderRouteNavigation(
                     style: style,
@@ -78,6 +105,9 @@ extension TrakkeMapView.Coordinator {
                     lastCompassUserLat = userCoord.latitude
                     lastCompassUserLon = userCoord.longitude
                 }
+                updateCompassDestinationPin(on: mapView, at: dest)
+            } else {
+                clearCompassDestinationPin(from: mapView)
             }
         }
 
@@ -85,25 +115,50 @@ extension TrakkeMapView.Coordinator {
         lastNavSegmentIndex = segmentIndex
         lastNavCoordCount = coordinates.count
 
-        // Camera control -- only update when heading changed significantly
-        switch cameraMode {
-        case .courseUp:
-            if let heading {
-                var headingDelta = abs(heading - lastCameraHeading)
-                if headingDelta > 180 { headingDelta = 360 - headingDelta }
-                if lastCameraHeading < 0 || headingDelta >= 1.0 {
-                    mapView.setDirection(heading, animated: true)
-                    lastCameraHeading = heading
+        // Camera control: delegate to MapLibre's userTrackingMode so the map
+        // re-centers (and rotates, in courseUp) automatically as the user moves.
+        // Only re-apply when the cameraMode actually changes — that way a pan
+        // gesture (which silently sets userTrackingMode to .none) is respected.
+        if cameraMode != lastAppliedNavCameraMode {
+            switch cameraMode {
+            case .courseUp:
+                mapView.userTrackingMode = .followWithHeading
+            case .northUp:
+                mapView.userTrackingMode = .follow
+                if mapView.direction != 0 {
+                    mapView.setDirection(0, animated: true)
                 }
             }
-        case .northUp:
-            if mapView.direction != 0 {
-                mapView.setDirection(0, animated: true)
-                lastCameraHeading = 0
-            }
+            lastAppliedNavCameraMode = cameraMode
         }
 
         navLayersActive = true
+    }
+
+    // MARK: - Compass Destination Pin
+
+    private func updateCompassDestinationPin(
+        on mapView: MLNMapView,
+        at coordinate: CLLocationCoordinate2D
+    ) {
+        if let existing = compassDestinationAnnotation {
+            // MapLibre observes coordinate changes via KVO when declared @objc dynamic.
+            if existing.coordinate.latitude != coordinate.latitude
+                || existing.coordinate.longitude != coordinate.longitude {
+                existing.coordinate = coordinate
+            }
+            return
+        }
+        let annotation = NavigationDestinationAnnotation(coordinate: coordinate)
+        mapView.addAnnotation(annotation)
+        compassDestinationAnnotation = annotation
+    }
+
+    private func clearCompassDestinationPin(from mapView: MLNMapView) {
+        if let annotation = compassDestinationAnnotation {
+            mapView.removeAnnotation(annotation)
+            compassDestinationAnnotation = nil
+        }
     }
 
     private func renderRouteNavigation(

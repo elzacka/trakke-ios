@@ -14,6 +14,13 @@ final class Activity {
     var startedAt: Date
     var endedAt: Date?
     var createdAt: Date
+    /// Whether the activity polyline shows on the map. Defaults to true so
+    /// recorded activities show up immediately. Importers set this to false
+    /// so a bulk import doesn't suddenly clutter the map.
+    var isVisible: Bool = true
+    /// Optional user-defined category for grouping in the activity list (mirrors
+    /// the Waypoint.category pattern). nil → "Ukategorisert" group.
+    var category: String?
 
     init(
         name: String,
@@ -33,6 +40,8 @@ final class Activity {
         self.duration = duration
         self.startedAt = startedAt
         self.createdAt = Date()
+        self.isVisible = true
+        self.category = nil
     }
 
     /// Coordinates as CLLocationCoordinate2D-compatible [[lon, lat]] (same format as Route)

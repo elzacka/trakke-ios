@@ -34,7 +34,7 @@ struct EmptyStateView: View {
             // Action button: clear separation from text group
             if let actionLabel, let action {
                 Button(action: action) {
-                    Label(actionLabel, systemImage: actionIcon ?? "square.and.arrow.up")
+                    Label(actionLabel, systemImage: actionIcon ?? "square.and.arrow.down")
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .buttonStyle(.trakkeSecondary)

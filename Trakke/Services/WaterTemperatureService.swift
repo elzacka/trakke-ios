@@ -48,9 +48,11 @@ actor WaterTemperatureService: WaterTemperatureFetching {
     private static let maxCacheEntries = 10
     private let iso8601Formatter = ISO8601DateFormatter()
     private var cache: [String: CachedResult] = [:]
+    private var bathingDisabledUntil: Date?
 
     func clearCache() {
         cache.removeAll()
+        bathingDisabledUntil = nil
     }
 
     private static let expiresFormatter: DateFormatter = {
@@ -89,6 +91,12 @@ actor WaterTemperatureService: WaterTemperatureFetching {
         let ocean: OceanFetchResult?
         do {
             ocean = try await oceanTemp
+        } catch is CancellationError {
+            // Task cancellation is expected when the user navigates away mid-fetch.
+            // Not an error — don't log.
+            ocean = nil
+        } catch let urlError as URLError where urlError.code == .cancelled {
+            ocean = nil
         } catch {
             Logger.weather.warning("Ocean temperature fetch failed: \(error.localizedDescription, privacy: .private)")
             ocean = nil
@@ -97,6 +105,10 @@ actor WaterTemperatureService: WaterTemperatureFetching {
         let spots: [WaterTemperature]
         do {
             spots = try await bathingSpots
+        } catch is CancellationError {
+            spots = []
+        } catch let urlError as URLError where urlError.code == .cancelled {
+            spots = []
         } catch {
             Logger.weather.warning("Bathing spots fetch failed: \(error.localizedDescription, privacy: .private)")
             spots = []
@@ -226,7 +238,16 @@ actor WaterTemperatureService: WaterTemperatureFetching {
 
     // MARK: - Havvarsel-Frost Badevann
 
+    // Havvarsel-frost has shipped expired certificates before. Pause briefly on TLS
+    // failure to avoid hammering the endpoint, but stay short enough that a recovered
+    // cert (or transient network glitch) becomes visible in the next foreground.
+    private static let bathingDisableInterval: TimeInterval = 30 * 60
+
     private func fetchBathingSpots(lat: Double, lon: Double) async throws -> [WaterTemperature] {
+        if let until = bathingDisabledUntil, until > Date.now {
+            return []
+        }
+
         let truncLat = (lat * 10000).rounded() / 10000
         let truncLon = (lon * 10000).rounded() / 10000
         let nearestParam = """
@@ -241,7 +262,19 @@ actor WaterTemperatureService: WaterTemperatureFetching {
         var request = URLRequest(url: url, timeoutInterval: Self.timeout)
         request.setValue(Self.userAgent, forHTTPHeaderField: "User-Agent")
 
-        let (data, response) = try await APIClient.session.data(for: request)
+        let data: Data
+        let response: URLResponse
+        do {
+            (data, response) = try await APIClient.session.data(for: request)
+        } catch let urlError as URLError where Self.isCertificateFailure(urlError) {
+            bathingDisabledUntil = Date.now.addingTimeInterval(Self.bathingDisableInterval)
+            Logger.weather.error("havvarsel-frost certificate failure (\(urlError.code.rawValue)) — disabling bathing-spot fetch until \(self.bathingDisabledUntil?.description ?? "?", privacy: .public)")
+            return []
+        }
+
+        // TLS handshake succeeded — clear any prior backoff so the next failure
+        // starts from a fresh window instead of stacking with stale state.
+        bathingDisabledUntil = nil
 
         guard let httpResponse = response as? HTTPURLResponse,
               httpResponse.statusCode == 200 else {
@@ -249,6 +282,19 @@ actor WaterTemperatureService: WaterTemperatureFetching {
         }
 
         return parseBathingSpots(data)
+    }
+
+    private static func isCertificateFailure(_ error: URLError) -> Bool {
+        switch error.code {
+        case .serverCertificateHasBadDate,
+             .serverCertificateUntrusted,
+             .serverCertificateNotYetValid,
+             .serverCertificateHasUnknownRoot,
+             .secureConnectionFailed:
+            return true
+        default:
+            return false
+        }
     }
 
     private func parseBathingSpots(_ data: Data) -> [WaterTemperature] {

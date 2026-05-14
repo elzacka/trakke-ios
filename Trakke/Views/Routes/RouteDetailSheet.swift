@@ -4,29 +4,62 @@ struct RouteDetailSheet: View {
     @Bindable var viewModel: RouteViewModel
     let route: Route
     var onNavigate: ((Route) -> Void)?
+    var isEmbedded = false
     @Environment(\.dismiss) private var dismiss
     @State private var shareURL: ShareableURL?
+    @State private var showDeleteConfirmation = false
+    @State private var showEditDialog = false
 
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(spacing: .Trakke.cardGap) {
-                    routeInfoCard
-                    elevationCard
-                    actionsCard
+        if isEmbedded {
+            content
+        } else {
+            NavigationStack {
+                content
+            }
+        }
+    }
 
-                    Spacer(minLength: .Trakke.lg)
+    private var content: some View {
+        ScrollView {
+            VStack(spacing: .Trakke.cardGap) {
+                routeInfoCard
+                elevationCard
+                actionsCard
+
+                Spacer(minLength: .Trakke.lg)
+            }
+            .padding(.horizontal, .Trakke.sheetHorizontal)
+            .padding(.top, .Trakke.sheetTop)
+        }
+        .background(Color(.systemGroupedBackground))
+        .tint(Color.Trakke.brand)
+        .navigationTitle(route.name)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    showEditDialog = true
+                } label: {
+                    Label(String(localized: "common.edit"), systemImage: "pencil")
                 }
-                .padding(.horizontal, .Trakke.sheetHorizontal)
-                .padding(.top, .Trakke.sheetTop)
             }
-            .background(Color(.systemGroupedBackground))
-            .tint(Color.Trakke.brand)
-            .navigationTitle(route.name)
-            .navigationBarTitleDisplayMode(.inline)
-            .sheet(item: $shareURL) { item in
-                ShareSheet(activityItems: [item.url])
+        }
+        .sheet(isPresented: $showEditDialog) {
+            EditNameCategorySheet(
+                title: String(localized: "common.edit"),
+                initialName: route.name,
+                initialCategory: route.category ?? "",
+                categorySuggestions: viewModel.categories,
+                namePlaceholder: String(localized: "routes.namePlaceholder")
+            ) { newName, newCategory in
+                viewModel.edit(route, name: newName, category: newCategory)
             }
+            .presentationDetents([.medium, .large])
+            .presentationDragIndicator(.visible)
+        }
+        .sheet(item: $shareURL) { item in
+            ShareSheet(activityItems: [item.url])
         }
     }
 
@@ -134,17 +167,27 @@ struct RouteDetailSheet: View {
                     shareURL = ShareableURL(url: url)
                 }
             } label: {
-                Label(String(localized: "gpx.export"), systemImage: "square.and.arrow.down")
+                Label(String(localized: "export.share"), systemImage: "square.and.arrow.down")
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
             .buttonStyle(.trakkeSecondary)
 
             Button {
-                viewModel.deleteRoute(route)
-                dismiss()
+                showDeleteConfirmation = true
             } label: {
                 Label(String(localized: "common.delete"), systemImage: "trash")
             }
             .buttonStyle(.trakkeDanger)
+            .confirmationDialog(
+                String(localized: "routes.delete.title"),
+                isPresented: $showDeleteConfirmation,
+                titleVisibility: .visible
+            ) {
+                Button(String(localized: "routes.delete.confirm"), role: .destructive) {
+                    viewModel.deleteRoute(route)
+                    dismiss()
+                }
+            }
         }
     }
 

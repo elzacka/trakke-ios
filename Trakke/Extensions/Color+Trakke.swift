@@ -49,16 +49,30 @@ extension Color {
         static let poiWildernessShelter = Color(hex: "b45309")
         static let poiCulturalHeritage = Color(hex: "6b5b8a")
 
-        // MARK: Route Palette
+        // MARK: Map data palette
+        // Distinct from brand: map-data colours need maximum contrast against
+        // Kartverket topo (which is itself green + red + blue + beige). Brand
+        // green stays for UI chrome. Cartographer consensus (Knut/Monsen/Frej):
+        // amber for planned routes, cobalt for recorded activities, both with
+        // a 1.5pt white casing under a 4pt coloured stroke.
+        static let mapRoute = Color(hex: "E07000")
+        static let mapActivity = Color(hex: "2255AA")
+        static let mapWaypoint = Color(hex: "E07000")
+        static let mapHalo = Color(hex: "FFFFFF")
+
+        // MARK: Route Palette (user-overridable per route)
+        // Default route colour is mapRoute (#E07000) so first-time users always
+        // get a route that pops on the topo. Additional palette entries allow
+        // visual differentiation when several routes overlap.
         static let routeColors: [String] = [
-            "#3e4533", "#e74c3c", "#795548", "#2ecc71",
-            "#f39c12", "#9b59b6", "#1abc9c", "#e67e22",
+            "#E07000", "#C4501A", "#7B3FC4", "#2255AA",
+            "#1abc9c", "#9b59b6", "#e74c3c", "#795548",
         ]
 
         /// Norwegian color names for VoiceOver, matching routeColors order
         static let routeColorNames: [String] = [
-            "skoggrønn", "rød", "brun", "lysegrønn",
-            "gul", "lilla", "turkis", "oransje",
+            "oransje", "rustrød", "lilla", "blå",
+            "turkis", "fiolett", "rød", "brun",
         ]
     }
 }
@@ -70,6 +84,12 @@ extension UIColor {
         static let brand = UIColor(red: 0x3E / 255.0, green: 0x45 / 255.0, blue: 0x33 / 255.0, alpha: 1)
         static let warning = UIColor(hex: "b45309")
         static let measurement = UIColor(hex: "d97706")
+
+        // Map data palette — see Color.Trakke.* counterparts.
+        static let mapRoute = UIColor(hex: "E07000")
+        static let mapActivity = UIColor(hex: "2255AA")
+        static let mapWaypoint = UIColor(hex: "E07000")
+        static let mapHalo = UIColor.white
 
         // POI Categories
         static let poiShelter = UIColor(hex: "b58900")

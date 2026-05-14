@@ -491,7 +491,7 @@ actor WeatherService: WeatherFetching {
     /// Scans the next 6 hours for significant weather transitions:
     /// precipitation starting, wind picking up, or gusts becoming dangerous.
     /// Returns the most important upcoming change, or nil if conditions are stable.
-    private nonisolated(unsafe) static let hourFormatter: DateFormatter = {
+    private static let hourFormatter: DateFormatter = {
         let f = DateFormatter()
         f.dateFormat = "HH"
         return f
@@ -682,7 +682,8 @@ actor WeatherService: WeatherFetching {
         var dailyMap: [String: [(date: Date, data: WeatherData)]] = [:]
         for item in parsed where item.date > now {
             let components = calendar.dateComponents([.year, .month, .day], from: item.date)
-            let key = String(format: "%04d-%02d-%02d", components.year!, components.month!, components.day!)
+            guard let year = components.year, let month = components.month, let day = components.day else { continue }
+            let key = String(format: "%04d-%02d-%02d", year, month, day)
             dailyMap[key, default: []].append(item)
         }
 

@@ -85,8 +85,14 @@ enum OverlayLayer: String, CaseIterable, Identifiable, Sendable {
 
     // MARK: - WMS/REST overlay properties (not used by .hillshading)
 
-    var sourceID: String { "overlay-\(rawValue)" }
-    var layerID: String { "overlay-\(rawValue)-layer" }
+    var sourceID: String {
+        if case .hillshading = self { return TerrainConstants.demSourceID }
+        return "overlay-\(rawValue)"
+    }
+    var layerID: String {
+        if case .hillshading = self { return TerrainConstants.hillshadeLayerID }
+        return "overlay-\(rawValue)-layer"
+    }
 
     private static let naturskogRESTBase =
         "https://image001.miljodirektoratet.no/arcgis/rest/services"
@@ -113,6 +119,13 @@ enum OverlayLayer: String, CaseIterable, Identifiable, Sendable {
         case .hillshading: return 3
         case .bratthetskart: return 9
         case .utmRunenett: return 7
+        }
+    }
+
+    var maxZoom: Int {
+        switch self {
+        case .bratthetskart: return 16
+        default: return 18
         }
     }
 
@@ -145,11 +158,11 @@ enum OverlayLayer: String, CaseIterable, Identifiable, Sendable {
                 + "&size=256,256&format=png32&transparent=true"
                 + "&layers=show:\(naturskogLayerID)&f=image"
         case .bratthetskart:
-            return "https://nve.geodataonline.no/arcgis/services/Bratthet/MapServer/WMSServer"
-                + "?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap"
-                + "&LAYERS=Bratthet_snoskred&STYLES=&SRS=EPSG:3857"
-                + "&BBOX={bbox-epsg-3857}&WIDTH=256&HEIGHT=256"
-                + "&FORMAT=image/png&TRANSPARENT=TRUE"
+            // NVE la ned nve.geodataonline.no våren 2026. WMTS-cached XYZ-tiles på
+            // gis3.nve.no er nå offisielt endepunkt og betraktelig raskere enn WMS.
+            // ArcGIS-konvensjonen er tile/{z}/{y}/{x} (rad før kolonne).
+            return "https://gis3.nve.no/arcgis/rest/services/wmts/Bratthet_2024"
+                + "/MapServer/tile/{z}/{y}/{x}"
         case .utmRunenett:
             return "https://wms.geonorge.no/skwms1/wms.rutenett"
                 + "?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap"

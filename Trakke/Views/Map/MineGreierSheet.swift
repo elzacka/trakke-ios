@@ -1,4 +1,5 @@
 import SwiftUI
+import CoreLocation
 
 struct MineGreierSheet: View {
     @Bindable var routeViewModel: RouteViewModel
@@ -8,7 +9,11 @@ struct MineGreierSheet: View {
     var onRouteSelected: ((Route) -> Void)?
     var onNewRoute: (() -> Void)?
     var onWaypointSelected: ((Waypoint) -> Void)?
+    var onWaypointEdit: ((Waypoint) -> Void)?
+    var onWaypointNavigate: ((CLLocationCoordinate2D) -> Void)?
     var onActivitySelected: ((Activity) -> Void)?
+    var onActivityRetrace: ((CLLocationCoordinate2D) -> Void)?
+    var onActivityFollow: ((Activity) -> Void)?
     var onStartRecording: (() -> Void)?
     @Environment(\.dismiss) private var dismiss
     @State private var navigationPath = NavigationPath()
@@ -45,8 +50,15 @@ struct MineGreierSheet: View {
                     case .waypoints:
                         WaypointListSheet(
                             viewModel: waypointViewModel,
-                            onWaypointSelected: { waypoint in
-                                onWaypointSelected?(waypoint)
+                            onWaypointSelected: { wp in
+                                onWaypointSelected?(wp)
+                            },
+                            onWaypointEdit: { wp in
+                                onWaypointEdit?(wp)
+                                dismiss()
+                            },
+                            onWaypointNavigate: { coord in
+                                onWaypointNavigate?(coord)
                                 dismiss()
                             },
                             isEmbedded: true,
@@ -55,12 +67,18 @@ struct MineGreierSheet: View {
                     case .activities:
                         ActivityListSheet(
                             viewModel: activityViewModel,
-                            onActivitySelected: { activity in
-                                onActivitySelected?(activity)
-                                dismiss()
-                            },
+                            routeViewModel: routeViewModel,
+                            onActivitySelected: { _ in },
                             onStartRecording: {
                                 onStartRecording?()
+                                dismiss()
+                            },
+                            onRetrace: { coord in
+                                onActivityRetrace?(coord)
+                                dismiss()
+                            },
+                            onFollowAgain: { activity in
+                                onActivityFollow?(activity)
                                 dismiss()
                             },
                             isEmbedded: true,
@@ -72,10 +90,17 @@ struct MineGreierSheet: View {
         .presentationDetents([.height(280), .medium, .large], selection: $selectedDetent)
         .presentationDragIndicator(.visible)
         .onChange(of: navigationPath.count) {
+            // Grow the sheet when navigating into a sub-list, shrink it back to
+            // the compact "menu" height when popping back to the root. This is
+            // the SINGLE source of truth for detent changes during navigation —
+            // do NOT also set selectedDetent in the menu button, that produces
+            // two simultaneous state writes which SwiftUI logs as
+            // "Update NavigationRequestObserver tried to update multiple times
+            // per frame" and causes the first tap to be ignored.
             if navigationPath.count == 0 {
                 selectedDetent = .height(280)
             } else {
-                selectedDetent = .medium
+                selectedDetent = .large
             }
         }
     }
@@ -89,18 +114,21 @@ struct MineGreierSheet: View {
                     menuLink(
                         icon: "point.topleft.down.to.point.bottomright.curvepath",
                         label: String(localized: "routes.title"),
+                        count: routeViewModel.routes.count,
                         destination: .routes
                     )
                     Divider().padding(.leading, .Trakke.dividerLeading)
                     menuLink(
                         icon: "mappin",
                         label: String(localized: "mystuff.places"),
+                        count: waypointViewModel.waypoints.count,
                         destination: .waypoints
                     )
                     Divider().padding(.leading, .Trakke.dividerLeading)
                     menuLink(
                         icon: "figure.hiking",
                         label: String(localized: "activity.title"),
+                        count: activityViewModel.activities.count,
                         destination: .activities
                     )
                 }
@@ -111,9 +139,11 @@ struct MineGreierSheet: View {
         .background(Color(.systemGroupedBackground))
     }
 
-    private func menuLink(icon: String, label: String, destination: Destination) -> some View {
+    private func menuLink(icon: String, label: String, count: Int, destination: Destination) -> some View {
         Button {
-            selectedDetent = .large
+            // Only mutate navigationPath here. The detent is updated by
+            // .onChange(of: navigationPath.count) so we never write two pieces
+            // of state in the same frame.
             navigationPath.append(destination)
         } label: {
             HStack(spacing: .Trakke.md) {
@@ -129,13 +159,25 @@ struct MineGreierSheet: View {
 
                 Spacer()
 
+                if count > 0 {
+                    Text("\(count)")
+                        .font(Font.Trakke.captionSoft)
+                        .foregroundStyle(Color.Trakke.textTertiary)
+                        .monospacedDigit()
+                        .accessibilityHidden(true)
+                }
+
                 Image(systemName: "chevron.right")
                     .font(Font.Trakke.captionSoft)
                     .foregroundStyle(Color.Trakke.textTertiary)
+                    .accessibilityHidden(true)
             }
             .frame(minHeight: .Trakke.touchMin)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(count > 0
+            ? "\(label), \(count)"
+            : label)
     }
 }

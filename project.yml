@@ -3,7 +3,7 @@ options:
   bundleIdPrefix: no.tazk
   deploymentTarget:
     iOS: "26.0"
-  xcodeVersion: "26.3"
+  xcodeVersion: "26.5"
   generateEmptyDirectories: true
   groupSortPosition: top
   developmentLanguage: nb
@@ -11,19 +11,19 @@ options:
 packages:
   MapLibreNative:
     url: https://github.com/maplibre/maplibre-gl-native-distribution
-    from: "6.23.0"
+    from: "6.26.0"
   MapLibreSwiftUI:
     url: https://github.com/maplibre/swiftui-dsl
-    from: "0.21.1"
+    from: "0.25.0"
   MGRS:
     path: LocalPackages/mgrs-ios
   GRDB:
     url: https://github.com/groue/GRDB.swift
-    from: "7.4.0"
+    from: "7.10.0"
 
 settings:
   base:
-    SWIFT_VERSION: "6.2"
+    SWIFT_VERSION: "6.3"
     MARKETING_VERSION: "1.4.0"
     CURRENT_PROJECT_VERSION: 4
     SWIFT_STRICT_CONCURRENCY: complete

@@ -24,7 +24,20 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
 
     var isNavigating = false
     var userHeading: Double?
-    var onLocationUpdate: ((CLLocation) -> Void)?
+
+    // Keyed observers so navigation and recording can co-exist without one
+    // overwriting the other (a single closure slot meant starting navigation
+    // mid-recording lost the recording's location updates until navigation
+    // stopped).
+    private var locationObservers: [String: (CLLocation) -> Void] = [:]
+
+    func setLocationObserver(_ key: String, _ observer: @escaping (CLLocation) -> Void) {
+        locationObservers[key] = observer
+    }
+
+    func removeLocationObserver(_ key: String) {
+        locationObservers.removeValue(forKey: key)
+    }
 
     private let locationManager = CLLocationManager()
     private var backgroundSession: CLBackgroundActivitySession?
@@ -161,7 +174,7 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
     func stopNavigation() {
         isNavigating = false
         userHeading = nil
-        onLocationUpdate = nil
+        removeLocationObserver("navigation")
         lastHeadingTime = nil
         lastHeadingValue = 0
 
@@ -197,7 +210,9 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
             if isTrackingUser {
                 currentCenter = location.coordinate
             }
-            onLocationUpdate?(location)
+            for observer in locationObservers.values {
+                observer(location)
+            }
         }
     }
 

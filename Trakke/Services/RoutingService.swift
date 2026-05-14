@@ -41,8 +41,12 @@ protocol RouteFetching: Sendable {
 /// unreachable, the UI falls back to compass-based navigation. Rate limiting is enforced
 /// client-side via `minRequestInterval`. A self-hosted Valhalla instance would eliminate
 /// this external dependency if needed in the future.
+///
+/// FOSSGIS demo-server fair-use: 1 req/user/sec, 100 req/sec total. The
+/// `X-Client-Id` header lets FOSSGIS identify Tråkke traffic if they need to reach out.
 actor RoutingService: RouteFetching {
     private static let baseURL = "https://valhalla1.openstreetmap.de/route"
+    private static let clientId = "trakke-ios"
     private static let timeout: TimeInterval = 30
     private static let minRequestInterval: TimeInterval = 1.5
 
@@ -82,6 +86,7 @@ actor RoutingService: RouteFetching {
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(APIClient.userAgent, forHTTPHeaderField: "User-Agent")
+        request.setValue(Self.clientId, forHTTPHeaderField: "X-Client-Id")
         request.timeoutInterval = Self.timeout
         request.httpBody = requestBody
 

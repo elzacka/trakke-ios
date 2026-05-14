@@ -94,6 +94,56 @@ struct ContentView: View {
                 )
             }
         }
+        .onOpenURL { url in
+            // Files shared to Tråkke via "Open with" or AirDrop can contain waypoints,
+            // tracks (which may be either planned routes or recorded activities), or
+            // any mix (GeoJSON). Prefer Activity over Route when track points carry
+            // timestamps — that's the strongest signal a file is a recorded trip.
+            var activityCount = 0
+            var routeCount = 0
+            var waypointCount = 0
+            switch url.pathExtension.lowercased() {
+            case "geojson", "json":
+                // Parse GeoJSON once and dispatch to each view model. Previously each
+                // VM parsed the same file independently, decoding the JSON 3 times.
+                do {
+                    let result = try GeoJSONImportService.parse(from: url)
+                    let filename = url.importedItemName
+                    activityCount = activityViewModel.insertImported(result.activities, filename: filename)
+                    if activityCount == 0 {
+                        routeCount = routeViewModel.insertImported(result.routes, filename: filename)
+                    }
+                    waypointCount = waypointViewModel.insertImported(result.waypoints, filename: filename)
+                } catch {
+                    routeViewModel.importMessage = String(localized: "routes.importError")
+                }
+            case "gpx":
+                // GPX parsers each scan for a different element type, so per-VM
+                // calls are kept here. XMLParser is streaming and cheap; the 3-pass
+                // cost is negligible compared to the GeoJSON case.
+                activityCount = activityViewModel.importFile(from: url)
+                routeCount = (activityCount > 0) ? 0 : routeViewModel.importFile(from: url)
+                waypointCount = waypointViewModel.importFile(from: url)
+            default:
+                break
+            }
+            sheets.dismissAll()
+            // Multiple types in one file: open the unified MyStuff sheet so the
+            // user can navigate between lists. Otherwise jump directly to the
+            // relevant list.
+            let typesImported = (activityCount > 0 ? 1 : 0)
+                + (routeCount > 0 ? 1 : 0)
+                + (waypointCount > 0 ? 1 : 0)
+            if typesImported > 1 {
+                sheets.showMyStuff = true
+            } else if activityCount > 0 {
+                sheets.showActivityList = true
+            } else if routeCount > 0 {
+                sheets.showRouteList = true
+            } else if waypointCount > 0 {
+                sheets.showWaypointList = true
+            }
+        }
     }
 
     // MARK: - Overlay Sync
@@ -168,6 +218,7 @@ struct ContentView: View {
                 viewModel: mapViewModel,
                 pois: poiViewModel.pois,
                 routes: routeViewModel.visibleRoutes.filter { $0.id != navigatingRouteId },
+                activities: activityViewModel.visibleActivities,
                 waypoints: waypointViewModel.visibleWaypoints,
                 drawingCoordinates: routeViewModel.drawingCoordinates,
                 isDrawing: routeViewModel.isDrawing,
@@ -245,7 +296,8 @@ struct ContentView: View {
                     onStop: { showStopConfirmation = true },
                     onSwitchToCompass: { navigationViewModel.switchToCompass() },
                     onSwitchToRoute: {
-                        guard let userLoc = mapViewModel.userLocation,
+                        guard !navigationViewModel.isComputingRoute,
+                              let userLoc = mapViewModel.userLocation,
                               let dest = navigationViewModel.destination else { return }
                         Task {
                             let success = await navigationViewModel.startRouteNavigation(
@@ -255,6 +307,12 @@ struct ContentView: View {
                         }
                     },
                     onToggleCamera: { navigationViewModel.toggleCameraMode() },
+                    onReroute: {
+                        Task {
+                            let success = await navigationViewModel.requestReroute()
+                            if !success { showRouteError = true }
+                        }
+                    },
                     onSearchTapped: { sheets.showSearchSheet = true },
                     onCategoryTapped: { sheets.showCategoryPicker = true },
                     onEmergencyTapped: { sheets.showEmergency = true },
@@ -277,7 +335,7 @@ struct ContentView: View {
                     Spacer()
                     HStack(spacing: .Trakke.sm) {
                         ProgressView()
-                        Text(String(localized: "navigation.computing"))
+                        Text(String(localized: "navigation.computingRoute"))
                             .font(Font.Trakke.bodyRegular)
                     }
                     .padding(.horizontal, .Trakke.lg)
@@ -388,9 +446,12 @@ struct ContentView: View {
         .sheet(isPresented: $sheets.showRouteList) {
             RouteListSheet(
                 viewModel: routeViewModel,
+                // The list pushes RouteDetailSheet onto its own NavigationStack
+                // when a row is tapped. The onRouteSelected callback now only
+                // fires when the user taps "Start navigasjon" inside the detail.
                 onRouteSelected: { route in
-                    routeViewModel.selectRoute(route)
-                    sheets.showRouteDetail = true
+                    sheets.showRouteList = false
+                    startFollowingRoute(route)
                 },
                 onNewRoute: {
                     routeViewModel.startDrawing()
@@ -481,19 +542,30 @@ struct ContentView: View {
                 waypointViewModel: waypointViewModel,
                 activityViewModel: activityViewModel,
                 onRouteSelected: { route in
-                    routeViewModel.selectRoute(route)
-                    sheets.showRouteDetail = true
+                    startFollowingRoute(route)
                 },
                 onNewRoute: {
                     routeViewModel.startDrawing()
                 },
-                onWaypointSelected: { wp in
-                    waypointViewModel.selectedWaypoint = wp
-                    sheets.showWaypointDetail = true
+                onWaypointSelected: { _ in
+                    // Reserved for potential future use; row taps now push detail
+                    // onto the embedded NavigationStack directly.
                 },
-                onActivitySelected: { activity in
-                    activityViewModel.selectedActivity = activity
-                    sheets.showActivityDetail = true
+                onWaypointEdit: { wp in
+                    sheets.editingWaypoint = wp
+                    sheets.showWaypointEdit = true
+                },
+                onWaypointNavigate: { coordinate in
+                    navigationDestination = coordinate
+                    sheets.showNavigationStart = true
+                },
+                onActivitySelected: { _ in },
+                onActivityRetrace: { coordinate in
+                    navigationDestination = coordinate
+                    sheets.showNavigationStart = true
+                },
+                onActivityFollow: { activity in
+                    followActivity(activity)
                 },
                 onStartRecording: {
                     startActivityRecording()
@@ -503,9 +575,16 @@ struct ContentView: View {
         .sheet(isPresented: $sheets.showWaypointList) {
             WaypointListSheet(
                 viewModel: waypointViewModel,
-                onWaypointSelected: { wp in
-                    waypointViewModel.selectedWaypoint = wp
-                    sheets.showWaypointDetail = true
+                onWaypointSelected: { _ in },
+                onWaypointEdit: { wp in
+                    sheets.showWaypointList = false
+                    sheets.editingWaypoint = wp
+                    sheets.showWaypointEdit = true
+                },
+                onWaypointNavigate: { coordinate in
+                    sheets.showWaypointList = false
+                    navigationDestination = coordinate
+                    sheets.showNavigationStart = true
                 }
             )
             .presentationDetents([.medium, .large])
@@ -568,12 +647,19 @@ struct ContentView: View {
         .sheet(isPresented: $sheets.showActivityList) {
             ActivityListSheet(
                 viewModel: activityViewModel,
-                onActivitySelected: { activity in
-                    activityViewModel.selectedActivity = activity
-                    sheets.showActivityDetail = true
-                },
+                routeViewModel: routeViewModel,
+                onActivitySelected: { _ in },
                 onStartRecording: {
                     startActivityRecording()
+                },
+                onRetrace: { coordinate in
+                    sheets.showActivityList = false
+                    navigationDestination = coordinate
+                    sheets.showNavigationStart = true
+                },
+                onFollowAgain: { activity in
+                    sheets.showActivityList = false
+                    followActivity(activity)
                 }
             )
             .presentationDetents([.medium, .large])
@@ -588,6 +674,10 @@ struct ContentView: View {
                         sheets.showActivityDetail = false
                         navigationDestination = coordinate
                         sheets.showNavigationStart = true
+                    },
+                    onFollowAgain: { activity in
+                        sheets.showActivityDetail = false
+                        followActivity(activity)
                     }
                 )
                 .presentationDetents([.medium, .large])
@@ -667,6 +757,9 @@ struct ContentView: View {
     // MARK: - GDPR Cache Clearing
 
     private func clearAllServiceCaches() {
+        // GDPR: clear exported files synchronously since they may contain
+        // user-visible route/activity data (GPX).
+        GPXExportService.clearAllExports()
         Task {
             await weatherViewModel.clearCaches()
             await searchViewModel.clearCaches()

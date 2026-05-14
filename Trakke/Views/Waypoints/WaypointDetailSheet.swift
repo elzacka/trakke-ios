@@ -6,28 +6,46 @@ struct WaypointDetailSheet: View {
     let waypoint: Waypoint
     var onEdit: ((Waypoint) -> Void)?
     var onNavigate: ((CLLocationCoordinate2D) -> Void)?
+    var isEmbedded = false
     @Environment(\.dismiss) private var dismiss
     @AppStorage(AppStorageKeys.coordinateFormat) private var coordinateFormat: CoordinateFormat = .dd
     @State private var showDeleteConfirmation = false
     @State private var copied = false
 
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(spacing: .Trakke.cardGap) {
-                    infoCard
-                    coordinatesCard
-                    actionsCard
-
-                    Spacer(minLength: .Trakke.lg)
-                }
-                .padding(.horizontal, .Trakke.sheetHorizontal)
-                .padding(.top, .Trakke.sheetTop)
+        if isEmbedded {
+            content
+        } else {
+            NavigationStack {
+                content
             }
-            .background(Color(.systemGroupedBackground))
-            .tint(Color.Trakke.brand)
-            .navigationTitle(waypoint.name)
-            .navigationBarTitleDisplayMode(.inline)
+        }
+    }
+
+    private var content: some View {
+        ScrollView {
+            VStack(spacing: .Trakke.cardGap) {
+                infoCard
+                coordinatesCard
+                actionsCard
+
+                Spacer(minLength: .Trakke.lg)
+            }
+            .padding(.horizontal, .Trakke.sheetHorizontal)
+            .padding(.top, .Trakke.sheetTop)
+        }
+        .background(Color(.systemGroupedBackground))
+        .tint(Color.Trakke.brand)
+        .navigationTitle(waypoint.name)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    onEdit?(waypoint)
+                } label: {
+                    Label(String(localized: "common.edit"), systemImage: "pencil")
+                }
+            }
         }
     }
 

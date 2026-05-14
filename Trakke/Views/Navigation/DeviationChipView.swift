@@ -2,6 +2,8 @@ import SwiftUI
 
 struct DeviationChipView: View {
     let distance: Double
+    var canReroute: Bool = false
+    var onReroute: (() -> Void)?
     var onDismiss: () -> Void
 
     var body: some View {
@@ -12,6 +14,21 @@ struct DeviationChipView: View {
 
             Text(String(localized: "navigation.offTrack \(Int(distance))"))
                 .font(Font.Trakke.bodyRegular)
+                .accessibilityAddTraits(.isStaticText)
+
+            if canReroute, let onReroute {
+                Button {
+                    onReroute()
+                } label: {
+                    Text(String(localized: "navigation.reroute"))
+                        .font(Font.Trakke.bodyMedium)
+                        .foregroundStyle(Color.Trakke.brand)
+                        .padding(.horizontal, .Trakke.xs)
+                        .frame(minHeight: .Trakke.touchMin)
+                        .contentShape(Rectangle())
+                }
+                .accessibilityLabel(String(localized: "navigation.reroute"))
+            }
 
             Button {
                 onDismiss()
@@ -29,5 +46,6 @@ struct DeviationChipView: View {
         .background(.regularMaterial)
         .clipShape(Capsule())
         .padding(.bottom, .Trakke.sm)
+        .accessibilityElement(children: .contain)
     }
 }

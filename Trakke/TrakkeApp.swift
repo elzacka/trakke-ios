@@ -72,13 +72,18 @@ struct TrakkeApp: App {
             logger.error("Failed to set file protection on Application Support: \(error, privacy: .private)")
         }
 
-        // Clean up any orphaned GPX temp files from previous sessions
+        // Clean up any orphaned GPX temp files from previous sessions (older tmp/
+        // location — still cleaned during a migration window).
         let tempDir = fileManager.temporaryDirectory
         if let tempFiles = try? fileManager.contentsOfDirectory(at: tempDir, includingPropertiesForKeys: nil) {
-            for file in tempFiles where file.pathExtension == "gpx" {
+            for file in tempFiles where file.pathExtension == "gpx" || file.pathExtension == "geojson" {
                 try? fileManager.removeItem(at: file)
             }
         }
+
+        // Prune old exports from Documents/Exports (the new location). Keeps the
+        // share-sheet flow LaunchServices-friendly without unbounded disk growth.
+        GPXExportService.pruneOldExports()
 
         let storeURL = appSupportURL.appendingPathComponent("Trakke.store")
 

@@ -93,7 +93,7 @@ Trykk på en dag for å se timevarsel med temperatur, vind og nedbør. Den beste
 - **Kunnskap**: Artikler om friluftsliv og overlevelse
 - **Måleverktøy**: Mål avstand og areal
 - **Offlinekart**: Last ned kart for bruk uten dekning
-- **Informasjon**: Datakilder, lisenser og brukerveiledning
+- **Informasjon**: Datakilder, lisenser, personvernerklæring og brukerveiledning — alt vises direkte i appen
 - **Innstillinger**: Kartlag, visning og koordinatformat
 
 ## Kunnskap {#kunnskap}
@@ -114,6 +114,7 @@ Trykk på et bilde i en artikkel for fullskjerm. Knip for å zoome, sveip ned fo
 ### Administrere ruter
 
 - **Sveip til venstre** i listen for å slette
+- **Trykk og hold** på en rute for å redigere navn og kategori, eller skjule den fra kartet. Kategoriene grupperer ruter i listen (samme mønster som steder).
 
 ### Navigasjon {#navigasjon}
 
@@ -126,9 +127,11 @@ Appen bruker kompassretning automatisk uten dekning.
 
 Under navigasjon: trykk kompasset for å bytte mellom nord opp og kursretning. Varsling ved avvik fra rute (50 m) og ved ankomst (30 m).
 
-### Import og eksport (GPX) {#gpx}
+### Import og eksport {#gpx}
 
-- **Importere**: Trykk importer-knappen i rutelisten, velg en .gpx-fil
+- **Importere**: Trykk importer-knappen i rute-, sted- eller turlista, og velg en `.gpx`- eller `.geojson`-fil. Filer som blir delt til Tråkke fra andre apper (AirDrop, e-post, Filer) åpnes også automatisk.
+- **Hva som importeres**: Steder (Point), ruter (LineString, Polygon), og turer (LineString med tidsstempler per punkt). En fil kan inneholde flere typer — da åpnes «Mine greier» så du kan navigere mellom dem.
+- **Importerte elementer skjules på kartet** som standard, så en fersk import ikke roter til kartet. Du kan slå dem på via listens trykk-og-hold-meny.
 - **Eksportere ruter**: Del-knappen eksporterer som GPX
 - **Eksportere steder**: Mine greier > Steder > del-knappen
 - **Eksportere turer**: Åpne en tur > «Eksporter som GPX»
@@ -138,12 +141,15 @@ Under navigasjon: trykk kompasset for å bytte mellom nord opp og kursretning. V
 1. Trykk opptaksknappen
 2. Verktøylinjen viser varighet, avstand og høydemeter
 
+Du kan starte navigasjon mens en tur tas opp uten å miste GPS-sporet — opptaket og navigasjonen mottar posisjonsoppdateringer uavhengig av hverandre.
+
 ### Etter turen
 
 - Se statistikk: Avstand, varighet, høydemeter, gjennomsnittsfart
 - Høydeprofil vises som graf
 - Eksporter som GPX
 - «Gå tilbake til start»: Navigasjon tilbake til startpunktet
+- **Trykk og hold** i turhistorikken for å redigere navn og kategori eller skjule turen fra kartet. Kategorier grupperer turene i listen.
 
 ## Måleverktøy {#maleverktoy}
 

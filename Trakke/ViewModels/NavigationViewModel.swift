@@ -31,6 +31,7 @@ final class NavigationViewModel {
 
     private let navigationService = NavigationService()
     private let routingService: any RouteFetching
+    private var routeComputationTask: Task<Bool, Never>?
 
     init(routingService: any RouteFetching = RoutingService()) {
         self.routingService = routingService
@@ -43,6 +44,10 @@ final class NavigationViewModel {
     private var lastDeviationAlertTime: Date?
     private var lastProcessedTime: Date?
     private var isProcessingUpdate = false
+    private var lastLocation: CLLocation?
+    private var offTrackSince: Date?
+    private var nextInstructionIndex: Int?
+    private var pendingTurnHaptics: Set<Int> = []
     private let hapticFeedback = HapticFeedbackService()
 
     // Navigation update throttling: GPS updates arrive at ~1 Hz, but snap-to-route
@@ -55,6 +60,11 @@ final class NavigationViewModel {
     private static let deviationAlertCooldown: TimeInterval = 30
     private static let consecutiveReadingsRequired = 3
     private static let arrivalThreshold: Double = 30
+    // Pre-turn haptic thresholds: heavier nudge close in, softer further out.
+    // Only fired for real turns (skip departure / destination / continuations).
+    private static let preTurnHapticDistances: [Int] = [50, 15]
+    // How long the user must remain off-track before we offer to recompute.
+    private static let rerouteEligibleAfter: TimeInterval = 60
 
     // MARK: - Start Navigation (Computed Route via Valhalla)
 
@@ -62,30 +72,42 @@ final class NavigationViewModel {
         from origin: CLLocationCoordinate2D,
         to dest: CLLocationCoordinate2D
     ) async -> Bool {
+        routeComputationTask?.cancel()
         destination = dest
         isComputingRoute = true
         routeError = nil
         hapticFeedback.prepare()
 
-        do {
-            let computedRoute = try await routingService.computeRoute(from: origin, to: dest)
-            routeCoordinates = computedRoute.coordinates
-            instructions = computedRoute.instructions
-            routeSummary = computedRoute.summary
-            totalDistance = computedRoute.distance
-            cumulativeDistances = Haversine.cumulativeDistances(coordinates: routeCoordinates)
+        let task = Task { [weak self] () -> Bool in
+            guard let self else { return false }
+            do {
+                let computedRoute = try await self.routingService.computeRoute(from: origin, to: dest)
+                guard !Task.isCancelled else {
+                    self.isComputingRoute = false
+                    return false
+                }
+                self.routeCoordinates = computedRoute.coordinates
+                self.instructions = computedRoute.instructions
+                self.routeSummary = computedRoute.summary
+                self.totalDistance = computedRoute.distance
+                self.cumulativeDistances = Haversine.cumulativeDistances(coordinates: self.routeCoordinates)
 
-            mode = .route
-            isActive = true
-            isComputingRoute = false
-            lastSegmentIndex = 0
-            consecutiveOffTrackReadings = 0
-            return true
-        } catch {
-            isComputingRoute = false
-            routeError = error.localizedDescription
-            return false
+                self.mode = .route
+                self.isActive = true
+                self.isComputingRoute = false
+                self.hasArrived = false
+                self.lastSegmentIndex = 0
+                self.consecutiveOffTrackReadings = 0
+                return true
+            } catch {
+                self.isComputingRoute = false
+                guard !Task.isCancelled else { return false }
+                self.routeError = error.localizedDescription
+                return false
+            }
         }
+        routeComputationTask = task
+        return await task.value
     }
 
     // MARK: - Start Navigation (Follow Existing Route)
@@ -118,9 +140,12 @@ final class NavigationViewModel {
     // MARK: - Start Compass Navigation
 
     func startCompassNavigation(to dest: CLLocationCoordinate2D) {
+        routeComputationTask?.cancel()
+        routeComputationTask = nil
         destination = dest
         mode = .compass
         isActive = true
+        hasArrived = false
         routeCoordinates = []
         instructions = []
         hapticFeedback.prepare()
@@ -129,6 +154,8 @@ final class NavigationViewModel {
     // MARK: - Stop Navigation
 
     func stopNavigation() {
+        routeComputationTask?.cancel()
+        routeComputationTask = nil
         isActive = false
         mode = .route
         routeCoordinates = []
@@ -154,6 +181,17 @@ final class NavigationViewModel {
         lastDeviationAlertTime = nil
         lastProcessedTime = nil
         isProcessingUpdate = false
+        lastLocation = nil
+        offTrackSince = nil
+        nextInstructionIndex = nil
+        pendingTurnHaptics = []
+    }
+
+    /// True after `Self.rerouteEligibleAfter` seconds of confirmed off-track.
+    /// Drives the "Beregn rute på nytt" action in DeviationChipView.
+    var canReroute: Bool {
+        guard let since = offTrackSince else { return false }
+        return Date.now.timeIntervalSince(since) >= Self.rerouteEligibleAfter
     }
 
     // MARK: - Process Location Update
@@ -172,6 +210,8 @@ final class NavigationViewModel {
             isProcessingUpdate = false
             lastProcessedTime = Date()
         }
+
+        lastLocation = location
 
         // Compute GPS quality before the mode-specific work, but defer the
         // @Observable assignment to after the await so all property changes
@@ -201,6 +241,9 @@ final class NavigationViewModel {
             totalDistance: totalDistance,
             fromIndex: lastSegmentIndex
         ) else { return }
+
+        // Mode may have changed while awaiting the actor hop
+        guard mode == .route else { return }
 
         // All @Observable property changes below happen synchronously (after
         // the await) so SwiftUI coalesces them into a single update cycle.
@@ -234,12 +277,18 @@ final class NavigationViewModel {
         if snap.crossTrackDistance > Self.offTrackThreshold && gpsQuality != .lost {
             consecutiveOffTrackReadings += 1
             if consecutiveOffTrackReadings >= Self.consecutiveReadingsRequired {
+                if offTrackSince == nil {
+                    offTrackSince = Date()
+                }
                 triggerDeviationAlert()
             }
         } else {
             consecutiveOffTrackReadings = 0
-            if isOffTrack && snap.crossTrackDistance <= Self.offTrackThreshold {
-                isOffTrack = false
+            if snap.crossTrackDistance <= Self.offTrackThreshold {
+                offTrackSince = nil
+                if isOffTrack {
+                    isOffTrack = false
+                }
             }
         }
 
@@ -270,24 +319,76 @@ final class NavigationViewModel {
         guard !instructions.isEmpty else { return }
 
         // Find the next instruction ahead of our current position
-        for instruction in instructions where instruction.distance > atDistance {
-            nextInstruction = instruction
-            return
+        var foundIndex: Int?
+        for (i, instruction) in instructions.enumerated() where instruction.distance > atDistance {
+            foundIndex = i
+            break
+        }
+        let chosenIndex = foundIndex ?? instructions.count - 1
+
+        if chosenIndex != nextInstructionIndex {
+            nextInstructionIndex = chosenIndex
+            // Reset haptic thresholds for the new turn — but only for real turns.
+            // Departure / destination / continuations don't need pre-warning.
+            let isHapticRelevant: Bool
+            switch instructions[chosenIndex].type {
+            case .right, .sharpRight, .slightRight,
+                 .left, .sharpLeft, .slightLeft,
+                 .uTurn:
+                isHapticRelevant = true
+            case .straight, .depart, .destination, .ferry, .other:
+                isHapticRelevant = false
+            }
+            pendingTurnHaptics = isHapticRelevant ? Set(Self.preTurnHapticDistances) : []
         }
 
-        // If we've passed all instructions, show the last one (destination)
-        nextInstruction = instructions.last
+        let instruction = instructions[chosenIndex]
+        nextInstruction = instruction
+
+        let distToTurn = instruction.distance - atDistance
+        // Fire each threshold once. Sort descending so 50 m fires before 15 m
+        // if a single update jumps both (rare but possible after long throttle).
+        for threshold in pendingTurnHaptics.sorted(by: >) where distToTurn <= Double(threshold) {
+            if threshold <= 15 {
+                hapticFeedback.nudge()
+            } else {
+                hapticFeedback.tap()
+            }
+            pendingTurnHaptics.remove(threshold)
+        }
     }
 
     // MARK: - Reverse Route
 
-    func reverseRoute() {
-        guard mode == .route, !routeCoordinates.isEmpty else { return }
+    /// Reverses the active route. Uses Valhalla to compute a real route from the
+    /// user's current position back to the original starting point, so turn-by-turn
+    /// guidance and elevation are correct. Falls back to a polyline reverse if the
+    /// routing service is unreachable (offline).
+    func reverseRoute() async -> Bool {
+        guard mode == .route, !routeCoordinates.isEmpty else { return false }
+        let originalOrigin = routeCoordinates.first
+        guard let origin = originalOrigin else { return false }
 
+        if let currentLoc = lastLocation {
+            isComputingRoute = true
+            defer { isComputingRoute = false }
+            do {
+                let newRoute = try await routingService.computeRoute(
+                    from: currentLoc.coordinate,
+                    to: origin
+                )
+                applyRoute(newRoute)
+                destination = origin
+                return true
+            } catch {
+                // Network failure — fall through to polyline-reverse fallback
+                routeError = error.localizedDescription
+            }
+        }
+
+        // Fallback: simple polyline reverse without Valhalla turn instructions.
         routeCoordinates.reverse()
         cumulativeDistances = Haversine.cumulativeDistances(coordinates: routeCoordinates)
-
-        // Recompute elevation profile distances for reversed direction
         if !elevationProfile.isEmpty {
             let maxDist = elevationProfile.last?.distance ?? totalDistance
             elevationProfile = elevationProfile.reversed().map { point in
@@ -298,13 +399,58 @@ final class NavigationViewModel {
                 )
             }
         }
-
-        instructions = [] // Valhalla instructions don't apply to reversed route
+        instructions = []
         nextInstruction = nil
+        nextInstructionIndex = nil
+        pendingTurnHaptics = []
         destination = routeCoordinates.last
         lastSegmentIndex = 0
         consecutiveOffTrackReadings = 0
         isOffTrack = false
+        offTrackSince = nil
+        hasArrived = false
+        return true
+    }
+
+    // MARK: - Reroute (off-track recovery)
+
+    /// Recomputes the route from the user's current position to the existing
+    /// destination. Call when `canReroute == true`.
+    func requestReroute() async -> Bool {
+        guard mode == .route,
+              let dest = destination,
+              let currentLoc = lastLocation else { return false }
+
+        isComputingRoute = true
+        defer { isComputingRoute = false }
+
+        do {
+            let newRoute = try await routingService.computeRoute(
+                from: currentLoc.coordinate,
+                to: dest
+            )
+            applyRoute(newRoute)
+            return true
+        } catch {
+            routeError = error.localizedDescription
+            return false
+        }
+    }
+
+    private func applyRoute(_ route: ComputedRoute) {
+        routeCoordinates = route.coordinates
+        instructions = route.instructions
+        routeSummary = route.summary
+        totalDistance = route.distance
+        cumulativeDistances = Haversine.cumulativeDistances(coordinates: routeCoordinates)
+        elevationProfile = []
+        nextInstruction = nil
+        nextInstructionIndex = nil
+        pendingTurnHaptics = []
+        lastSegmentIndex = 0
+        consecutiveOffTrackReadings = 0
+        isOffTrack = false
+        offTrackSince = nil
         hasArrived = false
     }
 
@@ -312,6 +458,9 @@ final class NavigationViewModel {
 
     func switchToCompass() {
         guard let dest = destination else { return }
+        routeComputationTask?.cancel()
+        routeComputationTask = nil
+        isComputingRoute = false
         mode = .compass
         routeCoordinates = []
         instructions = []
@@ -319,6 +468,7 @@ final class NavigationViewModel {
         progress = nil
         snapResult = nil
         isOffTrack = false
+        hasArrived = false
         consecutiveOffTrackReadings = 0
         destination = dest
     }

@@ -56,7 +56,7 @@ actor RemoteArticleService: RemoteArticleFetching {
                 Logger.knowledge.info("Downloaded \(downloadCount) updated articles")
             }
         } catch {
-            Logger.knowledge.warning("Failed to fetch article updates: \(error.localizedDescription)")
+            Logger.knowledge.warning("Failed to fetch article updates: \(error.localizedDescription, privacy: .private)")
         }
     }
 

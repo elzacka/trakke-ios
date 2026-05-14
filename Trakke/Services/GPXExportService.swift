@@ -102,19 +102,69 @@ enum GPXExportService {
         return (cleaned.isEmpty ? "rute" : cleaned) + ".gpx"
     }
 
+    /// Directory used for exported files that will be handed to the system
+    /// Share Sheet. We avoid the per-process tmp directory because LaunchServices
+    /// can't always map a file there to a file provider domain, producing a
+    /// cascade of "Failed to request default share mode" and "error fetching
+    /// item" warnings in the console. Documents/Exports is a stable, indexable
+    /// location LaunchServices can reason about, and it's also visible to the
+    /// user in the Files app (via LSSupportsOpeningDocumentsInPlace) so they can
+    /// retrieve a recent export if needed.
+    static let exportsDirectoryName = "Exports"
+
+    static var exportsDirectory: URL {
+        let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+            ?? FileManager.default.temporaryDirectory
+        return docs.appendingPathComponent(exportsDirectoryName, isDirectory: true)
+    }
+
     static func writeToTemporaryFile(gpxString: String, filename: String) -> URL? {
-        let tempDir = FileManager.default.temporaryDirectory
-        let fileURL = tempDir.appendingPathComponent(filename)
+        let dir = exportsDirectory
+        if !FileManager.default.fileExists(atPath: dir.path) {
+            try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        }
+        let fileURL = dir.appendingPathComponent(filename)
         do {
             try gpxString.write(to: fileURL, atomically: true, encoding: .utf8)
+            // .completeUntilFirstUserAuthentication: encrypted at rest but readable
+            // by the system Share Sheet once the device has been unlocked since
+            // boot. Stricter protection (.complete) breaks the share extensions.
             try FileManager.default.setAttributes(
-                [.protectionKey: FileProtectionType.complete],
+                [.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication],
                 ofItemAtPath: fileURL.path
             )
             return fileURL
         } catch {
             Logger.routes.error("GPX export write failed: \(error, privacy: .private)")
             return nil
+        }
+    }
+
+    /// Removes ALL files in Documents/Exports. Used by GDPR "Slett alle data" flow.
+    static func clearAllExports() {
+        let dir = exportsDirectory
+        guard let files = try? FileManager.default.contentsOfDirectory(at: dir, includingPropertiesForKeys: nil) else { return }
+        for file in files {
+            try? FileManager.default.removeItem(at: file)
+        }
+    }
+
+    /// Removes export files older than 24h. Called from `TrakkeApp.init()` to
+    /// keep Documents/Exports from growing without bound while still letting the
+    /// user pick up a recent export from the Files app.
+    static func pruneOldExports() {
+        let dir = exportsDirectory
+        guard let files = try? FileManager.default.contentsOfDirectory(
+            at: dir,
+            includingPropertiesForKeys: [.contentModificationDateKey]
+        ) else { return }
+        let cutoff = Date.now.addingTimeInterval(-24 * 3600)
+        for file in files {
+            guard let mod = (try? file.resourceValues(forKeys: [.contentModificationDateKey]))?
+                .contentModificationDate else { continue }
+            if mod < cutoff {
+                try? FileManager.default.removeItem(at: file)
+            }
         }
     }
 

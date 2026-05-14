@@ -12,10 +12,10 @@ Tråkke er en kartapp for iPhone som bruker kartdata fra Kartverket. Appen er la
 - Offline kart for hele kommuner eller egne områder
 
 **Tur og navigasjon**
-- Tegn og lagre ruter og steder
+- Tegn og lagre ruter og steder med valgfri kategorigruppering
 - Turregistrering med GPS-sporing, avstand og høydemeter
 - Navigasjon med beregnet rute eller kompassretning
-- Import og eksport av GPX-filer
+- Import og eksport av GPX- og GeoJSON-filer
 
 **Vær og natur**
 - Værmelding, luftkvalitet og vanntemperatur fra Meteorologisk institutt
@@ -30,7 +30,7 @@ Tråkke er en kartapp for iPhone som bruker kartdata fra Kartverket. Appen er la
 
 ## Personvern
 
-All data lagres lokalt. Ingen sporing, ingen analyse, ingen brukerkontoer. Se [PERSONVERN.md](PERSONVERN.md).
+All data lagres lokalt. Ingen sporing, ingen analyse, ingen brukerkontoer. Personvernerklæringen vises i appen under «Informasjon» og er også tilgjengelig i [PERSONVERN.md](PERSONVERN.md).
 
 ## Utvikling
 

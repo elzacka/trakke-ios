@@ -9,12 +9,12 @@ import SwiftUI
 /// internal _automaticallyAdjustContentInsetHolder ivar, which makes
 /// MapLibre's layout skip the deprecated VC property check entirely.
 ///
-/// MapLibre 6.23.0 emits a one-time NSLog warning during init via
+/// MapLibre 6.26.0 still emits a one-time NSLog warning during init via
 /// dispatch_once in commonInitWithOptions: (MLNMapView.mm:776-780). This
 /// fires before super.init returns, so it cannot be suppressed from consumer
 /// code. No MLNMapOptions, static method, or log-level setting can disable it.
-/// The MapLibre team has a TODO to remove it but hasn't acted on it through
-/// 6.23.1-pre1. The warning is cosmetic -- the subclass correctly prevents
+/// The MapLibre team has a TODO to remove it but had not acted on it through
+/// 6.26.0. The warning is cosmetic -- the subclass correctly prevents
 /// the deprecated behavior from affecting layout.
 private class TrakkeMLNMapView: MLNMapView {
     override init(frame: CGRect, styleURL: URL?) {
@@ -91,12 +91,27 @@ class WaypointAnnotation: MLNPointAnnotation {
 
 class SearchPinAnnotation: MLNPointAnnotation {}
 
+// MARK: - Activity Polyline
+
+/// MLNPolyline subclass used so route-polyline refresh logic can skip these
+/// (and vice versa) by type check instead of pointer identity.
+class ActivityPolyline: MLNPolyline {}
+
+/// Wider white polyline rendered UNDERNEATH a coloured route/activity polyline
+/// to lift it visually off the Kartverket topographic background. Cartographer
+/// consensus (Knut/Monsen/Frej): a white casing is essential for legibility on
+/// any topographic map where the foreground line might compete with vegetation,
+/// trail symbols or contour lines.
+class RouteHaloPolyline: MLNPolyline {}
+class ActivityHaloPolyline: MLNPolyline {}
+
 // MARK: - Map View
 
 struct TrakkeMapView: UIViewRepresentable {
     @Bindable var viewModel: MapViewModel
     var pois: [POI] = []
     var routes: [Route] = []
+    var activities: [Activity] = []
     var waypoints: [Waypoint] = []
     var drawingCoordinates: [CLLocationCoordinate2D] = []
     var isDrawing = false
@@ -135,6 +150,8 @@ struct TrakkeMapView: UIViewRepresentable {
 
         mapView.delegate = context.coordinator
         mapView.showsUserLocation = true
+        // Brand-color the user-location puck (and its heading cone, when available).
+        mapView.tintColor = UIColor(Color.Trakke.brand)
         mapView.compassView.compassVisibility = .hidden
         mapView.allowsRotating = enableRotation
         mapView.logoView.isHidden = true
@@ -194,7 +211,10 @@ struct TrakkeMapView: UIViewRepresentable {
     }
 
     func updateUIView(_ mapView: MLNMapView, context: Context) {
-        mapView.compassView.compassVisibility = .hidden
+        // Show MapLibre's built-in compass only when the camera is rotating with
+        // the user's heading — otherwise the rotation indicator is meaningless.
+        let showCompass = isNavigating && navigationCameraMode == .courseUp
+        mapView.compassView.compassVisibility = showCompass ? .visible : .hidden
         mapView.allowsRotating = enableRotation
 
         // Reset heading if requested
@@ -233,6 +253,9 @@ struct TrakkeMapView: UIViewRepresentable {
 
         // Update route polylines
         context.coordinator.updateRoutePolylines(on: mapView, routes: routes)
+
+        // Update activity polylines (only visible activities)
+        context.coordinator.updateActivityPolylines(on: mapView, activities: activities)
 
         // Update drawing overlay
         context.coordinator.updateDrawingOverlay(
@@ -332,6 +355,7 @@ struct TrakkeMapView: UIViewRepresentable {
         var currentPOIIds: Set<String> = []
         var currentWaypointIds: Set<String> = []
         var currentRouteIds: Set<String> = []
+        var currentActivityIds: Set<String> = []
         var poiAnnotationMap: [String: POIAnnotation] = [:]
         var waypointAnnotationMap: [String: WaypointAnnotation] = [:]
         var drawingPolyline: MLNPolyline?
@@ -350,6 +374,8 @@ struct TrakkeMapView: UIViewRepresentable {
         var lastCompassUserLat: Double = 0
         var lastCompassUserLon: Double = 0
         var lastCameraHeading: Double = -1
+        var lastAppliedNavCameraMode: NavigationCameraMode?
+        var compassDestinationAnnotation: NavigationDestinationAnnotation?
 
         init(
             viewModel: MapViewModel,
@@ -650,7 +676,7 @@ struct TrakkeMapView: UIViewRepresentable {
                 options: [
                     .tileSize: 256,
                     .minimumZoomLevel: overlay.minZoom,
-                    .maximumZoomLevel: 18,
+                    .maximumZoomLevel: overlay.maxZoom,
                 ]
             )
             style.addSource(source)
@@ -698,14 +724,18 @@ struct TrakkeMapView: UIViewRepresentable {
             hillshade.hillshadeExaggeration = NSExpression(
                 forConstantValue: NSNumber(value: TerrainConstants.defaultExaggeration)
             )
+            // MapLibre 6.24+ added multidirectional hillshade. illuminationDirection,
+            // shadowColor and highlightColor now accept arrays (one entry per light
+            // source). Passing a scalar triggers `-[__NSCFNumber count]` / similar
+            // crashes when the layer renders. Accent color stays scalar.
             hillshade.hillshadeIlluminationDirection = NSExpression(
-                forConstantValue: NSNumber(value: TerrainConstants.defaultIlluminationDirection)
+                forConstantValue: [NSNumber(value: TerrainConstants.defaultIlluminationDirection)]
             )
             hillshade.hillshadeIlluminationAnchor = NSExpression(
                 forConstantValue: "viewport"
             )
             hillshade.hillshadeShadowColor = NSExpression(
-                forConstantValue: UIColor(white: 0.0, alpha: 0.8)
+                forConstantValue: [UIColor(white: 0.0, alpha: 0.8)]
             )
             hillshade.hillshadeAccentColor = NSExpression(
                 forConstantValue: UIColor(white: 0.0, alpha: 0.15)
@@ -758,7 +788,13 @@ struct TrakkeMapView: UIViewRepresentable {
         ) -> CGFloat {
             if annotation === selectionPolyline { return 3 }
             if annotation === measurementPolyline { return 3 }
-            return annotation === drawingPolyline ? 3 : 4
+            if annotation === drawingPolyline { return 3 }
+            // Casing is 3pt wider than the coloured stroke so a 1.5pt rim shows
+            // either side. Matches Knut/Monsen/Frej recommendation.
+            if annotation is RouteHaloPolyline || annotation is ActivityHaloPolyline {
+                return 7
+            }
+            return 4
         }
 
         func mapView(

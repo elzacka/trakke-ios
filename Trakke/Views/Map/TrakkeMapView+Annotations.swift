@@ -1,3 +1,4 @@
+import SwiftUI
 import UIKit
 @preconcurrency import MapLibre
 
@@ -26,7 +27,40 @@ extension TrakkeMapView.Coordinator {
         if let routePoint = annotation as? RoutePointAnnotation {
             return routePointView(for: routePoint, on: mapView)
         }
+        if annotation is NavigationDestinationAnnotation {
+            return navigationDestinationView(for: annotation, on: mapView)
+        }
         return nil
+    }
+
+    // MARK: - Navigation Destination View
+
+    private func navigationDestinationView(
+        for annotation: MLNAnnotation,
+        on mapView: MLNMapView
+    ) -> MLNAnnotationView? {
+        let reuseId = "nav-destination"
+        let view: MLNAnnotationView
+        if let dequeued = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) {
+            view = dequeued
+        } else {
+            view = MLNAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
+            view.frame = CGRect(x: 0, y: 0, width: 28, height: 28)
+            view.backgroundColor = .clear
+            view.isUserInteractionEnabled = false
+
+            let imageView = UIImageView(image: UIImage(systemName: "flag.fill"))
+            imageView.tintColor = UIColor(Color.Trakke.brand)
+            imageView.contentMode = .scaleAspectFit
+            imageView.frame = view.bounds
+            // White outline so the pin reads on busy topo backgrounds.
+            imageView.layer.shadowColor = UIColor.white.cgColor
+            imageView.layer.shadowRadius = 1.5
+            imageView.layer.shadowOpacity = 1
+            imageView.layer.shadowOffset = .zero
+            view.addSubview(imageView)
+        }
+        return view
     }
 
     func mapView(_ mapView: MLNMapView, annotationCanShowCallout annotation: MLNAnnotation) -> Bool {
@@ -113,9 +147,12 @@ extension TrakkeMapView.Coordinator {
         let newIds = Set(routes.map(\.id))
         guard newIds != currentRouteIds else { return }
 
-        // Remove old route polylines (exclude drawing, measurement, selection, and point annotations)
+        // Remove old route polylines + halos. Skip activity-class polylines,
+        // drawing/measurement/selection, and point annotations.
         let existingPolylines = mapView.annotations?.compactMap { annotation -> MLNPolyline? in
             guard let polyline = annotation as? MLNPolyline,
+                  !(annotation is ActivityPolyline),
+                  !(annotation is ActivityHaloPolyline),
                   polyline !== drawingPolyline,
                   polyline !== measurementPolyline,
                   polyline !== selectionPolyline,
@@ -138,13 +175,58 @@ extension TrakkeMapView.Coordinator {
             }
             guard coords.count >= 2 else { continue }
 
+            // Halo (white casing) underneath, coloured stroke on top.
+            var haloCoords = coords
+            let halo = RouteHaloPolyline(coordinates: &haloCoords, count: UInt(coords.count))
+            halo.title = "#FFFFFF"
+            mapView.addAnnotation(halo)
+
             var mutableCoords = coords
             let polyline = MLNPolyline(coordinates: &mutableCoords, count: UInt(coords.count))
-            polyline.title = route.color ?? "#3e4533"
+            polyline.title = route.color ?? "#E07000"
             mapView.addAnnotation(polyline)
         }
 
         currentRouteIds = newIds
+    }
+
+    // MARK: - Activity Polylines
+
+    /// Renders activities as polylines on the map. Uses `ActivityPolyline` subclass
+    /// so route refresh skips them and vice versa. Activities use cobalt blue to
+    /// stand apart from amber routes — "planned" vs "completed" at a glance.
+    func updateActivityPolylines(on mapView: MLNMapView, activities: [Activity]) {
+        let newIds = Set(activities.map(\.id))
+        guard newIds != currentActivityIds else { return }
+
+        let existing = mapView.annotations?.compactMap { ann -> MLNPolyline? in
+            if ann is ActivityPolyline { return ann as? MLNPolyline }
+            if ann is ActivityHaloPolyline { return ann as? MLNPolyline }
+            return nil
+        } ?? []
+        if !existing.isEmpty {
+            mapView.removeAnnotations(existing)
+        }
+
+        for activity in activities {
+            let coords = activity.trackPoints.compactMap { point -> CLLocationCoordinate2D? in
+                guard point.count >= 2 else { return nil }
+                return CLLocationCoordinate2D(latitude: point[1], longitude: point[0])
+            }
+            guard coords.count >= 2 else { continue }
+
+            var haloCoords = coords
+            let halo = ActivityHaloPolyline(coordinates: &haloCoords, count: UInt(coords.count))
+            halo.title = "#FFFFFF"
+            mapView.addAnnotation(halo)
+
+            var mutableCoords = coords
+            let polyline = ActivityPolyline(coordinates: &mutableCoords, count: UInt(coords.count))
+            polyline.title = "#2255AA"
+            mapView.addAnnotation(polyline)
+        }
+
+        currentActivityIds = newIds
     }
 
     // MARK: - Drawing Overlay
@@ -458,14 +540,15 @@ extension TrakkeMapView.Coordinator {
 
             let config = UIImage.SymbolConfiguration(pointSize: 28, weight: .medium)
             let image = UIImage(systemName: "mappin.circle.fill", withConfiguration: config)?
-                .withTintColor(UIColor.Trakke.brand, renderingMode: .alwaysOriginal)
+                .withTintColor(UIColor.Trakke.mapWaypoint, renderingMode: .alwaysOriginal)
             let imageView = UIImageView(image: image)
             imageView.contentMode = .scaleAspectFit
             imageView.frame = CGRect(x: 0, y: 0, width: width, height: height)
-            imageView.layer.shadowColor = UIColor.black.cgColor
-            imageView.layer.shadowOpacity = 0.3
-            imageView.layer.shadowOffset = CGSize(width: 0, height: 1)
-            imageView.layer.shadowRadius = 2
+            // White halo lifts the pin off the topo background.
+            imageView.layer.shadowColor = UIColor.white.cgColor
+            imageView.layer.shadowOpacity = 1
+            imageView.layer.shadowOffset = .zero
+            imageView.layer.shadowRadius = 1.5
             view?.addSubview(imageView)
         }
 
