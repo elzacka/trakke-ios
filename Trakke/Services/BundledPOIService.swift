@@ -82,10 +82,16 @@ enum BundledPOIService {
     }
 
     private nonisolated static func decodePOIs(from url: URL, category: POICategory) -> [POI] {
-        guard let data = try? Data(contentsOf: url) else { return [] }
+        guard let data = try? Data(contentsOf: url) else {
+            Logger.poi.error("BundledPOI: could not read \(url.lastPathComponent, privacy: .public)")
+            return []
+        }
 
-        guard let collection = try? JSONDecoder().decode(BundledFeatureCollection.self, from: data) else {
-            Logger.poi.error("BundledPOI: failed to decode \(url.lastPathComponent, privacy: .public)")
+        let collection: BundledFeatureCollection
+        do {
+            collection = try JSONDecoder().decode(BundledFeatureCollection.self, from: data)
+        } catch {
+            Logger.poi.error("BundledPOI: failed to decode \(url.lastPathComponent, privacy: .public): \(String(describing: error), privacy: .public)")
             return []
         }
 
@@ -123,6 +129,62 @@ private struct BundledFeature: Decodable {
     let id: String
     let geometry: BundledGeometry
     let properties: [String: String]
+
+    private enum CodingKeys: String, CodingKey {
+        case id, geometry, properties
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(String.self, forKey: .id)
+        self.geometry = try container.decode(BundledGeometry.self, forKey: .geometry)
+
+        // GeoJSON-feltverdier kan være String, Int, Double, Bool eller null
+        // avhengig av datakilde. Vi koerserer alt til String for uniform
+        // POI.details — uten dette feilet hele feature-collection-decodingen
+        // hvis bare ÉN feature hadde f.eks. `elevation: 235` (Int).
+        let rawProps = try container.decode([String: JSONPropertyValue].self, forKey: .properties)
+        self.properties = rawProps.mapValues(\.stringValue)
+    }
+}
+
+private enum JSONPropertyValue: Decodable {
+    case string(String)
+    case int(Int)
+    case double(Double)
+    case bool(Bool)
+    case null
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.singleValueContainer()
+        if c.decodeNil() {
+            self = .null
+        } else if let s = try? c.decode(String.self) {
+            self = .string(s)
+        } else if let i = try? c.decode(Int.self) {
+            self = .int(i)
+        } else if let d = try? c.decode(Double.self) {
+            self = .double(d)
+        } else if let b = try? c.decode(Bool.self) {
+            self = .bool(b)
+        } else {
+            self = .null
+        }
+    }
+
+    var stringValue: String {
+        switch self {
+        case .string(let s): return s
+        case .int(let i): return String(i)
+        case .double(let d):
+            // Vis hele tall uten desimal når mulig (12.0 → "12", 12.5 → "12.5")
+            return d.truncatingRemainder(dividingBy: 1) == 0
+                ? String(Int(d))
+                : String(d)
+        case .bool(let b): return String(b)
+        case .null: return ""
+        }
+    }
 }
 
 private struct BundledGeometry: Decodable {
