@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		018DBCB3293351FDB15F3659 /* WeatherViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD31263DF1383B4F9570BD7 /* WeatherViewModel.swift */; };
-		01A697E2DEA3DC103DB94478 /* SchemaV5.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB7C5C4C745B0BB83AD6DB4 /* SchemaV5.swift */; };
 		020FCC94EFA0E15C9A21D598 /* MGRS in Frameworks */ = {isa = PBXBuildFile; productRef = 97B2D7D8D3A31119337EF8C7 /* MGRS */; };
 		023B6990FF80693C541E87F8 /* heavysleetshowersandthunder_day.svg in Resources */ = {isa = PBXBuildFile; fileRef = 31E85512B571BF6621E937BF /* heavysleetshowersandthunder_day.svg */; };
 		0276EA551629AE02B2B7422B /* rainshowers_day.svg in Resources */ = {isa = PBXBuildFile; fileRef = 6681D51E81D7DF398590E7BF /* rainshowers_day.svg */; };
@@ -81,7 +80,6 @@
 		5A6FB83E8E1F15885CF3C00D /* TrakkeTooltip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EA08AF430C23E60713FC9D3 /* TrakkeTooltip.swift */; };
 		5EDED6BC898533A2080FD9E3 /* sleetshowersandthunder_polartwilight.svg in Resources */ = {isa = PBXBuildFile; fileRef = 740600951A2591C756AAE68C /* sleetshowersandthunder_polartwilight.svg */; };
 		61783110B11D6958BA9D1E4A /* fair_night.svg in Resources */ = {isa = PBXBuildFile; fileRef = 9AA710D3CFFD1C343E55368B /* fair_night.svg */; };
-		61A1EF92AA174A3A9B44FECA /* SchemaV4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FDA06F9D367CD7F27DE09C5 /* SchemaV4.swift */; };
 		657863056B2362E532A58FAB /* NavigationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC559F7420E1F186365A84AC /* NavigationTests.swift */; };
 		69DC20A60E8D3CF1FAADAF8A /* lightsleetandthunder.svg in Resources */ = {isa = PBXBuildFile; fileRef = DF6808E74E8FB94C4D910E52 /* lightsleetandthunder.svg */; };
 		69FD449DC9A125E4797451B8 /* lightsleetshowers_day.svg in Resources */ = {isa = PBXBuildFile; fileRef = 595621232BA0E70711D83D32 /* lightsleetshowers_day.svg */; };
@@ -312,7 +310,6 @@
 		387B058D2CDB2D4437D30083 /* wilderness_shelters.geojson */ = {isa = PBXFileReference; path = wilderness_shelters.geojson; sourceTree = "<group>"; };
 		39916EBB098B54379CF3238F /* WaterTemperatureService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterTemperatureService.swift; sourceTree = "<group>"; };
 		3EC1194CD1BCB7392992B45D /* POIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POIService.swift; sourceTree = "<group>"; };
-		3FDA06F9D367CD7F27DE09C5 /* SchemaV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchemaV4.swift; sourceTree = "<group>"; };
 		410D3AEE72E9675202D9132B /* InfoSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoSheet.swift; sourceTree = "<group>"; };
 		42231E41B2F790E4CFAFD79C /* fair_day.svg */ = {isa = PBXFileReference; path = fair_day.svg; sourceTree = "<group>"; };
 		42B3A207C0E1760AB1C8EEA1 /* mgrs-ios */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "mgrs-ios"; path = "LocalPackages/mgrs-ios"; sourceTree = SOURCE_ROOT; };
@@ -454,7 +451,6 @@
 		CA37D9843E5FD99A14E48050 /* SolarCalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolarCalculatorTests.swift; sourceTree = "<group>"; };
 		CB54AF153094CE54757BE82D /* KnowledgeEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnowledgeEntry.swift; sourceTree = "<group>"; };
 		CF5C74893EF7B38931FA8BC9 /* TrakkeUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = TrakkeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		CFB7C5C4C745B0BB83AD6DB4 /* SchemaV5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchemaV5.swift; sourceTree = "<group>"; };
 		CFD5AA78AB2817FF6FDBB352 /* lightrainshowersandthunder_polartwilight.svg */ = {isa = PBXFileReference; path = lightrainshowersandthunder_polartwilight.svg; sourceTree = "<group>"; };
 		D01CE01B62A064EED1D3E7C2 /* sleetandthunder.svg */ = {isa = PBXFileReference; path = sleetandthunder.svg; sourceTree = "<group>"; };
 		D34AAF64BE00633F268D3FE4 /* lightsnowandthunder.svg */ = {isa = PBXFileReference; path = lightsnowandthunder.svg; sourceTree = "<group>"; };
@@ -628,8 +624,6 @@
 				20C8DDE1214C07FA3A9B1983 /* SchemaV1.swift */,
 				1C155D37467B27C3734355C9 /* SchemaV2.swift */,
 				021B773834C184822A43EBF9 /* SchemaV3.swift */,
-				3FDA06F9D367CD7F27DE09C5 /* SchemaV4.swift */,
-				CFB7C5C4C745B0BB83AD6DB4 /* SchemaV5.swift */,
 				DFACD2A0311FC9E0E9B7E2BD /* TrakkeMigrationPlan.swift */,
 				5CC92D2F03A2083F4A6FA2DB /* Waypoint.swift */,
 			);
@@ -1319,8 +1313,6 @@
 				1C2E72AD02B9FAAC7AAEE4AC /* SchemaV1.swift in Sources */,
 				2874F8CAA18E71422ECF4D70 /* SchemaV2.swift in Sources */,
 				B19031F076E5340EF1529719 /* SchemaV3.swift in Sources */,
-				61A1EF92AA174A3A9B44FECA /* SchemaV4.swift in Sources */,
-				01A697E2DEA3DC103DB94478 /* SchemaV5.swift in Sources */,
 				E164ADD33A1575D147AF39EC /* SearchResultRow.swift in Sources */,
 				3993ED3E7C59EF2E48FD0121 /* SearchService.swift in Sources */,
 				D3ACC6AEE46BAE0878A98F34 /* SearchSheet.swift in Sources */,
