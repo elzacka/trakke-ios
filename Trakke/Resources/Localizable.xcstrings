@@ -29,9 +29,6 @@
         }
       }
     },
-    "%@ m" : {
-
-    },
     "%@ moh." : {
 
     },
@@ -3255,6 +3252,39 @@
         }
       }
     },
+    "poi.badeplasser" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Badeplasser"
+          }
+        }
+      }
+    },
+    "poi.badeplasserMedStrand" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Badeplasser med strand"
+          }
+        }
+      }
+    },
+    "poi.category" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kategori"
+          }
+        }
+      }
+    },
     "poi.coordinates" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3438,39 +3468,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Detaljer"
-          }
-        }
-      }
-    },
-    "poi.badeplasser" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Badeplasser"
-          }
-        }
-      }
-    },
-    "poi.badeplasserMedStrand" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Badeplasser med strand"
-          }
-        }
-      }
-    },
-    "poi.category" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kategori"
           }
         }
       }
@@ -4054,7 +4051,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Databasen ble skadet og måtte tilbakestilles. Ruter og steder må importeres på nytt."
+            "value" : "Databasen ble skadet og tilbakestilt. Lagrede ruter, steder og turer er slettet. Du kan importere ruter, steder og turer fra GPX- eller GeoJSON-filer."
           }
         }
       }
