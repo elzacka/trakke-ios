@@ -523,7 +523,7 @@ struct ContentView: View {
 
         case .categoryPicker:
             CategoryPickerSheet(viewModel: poiViewModel)
-                .presentationDetents([.medium])
+                .presentationDetents([.large])
                 .presentationDragIndicator(.visible)
 
         case .poiDetail:

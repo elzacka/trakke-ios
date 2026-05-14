@@ -134,9 +134,17 @@ struct POIDetailSheet: View {
 
     // MARK: - Helpers
 
+    /// Tekniske/interne feltnavn vi ikke vil vise i detalj-arket. `link` og
+    /// `source` håndteres separat (link rendres som egen seksjon, source
+    /// vises som attribusjon i bunnen). `osm_ref` og `wikidata_id` er
+    /// kildedatabase-ID-er uten brukerverdi.
+    private static let hiddenDetailKeys: Set<String> = [
+        "link", "source", "osm_ref", "wikidata_id",
+    ]
+
     private var sortedDetails: [(key: String, value: String)] {
         poi.details
-            .filter { $0.key != "link" && $0.key != "source" }
+            .filter { !Self.hiddenDetailKeys.contains($0.key) }
             .sorted { $0.key < $1.key }
     }
 

@@ -57,7 +57,7 @@ struct CategoryPickerSheet: View {
     }
 
     private func groupCard(group: ContentGroup, categories: [POICategory]) -> some View {
-        CardSection(group.displayName.uppercased()) {
+        CardSection(group.displayName) {
             VStack(spacing: 0) {
                 ForEach(Array(categories.enumerated()), id: \.element) { index, category in
                     if index > 0 {

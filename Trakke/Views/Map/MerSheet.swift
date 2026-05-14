@@ -51,7 +51,7 @@ struct MerSheet: View {
                     Spacer(minLength: .Trakke.lg)
                 }
                 .padding(.horizontal, .Trakke.sheetHorizontal)
-                .padding(.top, .Trakke.sheetTop)
+                .padding(.top, .Trakke.lg)
             }
             .background(Color(.systemGroupedBackground))
             .tint(Color.Trakke.brand)
@@ -79,7 +79,7 @@ struct MerSheet: View {
     // MARK: - Seksjon: MINE TING
 
     private var mineTingSection: some View {
-        CardSection(String(localized: "mystuff.title").uppercased()) {
+        CardSection(String(localized: "mystuff.title")) {
             VStack(spacing: 0) {
                 pushRow(label: String(localized: "routes.title"),
                         count: routeViewModel.routes.count,
@@ -105,7 +105,7 @@ struct MerSheet: View {
     // MARK: - Seksjon: VERKTØY
 
     private var verktoySection: some View {
-        CardSection(String(localized: "explore.title").uppercased()) {
+        CardSection(String(localized: "explore.title")) {
             VStack(spacing: 0) {
                 actionRow(label: String(localized: "measurement.title")) {
                     dismiss()
@@ -123,7 +123,7 @@ struct MerSheet: View {
     // MARK: - Seksjon: KUNNSKAP OG OM
 
     private var kunnskapOgOmSection: some View {
-        CardSection(String(localized: "more.title").uppercased()) {
+        CardSection(String(localized: "more.title")) {
             VStack(spacing: 0) {
                 pushRow(label: String(localized: "knowledge.title"),
                         count: nil,

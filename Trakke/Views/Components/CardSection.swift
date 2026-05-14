@@ -15,6 +15,7 @@ struct CardSection<Content: View>: View {
                 Text(title)
                     .font(Font.Trakke.sectionHeader)
                     .foregroundStyle(Color.Trakke.textTertiary)
+                    .textCase(.uppercase)
                     .padding(.horizontal, .Trakke.xs)
                     .padding(.bottom, .Trakke.sm)
             }

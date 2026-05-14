@@ -41,77 +41,26 @@ struct InfoSheet: View {
 
     private var contentVStack: some View {
         VStack(spacing: .Trakke.cardGap) {
-                    // MARK: - User Guide & Links
+                    // MARK: - User Guide & Links (uten pynt-ikoner)
                     CardSection {
-                        Button {
+                        infoMenuButton(label: String(localized: "userguide.title"), trailing: .chevron) {
                             showUserGuide = true
-                        } label: {
-                            HStack(spacing: .Trakke.md) {
-                                Image(systemName: "book.pages")
-                                    .font(Font.Trakke.bodyMedium)
-                                    .foregroundStyle(Color.Trakke.brand)
-                                    .frame(width: .Trakke.touchMin)
-                                    .accessibilityHidden(true)
-
-                                Text(String(localized: "userguide.title"))
-                                    .font(Font.Trakke.bodyRegular)
-                                    .foregroundStyle(Color.Trakke.text)
-
-                                Spacer()
-
-                                Image(systemName: "chevron.right")
-                                    .font(Font.Trakke.captionSoft)
-                                    .foregroundStyle(Color.Trakke.textTertiary)
-                            }
-                            .frame(minHeight: .Trakke.touchMin)
-                            .contentShape(Rectangle())
                         }
-                        .buttonStyle(.plain)
 
-                        Divider()
+                        Divider().padding(.leading, .Trakke.dividerLeading)
 
-                        Button {
+                        infoMenuButton(label: String(localized: "info.privacy.policy"), trailing: .chevron) {
                             showPrivacySheet = true
-                        } label: {
-                            HStack(spacing: .Trakke.md) {
-                                Image(systemName: "hand.raised")
-                                    .font(Font.Trakke.bodyMedium)
-                                    .foregroundStyle(Color.Trakke.brand)
-                                    .frame(width: .Trakke.touchMin)
-                                    .accessibilityHidden(true)
-
-                                Text(String(localized: "info.privacy.policy"))
-                                    .font(Font.Trakke.bodyRegular)
-                                    .foregroundStyle(Color.Trakke.text)
-
-                                Spacer()
-
-                                Image(systemName: "chevron.right")
-                                    .font(Font.Trakke.captionSoft)
-                                    .foregroundStyle(Color.Trakke.textTertiary)
-                            }
-                            .frame(minHeight: .Trakke.touchMin)
-                            .contentShape(Rectangle())
                         }
-                        .buttonStyle(.plain)
-                        .accessibilityLabel(String(localized: "info.privacy.policy"))
 
-                        Divider()
+                        Divider().padding(.leading, .Trakke.dividerLeading)
 
                         Link(destination: URL(string: "https://github.com/elzacka/trakke-ios")!) {
                             HStack(spacing: .Trakke.md) {
-                                Image(systemName: "chevron.left.forwardslash.chevron.right")
-                                    .font(Font.Trakke.bodyMedium)
-                                    .foregroundStyle(Color.Trakke.brand)
-                                    .frame(width: .Trakke.touchMin)
-                                    .accessibilityHidden(true)
-
                                 Text(String(localized: "info.sourceCode"))
                                     .font(Font.Trakke.bodyRegular)
                                     .foregroundStyle(Color.Trakke.text)
-
                                 Spacer()
-
                                 Image(systemName: "arrow.up.right")
                                     .font(Font.Trakke.captionSoft)
                                     .foregroundStyle(Color.Trakke.textTertiary)
@@ -120,6 +69,7 @@ struct InfoSheet: View {
                             .contentShape(Rectangle())
                         }
                         .accessibilityLabel(String(localized: "info.sourceCode"))
+                        .accessibilityHint(String(localized: "accessibility.opensExternalLink"))
                     }
 
                     // MARK: - Data Sources (alphabetical, expandable)
@@ -199,25 +149,27 @@ struct InfoSheet: View {
                         }
                     }
 
-                    // MARK: - Open Source (alphabetical)
-                    CardSection(String(localized: "info.openSource")) {
-                        dataSourceRow(
-                            name: "GRDB",
-                            detail: String(localized: "info.grdb.detail"),
-                            license: "MIT"
-                        )
-                        Divider()
-                        dataSourceRow(
-                            name: "MapLibre",
-                            detail: String(localized: "info.maplibre.detail"),
-                            license: "BSD / ISC"
-                        )
-                        Divider()
-                        dataSourceRow(
-                            name: "NGA",
-                            detail: String(localized: "info.nga.detail"),
-                            license: "MIT"
-                        )
+                    // MARK: - Open Source (alphabetical, expandable)
+                    ExpandableSection(String(localized: "info.openSource")) {
+                        VStack(spacing: 0) {
+                            dataSourceRow(
+                                name: "GRDB",
+                                detail: String(localized: "info.grdb.detail"),
+                                license: "MIT"
+                            )
+                            Divider()
+                            dataSourceRow(
+                                name: "MapLibre",
+                                detail: String(localized: "info.maplibre.detail"),
+                                license: "BSD / ISC"
+                            )
+                            Divider()
+                            dataSourceRow(
+                                name: "NGA",
+                                detail: String(localized: "info.nga.detail"),
+                                license: "MIT"
+                            )
+                        }
                     }
 
                     // MARK: - App Info
@@ -284,5 +236,36 @@ struct InfoSheet: View {
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
         let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1"
         return "\(version) (\(build))"
+    }
+
+    // MARK: - Menu row (uten ledende ikon)
+
+    private enum TrailingGlyph {
+        case chevron
+    }
+
+    private func infoMenuButton(
+        label: String,
+        trailing: TrailingGlyph,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            HStack(spacing: .Trakke.md) {
+                Text(label)
+                    .font(Font.Trakke.bodyRegular)
+                    .foregroundStyle(Color.Trakke.text)
+                Spacer()
+                switch trailing {
+                case .chevron:
+                    Image(systemName: "chevron.right")
+                        .font(Font.Trakke.captionSoft)
+                        .foregroundStyle(Color.Trakke.textTertiary)
+                }
+            }
+            .frame(minHeight: .Trakke.touchMin)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(label)
     }
 }
