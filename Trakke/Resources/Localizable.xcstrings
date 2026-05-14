@@ -6576,6 +6576,94 @@
         }
       }
     },
+    "weather.warnings" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Varsler"
+          }
+        }
+      }
+    },
+    "weather.uv" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UV-indeks"
+          }
+        }
+      }
+    },
+    "weather.uv.label %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UV-indeks %@"
+          }
+        }
+      }
+    },
+    "weather.uv.high.advice" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bruk solkrem og søk skygge midt på dagen"
+          }
+        }
+      }
+    },
+    "weather.uv.moderate.advice" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bruk solkrem og hatt"
+          }
+        }
+      }
+    },
+    "weather.uv.low.advice" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beskytt eksponert hud"
+          }
+        }
+      }
+    },
+    "common.showMore" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vis mer"
+          }
+        }
+      }
+    },
+    "common.showLess" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skjul"
+          }
+        }
+      }
+    },
     "weather.varsom.avalanche" : {
       "extractionState" : "stale",
       "localizations" : {
