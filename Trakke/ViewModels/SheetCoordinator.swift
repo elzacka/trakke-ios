@@ -13,8 +13,7 @@ enum ActiveSheet: Identifiable, Hashable {
     case waypointEdit
     case offlineManager
     case downloadArea
-    case offlineChoice
-    case kommuneBrowser
+    case offlineSetup
     case weather
     case measurement
     case navigationStart

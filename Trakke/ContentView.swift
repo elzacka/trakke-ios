@@ -596,7 +596,7 @@ struct ContentView: View {
                     startActivityRecording()
                 },
                 onMeasurementTapped: { sheets.active = .measurement },
-                onOfflineTapped: { sheets.active = .offlineChoice },
+                onOfflineTapped: { sheets.active = .offlineSetup },
                 onDeleteAllData: clearAllServiceCaches
             )
 
@@ -646,7 +646,7 @@ struct ContentView: View {
             DownloadManagerSheet(
                 viewModel: offlineViewModel,
                 onNewDownload: {
-                    sheets.active = .offlineChoice
+                    sheets.active = .offlineSetup
                 }
             )
             .presentationDetents([.medium, .large])
@@ -657,29 +657,16 @@ struct ContentView: View {
                 .presentationDetents([.medium, .large])
                 .presentationDragIndicator(.visible)
 
-        case .offlineChoice:
-            OfflineChoiceSheet(
+        case .offlineSetup:
+            OfflineSetupSheet(
+                viewModel: offlineViewModel,
                 onCustom: {
                     offlineViewModel.startSelection(
                         center: mapViewModel.currentCenter,
                         zoom: mapViewModel.currentZoom
                     )
-                },
-                onKommune: {
-                    sheets.active = .kommuneBrowser
-                },
-                onManageDownloads: {
-                    sheets.active = .offlineManager
-                },
-                hasDownloads: !offlineViewModel.packs.isEmpty
+                }
             )
-            .presentationDetents([.medium])
-            .presentationDragIndicator(.visible)
-
-        case .kommuneBrowser:
-            KommuneBrowserSheet(viewModel: offlineViewModel)
-                .presentationDetents([.medium, .large])
-                .presentationDragIndicator(.visible)
 
         case .weather:
             WeatherSheet(viewModel: weatherViewModel)
