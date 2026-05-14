@@ -1,5 +1,32 @@
 import SwiftUI
 
+// MARK: - Spacing Guide
+//
+// Bruk regler — først semantiske tokens, så atomiske som fallback.
+//
+// SEMANTISKE (foretrukket — beskriver formål):
+//   sheetHorizontal  Horisontal innrykk inni en sheet/scrollview (20).
+//   sheetTop         Topp-padding rett under drag-indicator (8).
+//   cardPadH/V       Padding inni CardSection (16h / 12v).
+//   cardGap          Avstand mellom kort i en VStack (24).
+//   rowVertical      Vertikal padding i list-rader (6).
+//   labelGap         Knapp/label-til-ikon-avstand (2).
+//   dividerLeading   Indrag for Divider inni kort (4).
+//   buttonPadV       Vertikal padding i TrakkeButtonStyle (14).
+//   iconSlot/Large   Fast bredde for ikoner i rader (24 / 28).
+//   badgePadH/V      Tett padding for pill-formet badge (6 / 2).
+//
+// ATOMISKE (bruk når intet semantisk token passer):
+//   xs=4  sm=8  md=12  lg=16  xl=20  xxl=24
+//   Holder seg til et 4 px-grid for visuell rytme.
+//
+// TOUCH TARGETS:
+//   touchMin=44       WCAG-minimum for interaktive elementer.
+//   touchComfortable=48  Komfortabel størrelse (foretrukket FAB/CTA).
+//   touchCTA=72       Forhøyet for SOS/nød-knapper.
+//
+// Når du legger til nytt semantisk token: dokumenter formålet her.
+
 extension CGFloat {
     enum Trakke {
         static let xs: CGFloat = 4

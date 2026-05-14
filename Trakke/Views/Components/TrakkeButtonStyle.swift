@@ -1,7 +1,13 @@
 import SwiftUI
 
 struct TrakkeButtonStyle: ButtonStyle {
-    enum Variant { case primary, secondary, danger }
+    /// Knappehierarki:
+    /// - `primary`: Hovedhandling i flyten (start, fortsett, naviger). Maks én per skjerm.
+    /// - `secondary`: Sidestilt handling (eksporter, dupliser).
+    /// - `tertiary`: Lavprofil-handling. Som secondary, men uten bakgrunn — for
+    ///   handlinger som ikke trenger visuell vekt (avbryt, hjelp, lenker).
+    /// - `danger`: Destruktiv handling (slett). Maks én per skjerm, sist i listen.
+    enum Variant { case primary, secondary, tertiary, danger }
     let variant: Variant
 
     func makeBody(configuration: Configuration) -> some View {
@@ -11,7 +17,7 @@ struct TrakkeButtonStyle: ButtonStyle {
     fileprivate static func foregroundColor(for variant: Variant) -> Color {
         switch variant {
         case .primary: .white
-        case .secondary: Color.Trakke.brand
+        case .secondary, .tertiary: Color.Trakke.brand
         case .danger: Color.Trakke.red
         }
     }
@@ -20,6 +26,7 @@ struct TrakkeButtonStyle: ButtonStyle {
         switch variant {
         case .primary: Color.Trakke.brand
         case .secondary: Color(.secondarySystemGroupedBackground)
+        case .tertiary: Color.clear
         case .danger: Color(.secondarySystemGroupedBackground)
         }
     }
@@ -49,5 +56,6 @@ private struct TrakkeButtonBody: View {
 extension ButtonStyle where Self == TrakkeButtonStyle {
     static var trakkePrimary: TrakkeButtonStyle { .init(variant: .primary) }
     static var trakkeSecondary: TrakkeButtonStyle { .init(variant: .secondary) }
+    static var trakkeTertiary: TrakkeButtonStyle { .init(variant: .tertiary) }
     static var trakkeDanger: TrakkeButtonStyle { .init(variant: .danger) }
 }
