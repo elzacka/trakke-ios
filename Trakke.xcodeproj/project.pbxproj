@@ -14,7 +14,6 @@
 		0276EA551629AE02B2B7422B /* rainshowers_day.svg in Resources */ = {isa = PBXBuildFile; fileRef = 6681D51E81D7DF398590E7BF /* rainshowers_day.svg */; };
 		0294B88578D8939E29A37F5E /* Font+Trakke.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E5CE80EEEDF6E815BD6CED /* Font+Trakke.swift */; };
 		0708C19448134DE5282529E4 /* TrakkeMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6672497810D8608FD93B7A54 /* TrakkeMapView.swift */; };
-		07EF3A5CB1E670E2E5581620 /* MoreSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15E64B03DA7B98D4A32DFE4D /* MoreSheet.swift */; };
 		09A79DCA43FB500CAB668321 /* TrakkeMapView+Annotations.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E2C88B67EF2819E60B5DEE /* TrakkeMapView+Annotations.swift */; };
 		09D957D62C3C2BC629516232 /* NaturskogSubPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F2114F04FF6BB7D485A84C1 /* NaturskogSubPickerView.swift */; };
 		0C214B9D0F7831BCDBF60E62 /* AirQualityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D4162FC25505243AB8F9DF9 /* AirQualityService.swift */; };
@@ -107,7 +106,6 @@
 		78A6FEDDD77FE61ACF5F2F62 /* rainshowersandthunder_polartwilight.svg in Resources */ = {isa = PBXBuildFile; fileRef = 9D48828032FCDC1F1557D39D /* rainshowersandthunder_polartwilight.svg */; };
 		78C6411001C2C20E9B74D48E /* heavysleetandthunder.svg in Resources */ = {isa = PBXBuildFile; fileRef = C0F6E0B6654DE78D734D3B6A /* heavysleetandthunder.svg */; };
 		798CC23F2072E7C19629E605 /* NavigationStartSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 611E9CFC76A837E86C3D3CCF /* NavigationStartSheet.swift */; };
-		79CA12F4EE69E95039D53905 /* MineGreierSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C6905785EC06EC31B3286ED /* MineGreierSheet.swift */; };
 		7B4C7BFACC2388F614094403 /* caves.geojson in Resources */ = {isa = PBXBuildFile; fileRef = 7EA142B392856DFB169FC608 /* caves.geojson */; };
 		7B6E08F436AD85044A51DC86 /* PrivacySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE47AEB2F925E616D203E595 /* PrivacySheet.swift */; };
 		7C2327A508E74DF9451431A9 /* heavysnowshowersandthunder_night.svg in Resources */ = {isa = PBXBuildFile; fileRef = DBD8F1CEFC41F04BBFC5F648 /* heavysnowshowersandthunder_night.svg */; };
@@ -192,7 +190,6 @@
 		CAFA3A2881A7096CF29CE8C7 /* SolarCalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA37D9843E5FD99A14E48050 /* SolarCalculatorTests.swift */; };
 		CBAF5DBC8035CD9010705FA0 /* Exo2-Variable.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 77FF1E584D3216D6000EF74B /* Exo2-Variable.ttf */; };
 		CE2E50E3844E5A3647715FB5 /* heavysleetshowersandthunder_night.svg in Resources */ = {isa = PBXBuildFile; fileRef = 8936A6973E52AAD3B9439F67 /* heavysleetshowersandthunder_night.svg */; };
-		D022FD1756A03A2F68408D6A /* ExploreSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EC7EBDBC9F398CEFDB1BF5 /* ExploreSheet.swift */; };
 		D0C992C1917F9C211DA110E8 /* wilderness_shelters.geojson in Resources */ = {isa = PBXBuildFile; fileRef = 387B058D2CDB2D4437D30083 /* wilderness_shelters.geojson */; };
 		D2F5EA5B3480AC9ACA056A56 /* snowshowers_polartwilight.svg in Resources */ = {isa = PBXBuildFile; fileRef = 67F5E5FCBB47B3C24EBA9C84 /* snowshowers_polartwilight.svg */; };
 		D3ACC6AEE46BAE0878A98F34 /* SearchSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F3227EF60259A5DDBAB21C /* SearchSheet.swift */; };
@@ -283,7 +280,6 @@
 		12856BDC73ABF49790605710 /* Polyline6Decoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Polyline6Decoder.swift; sourceTree = "<group>"; };
 		141766496BBFD7A301341B62 /* HapticFeedbackService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticFeedbackService.swift; sourceTree = "<group>"; };
 		14BF64BF4F13693F38DFCEF3 /* SearchResultRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultRow.swift; sourceTree = "<group>"; };
-		15E64B03DA7B98D4A32DFE4D /* MoreSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreSheet.swift; sourceTree = "<group>"; };
 		180F47608E16EF81D49963BA /* lightsnowshowers_polartwilight.svg */ = {isa = PBXFileReference; path = lightsnowshowers_polartwilight.svg; sourceTree = "<group>"; };
 		1B26B00165D1496C9D5529B5 /* RouteDetailSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteDetailSheet.swift; sourceTree = "<group>"; };
 		1B359D627BE06494B8B332DA /* heavysnowshowers_night.svg */ = {isa = PBXFileReference; path = heavysnowshowers_night.svg; sourceTree = "<group>"; };
@@ -311,14 +307,12 @@
 		37D830B9D98AF2D9D6DFD5C6 /* ActivityViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityViewModel.swift; sourceTree = "<group>"; };
 		387B058D2CDB2D4437D30083 /* wilderness_shelters.geojson */ = {isa = PBXFileReference; path = wilderness_shelters.geojson; sourceTree = "<group>"; };
 		39916EBB098B54379CF3238F /* WaterTemperatureService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterTemperatureService.swift; sourceTree = "<group>"; };
-		3C6905785EC06EC31B3286ED /* MineGreierSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineGreierSheet.swift; sourceTree = "<group>"; };
 		3EC1194CD1BCB7392992B45D /* POIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POIService.swift; sourceTree = "<group>"; };
 		3FDA06F9D367CD7F27DE09C5 /* SchemaV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchemaV4.swift; sourceTree = "<group>"; };
 		410D3AEE72E9675202D9132B /* InfoSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoSheet.swift; sourceTree = "<group>"; };
 		42231E41B2F790E4CFAFD79C /* fair_day.svg */ = {isa = PBXFileReference; path = fair_day.svg; sourceTree = "<group>"; };
 		42B3A207C0E1760AB1C8EEA1 /* mgrs-ios */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "mgrs-ios"; path = "LocalPackages/mgrs-ios"; sourceTree = SOURCE_ROOT; };
 		42B9EA0B5AE9C2165FE85693 /* ArticleDetailSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleDetailSheet.swift; sourceTree = "<group>"; };
-		43EC7EBDBC9F398CEFDB1BF5 /* ExploreSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreSheet.swift; sourceTree = "<group>"; };
 		44E67DF50AC72B5B791232E2 /* ActivityTrackingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityTrackingService.swift; sourceTree = "<group>"; };
 		4711AD6123FBDCB2103C0D3E /* NavigationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationViewModel.swift; sourceTree = "<group>"; };
 		4820FA9EE18BD70E32D8EACF /* ActivityListSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityListSheet.swift; sourceTree = "<group>"; };
@@ -687,11 +681,8 @@
 				4F4412ECE730F9D59F4787E3 /* BibliotekSheet.swift */,
 				83A6655A28D88ACC33D7CD51 /* ContentView+Navigation.swift */,
 				B5BED2C31E8D0D360FA1DAF6 /* DrawingToolbar.swift */,
-				43EC7EBDBC9F398CEFDB1BF5 /* ExploreSheet.swift */,
 				9E771B0038B66E3A05A4334B /* MapControlsOverlay.swift */,
 				5E61EBE99D6DE3DF695A466E /* MeasurementToolbar.swift */,
-				3C6905785EC06EC31B3286ED /* MineGreierSheet.swift */,
-				15E64B03DA7B98D4A32DFE4D /* MoreSheet.swift */,
 				56C9FD38B1796FBA500F9382 /* SelectionToolbar.swift */,
 				6672497810D8608FD93B7A54 /* TrakkeMapView.swift */,
 				B5E2C88B67EF2819E60B5DEE /* TrakkeMapView+Annotations.swift */,
@@ -1253,7 +1244,6 @@
 				C4FF56FF5DC59F82AF8E7D9D /* ElevationService.swift in Sources */,
 				29182E43A14354AC53371C98 /* EmergencySheet.swift in Sources */,
 				1EBC5680B70831AFB4408496 /* EmptyStateView.swift in Sources */,
-				D022FD1756A03A2F68408D6A /* ExploreSheet.swift in Sources */,
 				0294B88578D8939E29A37F5E /* Font+Trakke.swift in Sources */,
 				F8F517E28C3371FBAD7DC0B2 /* GPXExportService.swift in Sources */,
 				A80383EF15054B5242AF5D6E /* GPXImportService.swift in Sources */,
@@ -1286,8 +1276,6 @@
 				F161D9A25AE4B1BD583FEE27 /* MeasurementSheet.swift in Sources */,
 				BA3A7CFE7F5226CFAD1A4E76 /* MeasurementToolbar.swift in Sources */,
 				0FCAB2E0C251794C34AC48AE /* MeasurementViewModel.swift in Sources */,
-				79CA12F4EE69E95039D53905 /* MineGreierSheet.swift in Sources */,
-				07EF3A5CB1E670E2E5581620 /* MoreSheet.swift in Sources */,
 				09D957D62C3C2BC629516232 /* NaturskogSubPickerView.swift in Sources */,
 				E4C087FCE6116F6A4E442834 /* NavigationOverlayView.swift in Sources */,
 				202C5DFE5B14DA479A999731 /* NavigationService.swift in Sources */,
