@@ -32,6 +32,16 @@ Tråkke er en kartapp for iPhone som bruker kartdata fra Kartverket. Appen er la
 
 All data lagres lokalt. Ingen sporing, ingen analyse, ingen brukerkontoer. Personvernerklæringen vises i appen under «Informasjon» og er også tilgjengelig i [PERSONVERN.md](PERSONVERN.md).
 
+## Dokumentasjon
+
+| Dokument | Innhold |
+|----------|---------|
+| [BRUKERVEILEDNING.md](BRUKERVEILEDNING.md) | Hvordan bruke Tråkke. Vises også i appen under «Informasjon». |
+| [PERSONVERN.md](PERSONVERN.md) | Personvernerklæring (GDPR). Datakilder, rettsgrunnlag, dine rettigheter. |
+| [SECURITY.md](SECURITY.md) | Teknisk sikkerhetsarkitektur og rapportering av sårbarheter. |
+| [CLAUDE.md](CLAUDE.md) | Prosjektinstruksjoner for AI-agenter. |
+| [dev_only/CLAUDE.md](dev_only/CLAUDE.md) | Detaljert arkitektur- og delsystem-referanse for utviklere. |
+
 ## Utvikling
 
 Krever Xcode og [xcodegen](https://github.com/yonaskolb/XcodeGen).
