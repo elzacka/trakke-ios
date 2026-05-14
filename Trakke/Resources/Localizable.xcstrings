@@ -1203,7 +1203,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Utforsk"
+            "value" : "Verktøy"
           }
         }
       }
@@ -3036,6 +3036,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Last ned kartområder for bruk uten internett"
+          }
+        }
+      }
+    },
+    "offline.empty.short" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingen lastet ned ennå"
           }
         }
       }

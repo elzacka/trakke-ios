@@ -131,7 +131,7 @@ struct BibliotekSheet: View {
                 Group {
                     switch selectedTab {
                     case .myStuff: myStuffContent
-                    case .explore: exploreContent
+                    case .explore: toolsContent
                     case .more: moreContent
                     }
                 }
@@ -193,22 +193,53 @@ struct BibliotekSheet: View {
                         count: activityViewModel.activities.count,
                         destination: BibliotekMyStuffDestination.activities
                     )
-                    // Offline-kart dukker bare opp her når brukeren faktisk har
-                    // lastet ned noe. Tomt = ikke synlig (Rams: ikke vis det som
-                    // ikke er der). Nye nedlastinger initieres fra «Mer»-fanen.
-                    if !offlineViewModel.packs.isEmpty {
-                        Divider().padding(.leading, .Trakke.dividerLeading)
-                        bibliotekMenuLink(
-                            icon: "arrow.down.circle",
-                            label: String(localized: "offline.title"),
-                            count: offlineViewModel.packs.count,
-                            destination: BibliotekMyStuffDestination.offlinePacks
-                        )
-                    }
                 }
+
+                offlineMapsCard
             }
             .padding(.horizontal, .Trakke.sheetHorizontal)
             .padding(.top, .Trakke.sheetTop)
+        }
+    }
+
+    /// Liste over nedlastede offline-kart, sortert alfabetisk.
+    /// Når brukeren ikke har lastet ned noe vises en kort tomstand —
+    /// brukeren får vite at funksjonen finnes uten å åpne en annen flate.
+    private var offlineMapsCard: some View {
+        CardSection(String(localized: "offline.title")) {
+            if offlineViewModel.packs.isEmpty {
+                Text(String(localized: "offline.empty.short"))
+                    .font(Font.Trakke.caption)
+                    .foregroundStyle(Color.Trakke.textTertiary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.vertical, .Trakke.sm)
+            } else {
+                let sortedPacks = offlineViewModel.packs
+                    .sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+                ForEach(Array(sortedPacks.enumerated()), id: \.element.id) { index, pack in
+                    if index > 0 {
+                        Divider().padding(.leading, .Trakke.dividerLeading)
+                    }
+                    Button {
+                        navigationPath.append(BibliotekMyStuffDestination.offlinePacks)
+                    } label: {
+                        HStack(spacing: .Trakke.md) {
+                            Text(pack.name)
+                                .font(Font.Trakke.bodyRegular)
+                                .foregroundStyle(Color.Trakke.text)
+                                .lineLimit(1)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(Font.Trakke.captionSoft)
+                                .foregroundStyle(Color.Trakke.textTertiary)
+                        }
+                        .padding(.vertical, .Trakke.sm)
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(pack.name)
+                }
+            }
         }
     }
 
@@ -278,17 +309,38 @@ struct BibliotekSheet: View {
         }
     }
 
-    // MARK: - Tab: Utforsk
+    // MARK: - Tab: Verktøy
+    //
+    // Samler de kart-bestemmende handlingene: kartlag-toggles og
+    // tools (måleverktøy og offline-nedlasting). Tidligere innhold
+    // Kartinnhold er fjernet: POI-kategorier nås via FAB → Kategorier,
+    // kunnskapstemaer via Mer → Kunnskap.
 
-    private var exploreContent: some View {
+    private var toolsContent: some View {
         ScrollView {
             VStack(spacing: .Trakke.cardGap) {
+                toolsSection
                 kartlagSection
-                kartinnholdSection
                 Spacer(minLength: .Trakke.lg)
             }
             .padding(.horizontal, .Trakke.sheetHorizontal)
             .padding(.top, .Trakke.sheetTop)
+        }
+    }
+
+    private var toolsSection: some View {
+        CardSection {
+            VStack(spacing: 0) {
+                bibliotekActionButton(icon: "ruler", label: String(localized: "measurement.title")) {
+                    dismiss()
+                    onMeasurementTapped?()
+                }
+                Divider().padding(.leading, .Trakke.dividerLeading)
+                bibliotekActionButton(icon: "arrow.down.circle", label: String(localized: "offline.title")) {
+                    dismiss()
+                    onOfflineTapped?()
+                }
+            }
         }
     }
 
@@ -312,47 +364,6 @@ struct BibliotekSheet: View {
                     label: OverlayLayer.turrutebasen.displayName,
                     isOn: $overlayTurrutebasen
                 )
-            }
-        }
-    }
-
-    @ViewBuilder
-    private var kartinnholdSection: some View {
-        let hasPacks = !knowledgeViewModel.availablePacks.isEmpty || !knowledgeViewModel.installedPacks.isEmpty
-
-        CardSection(String(localized: "explore.kartinnhold")) {
-            VStack(spacing: 0) {
-                let groups = ContentGroup.allCases.filter { group in
-                    POICategory.allCases.contains { $0.contentGroup == group } ||
-                    KnowledgeTheme.phase1.contains { $0.contentGroup == group }
-                }
-
-                ForEach(Array(groups.enumerated()), id: \.element) { index, group in
-                    if index > 0 {
-                        Divider()
-                    }
-
-                    let pois = POICategory.allCases
-                        .filter { $0.contentGroup == group }
-                        .sorted { $0.displayName.localizedCompare($1.displayName) == .orderedAscending }
-                    let themes = KnowledgeTheme.phase1
-                        .filter { $0.contentGroup == group }
-                        .sorted { $0.displayName.localizedCompare($1.displayName) == .orderedAscending }
-
-                    BibliotekContentGroupSection(
-                        group: group,
-                        poiCategories: pois,
-                        themes: hasPacks ? themes : [],
-                        poiViewModel: poiViewModel,
-                        knowledgeViewModel: knowledgeViewModel
-                    )
-                }
-
-                if knowledgeViewModel.isLoadingCatalog && knowledgeViewModel.availablePacks.isEmpty {
-                    Divider()
-                    ProgressView()
-                        .padding(.vertical, .Trakke.md)
-                }
             }
         }
     }
@@ -492,210 +503,5 @@ struct BibliotekSheet: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-    }
-}
-
-// MARK: - Content Group Section (POI + Knowledge)
-
-private struct BibliotekContentGroupSection: View {
-    let group: ContentGroup
-    let poiCategories: [POICategory]
-    let themes: [KnowledgeTheme]
-    @Bindable var poiViewModel: POIViewModel
-    @Bindable var knowledgeViewModel: KnowledgeViewModel
-    @State private var isExpanded = false
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-
-    var body: some View {
-        VStack(spacing: 0) {
-            Button {
-                withAnimation(reduceMotion ? .none : .easeInOut(duration: 0.2)) {
-                    isExpanded.toggle()
-                }
-            } label: {
-                HStack(spacing: .Trakke.md) {
-                    Image(systemName: group.iconName)
-                        .foregroundStyle(Color.Trakke.brand)
-                        .frame(width: 24)
-                        .accessibilityHidden(true)
-
-                    Text(group.displayName)
-                        .font(Font.Trakke.bodyMedium)
-                        .foregroundStyle(Color.Trakke.text)
-
-                    Spacer()
-
-                    Image(systemName: "chevron.right")
-                        .font(Font.Trakke.captionSoft)
-                        .foregroundStyle(Color.Trakke.textTertiary)
-                        .rotationEffect(.degrees(isExpanded ? 90 : 0))
-                }
-                .frame(minHeight: .Trakke.touchMin)
-                .contentShape(Rectangle())
-            }
-            .accessibilityAddTraits(.isHeader)
-            .accessibilityHint(isExpanded
-                ? String(localized: "accessibility.tapToCollapse")
-                : String(localized: "accessibility.tapToExpand"))
-
-            if isExpanded {
-                ForEach(poiCategories) { category in
-                    Divider()
-                    poiRow(category)
-                }
-                ForEach(themes) { theme in
-                    Divider()
-                    BibliotekThemeRow(theme: theme, viewModel: knowledgeViewModel)
-                }
-            }
-        }
-    }
-
-    private func poiRow(_ category: POICategory) -> some View {
-        Button {
-            poiViewModel.toggleCategory(category)
-        } label: {
-            HStack(spacing: .Trakke.md) {
-                Image(category.iconName)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 20, height: 20)
-                    .foregroundStyle(Color(hex: category.color))
-                    .frame(width: 28, height: 28)
-                    .accessibilityHidden(true)
-
-                Text(category.displayName)
-                    .font(Font.Trakke.bodyRegular)
-                    .foregroundStyle(Color.Trakke.text)
-
-                Spacer()
-
-                if poiViewModel.enabledCategories.contains(category) {
-                    Image(systemName: "checkmark")
-                        .font(Font.Trakke.bodyMedium)
-                        .foregroundStyle(Color.Trakke.brand)
-                        .accessibilityHidden(true)
-                }
-            }
-            .frame(minHeight: .Trakke.touchMin)
-            .contentShape(Rectangle())
-        }
-        .accessibilityLabel(category.displayName)
-        .accessibilityValue(poiViewModel.enabledCategories.contains(category)
-            ? String(localized: "accessibility.enabled")
-            : String(localized: "accessibility.disabled"))
-        .accessibilityAddTraits(poiViewModel.enabledCategories.contains(category) ? .isSelected : [])
-    }
-}
-
-// MARK: - Theme Row with Pack List
-
-private struct BibliotekThemeRow: View {
-    let theme: KnowledgeTheme
-    @Bindable var viewModel: KnowledgeViewModel
-    @State private var isExpanded = false
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-
-    private var packs: [KnowledgePack] {
-        viewModel.packsForTheme(theme).sorted { $0.countyName < $1.countyName }
-    }
-
-    private var hasInstalledPacks: Bool {
-        packs.contains { pack in viewModel.installedPacks.contains { $0.id == pack.id } }
-    }
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: .Trakke.xs) {
-            Button {
-                withAnimation(reduceMotion ? .none : .easeInOut(duration: 0.2)) {
-                    isExpanded.toggle()
-                }
-            } label: {
-                HStack {
-                    Image(systemName: theme.iconName)
-                        .foregroundStyle(Color(hex: theme.color))
-                        .frame(width: 24)
-                    Text(theme.displayName)
-                        .font(Font.Trakke.bodyRegular)
-                        .foregroundStyle(Color.Trakke.text)
-
-                    Spacer()
-
-                    if hasInstalledPacks {
-                        Toggle(theme.displayName, isOn: Binding(
-                            get: { viewModel.enabledThemes.contains(theme) },
-                            set: { _ in viewModel.toggleTheme(theme) }
-                        ))
-                        .tint(Color.Trakke.brand)
-                        .labelsHidden()
-                    }
-
-                    Image(systemName: "chevron.right")
-                        .font(Font.Trakke.captionSoft)
-                        .foregroundStyle(Color.Trakke.textTertiary)
-                        .rotationEffect(.degrees(isExpanded ? 90 : 0))
-                }
-                .frame(minHeight: .Trakke.touchMin)
-                .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .accessibilityHint(isExpanded
-                ? String(localized: "accessibility.tapToCollapse")
-                : String(localized: "accessibility.tapToExpand"))
-
-            if isExpanded {
-                ForEach(packs) { pack in
-                    packRow(pack)
-                }
-            }
-        }
-        .padding(.vertical, .Trakke.xs)
-    }
-
-    @ViewBuilder
-    private func packRow(_ pack: KnowledgePack) -> some View {
-        let isInstalled = viewModel.installedPacks.contains { $0.id == pack.id }
-        let downloading = viewModel.activeDownloads[pack.id]
-
-        HStack {
-            VStack(alignment: .leading, spacing: .Trakke.labelGap) {
-                Text(pack.countyName)
-                    .font(Font.Trakke.caption)
-                Text(ByteCountFormatter.string(fromByteCount: pack.fileSize, countStyle: .file))
-                    .font(Font.Trakke.captionSoft)
-                    .foregroundStyle(Color.Trakke.textTertiary)
-            }
-
-            Spacer()
-
-            if isInstalled {
-                Image(systemName: "checkmark.circle.fill")
-                    .foregroundStyle(Color.Trakke.green)
-            } else if let progress = downloading {
-                HStack(spacing: .Trakke.xs) {
-                    ProgressView(value: progress.percentage)
-                        .frame(width: 60)
-                        .tint(Color.Trakke.brand)
-                    Button {
-                        viewModel.cancelDownload(packId: pack.id)
-                    } label: {
-                        Image(systemName: "xmark.circle.fill")
-                            .foregroundStyle(Color.Trakke.textTertiary)
-                    }
-                    .frame(minWidth: .Trakke.touchMin, minHeight: .Trakke.touchMin)
-                    .accessibilityLabel(String(localized: "common.cancel"))
-                }
-            } else {
-                Button {
-                    viewModel.downloadPack(pack)
-                } label: {
-                    Image(systemName: "arrow.down.circle")
-                        .foregroundStyle(Color.Trakke.brand)
-                }
-                .frame(minWidth: .Trakke.touchMin, minHeight: .Trakke.touchMin)
-                .accessibilityLabel(String(localized: "knowledge.download"))
-            }
-        }
-        .padding(.leading, 28)
     }
 }
