@@ -26,7 +26,6 @@ private let logger = Logger(subsystem: "no.tazk.trakke", category: "App")
 
 @main
 struct TrakkeApp: App {
-    @State private var showSplash = true
     let modelContainer: ModelContainer
 
     init() {
@@ -129,29 +128,10 @@ struct TrakkeApp: App {
         }
     }
 
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-
     var body: some Scene {
         WindowGroup {
-            ZStack {
-                ContentView()
-                    .preferredColorScheme(.light)
-
-                if showSplash {
-                    SplashScreen()
-                        .transition(.opacity)
-                }
-            }
-            .task {
-                try? await Task.sleep(for: .seconds(reduceMotion ? 0.2 : 0.6))
-                if reduceMotion {
-                    showSplash = false
-                } else {
-                    withAnimation(.easeInOut(duration: 0.3)) {
-                        showSplash = false
-                    }
-                }
-            }
+            ContentView()
+                .preferredColorScheme(.light)
         }
         .modelContainer(modelContainer)
     }

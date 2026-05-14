@@ -150,7 +150,6 @@
 		A5659CFB7E780DCA27ABCFE0 /* TrakkeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB6D3487EBF4CF7D6E9589EB /* TrakkeUITests.swift */; };
 		A736CEB54730CFDB9F0CF716 /* WaypointEditSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659CFAD4D3A7ABE378AE5E6C /* WaypointEditSheet.swift */; };
 		A79FED383101D84200B7E993 /* heavyrainshowersandthunder_night.svg in Resources */ = {isa = PBXBuildFile; fileRef = F4964EA10DAF7860164D561B /* heavyrainshowersandthunder_night.svg */; };
-		A7B1322334BB010438B1468A /* SplashScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCECF1E330DDCD246ADFE31B /* SplashScreen.swift */; };
 		A80383EF15054B5242AF5D6E /* GPXImportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5AC3714DA5E165492A2B05F /* GPXImportService.swift */; };
 		ACD3DC37397208250F2BBD0D /* heavyrainandthunder.svg in Resources */ = {isa = PBXBuildFile; fileRef = 737B18CD5BD4F429B0BBA923 /* heavyrainandthunder.svg */; };
 		ADAE6CFB789559896614EBB5 /* SolarCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA3A4A2177DEE7800A5DC81 /* SolarCalculator.swift */; };
@@ -441,7 +440,6 @@
 		B5E2C88B67EF2819E60B5DEE /* TrakkeMapView+Annotations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrakkeMapView+Annotations.swift"; sourceTree = "<group>"; };
 		B604A3D9E59F613501483F77 /* ImageViewerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewerView.swift; sourceTree = "<group>"; };
 		B7532BD1702594C9A879F43E /* lightrainshowersandthunder_night.svg */ = {isa = PBXFileReference; path = lightrainshowersandthunder_night.svg; sourceTree = "<group>"; };
-		BCECF1E330DDCD246ADFE31B /* SplashScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreen.swift; sourceTree = "<group>"; };
 		BDB68334BD4B19CA1B2C4058 /* heavyrain.svg */ = {isa = PBXFileReference; path = heavyrain.svg; sourceTree = "<group>"; };
 		BEE62AFDC0B0B8666E1670EE /* NavigationOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationOverlayView.swift; sourceTree = "<group>"; };
 		C0807CEACE5F08F12855256A /* ArtsdatabankenImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtsdatabankenImageService.swift; sourceTree = "<group>"; };
@@ -837,7 +835,6 @@
 				701FF454B8A86FB3DD14099E /* Settings */,
 				3BD20CA4090237E9D10CF16A /* Waypoints */,
 				F4907F3CCF211D3183412955 /* Weather */,
-				BCECF1E330DDCD246ADFE31B /* SplashScreen.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1329,7 +1326,6 @@
 				2E414FF596D70D2B13BC7844 /* SheetCoordinator.swift in Sources */,
 				ADAE6CFB789559896614EBB5 /* SolarCalculator.swift in Sources */,
 				7389FF3205A3511191485F7E /* Spacing+Trakke.swift in Sources */,
-				A7B1322334BB010438B1468A /* SplashScreen.swift in Sources */,
 				D93E5AAF99E9E852878F6594 /* TrakkeApp.swift in Sources */,
 				E70B22E36F345DF45CE6B23A /* TrakkeButtonStyle.swift in Sources */,
 				09A79DCA43FB500CAB668321 /* TrakkeMapView+Annotations.swift in Sources */,
