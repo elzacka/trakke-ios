@@ -8,11 +8,9 @@ Tråkke follows Secure by Design principles. Security is embedded from the start
 
 ### Secure Defaults
 
-- **No tracking:** No IDFA, no analytics SDKs, no user fingerprinting
-- **No third-party SDKs** for advertising, social media, or telemetry
-- **Local-first storage:** All user data stays on-device via SwiftData
-- **No cloud sync:** User data is never transmitted to external servers
-- **Minimal permissions:** Only Location When In Use
+No tracking, no IDFA, no analytics SDKs, no third-party telemetry. All user data stays on-device; nothing is transmitted to app-owned servers. Only `Location When In Use` is requested.
+
+For what data is processed and the legal basis under GDPR, see [PERSONVERN.md](PERSONVERN.md).
 
 ### Transport Security
 
@@ -45,7 +43,7 @@ See [PERSONVERN.md](PERSONVERN.md) for the complete list of external services an
 
 ### Data Deletion (GDPR Art. 17)
 
-In-app "Slett alle data" in Preferences deletes all user data: SwiftData records, offline map packs, knowledge articles, temp files, URL cache, and all in-memory service caches. See PERSONVERN.md section 4 for user rights.
+In-app deletion clears every persistent and transient store the app owns. For the user-facing flow and rights description, see [PERSONVERN.md section 4](PERSONVERN.md#4-dine-rettigheter).
 
 ### Low Data Mode
 
