@@ -26,6 +26,7 @@ private enum BibliotekMyStuffDestination: Hashable {
     case routes
     case waypoints
     case activities
+    case offlinePacks
 }
 
 private enum BibliotekMoreDestination: Hashable {
@@ -45,6 +46,7 @@ struct BibliotekSheet: View {
     @Bindable var poiViewModel: POIViewModel
     @Bindable var knowledgeViewModel: KnowledgeViewModel
     @Bindable var mapViewModel: MapViewModel
+    @Bindable var offlineViewModel: OfflineViewModel
 
     // MARK: Callbacks
 
@@ -64,7 +66,6 @@ struct BibliotekSheet: View {
     @Environment(\.dismiss) private var dismiss
     @State private var selectedTab: BibliotekTab
     @State private var navigationPath = NavigationPath()
-    @State private var selectedDetent: PresentationDetent = .height(280)
 
     @AppStorage(AppStorageKeys.overlayHillshading) private var overlayHillshading = false
     @AppStorage(AppStorageKeys.overlayNaturskog) private var overlayNaturskog = false
@@ -79,6 +80,7 @@ struct BibliotekSheet: View {
         poiViewModel: POIViewModel,
         knowledgeViewModel: KnowledgeViewModel,
         mapViewModel: MapViewModel,
+        offlineViewModel: OfflineViewModel,
         onRouteSelected: ((Route) -> Void)? = nil,
         onNewRoute: (() -> Void)? = nil,
         onWaypointSelected: ((Waypoint) -> Void)? = nil,
@@ -99,6 +101,7 @@ struct BibliotekSheet: View {
         self.poiViewModel = poiViewModel
         self.knowledgeViewModel = knowledgeViewModel
         self.mapViewModel = mapViewModel
+        self.offlineViewModel = offlineViewModel
         self.onRouteSelected = onRouteSelected
         self.onNewRoute = onNewRoute
         self.onWaypointSelected = onWaypointSelected
@@ -153,15 +156,8 @@ struct BibliotekSheet: View {
                 }
             }
         }
-        .presentationDetents([.height(280), .medium, .large], selection: $selectedDetent)
+        .presentationDetents([.large])
         .presentationDragIndicator(.visible)
-        .onChange(of: navigationPath.count) {
-            // Vokse til large ved push, krymp tilbake til kompakt meny ved root.
-            // Eneste sted vi muterer selectedDetent under navigasjon — å skrive
-            // det fra flere steder produserer "Update tried to update multiple
-            // times per frame"-feil og kan gjøre første tap ignorert.
-            selectedDetent = navigationPath.count == 0 ? .height(280) : .large
-        }
         .onChange(of: selectedTab) { _, _ in
             navigationPath = NavigationPath()
         }
@@ -197,6 +193,18 @@ struct BibliotekSheet: View {
                         count: activityViewModel.activities.count,
                         destination: BibliotekMyStuffDestination.activities
                     )
+                    // Offline-kart dukker bare opp her når brukeren faktisk har
+                    // lastet ned noe. Tomt = ikke synlig (Rams: ikke vis det som
+                    // ikke er der). Nye nedlastinger initieres fra «Mer»-fanen.
+                    if !offlineViewModel.packs.isEmpty {
+                        Divider().padding(.leading, .Trakke.dividerLeading)
+                        bibliotekMenuLink(
+                            icon: "arrow.down.circle",
+                            label: String(localized: "offline.title"),
+                            count: offlineViewModel.packs.count,
+                            destination: BibliotekMyStuffDestination.offlinePacks
+                        )
+                    }
                 }
             }
             .padding(.horizontal, .Trakke.sheetHorizontal)
@@ -254,6 +262,15 @@ struct BibliotekSheet: View {
                 onFollowAgain: { activity in
                     onActivityFollow?(activity)
                     dismiss()
+                },
+                isEmbedded: true,
+                dismissSheet: { dismiss() }
+            )
+        case .offlinePacks:
+            DownloadManagerSheet(
+                viewModel: offlineViewModel,
+                onNewDownload: {
+                    onOfflineTapped?()
                 },
                 isEmbedded: true,
                 dismissSheet: { dismiss() }

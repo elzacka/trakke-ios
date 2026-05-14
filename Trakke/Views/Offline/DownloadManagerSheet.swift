@@ -3,57 +3,71 @@ import SwiftUI
 struct DownloadManagerSheet: View {
     @Bindable var viewModel: OfflineViewModel
     var onNewDownload: (() -> Void)?
+    var isEmbedded: Bool = false
+    var dismissSheet: (() -> Void)?
     @Environment(\.dismiss) private var dismiss
     @State private var packToDelete: OfflinePackInfo?
 
     var body: some View {
-        NavigationStack {
-            Group {
-                if viewModel.packs.isEmpty {
-                    EmptyStateView(
-                        icon: "arrow.down.circle",
-                        title: String(localized: "offline.empty.title"),
-                        subtitle: String(localized: "offline.empty.subtitle")
-                    )
-                } else {
-                    packList
-                }
+        Group {
+            if isEmbedded {
+                innerContent
+            } else {
+                NavigationStack { innerContent }
             }
-            .background(Color(.systemGroupedBackground))
-            .tint(Color.Trakke.brand)
-            .navigationTitle(String(localized: "offline.title"))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        onNewDownload?()
-                        dismiss()
-                    } label: {
-                        Image(systemName: "plus")
-                    }
-                    .accessibilityLabel(String(localized: "offline.download"))
-                }
-            }
-            .alert(
-                String(localized: "offline.deleteConfirm.title"),
-                isPresented: Binding(
-                    get: { packToDelete != nil },
-                    set: { if !$0 { packToDelete = nil } }
+        }
+    }
+
+    private var innerContent: some View {
+        Group {
+            if viewModel.packs.isEmpty {
+                EmptyStateView(
+                    icon: "arrow.down.circle",
+                    title: String(localized: "offline.empty.title"),
+                    subtitle: String(localized: "offline.empty.subtitle")
                 )
-            ) {
-                Button(String(localized: "common.delete"), role: .destructive) {
-                    if let pack = packToDelete {
-                        viewModel.deletePack(pack)
+            } else {
+                packList
+            }
+        }
+        .background(Color(.systemGroupedBackground))
+        .tint(Color.Trakke.brand)
+        .navigationTitle(String(localized: "offline.title"))
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    onNewDownload?()
+                    if isEmbedded {
+                        dismissSheet?()
+                    } else {
+                        dismiss()
                     }
-                    packToDelete = nil
+                } label: {
+                    Image(systemName: "plus")
                 }
-                Button(String(localized: "common.cancel"), role: .cancel) {
-                    packToDelete = nil
-                }
-            } message: {
+                .accessibilityLabel(String(localized: "offline.download"))
+            }
+        }
+        .alert(
+            String(localized: "offline.deleteConfirm.title"),
+            isPresented: Binding(
+                get: { packToDelete != nil },
+                set: { if !$0 { packToDelete = nil } }
+            )
+        ) {
+            Button(String(localized: "common.delete"), role: .destructive) {
                 if let pack = packToDelete {
-                    Text(String(localized: "offline.deleteConfirm.message \(pack.name)"))
+                    viewModel.deletePack(pack)
                 }
+                packToDelete = nil
+            }
+            Button(String(localized: "common.cancel"), role: .cancel) {
+                packToDelete = nil
+            }
+        } message: {
+            if let pack = packToDelete {
+                Text(String(localized: "offline.deleteConfirm.message \(pack.name)"))
             }
         }
     }

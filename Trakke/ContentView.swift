@@ -568,6 +568,7 @@ struct ContentView: View {
                 poiViewModel: poiViewModel,
                 knowledgeViewModel: knowledgeViewModel,
                 mapViewModel: mapViewModel,
+                offlineViewModel: offlineViewModel,
                 onRouteSelected: { route in
                     startFollowingRoute(route)
                 },
