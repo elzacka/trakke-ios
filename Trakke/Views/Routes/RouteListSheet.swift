@@ -231,21 +231,11 @@ struct RouteListSheet: View {
                     .font(Font.Trakke.bodyMedium)
                     .foregroundStyle(Color.Trakke.text)
 
-                HStack(spacing: .Trakke.sm) {
-                    Text(viewModel.formattedDistance(route.distance))
-                        .font(Font.Trakke.caption)
-                        .foregroundStyle(Color.Trakke.textTertiary)
-
-                    if let gain = route.elevationGain, gain > 0 {
-                        HStack(spacing: .Trakke.labelGap) {
-                            Image(systemName: "arrow.up.right")
-                                .font(Font.Trakke.captionSoft)
-                            Text("\(Int(gain)) m")
-                                .font(Font.Trakke.caption)
-                        }
-                        .foregroundStyle(Color.Trakke.textTertiary)
-                    }
-                }
+                // Én sentral verdi i listen: distanse. Høydemeter lever i
+                // RouteDetailSheet.
+                Text(viewModel.formattedDistance(route.distance))
+                    .font(Font.Trakke.caption)
+                    .foregroundStyle(Color.Trakke.textTertiary)
             }
 
             Spacer()

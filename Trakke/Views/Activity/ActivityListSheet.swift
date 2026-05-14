@@ -232,20 +232,12 @@ struct ActivityListSheet: View {
                         .foregroundStyle(Color.Trakke.textTertiary)
                 }
 
-                HStack(spacing: .Trakke.lg) {
-                    statLabel(
-                        icon: "arrow.left.and.right",
-                        value: ActivityViewModel.formatDistance(activity.distance)
-                    )
-                    statLabel(
-                        icon: "timer",
-                        value: ActivityViewModel.formatDuration(activity.duration)
-                    )
-                    statLabel(
-                        icon: "arrow.up.right",
-                        value: "\(Int(activity.elevationGain)) m"
-                    )
-                }
+                // Én sentral verdi i listen: distanse. Varighet og høydemeter
+                // lever i ActivityDetailSheet — listen skal hjelpe deg finne
+                // «den jeg gikk på søndag», ikke vise hele statistikken.
+                Text(ActivityViewModel.formatDistance(activity.distance))
+                    .font(Font.Trakke.caption)
+                    .foregroundStyle(Color.Trakke.textTertiary)
             }
             .padding(.vertical, .Trakke.rowVertical)
             .contentShape(Rectangle())
@@ -298,17 +290,6 @@ struct ActivityListSheet: View {
             "+\(Int(activity.elevationGain)) m",
         ]
         return parts.joined(separator: ", ")
-    }
-
-    private func statLabel(icon: String, value: String) -> some View {
-        HStack(spacing: .Trakke.labelGap) {
-            Image(systemName: icon)
-                .font(Font.Trakke.captionSoft)
-                .accessibilityHidden(true)
-            Text(value)
-                .font(Font.Trakke.caption)
-        }
-        .foregroundStyle(Color.Trakke.textTertiary)
     }
 
     // MARK: - Category Header
