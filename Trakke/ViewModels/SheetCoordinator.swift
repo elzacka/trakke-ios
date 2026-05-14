@@ -1,63 +1,52 @@
 import SwiftUI
 
-/// Centralizes all sheet presentation state for ContentView.
-/// Replaces 16 individual @State booleans with a single @Observable coordinator.
+/// Hvilken sheet som er aktiv. Kun én kan være åpen om gangen.
+enum ActiveSheet: Identifiable, Hashable {
+    case search
+    case categoryPicker
+    case poiDetail
+    case routeList
+    case routeSave
+    case myStuff
+    case waypointList
+    case waypointDetail
+    case waypointEdit
+    case offlineManager
+    case downloadArea
+    case offlineChoice
+    case kommuneBrowser
+    case weather
+    case measurement
+    case navigationStart
+    case emergency
+    case activityList
+    case activitySave
+    case more
+
+    var id: Self { self }
+}
+
+/// Sentral plassering for hvilken sheet ContentView viser.
+/// Erstatter 25 separate booleans med én `ActiveSheet?`.
 @MainActor
 @Observable
 final class SheetCoordinator {
-    var showSearchSheet = false
-    var showCategoryPicker = false
-    var showPOIDetail = false
-    var showRouteList = false
-    var showRouteDetail = false
-    var showRouteSave = false
-    var showMyStuff = false
-    var showWaypointList = false
-    var showWaypointDetail = false
-    var showWaypointEdit = false
+    /// Aktiv sheet, eller nil hvis ingen er presentert.
+    var active: ActiveSheet?
+
+    /// Waypoint som redigeres i `.waypointEdit`. Settes før `active = .waypointEdit`.
     var editingWaypoint: Waypoint?
-    var showOfflineManager = false
-    var showDownloadArea = false
-    var showOfflineChoice = false
-    var showKommuneBrowser = false
-    var showWeatherSheet = false
-    var showMeasurementSheet = false
-    var showPreferences = false
-    var showInfo = false
-    var showNavigationStart = false
-    var showEmergency = false
-    var showActivityList = false
-    var showActivityDetail = false
-    var showActivitySave = false
-    var showKnowledge = false
-    var showMore = false
+
+    func present(_ sheet: ActiveSheet) {
+        active = sheet
+    }
+
+    func dismiss() {
+        active = nil
+    }
 
     func dismissAll() {
-        showSearchSheet = false
-        showCategoryPicker = false
-        showPOIDetail = false
-        showRouteList = false
-        showRouteDetail = false
-        showRouteSave = false
-        showMyStuff = false
-        showWaypointList = false
-        showWaypointDetail = false
-        showWaypointEdit = false
+        active = nil
         editingWaypoint = nil
-        showOfflineManager = false
-        showDownloadArea = false
-        showOfflineChoice = false
-        showKommuneBrowser = false
-        showWeatherSheet = false
-        showMeasurementSheet = false
-        showPreferences = false
-        showInfo = false
-        showNavigationStart = false
-        showEmergency = false
-        showActivityList = false
-        showActivityDetail = false
-        showActivitySave = false
-        showKnowledge = false
-        showMore = false
     }
 }

@@ -135,13 +135,13 @@ struct ContentView: View {
                 + (routeCount > 0 ? 1 : 0)
                 + (waypointCount > 0 ? 1 : 0)
             if typesImported > 1 {
-                sheets.showMyStuff = true
+                sheets.active = .myStuff
             } else if activityCount > 0 {
-                sheets.showActivityList = true
+                sheets.active = .activityList
             } else if routeCount > 0 {
-                sheets.showRouteList = true
+                sheets.active = .routeList
             } else if waypointCount > 0 {
-                sheets.showWaypointList = true
+                sheets.active = .waypointList
             }
         }
     }
@@ -233,11 +233,11 @@ struct ContentView: View {
                 onViewportChanged: handleViewportChanged,
                 onPOISelected: { poi in
                     poiViewModel.selectPOI(poi)
-                    sheets.showPOIDetail = true
+                    sheets.active = .poiDetail
                 },
                 onWaypointSelected: { wp in
                     waypointViewModel.selectedWaypoint = wp
-                    sheets.showWaypointDetail = true
+                    sheets.active = .waypointDetail
                 },
                 onMapTapped: handleMapTap,
                 onMapLongPressed: handleMapLongPress,
@@ -263,18 +263,18 @@ struct ContentView: View {
 
             MapControlsOverlay(
                 viewModel: mapViewModel,
-                onSearchTapped: { sheets.showSearchSheet = true },
-                onCategoryTapped: { sheets.showCategoryPicker = true },
-                onMyStuffTapped: { sheets.showMyStuff = true },
-                onWeatherTapped: { sheets.showWeatherSheet = true },
-                onEmergencyTapped: { sheets.showEmergency = true },
-                onMoreTapped: { sheets.showMore = true },
+                onSearchTapped: { sheets.active = .search },
+                onCategoryTapped: { sheets.active = .categoryPicker },
+                onMyStuffTapped: { sheets.active = .myStuff },
+                onWeatherTapped: { sheets.active = .weather },
+                onEmergencyTapped: { sheets.active = .emergency },
+                onMoreTapped: { sheets.active = .more },
                 enabledOverlays: effectiveOverlays,
                 isMenuOpen: $isFABMenuOpen,
                 weatherContent: Group {
                     if effectiveShowWeatherWidget {
                         WeatherWidgetView(viewModel: weatherViewModel) {
-                            sheets.showWeatherSheet = true
+                            sheets.active = .weather
                         }
                     }
                 },
@@ -313,11 +313,11 @@ struct ContentView: View {
                             if !success { showRouteError = true }
                         }
                     },
-                    onSearchTapped: { sheets.showSearchSheet = true },
-                    onCategoryTapped: { sheets.showCategoryPicker = true },
-                    onEmergencyTapped: { sheets.showEmergency = true },
-                    onWeatherTapped: { sheets.showWeatherSheet = true },
-                    onMoreTapped: { sheets.showMore = true }
+                    onSearchTapped: { sheets.active = .search },
+                    onCategoryTapped: { sheets.active = .categoryPicker },
+                    onEmergencyTapped: { sheets.active = .emergency },
+                    onWeatherTapped: { sheets.active = .weather },
+                    onMoreTapped: { sheets.active = .more }
                 )
                 .confirmationDialog(
                     String(localized: "navigation.stopConfirmTitle"),
@@ -353,7 +353,7 @@ struct ContentView: View {
                     formattedDistance: routeViewModel.formattedDrawingDistance,
                     onCancel: { routeViewModel.cancelDrawing() },
                     onUndo: { routeViewModel.undoLastPoint() },
-                    onDone: { sheets.showRouteSave = true }
+                    onDone: { sheets.active = .routeSave }
                 )
             }
 
@@ -374,7 +374,7 @@ struct ContentView: View {
                     estimatedTileCount: offlineViewModel.estimatedTileCount,
                     estimatedSize: offlineViewModel.estimatedSize,
                     onCancel: { offlineViewModel.cancelSelection() },
-                    onDone: { sheets.showDownloadArea = true }
+                    onDone: { sheets.active = .downloadArea }
                 )
             }
 
@@ -383,7 +383,7 @@ struct ContentView: View {
                     formattedDistance: activityViewModel.formattedDistance,
                     formattedDuration: activityViewModel.formattedDuration,
                     formattedElevationGain: activityViewModel.formattedElevationGain,
-                    onStop: { sheets.showActivitySave = true }
+                    onStop: { sheets.active = .activitySave }
                 )
             }
 
@@ -413,298 +413,11 @@ struct ContentView: View {
             }
         }
         .tint(Color.Trakke.brand)
-        .sheet(isPresented: $sheets.showSearchSheet) {
-            SearchSheet(
-                viewModel: searchViewModel,
-                onResultSelected: { result in
-                    mapViewModel.searchPinCoordinate = result.coordinate
-                    mapViewModel.centerOn(coordinate: result.coordinate, zoom: 14)
-                }
-            )
-            .presentationDetents([.medium, .large])
-            .presentationDragIndicator(.visible)
-        }
-        .sheet(isPresented: $sheets.showCategoryPicker) {
-            CategoryPickerSheet(viewModel: poiViewModel)
-                .presentationDetents([.medium])
-                .presentationDragIndicator(.visible)
-        }
-        .sheet(isPresented: $sheets.showPOIDetail) {
-            if let poi = poiViewModel.selectedPOI {
-                POIDetailSheet(
-                    poi: poi,
-                    onNavigate: { coordinate in
-                        sheets.showPOIDetail = false
-                        navigationDestination = coordinate
-                        sheets.showNavigationStart = true
-                    }
-                )
-                .presentationDetents([.medium, .large])
-                .presentationDragIndicator(.visible)
-            }
-        }
-        .sheet(isPresented: $sheets.showRouteList) {
-            RouteListSheet(
-                viewModel: routeViewModel,
-                // The list pushes RouteDetailSheet onto its own NavigationStack
-                // when a row is tapped. The onRouteSelected callback now only
-                // fires when the user taps "Start navigasjon" inside the detail.
-                onRouteSelected: { route in
-                    sheets.showRouteList = false
-                    startFollowingRoute(route)
-                },
-                onNewRoute: {
-                    routeViewModel.startDrawing()
-                }
-            )
-            .presentationDetents([.medium, .large])
-            .presentationDragIndicator(.visible)
-        }
-        .sheet(isPresented: $sheets.showRouteDetail) {
-            if let route = routeViewModel.selectedRoute {
-                RouteDetailSheet(
-                    viewModel: routeViewModel,
-                    route: route,
-                    onNavigate: { route in
-                        sheets.showRouteDetail = false
-                        startFollowingRoute(route)
-                    }
-                )
-                .presentationDetents([.medium, .large])
-                .presentationDragIndicator(.visible)
-            }
-        }
-        .sheet(isPresented: $sheets.showOfflineManager) {
-            DownloadManagerSheet(
-                viewModel: offlineViewModel,
-                onNewDownload: {
-                    sheets.showOfflineChoice = true
-                }
-            )
-            .presentationDetents([.medium, .large])
-            .presentationDragIndicator(.visible)
-        }
-        .sheet(isPresented: $sheets.showDownloadArea) {
-            DownloadAreaSheet(viewModel: offlineViewModel)
-                .presentationDetents([.medium, .large])
-                .presentationDragIndicator(.visible)
-        }
-        .sheet(isPresented: $sheets.showOfflineChoice) {
-            OfflineChoiceSheet(
-                onCustom: {
-                    offlineViewModel.startSelection(
-                        center: mapViewModel.currentCenter,
-                        zoom: mapViewModel.currentZoom
-                    )
-                },
-                onKommune: {
-                    sheets.showKommuneBrowser = true
-                },
-                onManageDownloads: {
-                    sheets.showOfflineManager = true
-                },
-                hasDownloads: !offlineViewModel.packs.isEmpty
-            )
-            .presentationDetents([.medium])
-            .presentationDragIndicator(.visible)
-        }
-        .sheet(isPresented: $sheets.showKommuneBrowser) {
-            KommuneBrowserSheet(viewModel: offlineViewModel)
-                .presentationDetents([.medium, .large])
-                .presentationDragIndicator(.visible)
-        }
-        .sheet(isPresented: $sheets.showWeatherSheet) {
-            WeatherSheet(viewModel: weatherViewModel)
-                .presentationDetents([.large])
-                .presentationDragIndicator(.visible)
-        }
-        .sheet(isPresented: $sheets.showMeasurementSheet) {
-            MeasurementSheet(viewModel: measurementViewModel)
-                .presentationDetents([.height(200)])
-                .presentationDragIndicator(.visible)
+        .sheet(item: $sheets.active) { active in
+            sheetContent(for: active)
         }
         .onChange(of: measurementViewModel.isActive) { _, isActive in
-            if isActive { sheets.showMeasurementSheet = false }
-        }
-        .sheet(isPresented: $sheets.showPreferences) {
-            PreferencesSheet(mapViewModel: mapViewModel, knowledgeViewModel: knowledgeViewModel, onDeleteAllData: clearAllServiceCaches)
-                .presentationDetents([.large])
-                .presentationDragIndicator(.visible)
-        }
-        .sheet(isPresented: $sheets.showInfo) {
-            InfoSheet()
-                .presentationDetents([.large])
-                .presentationDragIndicator(.visible)
-        }
-        .sheet(isPresented: $sheets.showMyStuff) {
-            MineGreierSheet(
-                routeViewModel: routeViewModel,
-                waypointViewModel: waypointViewModel,
-                activityViewModel: activityViewModel,
-                onRouteSelected: { route in
-                    startFollowingRoute(route)
-                },
-                onNewRoute: {
-                    routeViewModel.startDrawing()
-                },
-                onWaypointSelected: { _ in
-                    // Reserved for potential future use; row taps now push detail
-                    // onto the embedded NavigationStack directly.
-                },
-                onWaypointEdit: { wp in
-                    sheets.editingWaypoint = wp
-                    sheets.showWaypointEdit = true
-                },
-                onWaypointNavigate: { coordinate in
-                    navigationDestination = coordinate
-                    sheets.showNavigationStart = true
-                },
-                onActivitySelected: { _ in },
-                onActivityRetrace: { coordinate in
-                    navigationDestination = coordinate
-                    sheets.showNavigationStart = true
-                },
-                onActivityFollow: { activity in
-                    followActivity(activity)
-                },
-                onStartRecording: {
-                    startActivityRecording()
-                }
-            )
-        }
-        .sheet(isPresented: $sheets.showWaypointList) {
-            WaypointListSheet(
-                viewModel: waypointViewModel,
-                onWaypointSelected: { _ in },
-                onWaypointEdit: { wp in
-                    sheets.showWaypointList = false
-                    sheets.editingWaypoint = wp
-                    sheets.showWaypointEdit = true
-                },
-                onWaypointNavigate: { coordinate in
-                    sheets.showWaypointList = false
-                    navigationDestination = coordinate
-                    sheets.showNavigationStart = true
-                }
-            )
-            .presentationDetents([.medium, .large])
-            .presentationDragIndicator(.visible)
-        }
-        .sheet(isPresented: $sheets.showWaypointDetail) {
-            if let wp = waypointViewModel.selectedWaypoint {
-                WaypointDetailSheet(
-                    viewModel: waypointViewModel,
-                    waypoint: wp,
-                    onEdit: { waypoint in
-                        sheets.showWaypointDetail = false
-                        sheets.editingWaypoint = waypoint
-                        sheets.showWaypointEdit = true
-                    },
-                    onNavigate: { coordinate in
-                        sheets.showWaypointDetail = false
-                        navigationDestination = coordinate
-                        sheets.showNavigationStart = true
-                    }
-                )
-                .presentationDetents([.medium, .large])
-                .presentationDragIndicator(.visible)
-            }
-        }
-        .sheet(isPresented: $sheets.showWaypointEdit) {
-            WaypointEditSheet(
-                viewModel: waypointViewModel,
-                editingWaypoint: sheets.editingWaypoint
-            )
-            .presentationDetents([.medium])
-            .presentationDragIndicator(.visible)
-        }
-        .sheet(isPresented: $sheets.showRouteSave) {
-            RouteSaveSheet(viewModel: routeViewModel)
-                .presentationDetents([.medium])
-                .presentationDragIndicator(.visible)
-        }
-        .sheet(isPresented: $sheets.showNavigationStart) {
-            if let dest = navigationDestination {
-                NavigationStartSheet(
-                    destination: dest,
-                    userLocation: mapViewModel.userLocation,
-                    isConnected: connectivityMonitor.isConnected,
-                    onRouteNavigation: { startRouteNavigation(to: dest) },
-                    onCompassNavigation: { startCompassNavigation(to: dest) }
-                )
-                .presentationDetents([.medium])
-                .presentationDragIndicator(.visible)
-            }
-        }
-        .sheet(isPresented: $sheets.showEmergency, onDismiss: { sosViewModel.deactivate() }) {
-            EmergencySheet(
-                userLocation: mapViewModel.userLocation,
-                sosViewModel: sosViewModel
-            )
-            .presentationDetents([.medium, .large])
-            .presentationDragIndicator(.visible)
-        }
-        .sheet(isPresented: $sheets.showActivityList) {
-            ActivityListSheet(
-                viewModel: activityViewModel,
-                routeViewModel: routeViewModel,
-                onActivitySelected: { _ in },
-                onStartRecording: {
-                    startActivityRecording()
-                },
-                onRetrace: { coordinate in
-                    sheets.showActivityList = false
-                    navigationDestination = coordinate
-                    sheets.showNavigationStart = true
-                },
-                onFollowAgain: { activity in
-                    sheets.showActivityList = false
-                    followActivity(activity)
-                }
-            )
-            .presentationDetents([.medium, .large])
-            .presentationDragIndicator(.visible)
-        }
-        .sheet(isPresented: $sheets.showActivityDetail) {
-            if let activity = activityViewModel.selectedActivity {
-                ActivityDetailSheet(
-                    viewModel: activityViewModel,
-                    activity: activity,
-                    onRetrace: { coordinate in
-                        sheets.showActivityDetail = false
-                        navigationDestination = coordinate
-                        sheets.showNavigationStart = true
-                    },
-                    onFollowAgain: { activity in
-                        sheets.showActivityDetail = false
-                        followActivity(activity)
-                    }
-                )
-                .presentationDetents([.medium, .large])
-                .presentationDragIndicator(.visible)
-            }
-        }
-        .sheet(isPresented: $sheets.showActivitySave) {
-            ActivitySaveSheet(viewModel: activityViewModel)
-                .presentationDetents([.medium])
-                .presentationDragIndicator(.visible)
-        }
-        .sheet(isPresented: $sheets.showKnowledge) {
-            KnowledgeSheet(viewModel: knowledgeViewModel)
-                .presentationDetents([.large])
-                .presentationDragIndicator(.visible)
-        }
-        .sheet(isPresented: $sheets.showMore) {
-            MoreSheet(
-                knowledgeViewModel: knowledgeViewModel,
-                mapViewModel: mapViewModel,
-                onMeasurementTapped: { sheets.showMeasurementSheet = true },
-                onOfflineTapped: {
-                    sheets.showOfflineChoice = true
-                },
-                onDeleteAllData: clearAllServiceCaches
-            )
-            .presentationDragIndicator(.visible)
+            if isActive, sheets.active == .measurement { sheets.active = nil }
         }
         .alert(
             String(localized: "navigation.routeErrorTitle"),
@@ -742,15 +455,251 @@ struct ContentView: View {
                 if let coord = longPressCoordinate {
                     waypointViewModel.startPlacing(at: coord)
                     sheets.editingWaypoint = nil
-                    sheets.showWaypointEdit = true
+                    sheets.active = .waypointEdit
                 }
             }
             Button(String(localized: "navigation.navigateHere")) {
                 if let coord = longPressCoordinate {
                     navigationDestination = coord
-                    sheets.showNavigationStart = true
+                    sheets.active = .navigationStart
                 }
             }
+        }
+    }
+
+    // MARK: - Sheet Routing
+
+    @ViewBuilder
+    private func sheetContent(for active: ActiveSheet) -> some View {
+        switch active {
+        case .search:
+            SearchSheet(
+                viewModel: searchViewModel,
+                onResultSelected: { result in
+                    mapViewModel.searchPinCoordinate = result.coordinate
+                    mapViewModel.centerOn(coordinate: result.coordinate, zoom: 14)
+                }
+            )
+            .presentationDetents([.medium, .large])
+            .presentationDragIndicator(.visible)
+
+        case .categoryPicker:
+            CategoryPickerSheet(viewModel: poiViewModel)
+                .presentationDetents([.medium])
+                .presentationDragIndicator(.visible)
+
+        case .poiDetail:
+            if let poi = poiViewModel.selectedPOI {
+                POIDetailSheet(
+                    poi: poi,
+                    onNavigate: { coordinate in
+                        navigationDestination = coordinate
+                        sheets.active = .navigationStart
+                    }
+                )
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
+            }
+
+        case .routeList:
+            RouteListSheet(
+                viewModel: routeViewModel,
+                onRouteSelected: { route in
+                    sheets.active = nil
+                    startFollowingRoute(route)
+                },
+                onNewRoute: {
+                    routeViewModel.startDrawing()
+                }
+            )
+            .presentationDetents([.medium, .large])
+            .presentationDragIndicator(.visible)
+
+        case .routeSave:
+            RouteSaveSheet(viewModel: routeViewModel)
+                .presentationDetents([.medium])
+                .presentationDragIndicator(.visible)
+
+        case .myStuff:
+            MineGreierSheet(
+                routeViewModel: routeViewModel,
+                waypointViewModel: waypointViewModel,
+                activityViewModel: activityViewModel,
+                onRouteSelected: { route in
+                    startFollowingRoute(route)
+                },
+                onNewRoute: {
+                    routeViewModel.startDrawing()
+                },
+                onWaypointSelected: { _ in },
+                onWaypointEdit: { wp in
+                    sheets.editingWaypoint = wp
+                    sheets.active = .waypointEdit
+                },
+                onWaypointNavigate: { coordinate in
+                    navigationDestination = coordinate
+                    sheets.active = .navigationStart
+                },
+                onActivitySelected: { _ in },
+                onActivityRetrace: { coordinate in
+                    navigationDestination = coordinate
+                    sheets.active = .navigationStart
+                },
+                onActivityFollow: { activity in
+                    followActivity(activity)
+                },
+                onStartRecording: {
+                    startActivityRecording()
+                }
+            )
+
+        case .waypointList:
+            WaypointListSheet(
+                viewModel: waypointViewModel,
+                onWaypointSelected: { _ in },
+                onWaypointEdit: { wp in
+                    sheets.editingWaypoint = wp
+                    sheets.active = .waypointEdit
+                },
+                onWaypointNavigate: { coordinate in
+                    navigationDestination = coordinate
+                    sheets.active = .navigationStart
+                }
+            )
+            .presentationDetents([.medium, .large])
+            .presentationDragIndicator(.visible)
+
+        case .waypointDetail:
+            if let wp = waypointViewModel.selectedWaypoint {
+                WaypointDetailSheet(
+                    viewModel: waypointViewModel,
+                    waypoint: wp,
+                    onEdit: { waypoint in
+                        sheets.editingWaypoint = waypoint
+                        sheets.active = .waypointEdit
+                    },
+                    onNavigate: { coordinate in
+                        navigationDestination = coordinate
+                        sheets.active = .navigationStart
+                    }
+                )
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
+            }
+
+        case .waypointEdit:
+            WaypointEditSheet(
+                viewModel: waypointViewModel,
+                editingWaypoint: sheets.editingWaypoint
+            )
+            .presentationDetents([.medium])
+            .presentationDragIndicator(.visible)
+
+        case .offlineManager:
+            DownloadManagerSheet(
+                viewModel: offlineViewModel,
+                onNewDownload: {
+                    sheets.active = .offlineChoice
+                }
+            )
+            .presentationDetents([.medium, .large])
+            .presentationDragIndicator(.visible)
+
+        case .downloadArea:
+            DownloadAreaSheet(viewModel: offlineViewModel)
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
+
+        case .offlineChoice:
+            OfflineChoiceSheet(
+                onCustom: {
+                    offlineViewModel.startSelection(
+                        center: mapViewModel.currentCenter,
+                        zoom: mapViewModel.currentZoom
+                    )
+                },
+                onKommune: {
+                    sheets.active = .kommuneBrowser
+                },
+                onManageDownloads: {
+                    sheets.active = .offlineManager
+                },
+                hasDownloads: !offlineViewModel.packs.isEmpty
+            )
+            .presentationDetents([.medium])
+            .presentationDragIndicator(.visible)
+
+        case .kommuneBrowser:
+            KommuneBrowserSheet(viewModel: offlineViewModel)
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
+
+        case .weather:
+            WeatherSheet(viewModel: weatherViewModel)
+                .presentationDetents([.large])
+                .presentationDragIndicator(.visible)
+
+        case .measurement:
+            MeasurementSheet(viewModel: measurementViewModel)
+                .presentationDetents([.height(200)])
+                .presentationDragIndicator(.visible)
+
+        case .navigationStart:
+            if let dest = navigationDestination {
+                NavigationStartSheet(
+                    destination: dest,
+                    userLocation: mapViewModel.userLocation,
+                    isConnected: connectivityMonitor.isConnected,
+                    onRouteNavigation: { startRouteNavigation(to: dest) },
+                    onCompassNavigation: { startCompassNavigation(to: dest) }
+                )
+                .presentationDetents([.medium])
+                .presentationDragIndicator(.visible)
+            }
+
+        case .emergency:
+            EmergencySheet(
+                userLocation: mapViewModel.userLocation,
+                sosViewModel: sosViewModel
+            )
+            .presentationDetents([.medium, .large])
+            .presentationDragIndicator(.visible)
+            .onDisappear { sosViewModel.deactivate() }
+
+        case .activityList:
+            ActivityListSheet(
+                viewModel: activityViewModel,
+                routeViewModel: routeViewModel,
+                onActivitySelected: { _ in },
+                onStartRecording: {
+                    startActivityRecording()
+                },
+                onRetrace: { coordinate in
+                    navigationDestination = coordinate
+                    sheets.active = .navigationStart
+                },
+                onFollowAgain: { activity in
+                    sheets.active = nil
+                    followActivity(activity)
+                }
+            )
+            .presentationDetents([.medium, .large])
+            .presentationDragIndicator(.visible)
+
+        case .activitySave:
+            ActivitySaveSheet(viewModel: activityViewModel)
+                .presentationDetents([.medium])
+                .presentationDragIndicator(.visible)
+
+        case .more:
+            MoreSheet(
+                knowledgeViewModel: knowledgeViewModel,
+                mapViewModel: mapViewModel,
+                onMeasurementTapped: { sheets.active = .measurement },
+                onOfflineTapped: { sheets.active = .offlineChoice },
+                onDeleteAllData: clearAllServiceCaches
+            )
+            .presentationDragIndicator(.visible)
         }
     }
 
