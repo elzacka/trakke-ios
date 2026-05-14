@@ -1,5 +1,4 @@
 import SwiftUI
-import SwiftData
 
 struct PreferencesSheet: View {
     @Bindable var mapViewModel: MapViewModel
@@ -20,10 +19,8 @@ struct PreferencesSheet: View {
     @AppStorage(AppStorageKeys.overlayNaturskog) private var overlayNaturskog = false
     @AppStorage(AppStorageKeys.naturskogLayerType) private var naturskogLayerType = OverlayLayer.naturskogSannsynlighet.rawValue
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var modelContext
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var coordinateInfoFormat: CoordinateFormat?
-    @State private var showDeleteAllConfirmation = false
 
     var body: some View {
         if isEmbedded {
@@ -129,7 +126,7 @@ struct PreferencesSheet: View {
                         }
                     }
 
-                    // MARK: - Reset
+                    // MARK: - Reset (ikke destruktiv — bare tilbakestiller togglerne)
                     Button {
                         withAnimation(reduceMotion ? .none : .default) {
                             coordinateFormat = .dd
@@ -150,27 +147,44 @@ struct PreferencesSheet: View {
                         Text(String(localized: "settings.resetDefaults"))
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
-                    .buttonStyle(.trakkeDanger)
+                    .buttonStyle(.trakkeSecondary)
 
-                    // MARK: - Delete All Data (GDPR Art. 17)
-                    Button {
-                        showDeleteAllConfirmation = true
+                    // MARK: - Slett alle data — egen skjerm (GDPR Art. 17)
+                    // Skilt fra togglerne over slik at destruktive valg ikke
+                    // ligger ved siden av kosmetiske brytere.
+                    NavigationLink {
+                        DeleteAllDataView(
+                            mapViewModel: mapViewModel,
+                            knowledgeViewModel: knowledgeViewModel,
+                            onDeleteAllData: onDeleteAllData
+                        )
                     } label: {
-                        Label(String(localized: "settings.deleteAllData"), systemImage: "trash")
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-                    .buttonStyle(.trakkeDanger)
-                    .confirmationDialog(
-                        String(localized: "settings.deleteAllData.title"),
-                        isPresented: $showDeleteAllConfirmation,
-                        titleVisibility: .visible
-                    ) {
-                        Button(String(localized: "settings.deleteAllData.confirm"), role: .destructive) {
-                            deleteAllData()
+                        HStack(spacing: .Trakke.md) {
+                            Image(systemName: "trash")
+                                .font(Font.Trakke.bodyMedium)
+                                .foregroundStyle(Color.Trakke.red)
+                                .frame(width: 24)
+                                .accessibilityHidden(true)
+
+                            Text(String(localized: "settings.deleteAllData"))
+                                .font(Font.Trakke.bodyRegular)
+                                .foregroundStyle(Color.Trakke.text)
+
+                            Spacer()
+
+                            Image(systemName: "chevron.right")
+                                .font(Font.Trakke.captionSoft)
+                                .foregroundStyle(Color.Trakke.textTertiary)
+                                .accessibilityHidden(true)
                         }
-                    } message: {
-                        Text(String(localized: "settings.deleteAllData.message"))
+                        .padding(.horizontal, .Trakke.cardPadH)
+                        .padding(.vertical, .Trakke.cardPadV)
+                        .background(Color(.secondarySystemGroupedBackground))
+                        .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))
+                        .frame(minHeight: .Trakke.touchMin)
+                        .contentShape(Rectangle())
                     }
+                    .buttonStyle(.plain)
 
                     Spacer(minLength: .Trakke.lg)
                 }
@@ -181,64 +195,6 @@ struct PreferencesSheet: View {
             .tint(Color.Trakke.brand)
             .navigationTitle(String(localized: "settings.title"))
             .navigationBarTitleDisplayMode(.inline)
-    }
-
-    // MARK: - Delete All Data
-
-    private func deleteAllData() {
-        // Delete all SwiftData records (GDPR Art. 17)
-        try? modelContext.delete(model: Route.self)
-        try? modelContext.delete(model: Waypoint.self)
-        try? modelContext.delete(model: Activity.self)
-        try? modelContext.save()
-
-        // Remove WAL/SHM files to physically purge deleted data
-        if let storeURL = modelContext.container.configurations.first?.url {
-            let walURL = storeURL.appendingPathExtension("wal")
-            let shmURL = storeURL.appendingPathExtension("shm")
-            try? FileManager.default.removeItem(at: walURL)
-            try? FileManager.default.removeItem(at: shmURL)
-        }
-
-        // Delete offline map packs and MapLibre tile cache
-        OfflineMapService.shared.deleteAllPacks()
-        OfflineMapService.shared.clearTileCache()
-
-        // Delete knowledge packs (SQLite databases, metadata, catalog cache, remote articles)
-        knowledgeViewModel?.deleteAllPacks()
-
-        // Ensure remote article cache is cleared even if knowledgeViewModel is nil (GDPR Art. 17)
-        if knowledgeViewModel == nil {
-            Task { await RemoteArticleService().clearCache() }
-        }
-
-        // Clear in-memory service caches
-        BundledPOIService.clearCache()
-        Task { await ArtsdatabankenImageService.default.clearCache() }
-
-        // Clear remaining in-memory caches via callback (GDPR Art. 17)
-        onDeleteAllData?()
-
-        // Clear all UserDefaults for the app (GDPR Art. 17 completeness)
-        if let bundleId = Bundle.main.bundleIdentifier {
-            UserDefaults.standard.removePersistentDomain(forName: bundleId)
-        }
-        mapViewModel.baseLayer = .topo
-
-        // Clear URLCache (may contain coordinates from API requests)
-        URLCache.shared.removeAllCachedResponses()
-
-        // Clean up temp directory
-        let tempDir = FileManager.default.temporaryDirectory
-        if let files = try? FileManager.default.contentsOfDirectory(
-            at: tempDir, includingPropertiesForKeys: nil
-        ) {
-            for file in files where file.pathExtension == "gpx" || file.pathExtension == "geojson" {
-                try? FileManager.default.removeItem(at: file)
-            }
-        }
-
-        dismiss()
     }
 
     // MARK: - Naturskog Sub-Picker
