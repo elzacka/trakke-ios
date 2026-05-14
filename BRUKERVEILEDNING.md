@@ -202,4 +202,6 @@ DD, DMS, UTM eller MGRS. Trykk info-knappen ved hvert format for en forklaring.
 
 ### Slett alle data
 
-Sletter alle ruter, steder, turer, offlinekart, kunnskapspakker og innstillinger. Krever bekreftelse. Kan ikke angres.
+Tilgjengelig under Innstillinger. Sletter alle lokale ruter, steder, turer, offlinekart, kunnskapspakker og innstillinger. Krever bekreftelse. Kan ikke angres.
+
+Dette dekker også din rett til sletting under GDPR. Se [PERSONVERN.md](PERSONVERN.md#4-dine-rettigheter) for fullstendig oversikt over dine personvernrettigheter.
