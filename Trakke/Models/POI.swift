@@ -117,29 +117,9 @@ struct POI: Identifiable, Sendable, Equatable {
     let name: String
     let coordinate: CLLocationCoordinate2D
     var details: [String: String] = [:]
-    /// Variantflagg for badeplasser. Settes til true for «med strand»-
-    /// datasettet, ellers nil. Andre kategorier bryr seg ikke om verdien.
-    var hasBeach: Bool? = nil
 
     static func == (lhs: POI, rhs: POI) -> Bool {
         lhs.id == rhs.id
-    }
-
-    /// Ikon for kart-annotasjon og detalj-toolbar. Bruker variant-ikonet
-    /// for badeplasser med strand, ellers kategoriens standardikon.
-    var displayIconName: String {
-        if category == .swimmingSpot, hasBeach == true {
-            return "POISwimmingSpotBeach"
-        }
-        return category.iconName
-    }
-
-    /// Farge for kart-pinne og detalj-toolbar. Lysere blå for «med strand».
-    var displayColorHex: String {
-        if category == .swimmingSpot, hasBeach == true {
-            return "#5fa8c4"
-        }
-        return category.color
     }
 }
 

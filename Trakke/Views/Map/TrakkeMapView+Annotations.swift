@@ -497,7 +497,7 @@ extension TrakkeMapView.Coordinator {
             view?.frame = CGRect(x: 0, y: 0, width: size, height: size)
 
             let circle = UIView(frame: CGRect(x: 0, y: 0, width: size, height: size))
-            circle.backgroundColor = UIColor(hex: annotation.poi.displayColorHex)
+            circle.backgroundColor = UIColor(hex: annotation.poi.category.color)
             circle.layer.cornerRadius = size / 2
             circle.layer.borderWidth = 2
             circle.layer.borderColor = UIColor.white.cgColor
@@ -508,7 +508,9 @@ extension TrakkeMapView.Coordinator {
             view?.addSubview(circle)
 
             let iconSize: CGFloat = 15
-            let image = UIImage(named: annotation.poi.displayIconName)?.withRenderingMode(.alwaysTemplate)
+            let assetImage = UIImage(named: annotation.poi.category.iconName)
+            let image = (assetImage ?? UIImage(systemName: annotation.poi.category.iconName))?
+                .withRenderingMode(.alwaysTemplate)
             let iconView = UIImageView(image: image)
             iconView.tintColor = .white
             iconView.contentMode = .scaleAspectFit

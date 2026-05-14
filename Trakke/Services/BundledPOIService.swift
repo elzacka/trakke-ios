@@ -47,37 +47,28 @@ enum BundledPOIService {
     // MARK: - Loading
 
     private nonisolated static func loadFromBundle(_ category: POICategory) -> [POI] {
-        // Badeplasser slås sammen til én kategori. To filer bidrar:
-        // swimming_spots.geojson (uten strand) og swimming_spots_with_beach.geojson
-        // (med strand). Variant-flagget settes per POI slik at kart-ikon og
-        // detalj-badge kan skille dem, uten å bloate kategori-listen.
-        if category == .swimmingSpot {
-            let plain = loadFile(named: "swimming_spots", category: category, hasBeach: false)
-            let beach = loadFile(named: "swimming_spots_with_beach", category: category, hasBeach: true)
-            return plain + beach
-        }
-
         let filenames: [POICategory: String] = [
             .caves: "caves",
             .viewpoints: "viewpoints",
             .warMemorials: "war_memorials",
             .wildernessShelters: "wilderness_shelters",
             .shelters: "shelters",
+            .swimmingSpot: "swimming_spots",
         ]
         guard let filename = filenames[category] else { return [] }
-        return loadFile(named: filename, category: category, hasBeach: nil)
+        return loadFile(named: filename, category: category)
     }
 
-    private nonisolated static func loadFile(named filename: String, category: POICategory, hasBeach: Bool?) -> [POI] {
+    private nonisolated static func loadFile(named filename: String, category: POICategory) -> [POI] {
         guard let url = Bundle.main.url(forResource: filename, withExtension: "geojson", subdirectory: "POIData")
                 ?? Bundle.main.url(forResource: filename, withExtension: "geojson") else {
             Logger.poi.error("BundledPOI: \(filename, privacy: .public).geojson not found in bundle")
             return []
         }
-        return decodePOIs(from: url, category: category, hasBeach: hasBeach)
+        return decodePOIs(from: url, category: category)
     }
 
-    private nonisolated static func decodePOIs(from url: URL, category: POICategory, hasBeach: Bool?) -> [POI] {
+    private nonisolated static func decodePOIs(from url: URL, category: POICategory) -> [POI] {
         guard let data = try? Data(contentsOf: url) else { return [] }
 
         guard let collection = try? JSONDecoder().decode(BundledFeatureCollection.self, from: data) else {
@@ -103,8 +94,7 @@ enum BundledPOIService {
                 category: category,
                 name: name,
                 coordinate: CLLocationCoordinate2D(latitude: lat, longitude: lon),
-                details: details,
-                hasBeach: hasBeach
+                details: details
             )
         }
     }

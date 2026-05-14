@@ -20,10 +20,7 @@ struct CategoryPickerSheet: View {
                                 viewModel.toggleCategory(category)
                             } label: {
                                 HStack(spacing: .Trakke.md) {
-                                    Image(category.iconName)
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 20, height: 20)
+                                    POIIconImage(name: category.iconName, size: 20)
                                         .foregroundStyle(Color(hex: category.color))
                                         .frame(width: 28, height: 28)
 

@@ -3293,17 +3293,6 @@
         }
       }
     },
-    "poi.badeplasserMedStrand" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Badeplasser med strand"
-          }
-        }
-      }
-    },
     "poi.category" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3398,7 +3387,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hoyde over havet"
+            "value" : "Høyde over havet"
           }
         }
       }
