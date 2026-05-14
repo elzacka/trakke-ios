@@ -35,16 +35,8 @@ final class SheetCoordinator {
     /// Waypoint som redigeres i `.waypointEdit`. Settes før `active = .waypointEdit`.
     var editingWaypoint: Waypoint?
 
-    /// Hvilken fane Bibliotek skal åpne på. Settes før `active = .merSheet`.
-    var merInitialTab: MerTab = .myStuff
-
     func present(_ sheet: ActiveSheet) {
         active = sheet
-    }
-
-    func openMerSheet(at tab: MerTab) {
-        merInitialTab = tab
-        active = .merSheet
     }
 
     func dismiss() {

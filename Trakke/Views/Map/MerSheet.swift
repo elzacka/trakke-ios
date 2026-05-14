@@ -1,55 +1,36 @@
 import SwiftUI
 import CoreLocation
 
-// MARK: - Tab Identitet
-
-/// Hvilken fane som er aktiv i Bibliotek.
-enum MerTab: Hashable, CaseIterable, Identifiable {
-    case myStuff
-    case explore
-    case more
-
-    var id: Self { self }
-
-    var localizedTitle: String {
-        switch self {
-        case .myStuff: return String(localized: "mystuff.title")
-        case .explore: return String(localized: "explore.title")
-        case .more: return String(localized: "more.title")
-        }
-    }
-}
-
 // MARK: - Navigasjonsmål
 
-private enum MerMyStuffDestination: Hashable {
+private enum MerDestination: Hashable {
     case routes
     case waypoints
     case activities
     case offlinePacks
+    case knowledge
+    case settings
+    case info
 }
 
 // MARK: - MerSheet
+//
+// Én flat skroll-flate. Ingen tabs, ingen accordions, ingen pynt-ikoner.
+// Settings.app-mønster: avsnittsoverskrifter i kapitaler + rene rader.
+// Pil-rader pusher til detalj, handlingsrader uten pil utfører handling.
 
-/// Konsolidert flate som erstatter MineGreier / Explore / More.
-/// Tre faner: Mine greier, Utforsk, Mer.
 struct MerSheet: View {
     @Bindable var routeViewModel: RouteViewModel
     @Bindable var waypointViewModel: WaypointViewModel
     @Bindable var activityViewModel: ActivityViewModel
-    @Bindable var poiViewModel: POIViewModel
     @Bindable var knowledgeViewModel: KnowledgeViewModel
     @Bindable var mapViewModel: MapViewModel
     @Bindable var offlineViewModel: OfflineViewModel
 
-    // MARK: Callbacks
-
     var onRouteSelected: ((Route) -> Void)?
     var onNewRoute: (() -> Void)?
-    var onWaypointSelected: ((Waypoint) -> Void)?
     var onWaypointEdit: ((Waypoint) -> Void)?
     var onWaypointNavigate: ((CLLocationCoordinate2D) -> Void)?
-    var onActivitySelected: ((Activity) -> Void)?
     var onActivityRetrace: ((CLLocationCoordinate2D) -> Void)?
     var onActivityFollow: ((Activity) -> Void)?
     var onStartRecording: (() -> Void)?
@@ -58,85 +39,25 @@ struct MerSheet: View {
     var onDeleteAllData: (() -> Void)?
 
     @Environment(\.dismiss) private var dismiss
-    @State private var selectedTab: MerTab
     @State private var navigationPath = NavigationPath()
-
-    @AppStorage(AppStorageKeys.overlayHillshading) private var overlayHillshading = false
-    @AppStorage(AppStorageKeys.overlayNaturskog) private var overlayNaturskog = false
-    @AppStorage(AppStorageKeys.overlayTurrutebasen) private var overlayTurrutebasen = false
-    @AppStorage(AppStorageKeys.naturskogLayerType) private var naturskogLayerType = OverlayLayer.naturskogSannsynlighet.rawValue
-
-    init(
-        initialTab: MerTab,
-        routeViewModel: RouteViewModel,
-        waypointViewModel: WaypointViewModel,
-        activityViewModel: ActivityViewModel,
-        poiViewModel: POIViewModel,
-        knowledgeViewModel: KnowledgeViewModel,
-        mapViewModel: MapViewModel,
-        offlineViewModel: OfflineViewModel,
-        onRouteSelected: ((Route) -> Void)? = nil,
-        onNewRoute: (() -> Void)? = nil,
-        onWaypointSelected: ((Waypoint) -> Void)? = nil,
-        onWaypointEdit: ((Waypoint) -> Void)? = nil,
-        onWaypointNavigate: ((CLLocationCoordinate2D) -> Void)? = nil,
-        onActivitySelected: ((Activity) -> Void)? = nil,
-        onActivityRetrace: ((CLLocationCoordinate2D) -> Void)? = nil,
-        onActivityFollow: ((Activity) -> Void)? = nil,
-        onStartRecording: (() -> Void)? = nil,
-        onMeasurementTapped: (() -> Void)? = nil,
-        onOfflineTapped: (() -> Void)? = nil,
-        onDeleteAllData: (() -> Void)? = nil
-    ) {
-        self._selectedTab = State(initialValue: initialTab)
-        self.routeViewModel = routeViewModel
-        self.waypointViewModel = waypointViewModel
-        self.activityViewModel = activityViewModel
-        self.poiViewModel = poiViewModel
-        self.knowledgeViewModel = knowledgeViewModel
-        self.mapViewModel = mapViewModel
-        self.offlineViewModel = offlineViewModel
-        self.onRouteSelected = onRouteSelected
-        self.onNewRoute = onNewRoute
-        self.onWaypointSelected = onWaypointSelected
-        self.onWaypointEdit = onWaypointEdit
-        self.onWaypointNavigate = onWaypointNavigate
-        self.onActivitySelected = onActivitySelected
-        self.onActivityRetrace = onActivityRetrace
-        self.onActivityFollow = onActivityFollow
-        self.onStartRecording = onStartRecording
-        self.onMeasurementTapped = onMeasurementTapped
-        self.onOfflineTapped = onOfflineTapped
-        self.onDeleteAllData = onDeleteAllData
-    }
 
     var body: some View {
         NavigationStack(path: $navigationPath) {
-            VStack(spacing: 0) {
-                Picker("", selection: $selectedTab) {
-                    ForEach(MerTab.allCases) { tab in
-                        Text(tab.localizedTitle).tag(tab)
-                    }
+            ScrollView {
+                VStack(spacing: .Trakke.cardGap) {
+                    mineTingSection
+                    verktoySection
+                    kunnskapOgOmSection
+                    Spacer(minLength: .Trakke.lg)
                 }
-                .pickerStyle(.segmented)
                 .padding(.horizontal, .Trakke.sheetHorizontal)
-                .padding(.vertical, .Trakke.sm)
-
-                Group {
-                    switch selectedTab {
-                    case .myStuff: myStuffContent
-                    case .explore: toolsContent
-                    case .more: moreContent
-                    }
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .padding(.top, .Trakke.sheetTop)
             }
             .background(Color(.systemGroupedBackground))
             .tint(Color.Trakke.brand)
-            .navigationTitle(selectedTab.localizedTitle)
             .navigationBarTitleDisplayMode(.inline)
-            .navigationDestination(for: MerMyStuffDestination.self) { destination in
-                myStuffDestinationView(for: destination)
+            .navigationDestination(for: MerDestination.self) { destination in
+                destinationView(for: destination)
             }
             .navigationDestination(for: KnowledgeDestination.self) { destination in
                 switch destination {
@@ -149,93 +70,80 @@ struct MerSheet: View {
         }
         .presentationDetents([.large])
         .presentationDragIndicator(.visible)
-        .onChange(of: selectedTab) { _, _ in
-            navigationPath = NavigationPath()
-        }
         .task {
             await knowledgeViewModel.loadCatalog()
             knowledgeViewModel.refreshInstalledPacks()
         }
     }
 
-    // MARK: - Tab: Mine greier
+    // MARK: - Seksjon: MINE TING
 
-    private var myStuffContent: some View {
-        ScrollView {
-            VStack(spacing: .Trakke.cardGap) {
-                CardSection {
-                    merMenuLink(
-                        icon: "point.topleft.down.to.point.bottomright.curvepath",
-                        label: String(localized: "routes.title"),
+    private var mineTingSection: some View {
+        CardSection(String(localized: "mystuff.title").uppercased()) {
+            VStack(spacing: 0) {
+                pushRow(label: String(localized: "routes.title"),
                         count: routeViewModel.routes.count,
-                        destination: MerMyStuffDestination.routes
-                    )
-                    Divider().padding(.leading, .Trakke.dividerLeading)
-                    merMenuLink(
-                        icon: "mappin",
-                        label: String(localized: "mystuff.places"),
+                        destination: .routes)
+                Divider().padding(.leading, .Trakke.dividerLeading)
+                pushRow(label: String(localized: "mystuff.places"),
                         count: waypointViewModel.waypoints.count,
-                        destination: MerMyStuffDestination.waypoints
-                    )
-                    Divider().padding(.leading, .Trakke.dividerLeading)
-                    merMenuLink(
-                        icon: "figure.hiking",
-                        label: String(localized: "activity.title"),
+                        destination: .waypoints)
+                Divider().padding(.leading, .Trakke.dividerLeading)
+                pushRow(label: String(localized: "activity.title"),
                         count: activityViewModel.activities.count,
-                        destination: MerMyStuffDestination.activities
-                    )
-                }
-
-                offlineMapsCard
-            }
-            .padding(.horizontal, .Trakke.sheetHorizontal)
-            .padding(.top, .Trakke.sheetTop)
-        }
-    }
-
-    /// Liste over nedlastede offline-kart, sortert alfabetisk.
-    /// Når brukeren ikke har lastet ned noe vises en kort tomstand —
-    /// brukeren får vite at funksjonen finnes uten å åpne en annen flate.
-    private var offlineMapsCard: some View {
-        CardSection(String(localized: "offline.title")) {
-            if offlineViewModel.packs.isEmpty {
-                Text(String(localized: "offline.empty.short"))
-                    .font(Font.Trakke.caption)
-                    .foregroundStyle(Color.Trakke.textTertiary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.vertical, .Trakke.sm)
-            } else {
-                let sortedPacks = offlineViewModel.packs
-                    .sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
-                ForEach(Array(sortedPacks.enumerated()), id: \.element.id) { index, pack in
-                    if index > 0 {
-                        Divider().padding(.leading, .Trakke.dividerLeading)
-                    }
-                    Button {
-                        navigationPath.append(MerMyStuffDestination.offlinePacks)
-                    } label: {
-                        HStack(spacing: .Trakke.md) {
-                            Text(pack.name)
-                                .font(Font.Trakke.bodyRegular)
-                                .foregroundStyle(Color.Trakke.text)
-                                .lineLimit(1)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(Font.Trakke.captionSoft)
-                                .foregroundStyle(Color.Trakke.textTertiary)
-                        }
-                        .padding(.vertical, .Trakke.sm)
-                        .contentShape(Rectangle())
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(pack.name)
+                        destination: .activities)
+                if !offlineViewModel.packs.isEmpty {
+                    Divider().padding(.leading, .Trakke.dividerLeading)
+                    pushRow(label: String(localized: "offline.title"),
+                            count: offlineViewModel.packs.count,
+                            destination: .offlinePacks)
                 }
             }
         }
     }
+
+    // MARK: - Seksjon: VERKTØY
+
+    private var verktoySection: some View {
+        CardSection(String(localized: "explore.title").uppercased()) {
+            VStack(spacing: 0) {
+                actionRow(label: String(localized: "measurement.title")) {
+                    dismiss()
+                    onMeasurementTapped?()
+                }
+                Divider().padding(.leading, .Trakke.dividerLeading)
+                actionRow(label: String(localized: "offline.title")) {
+                    dismiss()
+                    onOfflineTapped?()
+                }
+            }
+        }
+    }
+
+    // MARK: - Seksjon: KUNNSKAP OG OM
+
+    private var kunnskapOgOmSection: some View {
+        CardSection(String(localized: "more.title").uppercased()) {
+            VStack(spacing: 0) {
+                pushRow(label: String(localized: "knowledge.title"),
+                        count: nil,
+                        destination: .knowledge)
+                Divider().padding(.leading, .Trakke.dividerLeading)
+                pushRow(label: String(localized: "settings.title"),
+                        count: nil,
+                        destination: .settings)
+                Divider().padding(.leading, .Trakke.dividerLeading)
+                pushRow(label: String(localized: "info.title"),
+                        count: nil,
+                        destination: .info)
+            }
+        }
+    }
+
+    // MARK: - Destinasjonsrendring
 
     @ViewBuilder
-    private func myStuffDestinationView(for destination: MerMyStuffDestination) -> some View {
+    private func destinationView(for destination: MerDestination) -> some View {
         switch destination {
         case .routes:
             RouteListSheet(
@@ -254,9 +162,7 @@ struct MerSheet: View {
         case .waypoints:
             WaypointListSheet(
                 viewModel: waypointViewModel,
-                onWaypointSelected: { wp in
-                    onWaypointSelected?(wp)
-                },
+                onWaypointSelected: { _ in },
                 onWaypointEdit: { wp in
                     onWaypointEdit?(wp)
                     dismiss()
@@ -297,142 +203,39 @@ struct MerSheet: View {
                 isEmbedded: true,
                 dismissSheet: { dismiss() }
             )
+        case .knowledge:
+            KnowledgeSheet(viewModel: knowledgeViewModel, isEmbedded: true)
+        case .settings:
+            PreferencesSheet(
+                mapViewModel: mapViewModel,
+                knowledgeViewModel: knowledgeViewModel,
+                onDeleteAllData: onDeleteAllData,
+                isEmbedded: true
+            )
+        case .info:
+            InfoSheet(isEmbedded: true)
         }
     }
 
-    // MARK: - Tab: Verktøy
-    //
-    // Samler de kart-bestemmende handlingene: kartlag-toggles og
-    // tools (måleverktøy og offline-nedlasting). Tidligere innhold
-    // Kartinnhold er fjernet: POI-kategorier nås via FAB → Kategorier,
-    // kunnskapstemaer via Mer → Kunnskap.
+    // MARK: - Radkomponenter
 
-    private var toolsContent: some View {
-        ScrollView {
-            VStack(spacing: .Trakke.cardGap) {
-                toolsSection
-                kartlagSection
-                Spacer(minLength: .Trakke.lg)
-            }
-            .padding(.horizontal, .Trakke.sheetHorizontal)
-            .padding(.top, .Trakke.sheetTop)
-        }
-    }
-
-    private var toolsSection: some View {
-        CardSection {
-            VStack(spacing: 0) {
-                merActionButton(icon: "ruler", label: String(localized: "measurement.title")) {
-                    dismiss()
-                    onMeasurementTapped?()
-                }
-                Divider().padding(.leading, .Trakke.dividerLeading)
-                merActionButton(icon: "arrow.down.circle", label: String(localized: "offline.title")) {
-                    dismiss()
-                    onOfflineTapped?()
-                }
-            }
-        }
-    }
-
-    private var kartlagSection: some View {
-        CardSection(String(localized: "overlay.layers")) {
-            VStack(spacing: 0) {
-                overlayToggle(
-                    label: OverlayLayer.hillshading.displayName,
-                    isOn: $overlayHillshading
-                )
-                Divider()
-                overlayToggle(
-                    label: String(localized: "map.overlay.naturskog"),
-                    isOn: $overlayNaturskog
-                )
-                if overlayNaturskog {
-                    NaturskogSubPickerView(selectedLayerType: $naturskogLayerType)
-                }
-                Divider()
-                overlayToggle(
-                    label: OverlayLayer.turrutebasen.displayName,
-                    isOn: $overlayTurrutebasen
-                )
-            }
-        }
-    }
-
-    private func overlayToggle(label: String, isOn: Binding<Bool>) -> some View {
-        Toggle(isOn: isOn) {
-            Text(label).font(Font.Trakke.bodyRegular)
-        }
-        .tint(Color.Trakke.brand)
-        .padding(.vertical, .Trakke.xs)
-    }
-
-    // MARK: - Tab: Mer
-    //
-    // Tre seksjoner som expandable accordions, alle kollapset by default.
-    // Innholdet rendres bare når brukeren expanderer — Rams: ikke vis det
-    // som ikke etterspørres. Rekkefølge per brukerønske: Innstillinger
-    // øverst, Kunnskap i midten, Informasjon nederst.
-
-    private var moreContent: some View {
-        ScrollView {
-            VStack(spacing: .Trakke.cardGap) {
-                ExpandableSection(String(localized: "settings.title")) {
-                    PreferencesSheet(
-                        mapViewModel: mapViewModel,
-                        knowledgeViewModel: knowledgeViewModel,
-                        onDeleteAllData: onDeleteAllData,
-                        inline: true
-                    )
-                }
-
-                ExpandableSection(String(localized: "knowledge.title")) {
-                    KnowledgeSheet(viewModel: knowledgeViewModel, inline: true)
-                }
-
-                ExpandableSection(String(localized: "info.title")) {
-                    InfoSheet(inline: true)
-                }
-
-                Spacer(minLength: .Trakke.lg)
-            }
-            .padding(.horizontal, .Trakke.sheetHorizontal)
-            .padding(.top, .Trakke.sheetTop)
-        }
-    }
-
-    // MARK: - Felles menyrad-bygging
-
-    private func merMenuLink<Destination: Hashable>(
-        icon: String,
-        label: String,
-        count: Int,
-        destination: Destination
-    ) -> some View {
+    /// Rad som pusher til en destinasjon. Tekst + valgfri count + chevron.
+    private func pushRow(label: String, count: Int?, destination: MerDestination) -> some View {
         Button {
             navigationPath.append(destination)
         } label: {
             HStack(spacing: .Trakke.md) {
-                Image(systemName: icon)
-                    .font(Font.Trakke.bodyMedium)
-                    .foregroundStyle(Color.Trakke.brand)
-                    .frame(width: 24)
-                    .accessibilityHidden(true)
-
                 Text(label)
                     .font(Font.Trakke.bodyRegular)
                     .foregroundStyle(Color.Trakke.text)
-
                 Spacer()
-
-                if count > 0 {
+                if let count, count > 0 {
                     Text("\(count)")
                         .font(Font.Trakke.captionSoft)
                         .foregroundStyle(Color.Trakke.textTertiary)
                         .monospacedDigit()
                         .accessibilityHidden(true)
                 }
-
                 Image(systemName: "chevron.right")
                     .font(Font.Trakke.captionSoft)
                     .foregroundStyle(Color.Trakke.textTertiary)
@@ -442,31 +245,22 @@ struct MerSheet: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(count > 0 ? "\(label), \(count)" : label)
+        .accessibilityLabel(count.map { $0 > 0 ? "\(label), \($0)" : label } ?? label)
     }
 
-    private func merActionButton(
-        icon: String,
-        label: String,
-        action: @escaping () -> Void
-    ) -> some View {
+    /// Rad som utfører en handling og lukker sheeten. Bare tekst, ingen pil.
+    private func actionRow(label: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            HStack(spacing: .Trakke.md) {
-                Image(systemName: icon)
-                    .font(Font.Trakke.bodyMedium)
-                    .foregroundStyle(Color.Trakke.brand)
-                    .frame(width: 24)
-                    .accessibilityHidden(true)
-
+            HStack {
                 Text(label)
                     .font(Font.Trakke.bodyRegular)
                     .foregroundStyle(Color.Trakke.text)
-
                 Spacer()
             }
             .frame(minHeight: .Trakke.touchMin)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(label)
     }
 }

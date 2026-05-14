@@ -29,6 +29,16 @@
     "%@ moh." : {
 
     },
+    "%@: %@" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@: %2$@"
+          }
+        }
+      }
+    },
     "%@." : {
 
     },
@@ -37,6 +47,17 @@
     },
     "•" : {
 
+    },
+    "accessibility.opensExternalLink" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Åpner ekstern lenke"
+          }
+        }
+      }
     },
     "accessibility.tapToCollapse" : {
       "extractionState" : "manual",
@@ -563,6 +584,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Oppdag Norge med turskoa på"
+          }
+        }
+      }
+    },
+    "bibliotek.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mer"
           }
         }
       }
@@ -3029,17 +3061,6 @@
         }
       }
     },
-    "offline.empty.subtitle" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Last ned kartområder for bruk uten internett"
-          }
-        }
-      }
-    },
     "offline.empty.short" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3047,6 +3068,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ingen lastet ned ennå"
+          }
+        }
+      }
+    },
+    "offline.empty.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last ned kartområder for bruk uten internett"
           }
         }
       }
@@ -3293,6 +3325,17 @@
         }
       }
     },
+    "poi.balplasser" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bålplasser"
+          }
+        }
+      }
+    },
     "poi.category" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3491,61 +3534,6 @@
         }
       }
     },
-    "poi.gapahuk" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gapahuk/vindskjul"
-          }
-        }
-      }
-    },
-    "poi.huler" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Huler"
-          }
-        }
-      }
-    },
-    "poi.krigsminner" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Krigsminner"
-          }
-        }
-      }
-    },
-    "poi.kulturminner" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kulturminner"
-          }
-        }
-      }
-    },
-    "poi.balplasser" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bålplasser"
-          }
-        }
-      }
-    },
     "poi.fosser" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3557,6 +3545,17 @@
         }
       }
     },
+    "poi.gapahuk" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gapahuk/vindskjul"
+          }
+        }
+      }
+    },
     "poi.hengekoyeplasser" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3564,6 +3563,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hengekøyeplasser"
+          }
+        }
+      }
+    },
+    "poi.huler" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Huler"
           }
         }
       }
@@ -3590,6 +3600,17 @@
         }
       }
     },
+    "poi.krigsminner" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Krigsminner"
+          }
+        }
+      }
+    },
     "poi.kroksjoer" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3601,6 +3622,17 @@
         }
       }
     },
+    "poi.kulturminner" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kulturminner"
+          }
+        }
+      }
+    },
     "poi.laguner" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3608,39 +3640,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Laguner"
-          }
-        }
-      }
-    },
-    "poi.rasteplasser" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rasteplasser"
-          }
-        }
-      }
-    },
-    "poi.teltplasser" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Teltplasser"
-          }
-        }
-      }
-    },
-    "poi.varmeKilder" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Varme kilder"
           }
         }
       }
@@ -3667,6 +3666,17 @@
         }
       }
     },
+    "poi.rasteplasser" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rasteplasser"
+          }
+        }
+      }
+    },
     "poi.source" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3674,6 +3684,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kilde:"
+          }
+        }
+      }
+    },
+    "poi.teltplasser" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teltplasser"
           }
         }
       }
@@ -3696,6 +3717,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Utsiktspunkter"
+          }
+        }
+      }
+    },
+    "poi.varmeKilder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Varme kilder"
           }
         }
       }
@@ -6804,39 +6836,6 @@
         }
       }
     },
-    "weather.wind" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vind"
-          }
-        }
-      }
-    },
-    "bibliotek.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mer"
-          }
-        }
-      }
-    },
-    "accessibility.opensExternalLink" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Åpner ekstern lenke"
-          }
-        }
-      }
-    },
     "weather.waterTemperature" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6844,6 +6843,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vanntemperatur"
+          }
+        }
+      }
+    },
+    "weather.wind" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vind"
           }
         }
       }

@@ -158,7 +158,7 @@ struct ContentView: View {
                 + (routeCount > 0 ? 1 : 0)
                 + (waypointCount > 0 ? 1 : 0)
             if typesImported > 1 {
-                sheets.openMerSheet(at: .myStuff)
+                sheets.active = .merSheet
             } else if activityCount > 0 {
                 sheets.active = .activityList
             } else if routeCount > 0 {
@@ -298,7 +298,7 @@ struct ContentView: View {
                 viewModel: mapViewModel,
                 onSearchTapped: { sheets.active = .search },
                 onCategoryTapped: { sheets.active = .categoryPicker },
-                onMerTapped: { sheets.openMerSheet(at: .myStuff) },
+                onMerTapped: { sheets.active = .merSheet },
                 onWeatherTapped: { sheets.active = .weather },
                 onEmergencyTapped: { sheets.active = .emergency },
                 enabledOverlays: effectiveOverlays,
@@ -349,7 +349,7 @@ struct ContentView: View {
                     onCategoryTapped: { sheets.active = .categoryPicker },
                     onEmergencyTapped: { sheets.active = .emergency },
                     onWeatherTapped: { sheets.active = .weather },
-                    onMerTapped: { sheets.openMerSheet(at: .myStuff) }
+                    onMerTapped: { sheets.active = .merSheet }
                 )
                 .confirmationDialog(
                     String(localized: "navigation.stopConfirmTitle"),
@@ -560,11 +560,9 @@ struct ContentView: View {
 
         case .merSheet:
             MerSheet(
-                initialTab: sheets.merInitialTab,
                 routeViewModel: routeViewModel,
                 waypointViewModel: waypointViewModel,
                 activityViewModel: activityViewModel,
-                poiViewModel: poiViewModel,
                 knowledgeViewModel: knowledgeViewModel,
                 mapViewModel: mapViewModel,
                 offlineViewModel: offlineViewModel,
@@ -574,7 +572,6 @@ struct ContentView: View {
                 onNewRoute: {
                     routeViewModel.startDrawing()
                 },
-                onWaypointSelected: { _ in },
                 onWaypointEdit: { wp in
                     sheets.editingWaypoint = wp
                     sheets.active = .waypointEdit
@@ -583,7 +580,6 @@ struct ContentView: View {
                     navigationDestination = coordinate
                     sheets.active = .navigationStart
                 },
-                onActivitySelected: { _ in },
                 onActivityRetrace: { coordinate in
                     navigationDestination = coordinate
                     sheets.active = .navigationStart
