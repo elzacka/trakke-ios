@@ -26,10 +26,29 @@ final class POIViewModel {
             pois.removeAll { $0.category == category }
         } else {
             enabledCategories.insert(category)
-            if let bounds = lastBounds {
+            guard let bounds = lastBounds else { return }
+
+            // Sørg for at bundled-cache er populert før vi spør om POI-er.
+            // Uten dette ville en kategori som er enablet før preloadAll når
+            // den i køen returnere tomt resultat — POI-er ville ikke vises
+            // før neste viewport-endring (race condition).
+            if category.isBundled {
+                Task { [weak self] in
+                    await BundledPOIService.loadIfNeeded(category)
+                    guard let self,
+                          self.enabledCategories.contains(category) else { return }
+                    self.loadCategory(category, bounds: bounds, zoom: self.lastZoom)
+                }
+            } else {
                 loadCategory(category, bounds: bounds, zoom: lastZoom)
             }
         }
+    }
+
+    /// Slå av alle kategorier samtidig. Brukt av Kategorier-velgeren.
+    func disableAllCategories() {
+        enabledCategories.removeAll()
+        pois.removeAll()
     }
 
     private func loadCategory(_ category: POICategory, bounds: ViewportBounds, zoom: Double) {

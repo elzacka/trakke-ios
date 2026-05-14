@@ -610,6 +610,17 @@
         }
       }
     },
+    "categories.disableAll" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slå av alle"
+          }
+        }
+      }
+    },
     "CC BY 4.0" : {
 
     },
