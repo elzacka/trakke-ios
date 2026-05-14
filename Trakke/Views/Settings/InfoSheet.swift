@@ -2,9 +2,14 @@ import SwiftUI
 
 struct InfoSheet: View {
     var isEmbedded = false
+    /// Inline-modus: ingen ScrollView/NavigationStack/title — kalleren
+    /// (f.eks. accordion-vert i Mer-fanen) håndterer scroll og kontekst.
+    var inline = false
 
     var body: some View {
-        if isEmbedded {
+        if inline {
+            contentVStack
+        } else if isEmbedded {
             infoContent
         } else {
             NavigationStack {
@@ -18,7 +23,24 @@ struct InfoSheet: View {
 
     private var infoContent: some View {
         ScrollView {
-                VStack(spacing: .Trakke.cardGap) {
+            contentVStack
+        }
+        .background(Color(.systemGroupedBackground))
+        .tint(Color.Trakke.brand)
+        .navigationTitle(String(localized: "info.title"))
+        .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $showUserGuide) {
+            UserGuideSheet()
+                .presentationDragIndicator(.visible)
+        }
+        .sheet(isPresented: $showPrivacySheet) {
+            PrivacySheet()
+                .presentationDragIndicator(.visible)
+        }
+    }
+
+    private var contentVStack: some View {
+        VStack(spacing: .Trakke.cardGap) {
                     // MARK: - User Guide & Links
                     CardSection {
                         Button {
@@ -100,8 +122,9 @@ struct InfoSheet: View {
                         .accessibilityLabel(String(localized: "info.sourceCode"))
                     }
 
-                    // MARK: - Data Sources (alphabetical)
-                    CardSection(String(localized: "info.dataSources")) {
+                    // MARK: - Data Sources (alphabetical, expandable)
+                    ExpandableSection(String(localized: "info.dataSources")) {
+                        VStack(spacing: 0) {
                         dataSourceRow(
                             name: "Artsdatabanken",
                             detail: String(localized: "info.artsdatabanken.detail"),
@@ -173,6 +196,7 @@ struct InfoSheet: View {
                             detail: String(localized: "info.yr.detail"),
                             license: "CC BY 4.0"
                         )
+                        }
                     }
 
                     // MARK: - Open Source (alphabetical)
@@ -209,23 +233,10 @@ struct InfoSheet: View {
                         )
                     }
 
-                    Spacer(minLength: .Trakke.lg)
-                }
-                .padding(.horizontal, .Trakke.sheetHorizontal)
-                .padding(.top, .Trakke.sheetTop)
-            }
-            .background(Color(.systemGroupedBackground))
-            .tint(Color.Trakke.brand)
-            .navigationTitle(String(localized: "info.title"))
-            .navigationBarTitleDisplayMode(.inline)
-            .sheet(isPresented: $showUserGuide) {
-                UserGuideSheet()
-                    .presentationDragIndicator(.visible)
-            }
-            .sheet(isPresented: $showPrivacySheet) {
-                PrivacySheet()
-                    .presentationDragIndicator(.visible)
-            }
+            Spacer(minLength: .Trakke.lg)
+        }
+        .padding(.horizontal, inline ? 0 : .Trakke.sheetHorizontal)
+        .padding(.top, inline ? 0 : .Trakke.sheetTop)
     }
 
     // MARK: - Data Source Row

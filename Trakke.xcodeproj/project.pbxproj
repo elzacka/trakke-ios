@@ -109,6 +109,7 @@
 		7C82D3D2AF2B5914C1760CE1 /* fair_polartwilight.svg in Resources */ = {isa = PBXBuildFile; fileRef = D73BE3B8249B93A825F66049 /* fair_polartwilight.svg */; };
 		7CD2AEF7664153C977F9599C /* snowshowersandthunder_polartwilight.svg in Resources */ = {isa = PBXBuildFile; fileRef = F9D0AC9F2557E4C909665CEA /* snowshowersandthunder_polartwilight.svg */; };
 		7E006791F4A0E21284B0817C /* MarkdownBodyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A23FC13BE17D1AC98EFDC6B8 /* MarkdownBodyView.swift */; };
+		80187D5439EC4F22563B5B8D /* ExpandableSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6777E1B06D96A5E102A0846E /* ExpandableSection.swift */; };
 		808AA69F56CBE74E3EBBC1AC /* Color+Trakke.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8239B38DDD3DD8EA4588E103 /* Color+Trakke.swift */; };
 		818AA6D1BCDBA51BAB3B7AF1 /* ActivityTrackingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680EA9A161F3E8330CAD98CF /* ActivityTrackingTests.swift */; };
 		81AA4F4F18B7DED2A3A4979E /* TrakkeMapView+Navigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0053452935C75061CC9AD75 /* TrakkeMapView+Navigation.swift */; };
@@ -352,6 +353,7 @@
 		664080FE17FB672770B2C7B8 /* lightsnowshowers_night.svg */ = {isa = PBXFileReference; path = lightsnowshowers_night.svg; sourceTree = "<group>"; };
 		6672497810D8608FD93B7A54 /* TrakkeMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrakkeMapView.swift; sourceTree = "<group>"; };
 		6681D51E81D7DF398590E7BF /* rainshowers_day.svg */ = {isa = PBXFileReference; path = rainshowers_day.svg; sourceTree = "<group>"; };
+		6777E1B06D96A5E102A0846E /* ExpandableSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandableSection.swift; sourceTree = "<group>"; };
 		67D7D4AF33EAEE9E387A4B17 /* lightsnowshowers_day.svg */ = {isa = PBXFileReference; path = lightsnowshowers_day.svg; sourceTree = "<group>"; };
 		67F5E5FCBB47B3C24EBA9C84 /* snowshowers_polartwilight.svg */ = {isa = PBXFileReference; path = snowshowers_polartwilight.svg; sourceTree = "<group>"; };
 		680EA9A161F3E8330CAD98CF /* ActivityTrackingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityTrackingTests.swift; sourceTree = "<group>"; };
@@ -873,6 +875,7 @@
 				8370F4AA2E1940D89D1CBA2C /* CardSection.swift */,
 				5A0DEA1A78CE59CA51EE5576 /* EditNameCategorySheet.swift */,
 				F0100C1D0198B9660EA1B145 /* EmptyStateView.swift */,
+				6777E1B06D96A5E102A0846E /* ExpandableSection.swift */,
 				B604A3D9E59F613501483F77 /* ImageViewerView.swift */,
 				06E26EE05C9FC796FD7D4D17 /* LocationPrimerView.swift */,
 				A23FC13BE17D1AC98EFDC6B8 /* MarkdownBodyView.swift */,
@@ -1247,6 +1250,7 @@
 				C4FF56FF5DC59F82AF8E7D9D /* ElevationService.swift in Sources */,
 				29182E43A14354AC53371C98 /* EmergencySheet.swift in Sources */,
 				1EBC5680B70831AFB4408496 /* EmptyStateView.swift in Sources */,
+				80187D5439EC4F22563B5B8D /* ExpandableSection.swift in Sources */,
 				0294B88578D8939E29A37F5E /* Font+Trakke.swift in Sources */,
 				F8F517E28C3371FBAD7DC0B2 /* GPXExportService.swift in Sources */,
 				A80383EF15054B5242AF5D6E /* GPXImportService.swift in Sources */,

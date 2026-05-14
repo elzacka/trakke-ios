@@ -3,9 +3,14 @@ import SwiftUI
 struct KnowledgeSheet: View {
     @Bindable var viewModel: KnowledgeViewModel
     var isEmbedded = false
+    /// Inline-modus: ingen ScrollView/NavigationStack/title — kalleren
+    /// (f.eks. accordion-vert) håndterer scroll og kontekst.
+    var inline = false
 
     var body: some View {
-        if isEmbedded {
+        if inline {
+            contentVStack
+        } else if isEmbedded {
             knowledgeContent
         } else {
             NavigationStack {
@@ -42,42 +47,46 @@ struct KnowledgeSheet: View {
 
     private var knowledgeContent: some View {
         ScrollView {
-            VStack(spacing: .Trakke.cardGap) {
-                CardSection("") {
-                    ForEach(Array(sortedCategories.enumerated()), id: \.element) { index, category in
-                        if index > 0 {
-                            Divider().padding(.leading, .Trakke.dividerLeading)
-                        }
-                        NavigationLink(value: destination(for: category)) {
-                            HStack(spacing: .Trakke.md) {
-                                categoryIcon(category)
-                                    .foregroundStyle(Color.Trakke.brand)
-                                    .frame(width: 24)
-                                Text(category.displayName)
-                                    .font(Font.Trakke.bodyRegular)
-                                    .foregroundStyle(Color.Trakke.text)
-                                Spacer()
-                                Image(systemName: "chevron.right")
-                                    .font(Font.Trakke.captionSoft)
-                                    .foregroundStyle(Color.Trakke.textTertiary)
-                                    .accessibilityHidden(true)
-                            }
-                            .frame(minHeight: .Trakke.touchMin)
-                            .contentShape(Rectangle())
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
-
-                Spacer(minLength: .Trakke.lg)
-            }
-            .padding(.horizontal, .Trakke.sheetHorizontal)
-            .padding(.top, .Trakke.sheetTop)
+            contentVStack
         }
         .background(Color(.systemGroupedBackground))
         .tint(Color.Trakke.brand)
         .navigationTitle(String(localized: "knowledge.title"))
         .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private var contentVStack: some View {
+        VStack(spacing: .Trakke.cardGap) {
+            CardSection("") {
+                ForEach(Array(sortedCategories.enumerated()), id: \.element) { index, category in
+                    if index > 0 {
+                        Divider().padding(.leading, .Trakke.dividerLeading)
+                    }
+                    NavigationLink(value: destination(for: category)) {
+                        HStack(spacing: .Trakke.md) {
+                            categoryIcon(category)
+                                .foregroundStyle(Color.Trakke.brand)
+                                .frame(width: 24)
+                            Text(category.displayName)
+                                .font(Font.Trakke.bodyRegular)
+                                .foregroundStyle(Color.Trakke.text)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(Font.Trakke.captionSoft)
+                                .foregroundStyle(Color.Trakke.textTertiary)
+                                .accessibilityHidden(true)
+                        }
+                        .frame(minHeight: .Trakke.touchMin)
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+
+            Spacer(minLength: .Trakke.lg)
+        }
+        .padding(.horizontal, inline ? 0 : .Trakke.sheetHorizontal)
+        .padding(.top, inline ? 0 : .Trakke.sheetTop)
         .task {
             await viewModel.loadArticles()
             viewModel.fetchRemoteArticleUpdates()

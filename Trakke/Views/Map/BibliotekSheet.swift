@@ -29,12 +29,6 @@ private enum BibliotekMyStuffDestination: Hashable {
     case offlinePacks
 }
 
-private enum BibliotekMoreDestination: Hashable {
-    case knowledge
-    case info
-    case preferences
-}
-
 // MARK: - BibliotekSheet
 
 /// Konsolidert flate som erstatter MineGreier / Explore / More.
@@ -143,9 +137,6 @@ struct BibliotekSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(for: BibliotekMyStuffDestination.self) { destination in
                 myStuffDestinationView(for: destination)
-            }
-            .navigationDestination(for: BibliotekMoreDestination.self) { destination in
-                moreDestinationView(for: destination)
             }
             .navigationDestination(for: KnowledgeDestination.self) { destination in
                 switch destination {
@@ -377,62 +368,36 @@ struct BibliotekSheet: View {
     }
 
     // MARK: - Tab: Mer
+    //
+    // Tre seksjoner som expandable accordions, alle kollapset by default.
+    // Innholdet rendres bare når brukeren expanderer — Rams: ikke vis det
+    // som ikke etterspørres. Rekkefølge per brukerønske: Innstillinger
+    // øverst, Kunnskap i midten, Informasjon nederst.
 
     private var moreContent: some View {
         ScrollView {
             VStack(spacing: .Trakke.cardGap) {
-                CardSection {
-                    bibliotekActionButton(icon: "ruler", label: String(localized: "measurement.title")) {
-                        dismiss()
-                        onMeasurementTapped?()
-                    }
-                    Divider().padding(.leading, .Trakke.dividerLeading)
-                    bibliotekActionButton(icon: "arrow.down.circle", label: String(localized: "offline.title")) {
-                        dismiss()
-                        onOfflineTapped?()
-                    }
-                    Divider().padding(.leading, .Trakke.dividerLeading)
-                    bibliotekMenuLink(
-                        icon: "book.closed",
-                        label: String(localized: "knowledge.title"),
-                        count: 0,
-                        destination: BibliotekMoreDestination.knowledge
-                    )
-                    Divider().padding(.leading, .Trakke.dividerLeading)
-                    bibliotekMenuLink(
-                        icon: "info.circle",
-                        label: String(localized: "info.title"),
-                        count: 0,
-                        destination: BibliotekMoreDestination.info
-                    )
-                    Divider().padding(.leading, .Trakke.dividerLeading)
-                    bibliotekMenuLink(
-                        icon: "gearshape",
-                        label: String(localized: "settings.title"),
-                        count: 0,
-                        destination: BibliotekMoreDestination.preferences
+                ExpandableSection(String(localized: "settings.title")) {
+                    PreferencesSheet(
+                        mapViewModel: mapViewModel,
+                        knowledgeViewModel: knowledgeViewModel,
+                        onDeleteAllData: onDeleteAllData,
+                        inline: true
                     )
                 }
+
+                ExpandableSection(String(localized: "knowledge.title")) {
+                    KnowledgeSheet(viewModel: knowledgeViewModel, inline: true)
+                }
+
+                ExpandableSection(String(localized: "info.title")) {
+                    InfoSheet(inline: true)
+                }
+
+                Spacer(minLength: .Trakke.lg)
             }
             .padding(.horizontal, .Trakke.sheetHorizontal)
             .padding(.top, .Trakke.sheetTop)
-        }
-    }
-
-    @ViewBuilder
-    private func moreDestinationView(for destination: BibliotekMoreDestination) -> some View {
-        switch destination {
-        case .knowledge:
-            KnowledgeSheet(viewModel: knowledgeViewModel, isEmbedded: true)
-        case .info:
-            InfoSheet(isEmbedded: true)
-        case .preferences:
-            PreferencesSheet(
-                mapViewModel: mapViewModel,
-                knowledgeViewModel: knowledgeViewModel,
-                onDeleteAllData: onDeleteAllData,
-                isEmbedded: true
-            )
         }
     }
 

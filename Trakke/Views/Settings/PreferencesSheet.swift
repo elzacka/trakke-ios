@@ -5,6 +5,9 @@ struct PreferencesSheet: View {
     var knowledgeViewModel: KnowledgeViewModel?
     var onDeleteAllData: (() -> Void)?
     var isEmbedded = false
+    /// Når true rendres innholdet uten ScrollView/NavigationStack/title —
+    /// kalleren har egen scroll (f.eks. en accordion-vert i Mer-fanen).
+    var inline = false
     @AppStorage(AppStorageKeys.coordinateFormat) private var coordinateFormat: CoordinateFormat = .dd
     @AppStorage(AppStorageKeys.showWeatherWidget) private var showWeatherWidget = false
     @AppStorage(AppStorageKeys.showCompass) private var showCompass = false
@@ -23,7 +26,9 @@ struct PreferencesSheet: View {
     @State private var coordinateInfoFormat: CoordinateFormat?
 
     var body: some View {
-        if isEmbedded {
+        if inline {
+            contentVStack
+        } else if isEmbedded {
             preferencesContent
         } else {
             NavigationStack {
@@ -34,7 +39,16 @@ struct PreferencesSheet: View {
 
     private var preferencesContent: some View {
         ScrollView {
-                VStack(spacing: .Trakke.cardGap) {
+            contentVStack
+        }
+        .background(Color(.systemGroupedBackground))
+        .tint(Color.Trakke.brand)
+        .navigationTitle(String(localized: "settings.title"))
+        .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private var contentVStack: some View {
+        VStack(spacing: .Trakke.cardGap) {
                     // MARK: - Base Layer
                     CardSection(String(localized: "settings.baseLayer")) {
                         Picker(String(localized: "settings.baseLayer"), selection: $mapViewModel.baseLayer) {
@@ -186,15 +200,10 @@ struct PreferencesSheet: View {
                     }
                     .buttonStyle(.plain)
 
-                    Spacer(minLength: .Trakke.lg)
-                }
-                .padding(.horizontal, .Trakke.sheetHorizontal)
-                .padding(.top, .Trakke.sheetTop)
-            }
-            .background(Color(.systemGroupedBackground))
-            .tint(Color.Trakke.brand)
-            .navigationTitle(String(localized: "settings.title"))
-            .navigationBarTitleDisplayMode(.inline)
+            Spacer(minLength: .Trakke.lg)
+        }
+        .padding(.horizontal, .Trakke.sheetHorizontal)
+        .padding(.top, .Trakke.sheetTop)
     }
 
     // MARK: - Naturskog Sub-Picker
