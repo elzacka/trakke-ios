@@ -57,7 +57,7 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
         case .swimmingSpot: return "POISwimmingSpot"
         case .firePit: return "flame.fill"
         case .waterfall: return "drop.fill"
-        case .hammock: return "bed.double.fill"
+        case .hammock: return "POIHammock"
         case .giantKettle: return "circle.fill"
         case .oxbowLake: return "water.waves"
         case .lagoon: return "water.waves"
