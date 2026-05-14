@@ -12,20 +12,29 @@ struct POIDetailSheet: View {
                 VStack(alignment: .leading, spacing: .Trakke.cardGap) {
                     // MARK: - Category
                     HStack(spacing: .Trakke.xs) {
-                        Image(poi.category.iconName)
+                        Image(poi.displayIconName)
                             .resizable()
                             .scaledToFit()
                             .frame(width: 14, height: 14)
-                            .foregroundStyle(Color(hex: poi.category.color))
+                            .foregroundStyle(Color(hex: poi.displayColorHex))
                             .accessibilityHidden(true)
                         Text(poi.category.displayName)
                             .font(Font.Trakke.caption)
                             .foregroundStyle(Color.Trakke.textSecondary)
+                        if poi.hasBeach == true {
+                            Text(String(localized: "poi.medStrand"))
+                                .font(Font.Trakke.captionSoft)
+                                .foregroundStyle(Color.Trakke.textInverse)
+                                .padding(.horizontal, .Trakke.xs)
+                                .padding(.vertical, .Trakke.labelGap)
+                                .background(Color(hex: poi.displayColorHex))
+                                .clipShape(Capsule())
+                        }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, .Trakke.xs)
                     .accessibilityElement(children: .combine)
-                    .accessibilityLabel(Text("\(String(localized: "poi.category")): \(poi.category.displayName)"))
+                    .accessibilityLabel(Text(categoryAccessibilityLabel))
 
                     // MARK: - Details
                     if !poi.details.isEmpty {
@@ -127,11 +136,11 @@ struct POIDetailSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Image(poi.category.iconName)
+                    Image(poi.displayIconName)
                         .resizable()
                         .scaledToFit()
                         .frame(width: 22, height: 22)
-                        .foregroundStyle(Color(hex: poi.category.color))
+                        .foregroundStyle(Color(hex: poi.displayColorHex))
                         .accessibilityHidden(true)
                 }
             }
@@ -139,6 +148,14 @@ struct POIDetailSheet: View {
     }
 
     // MARK: - Helpers
+
+    private var categoryAccessibilityLabel: String {
+        let base = "\(String(localized: "poi.category")): \(poi.category.displayName)"
+        if poi.hasBeach == true {
+            return "\(base), \(String(localized: "poi.medStrand"))"
+        }
+        return base
+    }
 
     private var sortedDetails: [(key: String, value: String)] {
         poi.details

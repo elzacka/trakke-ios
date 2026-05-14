@@ -11,7 +11,6 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
     case wildernessShelters
     case kulturminner
     case swimmingSpot
-    case swimmingSpotWithBeach
 
     var id: String { rawValue }
 
@@ -24,7 +23,6 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
         case .wildernessShelters: return String(localized: "poi.gapahuk")
         case .kulturminner: return String(localized: "poi.kulturminner")
         case .swimmingSpot: return String(localized: "poi.badeplasser")
-        case .swimmingSpotWithBeach: return String(localized: "poi.badeplasserMedStrand")
         }
     }
 
@@ -37,7 +35,6 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
         case .wildernessShelters: return "POIShelter"
         case .kulturminner: return "POIHistoric"
         case .swimmingSpot: return "POISwimmingSpot"
-        case .swimmingSpotWithBeach: return "POISwimmingSpotBeach"
         }
     }
 
@@ -50,7 +47,6 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
         case .wildernessShelters: return "#b45309"
         case .kulturminner: return "#6b5b8a"
         case .swimmingSpot: return "#147a8c"
-        case .swimmingSpotWithBeach: return "#5fa8c4"
         }
     }
 
@@ -62,7 +58,7 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
         case .warMemorials: return 9
         case .wildernessShelters: return 10
         case .kulturminner: return 10
-        case .swimmingSpot, .swimmingSpotWithBeach: return 10
+        case .swimmingSpot: return 10
         }
     }
 
@@ -72,8 +68,7 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
         case .caves, .viewpoints, .warMemorials, .wildernessShelters:
             return "OpenStreetMap contributors"
         case .kulturminner: return "Riksantikvaren"
-        case .swimmingSpot, .swimmingSpotWithBeach:
-            return "UT.no/DNT, OpenStreetMap contributors"
+        case .swimmingSpot: return "UT.no/DNT, OpenStreetMap contributors"
         }
     }
 
@@ -82,14 +77,14 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
         case .shelters: return "NLOD 2.0"
         case .caves, .viewpoints, .warMemorials, .wildernessShelters: return "ODbL"
         case .kulturminner: return "NLOD 2.0"
-        case .swimmingSpot, .swimmingSpotWithBeach: return "ODbL"
+        case .swimmingSpot: return "ODbL"
         }
     }
 
     var contentGroup: ContentGroup {
         switch self {
         case .shelters: return .beredskap
-        case .caves, .wildernessShelters, .swimmingSpot, .swimmingSpotWithBeach: return .friluftsliv
+        case .caves, .wildernessShelters, .swimmingSpot: return .friluftsliv
         case .viewpoints: return .landskap
         case .warMemorials, .kulturminner: return .kulturarv
         }
@@ -99,7 +94,7 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
     var isBundled: Bool {
         switch self {
         case .caves, .viewpoints, .warMemorials, .wildernessShelters, .shelters,
-             .swimmingSpot, .swimmingSpotWithBeach: return true
+             .swimmingSpot: return true
         case .kulturminner: return false
         }
     }
@@ -109,7 +104,7 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
         switch self {
         case .shelters, .kulturminner: return true
         case .caves, .viewpoints, .warMemorials, .wildernessShelters,
-             .swimmingSpot, .swimmingSpotWithBeach: return false
+             .swimmingSpot: return false
         }
     }
 }
@@ -122,9 +117,29 @@ struct POI: Identifiable, Sendable, Equatable {
     let name: String
     let coordinate: CLLocationCoordinate2D
     var details: [String: String] = [:]
+    /// Variantflagg for badeplasser. Settes til true for «med strand»-
+    /// datasettet, ellers nil. Andre kategorier bryr seg ikke om verdien.
+    var hasBeach: Bool? = nil
 
     static func == (lhs: POI, rhs: POI) -> Bool {
         lhs.id == rhs.id
+    }
+
+    /// Ikon for kart-annotasjon og detalj-toolbar. Bruker variant-ikonet
+    /// for badeplasser med strand, ellers kategoriens standardikon.
+    var displayIconName: String {
+        if category == .swimmingSpot, hasBeach == true {
+            return "POISwimmingSpotBeach"
+        }
+        return category.iconName
+    }
+
+    /// Farge for kart-pinne og detalj-toolbar. Lysere blå for «med strand».
+    var displayColorHex: String {
+        if category == .swimmingSpot, hasBeach == true {
+            return "#5fa8c4"
+        }
+        return category.color
     }
 }
 

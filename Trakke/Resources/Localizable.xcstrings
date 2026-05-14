@@ -3519,6 +3519,17 @@
         }
       }
     },
+    "poi.medStrand" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Med strand"
+          }
+        }
+      }
+    },
     "poi.moreInfo" : {
       "extractionState" : "manual",
       "localizations" : {
