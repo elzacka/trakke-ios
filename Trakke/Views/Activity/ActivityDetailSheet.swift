@@ -29,10 +29,7 @@ struct ActivityDetailSheet: View {
                 statsCard
                 elevationCard
                 detailsCard
-                followAgainButton
-                retraceButton
-                exportButton
-                deleteButton
+                actionsCard
 
                 Spacer(minLength: .Trakke.lg)
             }
@@ -70,18 +67,64 @@ struct ActivityDetailSheet: View {
         }
     }
 
-    // MARK: - Export Button
+    // MARK: - Actions Card
+    // Felles mønster med RouteDetailSheet og WaypointDetailSheet:
+    // primær handling først, sekundære i midten, danger sist.
 
-    private var exportButton: some View {
-        Button {
-            if let url = viewModel.exportGPX(for: activity) {
-                shareURL = ShareableURL(url: url)
+    @ViewBuilder
+    private var actionsCard: some View {
+        VStack(spacing: .Trakke.sm) {
+            if activity.trackPoints.count >= 2 {
+                Button {
+                    dismiss()
+                    onFollowAgain?(activity)
+                } label: {
+                    Label(String(localized: "activity.followAgain"), systemImage: "location.north.fill")
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .buttonStyle(.trakkePrimary)
             }
-        } label: {
-            Label(String(localized: "export.share"), systemImage: "square.and.arrow.down")
-                .frame(maxWidth: .infinity, alignment: .leading)
+
+            if let startPoint = retraceDestination {
+                Button {
+                    dismiss()
+                    onRetrace?(startPoint)
+                } label: {
+                    Label(String(localized: "activity.retrace"), systemImage: "arrow.uturn.backward")
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .buttonStyle(.trakkeSecondary)
+            }
+
+            Button {
+                if let url = viewModel.exportGPX(for: activity) {
+                    shareURL = ShareableURL(url: url)
+                }
+            } label: {
+                Label(String(localized: "export.share"), systemImage: "square.and.arrow.down")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .buttonStyle(.trakkeSecondary)
+
+            Button {
+                showDeleteConfirmation = true
+            } label: {
+                Label(String(localized: "activity.delete"), systemImage: "trash")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .buttonStyle(.trakkeDanger)
+            .accessibilityHint(String(localized: "accessibility.deleteHint"))
+            .confirmationDialog(
+                String(localized: "activity.delete.title"),
+                isPresented: $showDeleteConfirmation,
+                titleVisibility: .visible
+            ) {
+                Button(String(localized: "activity.delete.confirm"), role: .destructive) {
+                    viewModel.deleteActivity(activity)
+                    dismiss()
+                }
+            }
         }
-        .buttonStyle(.trakkeSecondary)
     }
 
     // MARK: - Stats Card
@@ -181,65 +224,10 @@ struct ActivityDetailSheet: View {
         }
     }
 
-    // MARK: - Retrace Button
-
-    @ViewBuilder
-    private var retraceButton: some View {
-        if let startPoint = retraceDestination {
-            Button {
-                dismiss()
-                onRetrace?(startPoint)
-            } label: {
-                Label(String(localized: "activity.retrace"), systemImage: "arrow.uturn.backward")
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .buttonStyle(.trakkeSecondary)
-        }
-    }
-
-    // MARK: - Follow Again
-
-    @ViewBuilder
-    private var followAgainButton: some View {
-        if activity.trackPoints.count >= 2 {
-            Button {
-                dismiss()
-                onFollowAgain?(activity)
-            } label: {
-                Label(String(localized: "activity.followAgain"), systemImage: "location.north.fill")
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .buttonStyle(.trakkePrimary)
-        }
-    }
-
-    /// The start point of the track — where the user wants to navigate back to.
+    /// Startpunkt for tur — der bruker vil retrace-navigere tilbake til.
     private var retraceDestination: CLLocationCoordinate2D? {
         guard let first = activity.trackPoints.first, first.count >= 2 else { return nil }
         return CLLocationCoordinate2D(latitude: first[1], longitude: first[0])
-    }
-
-    // MARK: - Delete Button
-
-    private var deleteButton: some View {
-        Button {
-            showDeleteConfirmation = true
-        } label: {
-            Label(String(localized: "activity.delete"), systemImage: "trash")
-                .frame(maxWidth: .infinity, alignment: .leading)
-        }
-        .buttonStyle(.trakkeDanger)
-        .accessibilityHint(String(localized: "accessibility.deleteHint"))
-        .confirmationDialog(
-            String(localized: "activity.delete.title"),
-            isPresented: $showDeleteConfirmation,
-            titleVisibility: .visible
-        ) {
-            Button(String(localized: "activity.delete.confirm"), role: .destructive) {
-                viewModel.deleteActivity(activity)
-                dismiss()
-            }
-        }
     }
 
     // MARK: - Helpers
