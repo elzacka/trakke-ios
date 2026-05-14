@@ -49,7 +49,6 @@
 		326AFABCDC0359C2ABF7E8C9 /* RouteDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B26B00165D1496C9D5529B5 /* RouteDetailSheet.swift */; };
 		3336E6CCCDC1534B8A9AF90E /* heavyrainshowers_day.svg in Resources */ = {isa = PBXBuildFile; fileRef = A10030F1F5146DA2A30CFD0E /* heavyrainshowers_day.svg */; };
 		38B325270EA26C82353B2AAC /* POIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EC1194CD1BCB7392992B45D /* POIService.swift */; };
-		3941DA1D049B9927AD31D57F /* KommuneBrowserSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FBE0C5B34A8B1A962F02F2C /* KommuneBrowserSheet.swift */; };
 		3993ED3E7C59EF2E48FD0121 /* SearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7E5CE034FD5DA5AE8F00993 /* SearchService.swift */; };
 		3A7C9DBC47B669FFD8680ABF /* RemoteArticleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4DA85121D4BF952608291D /* RemoteArticleService.swift */; };
 		3B24D12D500F6939390B99C5 /* MapLibre in Frameworks */ = {isa = PBXBuildFile; productRef = 254EF731837012093F79F386 /* MapLibre */; };
@@ -167,7 +166,6 @@
 		B8761C323796DD291432CD47 /* KnowledgeArticle+GRDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40C0F8CE947B8F54DEE8604 /* KnowledgeArticle+GRDB.swift */; };
 		B994FE329097B4C2E45DDF42 /* RoutingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BDAB78749FCA8CCF5B65EBA /* RoutingService.swift */; };
 		B9A985D3A600E3F1CDB9DB24 /* snow.svg in Resources */ = {isa = PBXBuildFile; fileRef = 90C09A67E3F12082D0F92E60 /* snow.svg */; };
-		B9B31524B6FC87C0425F5FBC /* OfflineChoiceSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FA6FAE2A5726D5CF2D4C929 /* OfflineChoiceSheet.swift */; };
 		B9BE9AC1075DFE349FED2DA5 /* CardSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8370F4AA2E1940D89D1CBA2C /* CardSection.swift */; };
 		B9C7D6E2F6BF4546678DE939 /* heavysnowshowersandthunder_polartwilight.svg in Resources */ = {isa = PBXBuildFile; fileRef = 55694F167A90291EEAF377DB /* heavysnowshowersandthunder_polartwilight.svg */; };
 		BA3A7CFE7F5226CFAD1A4E76 /* MeasurementToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E61EBE99D6DE3DF695A466E /* MeasurementToolbar.swift */; };
@@ -344,7 +342,6 @@
 		5E61EBE99D6DE3DF695A466E /* MeasurementToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementToolbar.swift; sourceTree = "<group>"; };
 		5EA08AF430C23E60713FC9D3 /* TrakkeTooltip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrakkeTooltip.swift; sourceTree = "<group>"; };
 		5F0081BB146FD6AF77D276FE /* ComputedRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputedRoute.swift; sourceTree = "<group>"; };
-		5FA6FAE2A5726D5CF2D4C929 /* OfflineChoiceSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineChoiceSheet.swift; sourceTree = "<group>"; };
 		611E9CFC76A837E86C3D3CCF /* NavigationStartSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationStartSheet.swift; sourceTree = "<group>"; };
 		621B221F56A79F77A10ED993 /* CategoryPickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryPickerSheet.swift; sourceTree = "<group>"; };
 		638348A4A793DF01067BCA7F /* swimming_spots.geojson */ = {isa = PBXFileReference; path = swimming_spots.geojson; sourceTree = "<group>"; };
@@ -364,7 +361,6 @@
 		6D2287F6E967D854F1476EC0 /* lightsleetshowers_night.svg */ = {isa = PBXFileReference; path = lightsleetshowers_night.svg; sourceTree = "<group>"; };
 		6E574D64AAAB4D2201F6384A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		6F89D880883BA2585D8DEE20 /* KnowledgeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnowledgeViewModel.swift; sourceTree = "<group>"; };
-		6FBE0C5B34A8B1A962F02F2C /* KommuneBrowserSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KommuneBrowserSheet.swift; sourceTree = "<group>"; };
 		7184F69A6CAAAE19B8881113 /* CoordinateService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoordinateService.swift; sourceTree = "<group>"; };
 		7270BD1249BAB2F213E17EA1 /* KnowledgeSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnowledgeSheet.swift; sourceTree = "<group>"; };
 		737B18CD5BD4F429B0BBA923 /* heavyrainandthunder.svg */ = {isa = PBXFileReference; path = heavyrainandthunder.svg; sourceTree = "<group>"; };
@@ -804,9 +800,7 @@
 			children = (
 				2B51FCCCA65C36296EAFA352 /* DownloadAreaSheet.swift */,
 				8A44EA42EAE3F1A2EFCC4970 /* DownloadManagerSheet.swift */,
-				6FBE0C5B34A8B1A962F02F2C /* KommuneBrowserSheet.swift */,
 				65999337FCB4974C83A35FA4 /* KommuneDetailView.swift */,
-				5FA6FAE2A5726D5CF2D4C929 /* OfflineChoiceSheet.swift */,
 				539530F5D7D2D38CB8917D36 /* OfflineSetupSheet.swift */,
 			);
 			path = Offline;
@@ -1272,7 +1266,6 @@
 				EF43652A11A22F5F5BD6FFB3 /* KnowledgeTheme.swift in Sources */,
 				F2577FB6537AEF30FA78E3C8 /* KnowledgeViewModel.swift in Sources */,
 				9DE591A01075FF23FDF70F66 /* Kommune.swift in Sources */,
-				3941DA1D049B9927AD31D57F /* KommuneBrowserSheet.swift in Sources */,
 				71E808AE1D239043CCEF36B8 /* KommuneDetailView.swift in Sources */,
 				D65FF08B3B67A8222B2B7AAC /* Levenshtein.swift in Sources */,
 				6C7B6BA44F47D85AFD0B31C7 /* LocationPrimerView.swift in Sources */,
@@ -1291,7 +1284,6 @@
 				798CC23F2072E7C19629E605 /* NavigationStartSheet.swift in Sources */,
 				A4FFB025E621276E840981BE /* NavigationState.swift in Sources */,
 				9DAB8CBD444CB9D9DBFD47B6 /* NavigationViewModel.swift in Sources */,
-				B9B31524B6FC87C0425F5FBC /* OfflineChoiceSheet.swift in Sources */,
 				E7FEDC2BCE0405BD223132C7 /* OfflineMapService.swift in Sources */,
 				82B1B47F78B12B770623CAE3 /* OfflineSetupSheet.swift in Sources */,
 				C01E19DEEA45FD77A687EE2D /* OfflineViewModel.swift in Sources */,
