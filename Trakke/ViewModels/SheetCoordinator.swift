@@ -7,7 +7,7 @@ enum ActiveSheet: Identifiable, Hashable {
     case poiDetail
     case routeList
     case routeSave
-    case bibliotek
+    case merSheet
     case waypointList
     case waypointDetail
     case waypointEdit
@@ -35,16 +35,16 @@ final class SheetCoordinator {
     /// Waypoint som redigeres i `.waypointEdit`. Settes før `active = .waypointEdit`.
     var editingWaypoint: Waypoint?
 
-    /// Hvilken fane Bibliotek skal åpne på. Settes før `active = .bibliotek`.
-    var bibliotekInitialTab: BibliotekTab = .myStuff
+    /// Hvilken fane Bibliotek skal åpne på. Settes før `active = .merSheet`.
+    var merInitialTab: MerTab = .myStuff
 
     func present(_ sheet: ActiveSheet) {
         active = sheet
     }
 
-    func openBibliotek(at tab: BibliotekTab) {
-        bibliotekInitialTab = tab
-        active = .bibliotek
+    func openMerSheet(at tab: MerTab) {
+        merInitialTab = tab
+        active = .merSheet
     }
 
     func dismiss() {

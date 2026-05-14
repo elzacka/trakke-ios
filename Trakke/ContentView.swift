@@ -158,7 +158,7 @@ struct ContentView: View {
                 + (routeCount > 0 ? 1 : 0)
                 + (waypointCount > 0 ? 1 : 0)
             if typesImported > 1 {
-                sheets.openBibliotek(at: .myStuff)
+                sheets.openMerSheet(at: .myStuff)
             } else if activityCount > 0 {
                 sheets.active = .activityList
             } else if routeCount > 0 {
@@ -298,7 +298,7 @@ struct ContentView: View {
                 viewModel: mapViewModel,
                 onSearchTapped: { sheets.active = .search },
                 onCategoryTapped: { sheets.active = .categoryPicker },
-                onBibliotekTapped: { sheets.openBibliotek(at: .myStuff) },
+                onMerTapped: { sheets.openMerSheet(at: .myStuff) },
                 onWeatherTapped: { sheets.active = .weather },
                 onEmergencyTapped: { sheets.active = .emergency },
                 enabledOverlays: effectiveOverlays,
@@ -349,7 +349,7 @@ struct ContentView: View {
                     onCategoryTapped: { sheets.active = .categoryPicker },
                     onEmergencyTapped: { sheets.active = .emergency },
                     onWeatherTapped: { sheets.active = .weather },
-                    onBibliotekTapped: { sheets.openBibliotek(at: .myStuff) }
+                    onMerTapped: { sheets.openMerSheet(at: .myStuff) }
                 )
                 .confirmationDialog(
                     String(localized: "navigation.stopConfirmTitle"),
@@ -558,9 +558,9 @@ struct ContentView: View {
                 .presentationDetents([.medium])
                 .presentationDragIndicator(.visible)
 
-        case .bibliotek:
-            BibliotekSheet(
-                initialTab: sheets.bibliotekInitialTab,
+        case .merSheet:
+            MerSheet(
+                initialTab: sheets.merInitialTab,
                 routeViewModel: routeViewModel,
                 waypointViewModel: waypointViewModel,
                 activityViewModel: activityViewModel,

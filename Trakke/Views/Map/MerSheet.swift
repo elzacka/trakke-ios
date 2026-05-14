@@ -4,7 +4,7 @@ import CoreLocation
 // MARK: - Tab Identitet
 
 /// Hvilken fane som er aktiv i Bibliotek.
-enum BibliotekTab: Hashable, CaseIterable, Identifiable {
+enum MerTab: Hashable, CaseIterable, Identifiable {
     case myStuff
     case explore
     case more
@@ -22,18 +22,18 @@ enum BibliotekTab: Hashable, CaseIterable, Identifiable {
 
 // MARK: - Navigasjonsmål
 
-private enum BibliotekMyStuffDestination: Hashable {
+private enum MerMyStuffDestination: Hashable {
     case routes
     case waypoints
     case activities
     case offlinePacks
 }
 
-// MARK: - BibliotekSheet
+// MARK: - MerSheet
 
 /// Konsolidert flate som erstatter MineGreier / Explore / More.
 /// Tre faner: Mine greier, Utforsk, Mer.
-struct BibliotekSheet: View {
+struct MerSheet: View {
     @Bindable var routeViewModel: RouteViewModel
     @Bindable var waypointViewModel: WaypointViewModel
     @Bindable var activityViewModel: ActivityViewModel
@@ -58,7 +58,7 @@ struct BibliotekSheet: View {
     var onDeleteAllData: (() -> Void)?
 
     @Environment(\.dismiss) private var dismiss
-    @State private var selectedTab: BibliotekTab
+    @State private var selectedTab: MerTab
     @State private var navigationPath = NavigationPath()
 
     @AppStorage(AppStorageKeys.overlayHillshading) private var overlayHillshading = false
@@ -67,7 +67,7 @@ struct BibliotekSheet: View {
     @AppStorage(AppStorageKeys.naturskogLayerType) private var naturskogLayerType = OverlayLayer.naturskogSannsynlighet.rawValue
 
     init(
-        initialTab: BibliotekTab,
+        initialTab: MerTab,
         routeViewModel: RouteViewModel,
         waypointViewModel: WaypointViewModel,
         activityViewModel: ActivityViewModel,
@@ -114,7 +114,7 @@ struct BibliotekSheet: View {
         NavigationStack(path: $navigationPath) {
             VStack(spacing: 0) {
                 Picker("", selection: $selectedTab) {
-                    ForEach(BibliotekTab.allCases) { tab in
+                    ForEach(MerTab.allCases) { tab in
                         Text(tab.localizedTitle).tag(tab)
                     }
                 }
@@ -135,7 +135,7 @@ struct BibliotekSheet: View {
             .tint(Color.Trakke.brand)
             .navigationTitle(selectedTab.localizedTitle)
             .navigationBarTitleDisplayMode(.inline)
-            .navigationDestination(for: BibliotekMyStuffDestination.self) { destination in
+            .navigationDestination(for: MerMyStuffDestination.self) { destination in
                 myStuffDestinationView(for: destination)
             }
             .navigationDestination(for: KnowledgeDestination.self) { destination in
@@ -164,25 +164,25 @@ struct BibliotekSheet: View {
         ScrollView {
             VStack(spacing: .Trakke.cardGap) {
                 CardSection {
-                    bibliotekMenuLink(
+                    merMenuLink(
                         icon: "point.topleft.down.to.point.bottomright.curvepath",
                         label: String(localized: "routes.title"),
                         count: routeViewModel.routes.count,
-                        destination: BibliotekMyStuffDestination.routes
+                        destination: MerMyStuffDestination.routes
                     )
                     Divider().padding(.leading, .Trakke.dividerLeading)
-                    bibliotekMenuLink(
+                    merMenuLink(
                         icon: "mappin",
                         label: String(localized: "mystuff.places"),
                         count: waypointViewModel.waypoints.count,
-                        destination: BibliotekMyStuffDestination.waypoints
+                        destination: MerMyStuffDestination.waypoints
                     )
                     Divider().padding(.leading, .Trakke.dividerLeading)
-                    bibliotekMenuLink(
+                    merMenuLink(
                         icon: "figure.hiking",
                         label: String(localized: "activity.title"),
                         count: activityViewModel.activities.count,
-                        destination: BibliotekMyStuffDestination.activities
+                        destination: MerMyStuffDestination.activities
                     )
                 }
 
@@ -212,7 +212,7 @@ struct BibliotekSheet: View {
                         Divider().padding(.leading, .Trakke.dividerLeading)
                     }
                     Button {
-                        navigationPath.append(BibliotekMyStuffDestination.offlinePacks)
+                        navigationPath.append(MerMyStuffDestination.offlinePacks)
                     } label: {
                         HStack(spacing: .Trakke.md) {
                             Text(pack.name)
@@ -235,7 +235,7 @@ struct BibliotekSheet: View {
     }
 
     @ViewBuilder
-    private func myStuffDestinationView(for destination: BibliotekMyStuffDestination) -> some View {
+    private func myStuffDestinationView(for destination: MerMyStuffDestination) -> some View {
         switch destination {
         case .routes:
             RouteListSheet(
@@ -322,12 +322,12 @@ struct BibliotekSheet: View {
     private var toolsSection: some View {
         CardSection {
             VStack(spacing: 0) {
-                bibliotekActionButton(icon: "ruler", label: String(localized: "measurement.title")) {
+                merActionButton(icon: "ruler", label: String(localized: "measurement.title")) {
                     dismiss()
                     onMeasurementTapped?()
                 }
                 Divider().padding(.leading, .Trakke.dividerLeading)
-                bibliotekActionButton(icon: "arrow.down.circle", label: String(localized: "offline.title")) {
+                merActionButton(icon: "arrow.down.circle", label: String(localized: "offline.title")) {
                     dismiss()
                     onOfflineTapped?()
                 }
@@ -403,7 +403,7 @@ struct BibliotekSheet: View {
 
     // MARK: - Felles menyrad-bygging
 
-    private func bibliotekMenuLink<Destination: Hashable>(
+    private func merMenuLink<Destination: Hashable>(
         icon: String,
         label: String,
         count: Int,
@@ -445,7 +445,7 @@ struct BibliotekSheet: View {
         .accessibilityLabel(count > 0 ? "\(label), \(count)" : label)
     }
 
-    private func bibliotekActionButton(
+    private func merActionButton(
         icon: String,
         label: String,
         action: @escaping () -> Void

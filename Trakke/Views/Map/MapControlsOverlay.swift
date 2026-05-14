@@ -4,7 +4,7 @@ struct MapControlsOverlay<WeatherContent: View>: View {
     @Bindable var viewModel: MapViewModel
     var onSearchTapped: (() -> Void)?
     var onCategoryTapped: (() -> Void)?
-    var onBibliotekTapped: (() -> Void)?
+    var onMerTapped: (() -> Void)?
     var onWeatherTapped: (() -> Void)?
     var onEmergencyTapped: (() -> Void)?
     var enabledOverlays: Set<OverlayLayer> = []
@@ -27,7 +27,7 @@ struct MapControlsOverlay<WeatherContent: View>: View {
             ("square.grid.2x2", String(localized: "categories.title"), { onCategoryTapped?() }),
             ("light.beacon.max.fill", String(localized: "emergency.title"), { onEmergencyTapped?() }),
             ("cloud.sun", String(localized: "weather.title"), { onWeatherTapped?() }),
-            ("ellipsis", String(localized: "bibliotek.title"), { onBibliotekTapped?() }),
+            ("ellipsis", String(localized: "more.title"), { onMerTapped?() }),
         ]
     }
 
