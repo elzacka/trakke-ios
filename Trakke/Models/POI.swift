@@ -10,6 +10,8 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
     case warMemorials
     case wildernessShelters
     case kulturminner
+    case swimmingSpot
+    case swimmingSpotWithBeach
 
     var id: String { rawValue }
 
@@ -21,6 +23,8 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
         case .warMemorials: return String(localized: "poi.krigsminner")
         case .wildernessShelters: return String(localized: "poi.gapahuk")
         case .kulturminner: return String(localized: "poi.kulturminner")
+        case .swimmingSpot: return String(localized: "poi.badeplasser")
+        case .swimmingSpotWithBeach: return String(localized: "poi.badeplasserMedStrand")
         }
     }
 
@@ -32,6 +36,8 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
         case .warMemorials: return "POIMonument"
         case .wildernessShelters: return "POIShelter"
         case .kulturminner: return "POIHistoric"
+        case .swimmingSpot: return "POISwimmingSpot"
+        case .swimmingSpotWithBeach: return "POISwimmingSpotBeach"
         }
     }
 
@@ -43,6 +49,8 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
         case .warMemorials: return "#7b4a6b"
         case .wildernessShelters: return "#b45309"
         case .kulturminner: return "#6b5b8a"
+        case .swimmingSpot: return "#147a8c"
+        case .swimmingSpotWithBeach: return "#5fa8c4"
         }
     }
 
@@ -54,6 +62,7 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
         case .warMemorials: return 9
         case .wildernessShelters: return 10
         case .kulturminner: return 10
+        case .swimmingSpot, .swimmingSpotWithBeach: return 10
         }
     }
 
@@ -63,6 +72,8 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
         case .caves, .viewpoints, .warMemorials, .wildernessShelters:
             return "OpenStreetMap contributors"
         case .kulturminner: return "Riksantikvaren"
+        case .swimmingSpot, .swimmingSpotWithBeach:
+            return "UT.no/DNT, OpenStreetMap contributors"
         }
     }
 
@@ -71,13 +82,14 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
         case .shelters: return "NLOD 2.0"
         case .caves, .viewpoints, .warMemorials, .wildernessShelters: return "ODbL"
         case .kulturminner: return "NLOD 2.0"
+        case .swimmingSpot, .swimmingSpotWithBeach: return "ODbL"
         }
     }
 
     var contentGroup: ContentGroup {
         switch self {
         case .shelters: return .beredskap
-        case .caves, .wildernessShelters: return .friluftsliv
+        case .caves, .wildernessShelters, .swimmingSpot, .swimmingSpotWithBeach: return .friluftsliv
         case .viewpoints: return .landskap
         case .warMemorials, .kulturminner: return .kulturarv
         }
@@ -86,7 +98,8 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
     /// Whether offline bundled data exists for this category.
     var isBundled: Bool {
         switch self {
-        case .caves, .viewpoints, .warMemorials, .wildernessShelters, .shelters: return true
+        case .caves, .viewpoints, .warMemorials, .wildernessShelters, .shelters,
+             .swimmingSpot, .swimmingSpotWithBeach: return true
         case .kulturminner: return false
         }
     }
@@ -95,7 +108,8 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
     var isLive: Bool {
         switch self {
         case .shelters, .kulturminner: return true
-        case .caves, .viewpoints, .warMemorials, .wildernessShelters: return false
+        case .caves, .viewpoints, .warMemorials, .wildernessShelters,
+             .swimmingSpot, .swimmingSpotWithBeach: return false
         }
     }
 }

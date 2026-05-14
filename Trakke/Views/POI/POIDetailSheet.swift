@@ -10,6 +10,23 @@ struct POIDetailSheet: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: .Trakke.cardGap) {
+                    // MARK: - Category
+                    HStack(spacing: .Trakke.xs) {
+                        Image(poi.category.iconName)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 14, height: 14)
+                            .foregroundStyle(Color(hex: poi.category.color))
+                            .accessibilityHidden(true)
+                        Text(poi.category.displayName)
+                            .font(Font.Trakke.caption)
+                            .foregroundStyle(Color.Trakke.textSecondary)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, .Trakke.xs)
+                    .accessibilityElement(children: .combine)
+                    .accessibilityLabel(Text("\(String(localized: "poi.category")): \(poi.category.displayName)"))
+
                     // MARK: - Details
                     if !poi.details.isEmpty {
                         CardSection(String(localized: "poi.details")) {
@@ -125,7 +142,7 @@ struct POIDetailSheet: View {
 
     private var sortedDetails: [(key: String, value: String)] {
         poi.details
-            .filter { $0.key != "link" }
+            .filter { $0.key != "link" && $0.key != "source" }
             .sorted { $0.key < $1.key }
     }
 

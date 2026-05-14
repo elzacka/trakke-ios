@@ -48,6 +48,8 @@ extension Color {
         static let poiWarMemorial = Color(hex: "7b4a6b")
         static let poiWildernessShelter = Color(hex: "b45309")
         static let poiCulturalHeritage = Color(hex: "6b5b8a")
+        static let poiSwimmingSpot = Color(hex: "147a8c")
+        static let poiSwimmingSpotBeach = Color(hex: "5fa8c4")
 
         // MARK: Map data palette
         // Distinct from brand: map-data colours need maximum contrast against
@@ -98,6 +100,8 @@ extension UIColor {
         static let poiWarMemorial = UIColor(hex: "7b4a6b")
         static let poiWildernessShelter = UIColor(hex: "b45309")
         static let poiCulturalHeritage = UIColor(hex: "6b5b8a")
+        static let poiSwimmingSpot = UIColor(hex: "147a8c")
+        static let poiSwimmingSpotBeach = UIColor(hex: "5fa8c4")
     }
 
     convenience init(hex: String) {
