@@ -73,7 +73,7 @@ Siden Tråkke ikke samler inn personopplysninger, er de fleste rettigheter autom
 
 - **Innsyn:** Alle data er synlig i appen.
 - **Sletting:** Bruk «Slett alle data» i innstillingene, eller slett appen. Du kan også slette enkeltdata direkte i appen.
-- **Dataportabilitet:** Ruter og turer kan eksporteres som GPX-filer.
+- **Dataportabilitet:** Ruter, steder og turer kan eksporteres som GPX- eller GeoJSON-filer.
 - **Begrenset behandling:** Du kan bruke appen uten å gi posisjonstilgang.
 
 ## 5. Datasikkerhet
