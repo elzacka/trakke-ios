@@ -54,21 +54,21 @@ final class WeatherViewModel {
             daylight = SolarCalculator.calculate(for: coordinate)
 
             do {
+                // Fan out all four upstream calls concurrently so total latency
+                // is bounded by the slowest one, not the sum.
                 async let weatherResult = service.getForecast(lat: coordinate.latitude, lon: coordinate.longitude)
                 async let waterResult = waterService.getWaterTemperature(lat: coordinate.latitude, lon: coordinate.longitude)
+                async let varsomResult = varsomService.fetchWarnings(at: coordinate)
+                async let airResult = airQualityService.getAirQuality(lat: coordinate.latitude, lon: coordinate.longitude)
 
                 let weather = try await weatherResult
                 guard !Task.isCancelled else { return }
                 forecast = weather
 
-                // Water temperature is best-effort — never block weather display
+                // Best-effort fields — never block weather display.
                 waterTemperature = try? await waterResult
-
-                // Varsom warnings and air quality are best-effort
-                varsomWarnings = await varsomService.fetchWarnings(at: coordinate)
-                airQuality = try? await airQualityService.getAirQuality(
-                    lat: coordinate.latitude, lon: coordinate.longitude
-                )
+                varsomWarnings = await varsomResult
+                airQuality = try? await airResult
 
                 isLoading = false
             } catch is CancellationError {
