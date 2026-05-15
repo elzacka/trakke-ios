@@ -138,69 +138,38 @@ final class ActivityViewModel {
 
     @discardableResult
     func importFile(from url: URL) -> Int {
-        let ext = url.pathExtension.lowercased()
-        switch ext {
-        case "gpx":
-            return importGPX(from: url)
-        case "geojson", "json":
-            return importGeoJSON(from: url)
-        default:
-            importMessage = String(localized: "import.error.unsupportedFormat")
-            return 0
-        }
-    }
-
-    /// Async variant used by the in-app file importer flow. Parses off the main
-    /// actor so the UI can render the pending state (disabled button + progress).
-    @discardableResult
-    func importFileAsync(from url: URL) async -> Int {
-        isImporting = true
-        defer { isImporting = false }
-
-        let ext = url.pathExtension.lowercased()
-        switch ext {
-        case "gpx":
-            do {
-                let imported = try await Task.detached(priority: .userInitiated) {
-                    try GPXImportService.parseActivities(from: url)
-                }.value
-                return insertImported(imported, filename: url.importedItemName)
-            } catch {
-                importMessage = String(localized: "activity.importError")
-                return 0
-            }
-        case "geojson", "json":
-            do {
-                let result = try await Task.detached(priority: .userInitiated) {
-                    try GeoJSONImportService.parse(from: url)
-                }.value
-                return insertImported(result.activities, filename: url.importedItemName)
-            } catch {
-                importMessage = String(localized: "activity.importError")
-                return 0
-            }
-        default:
-            importMessage = String(localized: "import.error.unsupportedFormat")
-            return 0
-        }
-    }
-
-    @discardableResult
-    func importGPX(from url: URL) -> Int {
         do {
-            let imported = try GPXImportService.parseActivities(from: url)
+            let imported = try FileImporter.parse(
+                from: url,
+                gpx: GPXImportService.parseActivities,
+                geoJSON: { try GeoJSONImportService.parse(from: $0).activities }
+            )
             return insertImported(imported, filename: url.importedItemName)
+        } catch FileImportError.unsupportedFormat {
+            importMessage = String(localized: "import.error.unsupportedFormat")
+            return 0
         } catch {
             importMessage = String(localized: "activity.importError")
             return 0
         }
     }
 
+    /// Async variant used by the in-app file importer flow. Parses off the main
+    /// actor so the UI can render the pending state.
     @discardableResult
-    func importGeoJSON(from url: URL) -> Int {
+    func importFileAsync(from url: URL) async -> Int {
+        isImporting = true
+        defer { isImporting = false }
         do {
-            let result = try GeoJSONImportService.parse(from: url)
-            return insertImported(result.activities, filename: url.importedItemName)
+            let imported = try await FileImporter.parseOffActor(
+                from: url,
+                gpx: GPXImportService.parseActivities,
+                geoJSON: { try GeoJSONImportService.parse(from: $0).activities }
+            )
+            return insertImported(imported, filename: url.importedItemName)
+        } catch FileImportError.unsupportedFormat {
+            importMessage = String(localized: "import.error.unsupportedFormat")
+            return 0
         } catch {
             importMessage = String(localized: "activity.importError")
             return 0

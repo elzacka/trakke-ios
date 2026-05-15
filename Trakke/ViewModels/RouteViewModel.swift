@@ -308,80 +308,46 @@ final class RouteViewModel {
     var importMessage: String?
     var isImporting = false
 
-    /// Detects file format from extension and routes to the appropriate parser.
-    /// GPX and GeoJSON share the same `ImportedRoute` intermediate type so insertion
-    /// is uniform regardless of source format.
+    /// Synchronous import — dispatches to the right parser by file extension.
+    /// GPX and GeoJSON share the same `ImportedRoute` intermediate type.
     @discardableResult
     func importFile(from url: URL) -> Int {
-        let ext = url.pathExtension.lowercased()
-        switch ext {
-        case "gpx":
-            return importGPX(from: url)
-        case "geojson", "json":
-            return importGeoJSON(from: url)
-        default:
+        do {
+            let imported = try FileImporter.parse(
+                from: url,
+                gpx: GPXImportService.parseRoutes,
+                geoJSON: { try GeoJSONImportService.parse(from: $0).routes }
+            )
+            return insertImported(imported, filename: url.importedItemName)
+        } catch FileImportError.unsupportedFormat {
             importMessage = String(localized: "import.error.unsupportedFormat")
+            return 0
+        } catch {
+            importMessage = String(localized: "routes.importError")
+            Logger.routes.error("Route import failed: \(error, privacy: .private)")
             return 0
         }
     }
 
     /// Async variant used by the in-app file importer flow. Parses off the main
-    /// actor so the UI can render the pending state (disabled button + progress).
+    /// actor so the UI can render the pending state.
     @discardableResult
     func importFileAsync(from url: URL) async -> Int {
         isImporting = true
         defer { isImporting = false }
-
-        let ext = url.pathExtension.lowercased()
-        switch ext {
-        case "gpx":
-            do {
-                let imported = try await Task.detached(priority: .userInitiated) {
-                    try GPXImportService.parseRoutes(from: url)
-                }.value
-                return insertImported(imported, filename: url.importedItemName)
-            } catch {
-                importMessage = String(localized: "routes.importError")
-                Logger.routes.error("GPX route import failed: \(error, privacy: .private)")
-                return 0
-            }
-        case "geojson", "json":
-            do {
-                let result = try await Task.detached(priority: .userInitiated) {
-                    try GeoJSONImportService.parse(from: url)
-                }.value
-                return insertImported(result.routes, filename: url.importedItemName)
-            } catch {
-                importMessage = String(localized: "routes.importError")
-                Logger.routes.error("GeoJSON route import failed: \(error, privacy: .private)")
-                return 0
-            }
-        default:
+        do {
+            let imported = try await FileImporter.parseOffActor(
+                from: url,
+                gpx: GPXImportService.parseRoutes,
+                geoJSON: { try GeoJSONImportService.parse(from: $0).routes }
+            )
+            return insertImported(imported, filename: url.importedItemName)
+        } catch FileImportError.unsupportedFormat {
             importMessage = String(localized: "import.error.unsupportedFormat")
             return 0
-        }
-    }
-
-    @discardableResult
-    func importGPX(from url: URL) -> Int {
-        do {
-            let imported = try GPXImportService.parseRoutes(from: url)
-            return insertImported(imported, filename: url.importedItemName)
         } catch {
             importMessage = String(localized: "routes.importError")
-            Logger.routes.error("GPX route import failed: \(error, privacy: .private)")
-            return 0
-        }
-    }
-
-    @discardableResult
-    func importGeoJSON(from url: URL) -> Int {
-        do {
-            let result = try GeoJSONImportService.parse(from: url)
-            return insertImported(result.routes, filename: url.importedItemName)
-        } catch {
-            importMessage = String(localized: "routes.importError")
-            Logger.routes.error("GeoJSON route import failed: \(error, privacy: .private)")
+            Logger.routes.error("Route import failed: \(error, privacy: .private)")
             return 0
         }
     }

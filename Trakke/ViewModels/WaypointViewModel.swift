@@ -207,79 +207,46 @@ final class WaypointViewModel {
     // MARK: - Import
 
     /// Detects file format from extension and routes to the appropriate parser.
-    /// GPX and GeoJSON share the same `ImportedWaypoint` intermediate type so insertion
-    /// is uniform regardless of source format.
+    /// Synchronous import — dispatches to the right parser by file extension.
+    /// GPX and GeoJSON share the same `ImportedWaypoint` intermediate type.
     @discardableResult
     func importFile(from url: URL) -> Int {
-        let ext = url.pathExtension.lowercased()
-        switch ext {
-        case "gpx":
-            return importGPX(from: url)
-        case "geojson", "json":
-            return importGeoJSON(from: url)
-        default:
+        do {
+            let imported = try FileImporter.parse(
+                from: url,
+                gpx: GPXImportService.parseWaypoints,
+                geoJSON: { try GeoJSONImportService.parse(from: $0).waypoints }
+            )
+            return insertImported(imported, filename: url.importedItemName)
+        } catch FileImportError.unsupportedFormat {
             importMessage = String(localized: "import.error.unsupportedFormat")
+            return 0
+        } catch {
+            importMessage = String(localized: "waypoints.importError")
+            Logger.waypoints.error("Waypoint import failed: \(error, privacy: .private)")
             return 0
         }
     }
 
     /// Async variant used by the in-app file importer flow. Parses off the main
-    /// actor so the UI can render the pending state (disabled button + progress).
+    /// actor so the UI can render the pending state.
     @discardableResult
     func importFileAsync(from url: URL) async -> Int {
         isImporting = true
         defer { isImporting = false }
-
-        let ext = url.pathExtension.lowercased()
-        switch ext {
-        case "gpx":
-            do {
-                let imported = try await Task.detached(priority: .userInitiated) {
-                    try GPXImportService.parseWaypoints(from: url)
-                }.value
-                return insertImported(imported, filename: url.importedItemName)
-            } catch {
-                importMessage = String(localized: "waypoints.importError")
-                Logger.waypoints.error("GPX waypoint import failed: \(error, privacy: .private)")
-                return 0
-            }
-        case "geojson", "json":
-            do {
-                let result = try await Task.detached(priority: .userInitiated) {
-                    try GeoJSONImportService.parse(from: url)
-                }.value
-                return insertImported(result.waypoints, filename: url.importedItemName)
-            } catch {
-                importMessage = String(localized: "waypoints.importError")
-                Logger.waypoints.error("GeoJSON waypoint import failed: \(error, privacy: .private)")
-                return 0
-            }
-        default:
+        do {
+            let imported = try await FileImporter.parseOffActor(
+                from: url,
+                gpx: GPXImportService.parseWaypoints,
+                geoJSON: { try GeoJSONImportService.parse(from: $0).waypoints }
+            )
+            return insertImported(imported, filename: url.importedItemName)
+        } catch FileImportError.unsupportedFormat {
             importMessage = String(localized: "import.error.unsupportedFormat")
             return 0
-        }
-    }
-
-    @discardableResult
-    func importGPX(from url: URL) -> Int {
-        do {
-            let imported = try GPXImportService.parseWaypoints(from: url)
-            return insertImported(imported, filename: url.importedItemName)
         } catch {
             importMessage = String(localized: "waypoints.importError")
-            Logger.waypoints.error("GPX waypoint import failed: \(error, privacy: .private)")
-            return 0
-        }
-    }
-
-    @discardableResult
-    func importGeoJSON(from url: URL) -> Int {
-        do {
-            let result = try GeoJSONImportService.parse(from: url)
-            return insertImported(result.waypoints, filename: url.importedItemName)
-        } catch {
-            importMessage = String(localized: "waypoints.importError")
-            Logger.waypoints.error("GeoJSON waypoint import failed: \(error, privacy: .private)")
+            Logger.waypoints.error("Waypoint import failed: \(error, privacy: .private)")
             return 0
         }
     }
