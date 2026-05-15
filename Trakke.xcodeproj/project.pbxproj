@@ -76,6 +76,7 @@
 		4F7C63F3D27146E3C51EF025 /* HapticFeedbackService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141766496BBFD7A301341B62 /* HapticFeedbackService.swift */; };
 		50F38B23F8F9302EAB7D42D3 /* PERSONVERN.md in Resources */ = {isa = PBXBuildFile; fileRef = 559F5DCD85C2F379A5C9A254 /* PERSONVERN.md */; };
 		517DF2E53D80632CE789759C /* lightrainshowers_night.svg in Resources */ = {isa = PBXBuildFile; fileRef = F11A240340728A910BCCC8E3 /* lightrainshowers_night.svg */; };
+		523423D3AE78E854918AD60B /* WeatherAdvice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26047FD676D04C6F0702E265 /* WeatherAdvice.swift */; };
 		534E6EEF9B567D0617654675 /* heavysnowshowers_night.svg in Resources */ = {isa = PBXBuildFile; fileRef = 1B359D627BE06494B8B332DA /* heavysnowshowers_night.svg */; };
 		537E36F8EA95441DB8B13A83 /* ActivityTrackingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44E67DF50AC72B5B791232E2 /* ActivityTrackingService.swift */; };
 		5494B8DABE850872D374288C /* EditNameCategorySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A0DEA1A78CE59CA51EE5576 /* EditNameCategorySheet.swift */; };
@@ -307,6 +308,7 @@
 		21C08C95B1402EE0EE4A9234 /* heavysleetshowers_polartwilight.svg */ = {isa = PBXFileReference; path = heavysleetshowers_polartwilight.svg; sourceTree = "<group>"; };
 		221FFB6A9D3755A4F47D4774 /* WeatherSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherSheet.swift; sourceTree = "<group>"; };
 		25CE94AC2610B82AFF460286 /* FileImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileImporter.swift; sourceTree = "<group>"; };
+		26047FD676D04C6F0702E265 /* WeatherAdvice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherAdvice.swift; sourceTree = "<group>"; };
 		2A0D13322F67F86A945E22BC /* Route.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Route.swift; sourceTree = "<group>"; };
 		2B036CAF984717980FB64AE9 /* lightsleetshowers_polartwilight.svg */ = {isa = PBXFileReference; path = lightsleetshowers_polartwilight.svg; sourceTree = "<group>"; };
 		2B51FCCCA65C36296EAFA352 /* DownloadAreaSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadAreaSheet.swift; sourceTree = "<group>"; };
@@ -560,6 +562,7 @@
 				023B5A346EE50C5FEA9E521D /* SOSService.swift */,
 				345569C9D23A19395D85DDBF /* VarsomService.swift */,
 				39916EBB098B54379CF3238F /* WaterTemperatureService.swift */,
+				26047FD676D04C6F0702E265 /* WeatherAdvice.swift */,
 				85804A9ADE33A40BE3F01CA2 /* WeatherService.swift */,
 			);
 			path = Services;
@@ -1363,6 +1366,7 @@
 				A736CEB54730CFDB9F0CF716 /* WaypointEditSheet.swift in Sources */,
 				D3CEFA8AD8A51FB3525BC879 /* WaypointListSheet.swift in Sources */,
 				C5078A823ADDFAAD762A4605 /* WaypointViewModel.swift in Sources */,
+				523423D3AE78E854918AD60B /* WeatherAdvice.swift in Sources */,
 				599297614F9FC8909BD23309 /* WeatherService.swift in Sources */,
 				75C87D092FBC77734976D549 /* WeatherSheet.swift in Sources */,
 				018DBCB3293351FDB15F3659 /* WeatherViewModel.swift in Sources */,
