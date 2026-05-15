@@ -183,16 +183,8 @@ actor AirQualityService: AirQualityFetching {
 
     // MARK: - HTTP Header Parsing
 
-    private static let expiresFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss zzz"
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        return formatter
-    }()
-
     private static func parseExpires(_ response: HTTPURLResponse) -> Date? {
-        guard let expires = response.value(forHTTPHeaderField: "Expires") else { return nil }
-        return expiresFormatter.date(from: expires)
+        HTTPDateParser.parseExpires(response)
     }
 }
 

@@ -134,20 +134,8 @@ actor WeatherService: WeatherFetching {
         }
     }
 
-    private static let expiresFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss zzz"
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.timeZone = TimeZone(abbreviation: "GMT")
-        return formatter
-    }()
-
     private static func parseExpires(from response: HTTPURLResponse) -> Date {
-        if let expiresString = response.value(forHTTPHeaderField: "Expires"),
-           let date = expiresFormatter.date(from: expiresString) {
-            return date
-        }
-        return Date().addingTimeInterval(fallbackTTL)
+        HTTPDateParser.parseExpires(response, fallbackTTL: fallbackTTL)
     }
 
     private func evictStaleCacheEntries() {

@@ -55,13 +55,6 @@ actor WaterTemperatureService: WaterTemperatureFetching {
         bathingDisabledUntil = nil
     }
 
-    private static let expiresFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss zzz"
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.timeZone = TimeZone(abbreviation: "GMT")
-        return formatter
-    }()
 
     private func cacheKey(lat: Double, lon: Double) -> String {
         let truncLat = (lat * 10000).rounded() / 10000
@@ -70,11 +63,7 @@ actor WaterTemperatureService: WaterTemperatureFetching {
     }
 
     private static func parseExpires(from response: HTTPURLResponse) -> Date {
-        if let expiresString = response.value(forHTTPHeaderField: "Expires"),
-           let date = expiresFormatter.date(from: expiresString) {
-            return date
-        }
-        return Date.now.addingTimeInterval(fallbackTTL)
+        HTTPDateParser.parseExpires(response, fallbackTTL: fallbackTTL)
     }
 
     func getWaterTemperature(lat: Double, lon: Double) async throws -> WaterTemperatureResult {
