@@ -1,100 +1,97 @@
 # Personvernerklæring for Tråkke
 
-**Sist oppdatert:** 17. april 2026
-## Kort oppsummert
+**Sist oppdatert:** 15. mai 2026
 
-Tråkke lagrer all data lokalt på enheten din. Appen samler ikke inn personopplysninger, og sporer ikke bruken din. Ingen data sendes til appens systemer eller til tredjeparter for analyse eller markedsføring.
+## Kort sagt
+
+Tråkke lagrer all data lokalt på enheten din. Vi samler ikke inn personopplysninger og sporer ikke bruken din. Ingenting sendes til appens egne systemer eller til tredjeparter for analyse eller markedsføring.
 
 ---
 
-## 1. Hvilke data behandles
+## 1. Hva som behandles
 
-### 1.1 Data som lagres på enheten din
+### 1.1 Data som lagres lokalt
 
-Tråkke lagrer følgende lokalt:
+- **Ruter, steder og turer** du oppretter
+- **Turdata** — GPS-spor, avstand og høydemeter fra registrerte turer
+- **Innstillinger** — valgt kartlag, koordinatformat og preferanser
+- **Nedlastede kart** for offline bruk
+- **Kunnskapsartikler** for offline bruk
+- **Midlertidige vær- og luftkvalitetsdata** (i minnet, slettes når du lukker appen)
 
-- **Ruter og steder** som du oppretter
-- **Turdata** (GPS-spor, avstand, høydemeter) fra registrerte turer
-- **Kartinnstillinger** (valgt kartlag, koordinatformat, preferanser)
-- **Nedlastede kartområder** for offline-bruk
-- **Kunnskapsartikler** for offline-bruk
-- **Midlertidige værdata** (buffer i opptil 2 timer)
-- **Midlertidige luftkvalitetsdata** (buffer i minnet, inkludert stedsnavn fra API-et)
-
-Disse dataene forlater aldri enheten din.
+Disse dataene forlater aldri enheten.
 
 ### 1.2 Posisjon
 
-Appen ber om tilgang til posisjonen din kun når du aktivt velger å vise den på kartet. Før du får iOS-dialogen, viser appen en kort forklaring på hvorfor posisjonstilgang er nyttig. Du kan avvise uten at iOS-dialogen vises.
+Appen ber om posisjon kun når du aktivt velger å vise den på kartet. Du får en kort forklaring i appen før iOS-dialogen vises, og du kan avvise uten å se iOS-dialogen.
 
-Posisjonen brukes til å vise deg på kartet, hente værmelding, beregne turruter og registrere GPS-spor. Posisjonsdata lagres kun lokalt på enheten.
+Posisjonen brukes til å vise deg på kartet, hente lokal værmelding, beregne ruter og registrere GPS-spor. Posisjonsdata lagres kun lokalt.
 
-### 1.3 Data som ikke samles inn
+### 1.3 Data vi ikke samler inn
 
-Ingen brukerkontoer, informasjonskapsler, enhetsidentifikatorer (IDFA), bruksstatistikk eller biometriske data.
+Ingen brukerkontoer. Ingen informasjonskapsler. Ingen enhetsidentifikatorer (IDFA). Ingen bruksstatistikk. Ingen biometriske data.
 
 ## 2. Eksterne tjenester
 
-Appen henter data fra følgende tjenester. Alle tjenester er norske eller europeiske. Unntak: Terrengdata (AWS) og kunnskapspakker (GitHub), men disse inneholder ikke brukerdata (personopplysninger).
+Appen henter data fra følgende tjenester. Alle er norske eller europeiske, med to unntak: terrengdata (AWS) og kunnskapspakker (GitHub) — disse inneholder ingen brukerdata.
 
 | Tjeneste | Formål | Data som sendes | Land |
 |----------|--------|-----------------|------|
 | Kartverket (cache.kartverket.no) | Kartfliser | Kartkoordinater (zoom, x, y) | Norge |
-| Kartverket WMS (wms.geonorge.no) | Turruter-kartlag | Kartområde (bounding box) | Norge |
+| Kartverket WMS (wms.geonorge.no) | Turruter | Kartområde | Norge |
 | Geonorge (ws.geonorge.no) | Stedsnavn, adresser, høydedata | Søketekst eller koordinater | Norge |
-| Meteorologisk institutt (api.met.no) | Værmelding, havtemperatur og luftkvalitet | Omtrentlig posisjon (luftkvalitet: redusert til 2 desimaler, ca. 1,1 km nøyaktighet) | Norge |
+| Meteorologisk institutt (api.met.no) | Vær, havtemperatur, luftkvalitet | Omtrentlig posisjon (luftkvalitet: 2 desimaler, ca. 1,1 km) | Norge |
 | Havvarsel-Frost (havvarsel-frost.met.no) | Badevannstemperatur | Omtrentlig posisjon | Norge |
-| DSB (ogc.dsb.no) | Tilfluktsrom | Kartområde (bounding box) | Norge |
-| Riksantikvaren (api.ra.no) | Kulturminner | Kartområde (bounding box) | Norge |
-| Miljødirektoratet | Naturvernområder og naturskog | Kartområde (bounding box) | Norge |
-| NVE / Varsom (api01.nve.no, gis3.nve.no) | Snøskred- og flomvarsler, bratthetskart | Omtrentlig posisjon (snøskred), datoer (flom), kartområde (bratthetskart) | Norge |
+| DSB (ogc.dsb.no) | Tilfluktsrom | Kartområde | Norge |
+| Riksantikvaren (api.ra.no) | Kulturminner | Kartområde | Norge |
+| Miljødirektoratet | Naturvernområder og naturskog | Kartområde | Norge |
+| NVE / Varsom (api01.nve.no, gis3.nve.no) | Snøskred, flom, bratthet | Omtrentlig posisjon eller kartområde | Norge |
 | FOSSGIS Valhalla (valhalla1.openstreetmap.de) | Ruteberegning | Start- og målkoordinater | Tyskland (EU) |
-| Artsdatabanken (ai.artsdatabanken.no) | Artsbilder i kunnskapsartikler | Vitenskapelige artsnavn | Norge |
-| Mapzen Terrain Tiles (s3.amazonaws.com) | Terrengmodell for 3D-relieff | Kartkoordinater (zoom, x, y) | USA* |
-| GitHub Releases (github.com) | Kunnskapspakker | Ingen brukerdata | USA* |
-| GitHub (raw.githubusercontent.com) | Kunnskapsartikler | Ingen brukerdata (kun filnavn) | USA* |
+| Artsdatabanken (artsdatabanken.no) | Artsbilder | Vitenskapelige artsnavn | Norge |
+| Mapzen Terrain Tiles (s3.amazonaws.com) | Terrengmodell for 3D-relieff | Kartkoordinater | USA¹ |
+| GitHub (github.com, raw.githubusercontent.com) | Kunnskapspakker og artikler | Ingen brukerdata | USA¹ |
 
-*Terrengdata og kunnskapspakker hentes som anonyme nedlastinger uten brukeridentifikasjon. Kun kartkoordinater eller filnavn sendes.
+¹ Hentes anonymt, uten brukeridentifikasjon. Kun kartkoordinater eller filnavn sendes.
 
-Appen sender en User-Agent-header med appens navn, versjon og utviklerens e-postadresse ved alle API-forespørsler, som påkrevd av flere av tjenestene. Headeren inneholder ingen brukerdata.
+Appen sender en User-Agent-header med appens navn, versjon og utviklerens e-postadresse — som påkrevd av flere tjenester. Headeren inneholder ingen brukerdata.
 
 ### IP-adresse
 
-Når appen henter data fra tjenestene over, vil din IP-adresse være synlig for disse tjenestene som en del av normal nettverkskommunikasjon. Alle norske og europeiske tjenester er underlagt GDPR.
+Når appen henter data, vil IP-adressen din være synlig for tjenesten som en del av normal nettverkskommunikasjon. Alle norske og europeiske tjenester er underlagt GDPR.
 
 ## 3. Rettslig grunnlag
 
-- **Berettiget interesse** (GDPR artikkel 6(1)(f)): Appen henter kartdata og værdata for å levere kjernefunksjonaliteten brukeren forventer.
-- **Samtykke** (GDPR artikkel 6(1)(a)): Posisjonstilgang krever eksplisitt samtykke via iOS-dialogboksen.
+- **Berettiget interesse** (GDPR art. 6(1)(f)): Appen henter kart- og værdata for å levere kjernefunksjonen.
+- **Samtykke** (GDPR art. 6(1)(a)): Posisjonstilgang krever eksplisitt samtykke via iOS-dialogen.
 
 ## 4. Dine rettigheter
 
-Siden Tråkke ikke samler inn personopplysninger, er de fleste rettigheter automatisk ivaretatt:
+Siden Tråkke ikke samler inn personopplysninger, er de fleste rettighetene automatisk ivaretatt:
 
-- **Innsyn:** Alle data er synlig i appen.
-- **Sletting:** Bruk «Slett alle data» i innstillingene, eller slett appen. Du kan også slette enkeltdata direkte i appen.
-- **Dataportabilitet:** Ruter, steder og turer kan eksporteres som GPX- eller GeoJSON-filer.
-- **Begrenset behandling:** Du kan bruke appen uten å gi posisjonstilgang.
+- **Innsyn**: Alle data vises i appen.
+- **Sletting**: Bruk «Slett alle data» i innstillingene, eller slett appen. Enkeltdata kan slettes direkte i appen.
+- **Dataportabilitet**: Ruter, steder og turer kan eksporteres som GPX-filer. Import støtter både GPX og GeoJSON.
+- **Begrenset behandling**: Appen kan brukes uten å gi posisjonstilgang.
 
 ## 5. Datasikkerhet
 
-- All kommunikasjon skjer over HTTPS
-- Data lagres lokalt med iOS-filbeskyttelse (NSFileProtectionComplete)
+- All kommunikasjon over HTTPS
+- Lokal lagring beskyttet med iOS-filbeskyttelse (NSFileProtectionComplete)
 - Ingen data sendes til skytjenester
 
 ## 6. Barn
 
-Tråkke samler ikke inn personopplysninger og har ingen aldersgrense. Appen inneholder ingen kjøp, annonser eller sosiale funksjoner.
+Tråkke samler ikke inn personopplysninger og har ingen aldersgrense. Appen har ingen kjøp, annonser eller sosiale funksjoner.
 
 ## 7. Endringer
 
-Ved vesentlige endringer i denne erklæringen vil oppdatert versjon gjøres tilgjengelig i appen og via GitHub.
+Ved vesentlige endringer publiseres oppdatert erklæring i appen og på GitHub.
 
 ## 8. Kontakt
 
-Har du spørsmål om personvern i Tråkke?
+Spørsmål om personvern:
 
-- **E-post:** hei@tazk.no
-- **Kildekode:** https://github.com/elzacka/trakke-ios
+- **E-post**: hei@tazk.no
+- **Kildekode**: https://github.com/elzacka/trakke-ios
 
-Du har rett til å klage til Datatilsynet (datatilsynet.no) dersom du mener at behandlingen av personopplysninger ikke er i samsvar med regelverket.
+Du kan klage til Datatilsynet (datatilsynet.no) hvis du mener behandlingen ikke er i samsvar med regelverket.

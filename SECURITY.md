@@ -1,49 +1,51 @@
 # Security Policy
 
-## Secure by Design
+Tråkke is built on a small set of secure-by-default choices. This document describes them and how to report vulnerabilities.
 
-Tråkke follows Secure by Design principles. Security is embedded from the start. In the code, the configuration, and the defaults.
+## Reporting a vulnerability
 
-## Security Architecture
+Email **hei@tazk.no** with subject `[SECURITY] Trakke iOS - <brief description>`. Include reproduction steps, potential impact, and a suggested fix if you have one. Acknowledgement within 48 hours, initial assessment within 7 days. Do not open public GitHub issues.
 
-### Secure Defaults
+## Architecture
 
-No tracking, no IDFA, no analytics SDKs, no third-party telemetry. All user data stays on-device; nothing is transmitted to app-owned servers. Only `Location When In Use` is requested.
+### Defaults
+
+- No tracking, no IDFA, no analytics SDKs, no third-party telemetry
+- All user data stays on-device — nothing is transmitted to app-owned servers
+- Only `Location When In Use` is requested
 
 For what data is processed and the legal basis under GDPR, see [PERSONVERN.md](PERSONVERN.md).
 
-### Transport Security
+### Transport
 
-- **App Transport Security (ATS):** Enforced globally. All connections require HTTPS
-- **TLS 1.2+:** Minimum for all connections (enforced by iOS ATS)
-- **Certificate pinning:** Not implemented (public government APIs use standard CA certificates)
+- App Transport Security enforced globally — all connections require HTTPS
+- TLS 1.2+ minimum (iOS ATS)
+- Certificate pinning is not used; public government APIs rely on standard CA certificates
 
-### Data Residency
+### Data residency
 
-All primary API connections use Norwegian or EU/EEA services. Two non-EU services are used for non-personal data only: AWS (terrain tiles) and GitHub (knowledge articles). No user identity or tracking data is sent to any service.
+Primary APIs are Norwegian or EU/EEA. Two non-EU services are used for non-personal data only: AWS (terrain tiles) and GitHub (knowledge articles). No user identity or tracking data is sent to any service. See [PERSONVERN.md](PERSONVERN.md) for the full list.
 
-See [PERSONVERN.md](PERSONVERN.md) for the complete list of external services and what data is transmitted.
-
-### Data Protection
+### Data protection
 
 - SwiftData store protected with `NSFileProtectionComplete` (encrypted at rest)
 - All log output uses `privacy: .private` for user data
-- Coordinates truncated before API transmission (2-4 decimal places depending on service)
+- Coordinates truncated before API transmission (2–4 decimal places, depending on service)
 - Clipboard copies expire after 5 minutes
-- GPX temp files cleaned up automatically
+- Temporary GPX and GeoJSON files cleaned up automatically
 
-### Input Validation
+### Input validation
 
-- All API responses decoded through Swift `Codable` with strict type checking
-- Coordinate inputs validated against geographic bounds with `.isFinite` guards
-- GPX and GeoJSON import validates coordinate ranges, enforces 50 MB file size limit and 50 000 point cap per feature
-- XXE prevention on all XML parsers (`shouldResolveExternalEntities = false`)
-- Knowledge pack downloads verified via SHA-256 checksum
-- File paths sanitized against path traversal attacks
+- API responses decoded through Swift `Codable` with strict type checking
+- Coordinate inputs validated against geographic bounds (`.isFinite` guards)
+- GPX and GeoJSON imports enforce a 50 MB file cap and 50 000 points per feature
+- XML parsers disable external entity resolution (XXE prevention)
+- Knowledge pack downloads verified with SHA-256 checksums
+- File paths sanitized against path traversal
 
-### Data Deletion (GDPR Art. 17)
+### Data deletion (GDPR Art. 17)
 
-In-app deletion clears every persistent and transient store the app owns. For the user-facing flow and rights description, see [PERSONVERN.md section 4](PERSONVERN.md#4-dine-rettigheter).
+In-app deletion clears every persistent and transient store the app owns. See [PERSONVERN.md](PERSONVERN.md) section 4 for the user-facing description.
 
 ### Low Data Mode
 
@@ -51,29 +53,15 @@ Non-essential requests (species images, knowledge pack updates) are silently ski
 
 ### Dependencies
 
-All dependencies are open-source with active maintenance:
-- MapLibre Native (BSD-2-Clause)
-- MapLibreSwiftUI (ISC)
-- NGA mgrs-ios (MIT)
-- GRDB (MIT)
+All dependencies are open-source and pinned via `Package.resolved`. No closed-source SDKs.
 
-Pinned to specific versions via `Package.resolved`. No closed-source SDKs.
+- MapLibre Native — BSD-2-Clause
+- MapLibreSwiftUI — ISC
+- GRDB — MIT
 
-## Supported Versions
+## Supported versions
 
-| Version | Supported |
-|---------|-----------|
+| Version | Support |
+|---------|---------|
 | Latest  | Current release |
 | Previous minor | Security fixes only |
-
-## Reporting a Vulnerability
-
-If you discover a security vulnerability, please report it responsibly:
-
-1. **Email:** hei@tazk.no
-2. **Subject:** `[SECURITY] Trakke iOS - Brief description`
-3. **Include:** Steps to reproduce, potential impact, suggested fix if any
-
-I will acknowledge receipt within 48 hours and provide an initial assessment within 7 days.
-
-Please do not open public GitHub issues for security vulnerabilities.

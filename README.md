@@ -1,52 +1,36 @@
-# Tråkke - Norsk friluftslivsapp for iOS
+# Tråkke
 
-Tråkke er en kartapp for iPhone som bruker kartdata fra Kartverket. Appen er laget for turgåere og friluftsfolk i Norge, med fokus på personvern og offline bruk.
+En kartapp for iPhone, laget for tur i norsk natur. Bygget på Kartverkets kart. Fungerer offline. Lagrer ingenting om deg.
 
-## Funksjoner
+## Hva du får
 
-**Kart og terreng**
-- Topografiske kart fra Kartverket (topografisk, gråtone og turkart)
-- Kartlag for turruter, 3D-relieff, bratthetskart, naturvernområder og naturskog
-- Stedsnavn- og adressesøk
-- Høydeprofiler
-- Offline kart for hele kommuner eller egne områder
+**Kart fra Kartverket.** Topografisk, gråtone og turkart. 3D-relieff, bratthet, naturskog, naturvern og turruter som kartlag. Stedsnavn- og adressesøk. Last ned hele kommuner eller egne områder for offline bruk.
 
-**Tur og navigasjon**
-- Tegn og lagre ruter og steder med valgfri kategorigruppering
-- Turregistrering med GPS-sporing, avstand og høydemeter
-- Navigasjon med beregnet rute eller kompassretning
-- Import og eksport av GPX- og GeoJSON-filer
+**Steder på kartet.** Tilfluktsrom, gapahuker, hytter, badeplasser, bålplasser, hengekøyeplasser, teltplasser, rasteplasser, fosser, huler, utsiktspunkter, kulturminner og krigsminner — slå av og på etter behov. Det meste fungerer offline.
 
-**Vær og natur**
-- Værmelding, luftkvalitet og vanntemperatur fra Meteorologisk institutt
-- Snøskred- og flomvarsler fra NVE/Varsom
-- Soloppgang og solnedgang
-- Interessepunkter: tilfluktsrom, huler, kulturminner og mer
+**Tur og navigasjon.** Tegn ruter, lagre steder, registrer turer med GPS. Sving-for-sving navigasjon eller kompassretning når dekningen svikter. Import og eksport av GPX og GeoJSON.
 
-**Kunnskap og sikkerhet**
-- Artikler om friluftsliv, vær, m.m. – tilgjengelig offline
-- Nødkoordinater i flere formater og SOS-signal med lys og lyd
-- Måleverktøy for avstand og areal
+**Vær og varsler.** Værmelding, luftkvalitet og vanntemperatur fra Meteorologisk institutt. Snøskred og flom fra NVE/Varsom. Soloppgang og solnedgang.
+
+**Trygghet på tur.** Nødnumre, koordinater i flere formater, SOS-signal med blink og lyd, måleverktøy og en kunnskapsbase med artikler om friluftsliv — alt tilgjengelig offline.
 
 ## Personvern
 
-All data lagres lokalt. Ingen sporing, ingen analyse, ingen brukerkontoer. Personvernerklæringen vises i appen under «Informasjon» og er også tilgjengelig i [PERSONVERN.md](PERSONVERN.md).
+All data ligger på enheten din. Ingen kontoer, ingen sporing, ingen analyse. Posisjonstilgang kun når du bruker appen — og kun hvis du sier ja. Se [PERSONVERN.md](PERSONVERN.md) for detaljer.
 
 ## Dokumentasjon
 
-| Dokument | Innhold |
-|----------|---------|
-| [BRUKERVEILEDNING.md](BRUKERVEILEDNING.md) | Hvordan bruke Tråkke. Vises også i appen under «Informasjon». |
-| [PERSONVERN.md](PERSONVERN.md) | Personvernerklæring (GDPR). Datakilder, rettsgrunnlag, dine rettigheter. |
-| [SECURITY.md](SECURITY.md) | Teknisk sikkerhetsarkitektur og rapportering av sårbarheter. |
-| [CLAUDE.md](CLAUDE.md) | Prosjektinstruksjoner for AI-agenter. |
-| [dev_only/CLAUDE.md](dev_only/CLAUDE.md) | Detaljert arkitektur- og delsystem-referanse for utviklere. |
+| Dokument | For hvem |
+|----------|----------|
+| [BRUKERVEILEDNING.md](BRUKERVEILEDNING.md) | Brukere. Vises også i appen under «Informasjon». |
+| [PERSONVERN.md](PERSONVERN.md) | Personvernerklæring (GDPR). |
+| [SECURITY.md](SECURITY.md) | Sikkerhetsforskere — arkitektur og rapportering av sårbarheter. |
+| [dev_only/CLAUDE.md](dev_only/CLAUDE.md) | Utviklere — arkitektur og delsystemer. |
 
 ## Utvikling
 
-Krever Xcode og [xcodegen](https://github.com/yonaskolb/XcodeGen).
-
 ```bash
+brew install xcodegen
 git clone https://github.com/elzacka/trakke-ios.git
 cd trakke-ios
 xcodegen generate
@@ -55,21 +39,25 @@ xcodebuild -project Trakke.xcodeproj -scheme Trakke \
   -skipMacroValidation build
 ```
 
+Krever Xcode 26.5 og iOS 26-simulator.
 
 ## Lisens
 
-MIT License
+MIT.
 
-## Attribusjon
+## Kildedata
 
-- Kartverket - kartdata, terrengdata og tjenester (NLOD 2.0)
-- Meteorologisk institutt - vær-, havtemperatur- og luftkvalitetsdata (CC BY 4.0)
-- Havvarsel-Frost - badevannsdata (CC BY 4.0)
-- NVE / Varsom - snøskred- og flomvarsler (NLOD)
-- OpenStreetMap-bidragsytere - interessepunkter (ODbL)
-- Riksantikvaren - kulturminnedata (NLOD)
-- DSB - tilfluktsromdata (NLOD)
-- Miljødirektoratet - naturvernområder og naturskogdata (NLOD 2.0)
-- Mapzen Terrain Tiles - terrengmodell for 3D-relieff (CC BY 4.0)
-- Artsdatabanken - artsbilder (CC BY 4.0)
-- FOSSGIS / Valhalla - ruteberegning (MIT / ODbL)
+- Kartverket — kart, terreng og tjenester (NLOD 2.0)
+- Mapzen Terrain Tiles — terrengmodell for 3D-relieff (CC BY 4.0)
+- Miljødirektoratet — naturvern og naturskog (NLOD 2.0)
+- FOSSGIS / Valhalla — ruteberegning (MIT / ODbL)
+- Meteorologisk institutt — vær, havtemperatur og luftkvalitet (CC BY 4.0)
+- Havvarsel-Frost — badevannsdata (CC BY 4.0)
+- NVE / Varsom — snøskred- og flomvarsler (NLOD)
+- Artsdatabanken — artsbilder (CC BY 4.0)
+- Riksantikvaren — kulturminner (NLOD)
+- DSB — tilfluktsrom (NLOD)
+- Wikidata — fosser (CC0)
+- UT.no/DNT, Statskog, fjellstyrer m.fl. — hytter
+- OpenStreetMap-bidragsytere — øvrige kategorier (ODbL)
+
