@@ -41,8 +41,10 @@ struct ContentView: View {
     @State private var sheets = SheetCoordinator()
     @State private var connectivityMonitor = ConnectivityMonitor()
     @State private var navigationDestination: CLLocationCoordinate2D?
-    @State private var showLongPressOptions = false
     @State private var isFABMenuOpen = false
+    /// Non-nil while the long-press confirmation dialog is presented for the
+    /// given coordinate. Nil dismisses the dialog. Replaces a paired
+    /// (showLongPressOptions, longPressCoordinate) flag set.
     @State private var longPressCoordinate: CLLocationCoordinate2D?
     @State var navigatingRouteId: String?
     @State var showRouteError = false
@@ -200,7 +202,6 @@ struct ContentView: View {
     private func handleMapLongPress(_ coordinate: CLLocationCoordinate2D) {
         guard mapMode == .idle else { return }
         longPressCoordinate = coordinate
-        showLongPressOptions = true
     }
 
     // MARK: - Viewport Handler
@@ -431,7 +432,10 @@ struct ContentView: View {
         }
         .confirmationDialog(
             "",
-            isPresented: $showLongPressOptions,
+            isPresented: Binding(
+                get: { longPressCoordinate != nil },
+                set: { if !$0 { longPressCoordinate = nil } }
+            ),
             titleVisibility: .hidden
         ) {
             Button(String(localized: "waypoints.addWaypoint")) {
