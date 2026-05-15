@@ -16,6 +16,7 @@ struct ActivityListSheet: View {
     @State private var showDeleteAllConfirmation = false
     @State private var showFileImporter = false
     @State private var editingActivity: Activity?
+    @State private var shareURL: ShareableURL?
     @State private var expandedCategories: Set<String> = []
 
     private func dismissFully() {
@@ -81,6 +82,9 @@ struct ActivityListSheet: View {
             }
             .presentationDetents([.medium, .large])
             .presentationDragIndicator(.visible)
+        }
+        .sheet(item: $shareURL) { item in
+            ShareSheet(activityItems: [item.url])
         }
         .navigationDestination(for: Activity.self) { activity in
             ActivityDetailSheet(
@@ -166,6 +170,20 @@ struct ActivityListSheet: View {
                 }
                 .buttonStyle(.trakkeSecondary)
                 .disabled(viewModel.isImporting)
+
+                Button {
+                    if let url = viewModel.exportAllGPX() {
+                        shareURL = ShareableURL(url: url)
+                    }
+                } label: {
+                    Label(
+                        String(localized: "import.exportAll"),
+                        systemImage: "square.and.arrow.down"
+                    )
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .buttonStyle(.trakkeSecondary)
+                .disabled(viewModel.activities.isEmpty)
 
                 if viewModel.activities.count >= 2 {
                     bulkVisibilityButton

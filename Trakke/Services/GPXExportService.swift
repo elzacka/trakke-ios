@@ -70,6 +70,33 @@ enum GPXExportService {
         return gpxDocument(name: name, createdAt: Date(), body: parts.joined())
     }
 
+    /// Bulk export — flere ruter samles i ett GPX-dokument med ett `<trk>` per rute.
+    static func exportRoutes(_ routes: [Route], name: String = "Ruter") -> String {
+        var parts: [String] = []
+        let totalCoords = routes.reduce(0) { $0 + $1.coordinates.count }
+        parts.reserveCapacity(routes.count * 4 + totalCoords)
+
+        for route in routes {
+            parts.append("\n  <trk>")
+            parts.append("\n    <name>\(escapeXML(route.name))</name>")
+            if let category = route.category {
+                parts.append("\n    <type>\(escapeXML(category))</type>")
+            }
+            parts.append("\n    <trkseg>")
+            for coord in route.coordinates {
+                guard coord.count >= 2 else { continue }
+                let lon = coord[0]
+                let lat = coord[1]
+                guard lon.isFinite, lat.isFinite else { continue }
+                parts.append("\n      <trkpt lat=\"\(lat)\" lon=\"\(lon)\"></trkpt>")
+            }
+            parts.append("\n    </trkseg>")
+            parts.append("\n  </trk>")
+        }
+
+        return gpxDocument(name: name, createdAt: Date(), body: parts.joined())
+    }
+
     static func exportActivity(_ activity: Activity) -> String {
         var parts: [String] = []
         parts.reserveCapacity(activity.trackPoints.count * 4 + 4)
@@ -96,6 +123,40 @@ enum GPXExportService {
         parts.append("\n  </trk>")
 
         return gpxDocument(name: activity.name, createdAt: activity.startedAt, body: parts.joined())
+    }
+
+    /// Bulk export — flere turer samles i ett GPX-dokument med ett `<trk>` per tur.
+    static func exportActivities(_ activities: [Activity], name: String = "Turer") -> String {
+        var parts: [String] = []
+        let totalPoints = activities.reduce(0) { $0 + $1.trackPoints.count }
+        parts.reserveCapacity(activities.count * 4 + totalPoints * 4)
+
+        for activity in activities {
+            parts.append("\n  <trk>")
+            parts.append("\n    <name>\(escapeXML(activity.name))</name>")
+            if let category = activity.category {
+                parts.append("\n    <type>\(escapeXML(category))</type>")
+            }
+            parts.append("\n    <trkseg>")
+            for point in activity.trackPoints {
+                guard point.count >= 2 else { continue }
+                let lon = point[0]
+                let lat = point[1]
+                guard lon.isFinite, lat.isFinite else { continue }
+                parts.append("\n      <trkpt lat=\"\(lat)\" lon=\"\(lon)\">")
+                if point.count >= 3, point[2].isFinite {
+                    parts.append("\n        <ele>\(point[2])</ele>")
+                }
+                if point.count >= 4, point[3].isFinite {
+                    parts.append("\n        <time>\(iso8601(Date(timeIntervalSince1970: point[3])))</time>")
+                }
+                parts.append("\n      </trkpt>")
+            }
+            parts.append("\n    </trkseg>")
+            parts.append("\n  </trk>")
+        }
+
+        return gpxDocument(name: name, createdAt: Date(), body: parts.joined())
     }
 
     static func sanitizeFilename(_ name: String) -> String {

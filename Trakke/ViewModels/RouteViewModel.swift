@@ -303,6 +303,15 @@ final class RouteViewModel {
         return GPXExportService.writeToTemporaryFile(gpxString: gpxString, filename: filename)
     }
 
+    func exportAllGPX() -> URL? {
+        guard !routes.isEmpty else { return nil }
+        let gpxString = GPXExportService.exportRoutes(routes)
+        return GPXExportService.writeToTemporaryFile(
+            gpxString: gpxString,
+            filename: "ruter.gpx"
+        )
+    }
+
     // MARK: - Import
 
     var importMessage: String?

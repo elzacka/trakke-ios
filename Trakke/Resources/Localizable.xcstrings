@@ -29,16 +29,6 @@
     "%@ moh." : {
 
     },
-    "%@: %@" : {
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@: %2$@"
-          }
-        }
-      }
-    },
     "%@." : {
 
     },
@@ -98,7 +88,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gj.sn. tempo"
+            "value" : "Snittfart"
           }
         }
       }
@@ -296,7 +286,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trykk opptaksknappen for å logge en tur."
+            "value" : "Trykk for å starte opptak."
           }
         }
       }
@@ -599,17 +589,6 @@
         }
       }
     },
-    "categories.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kategorier"
-          }
-        }
-      }
-    },
     "categories.disableAll" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -617,6 +596,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Slå av alle"
+          }
+        }
+      }
+    },
+    "categories.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kategorier"
           }
         }
       }
@@ -1394,6 +1384,17 @@
         }
       }
     },
+    "import.exportAll" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eksporter alt til fil"
+          }
+        }
+      }
+    },
     "import.inProgress" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1422,7 +1423,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Artsbilder i kunnskapsartikler"
+            "value" : "Artsbilder"
           }
         }
       }
@@ -1455,7 +1456,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Offentlige tilfluktsrom"
+            "value" : "Tilfluktsrom"
           }
         }
       }
@@ -1466,7 +1467,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Databasemotor for kunnskapspakker"
+            "value" : "Databasemotor"
           }
         }
       }
@@ -1477,7 +1478,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Badevannstemperatur"
+            "value" : "Badevannsdata"
           }
         }
       }
@@ -1488,7 +1489,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Topografiske kart, terrengdata, stedsnavn, adresser, høydedata, turruter"
+            "value" : "Kart, terreng og tjenester"
           }
         }
       }
@@ -1510,7 +1511,18 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Terrengmodell for 3D-relieff (Kartverket DTM)"
+            "value" : "3D-relieff"
+          }
+        }
+      }
+    },
+    "info.materialsymbols.detail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POI-ikoner"
           }
         }
       }
@@ -1521,7 +1533,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vær, havtemperatur og luftkvalitet"
+            "value" : "Vær og luftkvalitet"
           }
         }
       }
@@ -1532,7 +1544,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Naturvernområder, naturskog og luftkvalitet"
+            "value" : "Naturvern og naturskog"
           }
         }
       }
@@ -1554,7 +1566,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Snøskred- og flomvarsler, bratthetskart"
+            "value" : "Snøskred- og flomvarsler"
           }
         }
       }
@@ -1576,7 +1588,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Interessepunkter (huler, utsiktspunkter, krigsminner, gapahuker)"
+            "value" : "Øvrige kategorier"
           }
         }
       }
@@ -1614,6 +1626,17 @@
         }
       }
     },
+    "info.tabler.detail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POI-ikoner"
+          }
+        }
+      }
+    },
     "info.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1625,13 +1648,24 @@
         }
       }
     },
+    "info.utno.detail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hytter og friluftspunkter"
+          }
+        }
+      }
+    },
     "info.valhalla.detail" : {
       "extractionState" : "manual",
       "localizations" : {
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ruteberegning for turstier"
+            "value" : "Ruteberegning"
           }
         }
       }
@@ -1643,6 +1677,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Versjon"
+          }
+        }
+      }
+    },
+    "info.wikidata.detail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fosser"
           }
         }
       }
@@ -2305,7 +2350,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bratthetskart"
+            "value" : "Bratt terreng"
           }
         }
       }
@@ -2328,39 +2373,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Naturskog"
-          }
-        }
-      }
-    },
-    "map.overlay.naturskog.foer1940" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gammelskog (før 1940)"
-          }
-        }
-      }
-    },
-    "map.overlay.naturskog.naerhet" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nærhet til naturskog"
-          }
-        }
-      }
-    },
-    "map.overlay.naturskog.sannsynlighet" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Naturskogssannsynlighet"
           }
         }
       }
@@ -3380,6 +3392,17 @@
         }
       }
     },
+    "poi.detail.beds" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senger"
+          }
+        }
+      }
+    },
     "poi.detail.capacity" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3490,6 +3513,17 @@
         }
       }
     },
+    "poi.detail.owner" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eier"
+          }
+        }
+      }
+    },
     "poi.detail.period" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3497,6 +3531,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Periode"
+          }
+        }
+      }
+    },
+    "poi.detail.provider" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tilbyder"
           }
         }
       }
@@ -3585,6 +3630,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Huler"
+          }
+        }
+      }
+    },
+    "poi.hytter" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hytter"
           }
         }
       }
@@ -3870,7 +3926,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tegn en rute på kartet for å komme i gang"
+            "value" : "Tegn en rute på kartet."
           }
         }
       }
@@ -4212,7 +4268,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Databasen ble skadet og tilbakestilt. Lagrede ruter, steder og turer er slettet. Du kan importere ruter, steder og turer fra GPX- eller GeoJSON-filer."
+            "value" : "Lagrede ruter, steder og turer er slettet. Du kan importere dem på nytt fra GPX- eller GeoJSON-filer."
           }
         }
       }
@@ -4338,24 +4394,13 @@
         }
       }
     },
-    "settings.format.mgrs.tooltip" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Brukes av NATO og militære styrker for presis navigasjon. Ligner på UTM, men inneholder en bokstavutvidelse som sikrer unike koordinater til ethvert sted på jorda."
-          }
-        }
-      }
-    },
     "settings.format.utm.tooltip" : {
       "extractionState" : "stale",
       "localizations" : {
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Her: EUREF89 UTM sone 33. Et globalt rutenettbasert koordinatsystem som deler jorden inn i 60 soner, og projiserer disse på en sylinder for å måle posisjoner i meter fremfor grader. I Norge bruker vi vanligvis dette koordinatsystemet for kart som dekker hele Norges fastland."
+            "value" : "EUREF89 UTM sone 33. Bruker meter framfor grader. Norges standard for kart over hele fastlandet."
           }
         }
       }
@@ -4740,7 +4785,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Langt trykk på kartet for å legge til et sted"
+            "value" : "Hold inne på kartet for å legge til et sted."
           }
         }
       }
@@ -4752,17 +4797,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ingen steder ennå"
-          }
-        }
-      }
-    },
-    "waypoints.exportAll" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Eksporter alle steder"
           }
         }
       }
@@ -4906,7 +4940,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mine steder"
+            "value" : "Steder"
           }
         }
       }
@@ -5225,7 +5259,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mye vind. Ta med vindtette klær og vær varsom på eksponerte strekninger."
+            "value" : "Mye vind. Ta vindtette klær på eksponerte strekninger."
           }
         }
       }
@@ -5544,7 +5578,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Høy fuktighet. Svette fordamper saktere, og du kan bli klam. Sovepose og klær tørker langsomt. Tåke er vanlig i daler og langs kysten. Mygg trives."
+            "value" : "Klam luft. Klær og sovepose tørker tregt — pakk tett."
           }
         }
       }
@@ -5555,7 +5589,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tørr luft. Behagelig å bevege seg i, men husk å drikke nok vann. Tørt terreng gir økt skogbrannfare. Vis forsiktighet med bål og engangsgrill."
+            "value" : "Tørr luft. Drikk ofte. Økt skogbrannfare — vær varsom med bål."
           }
         }
       }
@@ -5566,7 +5600,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Normal fuktighet. Gode forhold for friluftsliv. Klær tørker greit. Godt bålvær med vanlig forsiktighet."
+            "value" : "Normal fuktighet. Gode forhold for tur."
           }
         }
       }
@@ -5577,7 +5611,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Svært fuktig luft, ofte nær tåke eller regn. Klær og utstyr holder seg fuktige. Økt risiko for nedkjøling selv ved moderate temperaturer. Tørk utstyr godt etter turen."
+            "value" : "Mettet luft, ofte med tåke eller regn. Klær holder seg våte — fare for nedkjøling."
           }
         }
       }
@@ -5885,7 +5919,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kraftig regn gir raskt stigende elver, flomfare og risiko for jordskred. Hold avstand til vassdrag og bratte skråninger. Vurder å avbryte eller utsette turen. Redusert sikt i fjellet."
+            "value" : "Hold deg unna elver og bratte skråninger. Vurder å snu."
           }
         }
       }
@@ -5896,7 +5930,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lett yr eller duskregn. Du blir fuktig over tid uten regntøy. Båltenning krever tørt brennmateriale. Stier kan bli glatte. Telt eller gapahuk anbefales for overnatting."
+            "value" : "Lett yr. Du blir våt uten regntøy. Stier kan bli glatte."
           }
         }
       }
@@ -5907,7 +5941,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Regntøy er nødvendig. Bekker kan stige raskt. Stier i bratt terreng kan bli til bekkeløp. Bål er vanskelig uten ly. Pakk utstyr vanntett. Flomfare i trange daler."
+            "value" : "Regntøy er nødvendig. Bekker kan stige raskt. Pakk utstyr vanntett."
           }
         }
       }
@@ -5918,7 +5952,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tørt vær. Gode forhold for alle typer turer, bål og overnatting ute. Stier og terreng er lettgått."
+            "value" : "Tørt vær. Gode forhold for tur."
           }
         }
       }
@@ -6402,7 +6436,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kaldt. Kle deg godt med ull innerst og vindtett ytterst. Ta ekstra klær i sekken. Finn ly i pauser. Varme drikker og matpauser er viktige for å holde varmen."
+            "value" : "Kaldt. Ull innerst, vindtett ytterst. Ta ekstra klær i sekken."
           }
         }
       }
@@ -6413,7 +6447,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kjølig. Behagelig turtemperatur med riktige klær. God for krevende turer. Ta med ekstra lag til pauser og kveld. Overnatting ute krever sovepose for lave temperaturer."
+            "value" : "Kjølig. Behagelig turvær med riktige klær. Ta med et ekstra lag til pauser."
           }
         }
       }
@@ -6424,7 +6458,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ekstrem kulde. Fare for forfrysninger på bar hud i løpet av minutter. Kun korte turer med riktig utstyr. Dekk til alt eksponert hud. Ha nødproviant og ekstra klær. Slitasje på batteri og elektronikk."
+            "value" : "Ekstrem kulde. Forfrysningsfare på minutter. Dekk all hud — kun korte turer."
           }
         }
       }
@@ -6435,7 +6469,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mildt. Ideelt for de fleste typer friluftsaktiviteter. Lett bekledning holder. Godt for bading hvis vannet er varmt nok. Fine forhold for telt og overnatting ute."
+            "value" : "Mildt. Lett bekledning holder. Fine forhold for tur og overnatting."
           }
         }
       }
@@ -6446,7 +6480,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Svært kaldt. Lag-på-lag-prinsippet er avgjørende. Fare for nedkjøling ved pauser. Hold deg i bevegelse. Varm drikke og energirik mat er viktig. Sørg for at vindtett ytterlag er på plass."
+            "value" : "Svært kaldt. Lag på lag og hold deg i bevegelse. Pauser kjøler raskt ned."
           }
         }
       }
@@ -6457,7 +6491,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Varmt. Husk solkrem og nok drikkevann. Unngå de mest intense timene midt på dagen i direkte sol. Gode badeforhold. Lett å tørke klær og utstyr. Pass på at mat ikke blir dårlig."
+            "value" : "Varmt. Solkrem og rikelig drikke. Unngå midt-på-dagen i direkte sol."
           }
         }
       }
@@ -6644,7 +6678,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ekstremt sterk UV-stråling. Unngå å oppholde deg ute midt på dagen. Ubeskyttet hud forbrenner på under 15 minutter."
+            "value" : "Ekstrem UV. Ubeskyttet hud forbrenner på under 15 minutter."
           }
         }
       }
@@ -6655,7 +6689,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Solkrem (SPF 15+), solbriller og hatt er nødvendig. Unngå direkte sol midt på dagen. Ubeskyttet hud forbrenner på 30–60 minutter."
+            "value" : "Solkrem, hatt og solbriller. Unngå direkte sol midt på dagen."
           }
         }
       }
@@ -6666,7 +6700,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ingen spesiell beskyttelse nødvendig for de fleste."
+            "value" : "Lite UV. Ingen beskyttelse nødvendig."
           }
         }
       }
@@ -6677,7 +6711,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bruk solkrem, solbriller og hatt. Ubeskyttet hud kan forbrenne på 1–2 timer. Snø og høyde forsterker UV."
+            "value" : "Bruk solkrem og hatt. Snø og høyde forsterker UV."
           }
         }
       }
@@ -6688,7 +6722,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sterk UV-stråling. Ubeskyttet hud kan forbrenne på 15–30 minutter. Søk skygge mellom kl. 12 og 15. Solkrem, hatt og solbriller er påkrevd."
+            "value" : "Sterk UV. Søk skygge mellom kl. 12 og 15. Solkrem, hatt og solbriller."
           }
         }
       }

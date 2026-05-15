@@ -106,18 +106,7 @@ struct WaypointListSheet: View {
                     )
                 }
 
-                // Actions: Export first, Import second
                 VStack(spacing: .Trakke.sm) {
-                    Button {
-                        if let url = viewModel.exportAllGPX() {
-                            shareURL = ShareableURL(url: url)
-                        }
-                    } label: {
-                        Label(String(localized: "waypoints.exportAll"), systemImage: "square.and.arrow.down")
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-                    .buttonStyle(.trakkeSecondary)
-
                     Button {
                         showFileImporter = true
                     } label: {
@@ -136,6 +125,20 @@ struct WaypointListSheet: View {
                     }
                     .buttonStyle(.trakkeSecondary)
                     .disabled(viewModel.isImporting)
+
+                    Button {
+                        if let url = viewModel.exportAllGPX() {
+                            shareURL = ShareableURL(url: url)
+                        }
+                    } label: {
+                        Label(
+                            String(localized: "import.exportAll"),
+                            systemImage: "square.and.arrow.down"
+                        )
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .buttonStyle(.trakkeSecondary)
+                    .disabled(viewModel.waypoints.isEmpty)
 
                     if viewModel.waypoints.count >= 2 {
                         bulkVisibilityButton

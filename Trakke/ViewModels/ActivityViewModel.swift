@@ -131,6 +131,15 @@ final class ActivityViewModel {
         return GPXExportService.writeToTemporaryFile(gpxString: gpxString, filename: filename)
     }
 
+    func exportAllGPX() -> URL? {
+        guard !activities.isEmpty else { return nil }
+        let gpxString = GPXExportService.exportActivities(activities)
+        return GPXExportService.writeToTemporaryFile(
+            gpxString: gpxString,
+            filename: "turer.gpx"
+        )
+    }
+
     // MARK: - Import
 
     var importMessage: String?

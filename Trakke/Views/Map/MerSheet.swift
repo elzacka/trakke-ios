@@ -40,6 +40,10 @@ struct MerSheet: View {
 
     @Environment(\.dismiss) private var dismiss
     @State private var navigationPath = NavigationPath()
+    // Sheeten åpner alltid på full høyde. `.medium` er kun et snap-mål brukeren
+    // kan dra ned til — uten selection-binding ville SwiftUI åpnet på minste
+    // detent (medium).
+    @State private var sheetDetent: PresentationDetent = .large
 
     var body: some View {
         NavigationStack(path: $navigationPath) {
@@ -51,7 +55,9 @@ struct MerSheet: View {
                     Spacer(minLength: .Trakke.lg)
                 }
                 .padding(.horizontal, .Trakke.sheetHorizontal)
-                .padding(.top, .Trakke.lg)
+                // Mer breathing room enn vanlig sheetTop (8pt) fordi MerSheet
+                // ikke har synlig nav-bar over første seksjonsoverskrift.
+                .padding(.top, .Trakke.xxl)
             }
             .background(Color(.systemGroupedBackground))
             .tint(Color.Trakke.brand)
@@ -68,7 +74,7 @@ struct MerSheet: View {
                 }
             }
         }
-        .presentationDetents([.large])
+        .presentationDetents([.medium, .large], selection: $sheetDetent)
         .presentationDragIndicator(.visible)
         .task {
             await knowledgeViewModel.loadCatalog()

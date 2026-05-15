@@ -11,6 +11,7 @@ struct RouteListSheet: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var showFileImporter = false
     @State private var editingRoute: Route?
+    @State private var shareURL: ShareableURL?
     // Collapsed by default — modern iOS pattern (Files, Notes, Mail use the
     // same disclosure style). Set persisted only in-memory; user expands what
     // they need each visit.
@@ -87,6 +88,9 @@ struct RouteListSheet: View {
             .presentationDetents([.medium, .large])
             .presentationDragIndicator(.visible)
         }
+        .sheet(item: $shareURL) { item in
+            ShareSheet(activityItems: [item.url])
+        }
         .navigationDestination(for: Route.self) { route in
             RouteDetailSheet(
                 viewModel: viewModel,
@@ -138,6 +142,20 @@ struct RouteListSheet: View {
                     }
                     .buttonStyle(.trakkeSecondary)
                     .disabled(viewModel.isImporting)
+
+                    Button {
+                        if let url = viewModel.exportAllGPX() {
+                            shareURL = ShareableURL(url: url)
+                        }
+                    } label: {
+                        Label(
+                            String(localized: "import.exportAll"),
+                            systemImage: "square.and.arrow.down"
+                        )
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .buttonStyle(.trakkeSecondary)
+                    .disabled(viewModel.routes.isEmpty)
 
                     if viewModel.routes.count >= 2 {
                         bulkVisibilityButton
