@@ -69,7 +69,7 @@ protocol AirQualityFetching: Sendable {
 
 // MARK: - Air Quality Service
 
-/// Fetches air quality forecasts from MET Norway's airqualityforecast API.
+/// Fetches air quality forecasts from Meteorologisk institutt's airqualityforecast API.
 /// Respects MET API ToS: uses If-Modified-Since/Expires headers for caching.
 actor AirQualityService: AirQualityFetching {
     private static let baseURL = "https://api.met.no/weatherapi/airqualityforecast/0.1/"

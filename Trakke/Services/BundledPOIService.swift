@@ -21,8 +21,8 @@ enum BundledPOIService {
         Task.detached(priority: .utility) {
             let allCategories: [POICategory] = [
                 .caves, .viewpoints, .warMemorials, .wildernessShelters, .shelters,
-                .swimmingSpot, .firePit, .waterfall, .hammock, .giantKettle,
-                 .oxbowLake, .lagoon, .restStop, .tentSite, .hotSpring,
+                .swimmingSpot, .firePit, .waterfall, .hammock,
+                .restStop, .tentSite, .cabins,
             ]
             for category in allCategories {
                 let pois = loadFromBundle(category)
@@ -51,25 +51,28 @@ enum BundledPOIService {
     // MARK: - Loading
 
     private nonisolated static func loadFromBundle(_ category: POICategory) -> [POI] {
-        let filenames: [POICategory: String] = [
-            .caves: "caves",
-            .viewpoints: "viewpoints",
-            .warMemorials: "war_memorials",
-            .wildernessShelters: "wilderness_shelters",
-            .shelters: "shelters",
-            .swimmingSpot: "swimming_spots",
-            .firePit: "fire_pits",
-            .waterfall: "waterfalls",
-            .hammock: "hammocks",
-            .giantKettle: "giant_kettles",
-            .oxbowLake: "oxbow_lakes",
-            .lagoon: "lagoons",
-            .restStop: "rest_areas",
-            .tentSite: "tent_sites",
-            .hotSpring: "hot_springs",
+        // Konsolidert badeplass: alle naturlige badesteder samles under én
+        // kategori. swimming_spots inneholder eksplisitte badeplasser, mens
+        // jettegryter, kroksjøer, laguner og varme kilder er steder som i
+        // praksis brukes til bading.
+        let filenames: [POICategory: [String]] = [
+            .caves: ["caves"],
+            .viewpoints: ["viewpoints"],
+            .warMemorials: ["war_memorials"],
+            .wildernessShelters: ["wilderness_shelters"],
+            .shelters: ["shelters"],
+            .swimmingSpot: ["swimming_spots", "giant_kettles", "oxbow_lakes", "lagoons", "hot_springs"],
+            .firePit: ["fire_pits"],
+            .waterfall: ["waterfalls"],
+            .hammock: ["hammocks"],
+            .restStop: ["rest_areas"],
+            .tentSite: ["tent_sites"],
+            // Hytter: DNT-hytter og andre hytter (Statskog, fjellstyrer, kommuner, private).
+            // provider-feltet injiseres i enrich() for å skille kildene i popup.
+            .cabins: ["dnt_hytter", "andre_hytter"],
         ]
-        guard let filename = filenames[category] else { return [] }
-        return loadFile(named: filename, category: category)
+        guard let names = filenames[category] else { return [] }
+        return names.flatMap { loadFile(named: $0, category: category) }
     }
 
     private nonisolated static func loadFile(named filename: String, category: POICategory) -> [POI] {
@@ -78,7 +81,77 @@ enum BundledPOIService {
             Logger.poi.error("BundledPOI: \(filename, privacy: .public).geojson not found in bundle")
             return []
         }
-        return decodePOIs(from: url, category: category)
+        let pois = decodePOIs(from: url, category: category)
+        return enrich(pois, fromFile: filename)
+    }
+
+    /// Konsoliderte kategorier (badeplasser, hytter) inneholder POI-er fra
+    /// flere kildefiler. Filnavnet er det eneste signalet vi har på *hva
+    /// slags* underkategori det er — vi tagger derfor hver POI med en
+    /// klassifikasjon her, og normaliserer/luker ut tekst som ellers ville
+    /// vist seg dårlig i popup.
+    private nonisolated static func enrich(_ pois: [POI], fromFile filename: String) -> [POI] {
+        let subtype = subtypeKey(forFile: filename)
+        let provider = providerKey(forFile: filename)
+        let englishNoise: Set<String> = ["giants kettle", "oxbow lake", "lagoon", "hot spring"]
+        let needsEnrichment = subtype != nil
+            || provider != nil
+            || filename == "giant_kettles"
+            || filename == "andre_hytter"
+        guard needsEnrichment else { return pois }
+        return pois.map { poi in
+            var enriched = poi
+            if let subtype { enriched.details["subtype"] = subtype }
+            if let provider { enriched.details["provider"] = provider }
+            if let desc = enriched.details["description"]?.lowercased().trimmingCharacters(in: .whitespacesAndNewlines),
+               englishNoise.contains(desc) {
+                enriched.details.removeValue(forKey: "description")
+            }
+            if let owner = enriched.details["owner"] {
+                enriched.details["owner"] = normalizeNorwegianOwner(owner)
+            }
+            return enriched
+        }
+    }
+
+    private nonisolated static func subtypeKey(forFile filename: String) -> String? {
+        switch filename {
+        case "swimming_spots": return "badeplass"
+        case "giant_kettles": return "jettegryte"
+        case "oxbow_lakes": return "kroksjo"
+        case "lagoons": return "lagune"
+        case "hot_springs": return "varme_kilder"
+        default: return nil
+        }
+    }
+
+    private nonisolated static func providerKey(forFile filename: String) -> String? {
+        switch filename {
+        case "dnt_hytter": return "dnt"
+        case "andre_hytter": return "andre"
+        default: return nil
+        }
+    }
+
+    /// Normaliserer eier-/forvalter-strenger til norsk skrivemåte:
+    /// felles substantiv som «turlag», «kommune», «kystlag» skal være med
+    /// liten forbokstav når de står etter et stedsnavn (f.eks. «Bergen og
+    /// Hordaland turlag», ikke «… Turlag»). Egennavn (Hotell, Fjellstue,
+    /// AS-firmanavn osv.) lar vi være.
+    private nonisolated static let lowercaseSuffixWords: Set<String> = [
+        "Turlag", "Turforening", "Kommune", "Fylkeskommune",
+        "Kystlag", "Sportsklubb", "Idrettsforening", "Speidergruppe",
+        "Stedsgruppe", "Almenning", "Allmenning", "Frikirke", "Menighet",
+    ]
+
+    private nonisolated static func normalizeNorwegianOwner(_ name: String) -> String {
+        let words = name.components(separatedBy: " ")
+        guard words.count >= 2 else { return name }
+        var result = words
+        for i in 1..<result.count where lowercaseSuffixWords.contains(result[i]) {
+            result[i] = result[i].lowercased()
+        }
+        return result.joined(separator: " ")
     }
 
     private nonisolated static func decodePOIs(from url: URL, category: POICategory) -> [POI] {

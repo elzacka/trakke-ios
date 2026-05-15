@@ -44,7 +44,7 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
     private var lastHeadingTime: Date?
     private var lastHeadingValue: Double = 0
     private var smoothedHeading: Double = 0
-    nonisolated(unsafe) private var defaultsObserver: NSObjectProtocol?
+    @ObservationIgnored nonisolated(unsafe) private var defaultsObserver: NSObjectProtocol?
     private static let headingMinInterval: TimeInterval = 0.2  // ~5 Hz max
     private static let headingMinDelta: Double = 2.0           // degrees
     private static let headingSmoothingFactor: Double = 0.25   // low-pass filter (0 = ignore new, 1 = no smoothing)

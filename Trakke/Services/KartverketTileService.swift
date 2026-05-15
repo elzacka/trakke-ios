@@ -40,30 +40,18 @@ enum OverlayLayer: String, CaseIterable, Identifiable, Sendable {
     case turrutebasen
     case hillshading
     case naturvernomrader
-    case naturskogFoer1940
-    case naturskogSannsynlighet
-    case naturskogNaerhet
+    case naturskog
     case bratthetskart
     case utmRunenett
 
     var id: String { rawValue }
-
-    static var naturskogLayers: [OverlayLayer] {
-        [.naturskogFoer1940, .naturskogSannsynlighet, .naturskogNaerhet]
-    }
-
-    var isNaturskog: Bool {
-        Self.naturskogLayers.contains(self)
-    }
 
     var displayName: String {
         switch self {
         case .turrutebasen: return String(localized: "map.overlay.turrutebasen")
         case .hillshading: return String(localized: "map.overlay.hillshading")
         case .naturvernomrader: return String(localized: "map.overlay.naturvernomrader")
-        case .naturskogFoer1940: return String(localized: "map.overlay.naturskog.foer1940")
-        case .naturskogSannsynlighet: return String(localized: "map.overlay.naturskog.sannsynlighet")
-        case .naturskogNaerhet: return String(localized: "map.overlay.naturskog.naerhet")
+        case .naturskog: return String(localized: "map.overlay.naturskog")
         case .bratthetskart: return String(localized: "map.overlay.bratthetskart")
         case .utmRunenett: return String(localized: "map.overlay.utmRunenett")
         }
@@ -73,8 +61,7 @@ enum OverlayLayer: String, CaseIterable, Identifiable, Sendable {
         switch self {
         case .turrutebasen: return "\u{00A9} Kartverket"
         case .hillshading: return "\u{00A9} Kartverket / Mapzen"
-        case .naturvernomrader,
-             .naturskogFoer1940, .naturskogSannsynlighet, .naturskogNaerhet:
+        case .naturvernomrader, .naturskog:
             return "\u{00A9} Milj\u{00F8}direktoratet"
         case .bratthetskart:
             return "\u{00A9} NVE"
@@ -94,28 +81,17 @@ enum OverlayLayer: String, CaseIterable, Identifiable, Sendable {
         return "overlay-\(rawValue)-layer"
     }
 
+    /// ArcGIS REST MapServer for "Skog etablert før 1940, ikke flatehogd"
+    /// (layer ID 1 i naturskog_v1/MapServer).
     private static let naturskogRESTBase =
         "https://image001.miljodirektoratet.no/arcgis/rest/services"
         + "/naturskog/naturskog_v1/MapServer/export"
-
-    /// ArcGIS REST layer IDs (from MapServer metadata):
-    /// 1 = skog_etablert_foer_1940_ikke_flatehogd
-    /// 2 = naturskogssannsynlighet
-    /// 3 = naturskogsnaerhet
-    private var naturskogLayerID: Int {
-        switch self {
-        case .naturskogFoer1940: return 1
-        case .naturskogSannsynlighet: return 2
-        case .naturskogNaerhet: return 3
-        default: return 0
-        }
-    }
 
     var minZoom: Int {
         switch self {
         case .turrutebasen: return 5
         case .naturvernomrader: return 6
-        case .naturskogFoer1940, .naturskogSannsynlighet, .naturskogNaerhet: return 8
+        case .naturskog: return 8
         case .hillshading: return 3
         case .bratthetskart: return 9
         case .utmRunenett: return 7
@@ -152,11 +128,11 @@ enum OverlayLayer: String, CaseIterable, Identifiable, Sendable {
                 + "&LAYERS=naturvern_omrade&STYLES=&SRS=EPSG:3857"
                 + "&BBOX={bbox-epsg-3857}&WIDTH=256&HEIGHT=256"
                 + "&FORMAT=image/png&TRANSPARENT=true"
-        case .naturskogFoer1940, .naturskogSannsynlighet, .naturskogNaerhet:
+        case .naturskog:
             return Self.naturskogRESTBase
                 + "?bbox={bbox-epsg-3857}&bboxSR=3857&imageSR=3857"
                 + "&size=256,256&format=png32&transparent=true"
-                + "&layers=show:\(naturskogLayerID)&f=image"
+                + "&layers=show:1&f=image"
         case .bratthetskart:
             // NVE la ned nve.geodataonline.no våren 2026. WMTS-cached XYZ-tiles på
             // gis3.nve.no er nå offisielt endepunkt og betraktelig raskere enn WMS.

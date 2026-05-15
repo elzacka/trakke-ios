@@ -72,33 +72,14 @@ struct InfoSheet: View {
                         .accessibilityHint(String(localized: "accessibility.opensExternalLink"))
                     }
 
-                    // MARK: - Data Sources (alphabetical, expandable)
+                    // MARK: - Data Sources
+                    //
+                    // Rekkefølgen følger README: grunnkart først (Kartverket),
+                    // deretter kart-utvidelser (terreng, vern), så tjenester
+                    // (rute, vær, varsler), så spesifikke POI-leverandører,
+                    // og til slutt OpenStreetMap som samle-kilde for resten.
                     ExpandableSection(String(localized: "info.dataSources")) {
                         VStack(spacing: 0) {
-                        dataSourceRow(
-                            name: "Artsdatabanken",
-                            detail: String(localized: "info.artsdatabanken.detail"),
-                            license: "CC BY 4.0"
-                        )
-                        Divider()
-                        dataSourceRow(
-                            name: "DSB",
-                            detail: String(localized: "info.dsb.detail"),
-                            license: "NLOD"
-                        )
-                        Divider()
-                        dataSourceRow(
-                            name: "FOSSGIS / Valhalla",
-                            detail: String(localized: "info.valhalla.detail"),
-                            license: "ODbL / MIT"
-                        )
-                        Divider()
-                        dataSourceRow(
-                            name: "Havvarsel-Frost",
-                            detail: String(localized: "info.havvarsel.detail"),
-                            license: "CC BY 4.0"
-                        )
-                        Divider()
                         dataSourceRow(
                             name: "Kartverket",
                             detail: String(localized: "info.kartverket.detail"),
@@ -112,27 +93,45 @@ struct InfoSheet: View {
                         )
                         Divider()
                         dataSourceRow(
-                            name: "MET Norway",
-                            detail: String(localized: "info.met.detail"),
-                            license: "CC BY 4.0"
-                        )
-                        Divider()
-                        dataSourceRow(
                             name: "Milj\u{00F8}direktoratet",
                             detail: String(localized: "info.miljodir.detail"),
                             license: "NLOD 2.0"
                         )
                         Divider()
                         dataSourceRow(
-                            name: "NVE / Varsom",
-                            detail: String(localized: "info.nve.detail"),
-                            license: "NLOD 2.0"
+                            name: "FOSSGIS / Valhalla",
+                            detail: String(localized: "info.valhalla.detail"),
+                            license: "MIT / ODbL"
                         )
                         Divider()
                         dataSourceRow(
-                            name: "OpenStreetMap",
-                            detail: String(localized: "info.osm.detail"),
-                            license: "ODbL"
+                            name: "Meteorologisk institutt",
+                            detail: String(localized: "info.met.detail"),
+                            license: "CC BY 4.0"
+                        )
+                        Divider()
+                        dataSourceRow(
+                            name: "Yr/NRK",
+                            detail: String(localized: "info.yr.detail"),
+                            license: "CC BY 4.0"
+                        )
+                        Divider()
+                        dataSourceRow(
+                            name: "Havvarsel-Frost",
+                            detail: String(localized: "info.havvarsel.detail"),
+                            license: "CC BY 4.0"
+                        )
+                        Divider()
+                        dataSourceRow(
+                            name: "NVE / Varsom",
+                            detail: String(localized: "info.nve.detail"),
+                            license: "NLOD"
+                        )
+                        Divider()
+                        dataSourceRow(
+                            name: "Artsdatabanken",
+                            detail: String(localized: "info.artsdatabanken.detail"),
+                            license: "CC BY 4.0"
                         )
                         Divider()
                         dataSourceRow(
@@ -142,9 +141,27 @@ struct InfoSheet: View {
                         )
                         Divider()
                         dataSourceRow(
-                            name: "Yr/NRK",
-                            detail: String(localized: "info.yr.detail"),
-                            license: "CC BY 4.0"
+                            name: "DSB",
+                            detail: String(localized: "info.dsb.detail"),
+                            license: "NLOD"
+                        )
+                        Divider()
+                        dataSourceRow(
+                            name: "Wikidata",
+                            detail: String(localized: "info.wikidata.detail"),
+                            license: "CC0"
+                        )
+                        Divider()
+                        dataSourceRow(
+                            name: "UT.no/DNT, Statskog m.fl.",
+                            detail: String(localized: "info.utno.detail"),
+                            license: "ODbL / NLOD"
+                        )
+                        Divider()
+                        dataSourceRow(
+                            name: "OpenStreetMap-bidragsytere",
+                            detail: String(localized: "info.osm.detail"),
+                            license: "ODbL"
                         )
                         }
                     }
@@ -165,8 +182,14 @@ struct InfoSheet: View {
                             )
                             Divider()
                             dataSourceRow(
-                                name: "NGA",
-                                detail: String(localized: "info.nga.detail"),
+                                name: "Material Symbols",
+                                detail: String(localized: "info.materialsymbols.detail"),
+                                license: "Apache 2.0"
+                            )
+                            Divider()
+                            dataSourceRow(
+                                name: "Tabler Icons",
+                                detail: String(localized: "info.tabler.detail"),
                                 license: "MIT"
                             )
                         }

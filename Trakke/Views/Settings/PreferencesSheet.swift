@@ -20,7 +20,6 @@ struct PreferencesSheet: View {
     @AppStorage(AppStorageKeys.overlayBratthetskart) private var overlayBratthetskart = false
     @AppStorage(AppStorageKeys.overlayUtmRunenett) private var overlayUtmRunenett = false
     @AppStorage(AppStorageKeys.overlayNaturskog) private var overlayNaturskog = false
-    @AppStorage(AppStorageKeys.naturskogLayerType) private var naturskogLayerType = OverlayLayer.naturskogSannsynlighet.rawValue
     @Environment(\.dismiss) private var dismiss
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var coordinateInfoFormat: CoordinateFormat?
@@ -74,12 +73,9 @@ struct PreferencesSheet: View {
                             )
                             Divider()
                             settingsToggle(
-                                label: String(localized: "map.overlay.naturskog"),
+                                label: OverlayLayer.naturskog.displayName,
                                 isOn: $overlayNaturskog
                             )
-                            if overlayNaturskog {
-                                naturskogSubPicker
-                            }
                             Divider()
                             settingsToggle(
                                 label: OverlayLayer.naturvernomrader.displayName,
@@ -154,7 +150,6 @@ struct PreferencesSheet: View {
                             overlayNaturvernomrader = false
                             overlayBratthetskart = false
                             overlayNaturskog = false
-                            naturskogLayerType = OverlayLayer.naturskogSannsynlighet.rawValue
                             mapViewModel.baseLayer = .topo
                         }
                     } label: {
@@ -204,12 +199,6 @@ struct PreferencesSheet: View {
         }
         .padding(.horizontal, .Trakke.sheetHorizontal)
         .padding(.top, .Trakke.sheetTop)
-    }
-
-    // MARK: - Naturskog Sub-Picker
-
-    private var naturskogSubPicker: some View {
-        NaturskogSubPickerView(selectedLayerType: $naturskogLayerType)
     }
 
     // MARK: - Toggle Row
@@ -276,7 +265,6 @@ extension CoordinateFormat {
         case .dd: return "DD \u{2013} Desimalgrader (standard)"
         case .dms: return "DMS \u{2013} Grader, minutter, sekunder"
         case .utm: return "UTM \u{2013} Universal Transverse Mercator"
-        case .mgrs: return "MGRS \u{2013} Military Grid Reference System"
         }
     }
 
@@ -292,7 +280,6 @@ extension CoordinateFormat {
         case .dd: return "59.888051, 10.862804"
         case .dms: return "59\u{00B0}53'16.98\"N, 10\u{00B0}51'46.09\"E"
         case .utm: return "33V 604245 6482098"
-        case .mgrs: return "32V MK 25150 30400"
         }
     }
 }

@@ -10,16 +10,16 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
     case warMemorials
     case wildernessShelters
     case kulturminner
+    /// Konsolidert badeplass-kategori. Tidligere separate POI-typer
+    /// (jettegryter, kroksjøer, laguner, varme kilder) er nå slått sammen
+    /// — alle er i praksis steder folk bader.
     case swimmingSpot
     case firePit
     case waterfall
     case hammock
-    case giantKettle
-    case oxbowLake
-    case lagoon
     case restStop
     case tentSite
-    case hotSpring
+    case cabins
 
     var id: String { rawValue }
 
@@ -35,12 +35,9 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
         case .firePit: return String(localized: "poi.balplasser")
         case .waterfall: return String(localized: "poi.fosser")
         case .hammock: return String(localized: "poi.hengekoyeplasser")
-        case .giantKettle: return String(localized: "poi.jettegryter")
-        case .oxbowLake: return String(localized: "poi.kroksjoer")
-        case .lagoon: return String(localized: "poi.laguner")
         case .restStop: return String(localized: "poi.rasteplasser")
         case .tentSite: return String(localized: "poi.teltplasser")
-        case .hotSpring: return String(localized: "poi.varmeKilder")
+        case .cabins: return String(localized: "poi.hytter")
         }
     }
 
@@ -56,14 +53,11 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
         case .kulturminner: return "POIHistoric"
         case .swimmingSpot: return "POISwimmingSpot"
         case .firePit: return "flame.fill"
-        case .waterfall: return "drop.fill"
+        case .waterfall: return "POIWaterfall"
         case .hammock: return "POIHammock"
-        case .giantKettle: return "circle.fill"
-        case .oxbowLake: return "water.waves"
-        case .lagoon: return "water.waves"
-        case .restStop: return "chair.fill"
+        case .restStop: return "POIPicnicTable"
         case .tentSite: return "tent.fill"
-        case .hotSpring: return "flame.circle.fill"
+        case .cabins: return "POICabin"
         }
     }
 
@@ -79,12 +73,9 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
         case .firePit: return "#d97706"
         case .waterfall: return "#2d8590"
         case .hammock: return "#6b8e23"
-        case .giantKettle: return "#8b7355"
-        case .oxbowLake: return "#3b6e8c"
-        case .lagoon: return "#5fa8c4"
         case .restStop: return "#6b6b50"
         case .tentSite: return "#5a7d4a"
-        case .hotSpring: return "#c23a34"
+        case .cabins: return "#9c4a3c"
         }
     }
 
@@ -100,25 +91,22 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
         case .firePit: return 11
         case .waterfall: return 11
         case .hammock: return 10
-        case .giantKettle: return 11
-        case .oxbowLake: return 11
-        case .lagoon: return 11
         case .restStop: return 12          // 8964 features — krever høyere zoom for å unngå rot
         case .tentSite: return 11
-        case .hotSpring: return 10
+        case .cabins: return 9
         }
     }
 
     var sourceName: String {
         switch self {
         case .shelters: return "DSB"
-        case .caves, .viewpoints, .warMemorials, .wildernessShelters,
-             .hammock, .giantKettle, .oxbowLake, .lagoon, .hotSpring:
+        case .caves, .viewpoints, .warMemorials, .wildernessShelters, .hammock:
             return "OpenStreetMap contributors"
         case .kulturminner: return "Riksantikvaren"
         case .swimmingSpot, .firePit, .restStop, .tentSite:
             return "UT.no/DNT, OpenStreetMap contributors"
         case .waterfall: return "Wikidata"
+        case .cabins: return "UT.no/DNT, Statskog, fjellstyrer m.fl."
         }
     }
 
@@ -126,10 +114,10 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
         switch self {
         case .shelters: return "NLOD 2.0"
         case .caves, .viewpoints, .warMemorials, .wildernessShelters,
-             .swimmingSpot, .firePit, .hammock, .giantKettle,
-             .oxbowLake, .lagoon, .restStop, .tentSite, .hotSpring: return "ODbL"
+             .swimmingSpot, .firePit, .hammock, .restStop, .tentSite: return "ODbL"
         case .kulturminner: return "NLOD 2.0"
         case .waterfall: return "CC0"
+        case .cabins: return "ODbL / NLOD"
         }
     }
 
@@ -137,9 +125,8 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
         switch self {
         case .shelters: return .beredskap
         case .caves, .wildernessShelters, .swimmingSpot, .firePit,
-             .hammock, .restStop, .tentSite: return .friluftsliv
-        case .viewpoints, .waterfall, .giantKettle, .oxbowLake,
-             .lagoon, .hotSpring: return .landskap
+             .hammock, .restStop, .tentSite, .cabins: return .friluftsliv
+        case .viewpoints, .waterfall: return .landskap
         case .warMemorials, .kulturminner: return .kulturarv
         }
     }
@@ -148,8 +135,8 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
     var isBundled: Bool {
         switch self {
         case .caves, .viewpoints, .warMemorials, .wildernessShelters, .shelters,
-             .swimmingSpot, .firePit, .waterfall, .hammock, .giantKettle,
-              .oxbowLake, .lagoon, .restStop, .tentSite, .hotSpring:
+             .swimmingSpot, .firePit, .waterfall, .hammock,
+             .restStop, .tentSite, .cabins:
             return true
         case .kulturminner: return false
         }
@@ -160,8 +147,8 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
         switch self {
         case .shelters, .kulturminner: return true
         case .caves, .viewpoints, .warMemorials, .wildernessShelters,
-             .swimmingSpot, .firePit, .waterfall, .hammock, .giantKettle,
-              .oxbowLake, .lagoon, .restStop, .tentSite, .hotSpring:
+             .swimmingSpot, .firePit, .waterfall, .hammock,
+             .restStop, .tentSite, .cabins:
             return false
         }
     }

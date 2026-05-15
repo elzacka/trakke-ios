@@ -10,19 +10,9 @@ struct POIDetailSheet: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: .Trakke.cardGap) {
-                    // MARK: - Category
-                    HStack(spacing: .Trakke.xs) {
-                        POIIconImage(name: poi.category.iconName, size: 14)
-                            .foregroundStyle(Color(hex: poi.category.color))
-                            .accessibilityHidden(true)
-                        Text(poi.category.displayName)
-                            .font(Font.Trakke.caption)
-                            .foregroundStyle(Color.Trakke.textSecondary)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, .Trakke.xs)
-                    .accessibilityElement(children: .combine)
-                    .accessibilityLabel(Text("\(String(localized: "poi.category")): \(poi.category.displayName)"))
+                    // Kategori-navnet ligger allerede i toolbaren (kategori-ikon)
+                    // og i Type-feltet under Detaljer — egen «kategori-strek»
+                    // her ville vært tredje gangen vi sier samme sak.
 
                     // MARK: - Details
                     if !poi.details.isEmpty {
@@ -142,22 +132,41 @@ struct POIDetailSheet: View {
         "link", "source", "osm_ref", "wikidata_id",
     ]
 
+    /// Felter som skal vises først i detalj-arket, i denne rekkefølgen.
+    /// Resten sorteres alfabetisk under. Provider/subtype/type/shelterType
+    /// beskriver *hva* dette er — viktigere enn beskrivelse, høyde osv.
+    /// Owner/operator kommer rett etter siden «hvem driver dette» har høy
+    /// nytteverdi for hytter og lignende.
+    private static let priorityDetailKeys: [String] = [
+        "provider", "subtype", "type", "shelterType", "owner", "operator",
+    ]
+
     private var sortedDetails: [(key: String, value: String)] {
-        poi.details
-            .filter { !Self.hiddenDetailKeys.contains($0.key) }
+        let visible = poi.details.filter { !Self.hiddenDetailKeys.contains($0.key) }
+        let prioritized = Self.priorityDetailKeys.compactMap { key -> (key: String, value: String)? in
+            guard let value = visible[key] else { return nil }
+            return (key: key, value: value)
+        }
+        let rest = visible
+            .filter { !Self.priorityDetailKeys.contains($0.key) }
             .sorted { $0.key < $1.key }
+            .map { (key: $0.key, value: $0.value) }
+        return prioritized + rest
     }
 
     private func localizedDetailKey(_ key: String) -> String {
         switch key {
         case "address": return String(localized: "poi.detail.address")
+        case "beds": return String(localized: "poi.detail.beds")
         case "capacity": return String(localized: "poi.detail.capacity")
         case "category": return String(localized: "poi.detail.category")
         case "description": return String(localized: "poi.detail.description")
         case "height": return String(localized: "poi.detail.height")
         case "operator": return String(localized: "poi.detail.operator")
+        case "owner": return String(localized: "poi.detail.owner")
         case "inscription": return String(localized: "poi.detail.inscription")
         case "period": return String(localized: "poi.detail.period")
+        case "provider": return String(localized: "poi.detail.provider")
         case "shelterType": return String(localized: "poi.detail.shelterType")
         case "subtype": return String(localized: "poi.detail.subtype")
         case "elevation": return String(localized: "poi.detail.elevation")
@@ -170,8 +179,21 @@ struct POIDetailSheet: View {
     }
 
     private func localizedDetailValue(key: String, value: String) -> String {
+        if key == "provider" {
+            switch value {
+            case "dnt": return "DNT"
+            case "andre": return "Andre"
+            default: return value
+            }
+        }
         guard key == "type" || key == "subtype" || key == "shelterType" else { return value }
         switch value {
+        // Badeplass-undertyper (konsolidert kategori)
+        case "badeplass": return "Badeplass"
+        case "jettegryte": return "Jettegryte"
+        case "kroksjo": return "Kroksjø"
+        case "lagune": return "Lagune"
+        case "varme_kilder": return "Varm kilde"
         // Viewpoints
         case "observation_tower": return "Utsiktstårn"
         case "bird_hide": return "Fugletårn"

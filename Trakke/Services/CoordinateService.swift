@@ -1,6 +1,5 @@
 import Foundation
 import CoreLocation
-import MGRS
 
 // MARK: - Coordinate Format
 
@@ -8,7 +7,6 @@ enum CoordinateFormat: String, CaseIterable, Identifiable, Codable, Sendable {
     case dd
     case dms
     case utm
-    case mgrs
 
     var id: String { rawValue }
 
@@ -17,7 +15,6 @@ enum CoordinateFormat: String, CaseIterable, Identifiable, Codable, Sendable {
         case .utm: return "UTM"
         case .dd: return "DD"
         case .dms: return "DMS"
-        case .mgrs: return "MGRS"
         }
     }
 }
@@ -54,8 +51,6 @@ enum CoordinateService {
             return formatDMS(lat: lat, lon: lon)
         case .utm:
             return formatUTM(lat: lat, lon: lon)
-        case .mgrs:
-            return formatMGRS(lat: lat, lon: lon)
         }
     }
 
@@ -92,20 +87,11 @@ enum CoordinateService {
         return FormattedCoordinate(display: display, copyText: display)
     }
 
-    private static func formatMGRS(lat: Double, lon: Double) -> FormattedCoordinate {
-        let mgrsObj = MGRS.from(lon, lat)
-        let mgrsString = mgrsObj.coordinate(GridType.METER)
-        // Continuous string without spaces — standard MGRS notation
-        let compact = mgrsString.replacingOccurrences(of: " ", with: "")
-        return FormattedCoordinate(display: compact, copyText: compact)
-    }
-
     // MARK: - Parsing
 
     static func parse(_ input: String) -> SearchResult? {
         let trimmed = input.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        if let result = parseMGRS(trimmed) { return result }
         if let result = parseUTM(trimmed) { return result }
         if let result = parseDMS(trimmed) { return result }
         if let result = parseDD(trimmed) { return result }
@@ -231,29 +217,6 @@ enum CoordinateService {
         }
 
         return nil
-    }
-
-    // MARK: MGRS Parsing
-
-    private static func parseMGRS(_ input: String) -> SearchResult? {
-        // Remove spaces for pattern matching
-        let cleaned = input.replacingOccurrences(of: " ", with: "")
-        let pattern = #"^(\d{1,2})([C-HJ-NP-X])([A-HJ-NP-Z]{2})(\d{2,10})$"#
-        guard let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive),
-              regex.firstMatch(in: cleaned, range: NSRange(cleaned.startIndex..., in: cleaned)) != nil else {
-            return nil
-        }
-
-        guard MGRS.isMGRS(cleaned) else { return nil }
-        let mgrsObj = MGRS.parse(cleaned)
-        let coord = mgrsObj.toCoordinate()
-        let lat = coord.latitude
-        let lon = coord.longitude
-
-        guard isValidCoordinate(lat: lat, lon: lon) else { return nil }
-
-        let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: lon)
-        return makeCoordinateResult(coordinate: coordinate, label: "MGRS")
     }
 
     // MARK: - Helpers
