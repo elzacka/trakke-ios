@@ -256,7 +256,7 @@ struct ContentView: View {
                 onSelectionCornerDragged: { index, coord in
                     offlineViewModel.moveSelectionCorner(at: index, to: coord)
                 },
-                offlinePackBounds: connectivityMonitor.isConnected ? [] : offlineViewModel.packs.filter(\.progress.isComplete).map(\.bounds),
+                offlinePackBounds: connectivityMonitor.isConnected ? [] : offlineViewModel.completedPackBounds,
                 navigationRouteCoordinates: navigationViewModel.routeCoordinates,
                 navigationSegmentIndex: navigationViewModel.snapResult?.segmentIndex ?? 0,
                 isNavigating: navigationViewModel.isActive,

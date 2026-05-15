@@ -6,6 +6,9 @@ import OSLog
 @Observable
 final class OfflineViewModel {
     var packs: [OfflinePackInfo] = []
+    /// Bounds for completed packs only — derived in `loadPacks()` so views can
+    /// read it cheaply on every body without re-filtering.
+    private(set) var completedPackBounds: [(south: Double, west: Double, north: Double, east: Double)] = []
     var isSelectingArea = false
     var selectionCorner1: CLLocationCoordinate2D?
     var selectionCorner2: CLLocationCoordinate2D?
@@ -268,6 +271,7 @@ final class OfflineViewModel {
 
     func loadPacks() {
         packs = service.getPacks()
+        completedPackBounds = packs.compactMap { $0.progress.isComplete ? $0.bounds : nil }
     }
 
     func deletePack(_ pack: OfflinePackInfo) {
