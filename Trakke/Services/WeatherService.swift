@@ -42,6 +42,8 @@ actor WeatherService: WeatherFetching {
     private static let fallbackTTL: TimeInterval = 7200 // 2 hours, used when Expires header is missing
     private static let timeout: TimeInterval = 15
 
+    private let decoder = JSONDecoder()
+
     private struct CachedForecast {
         let forecast: WeatherForecast
         let expiresAt: Date
@@ -97,7 +99,7 @@ actor WeatherService: WeatherFetching {
                 throw APIError.httpError(statusCode: result.statusCode)
             }
 
-            let metResponse = try JSONDecoder().decode(MetApiResponse.self, from: result.data)
+            let metResponse = try decoder.decode(MetApiResponse.self, from: result.data)
             let forecast = parseMetData(metResponse, lat: truncLat, lon: truncLon)
             cache[cacheKey] = CachedForecast(
                 forecast: forecast,

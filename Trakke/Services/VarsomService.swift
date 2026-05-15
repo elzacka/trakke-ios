@@ -54,6 +54,8 @@ actor VarsomService: VarsomFetching {
     private var cache: (warnings: [VarsomWarning], fetchedAt: Date, coordinate: CLLocationCoordinate2D)?
     private static let cacheTTL: TimeInterval = 3600 // 1 hour
 
+    private let decoder = JSONDecoder()
+
     func clearCache() {
         cache = nil
     }
@@ -88,7 +90,7 @@ actor VarsomService: VarsomFetching {
             // NVE's avalanche endpoint returns a bare JSON `null` (not `[]`) for
             // coordinates with no current warning. Decoding as Optional avoids the
             // valueNotFound crash and gives us an empty result instead.
-            let items = try JSONDecoder().decode([AvalancheResponse]?.self, from: data) ?? []
+            let items = try decoder.decode([AvalancheResponse]?.self, from: data) ?? []
             return items.compactMap { item -> VarsomWarning? in
                 guard item.dangerLevel > 0,
                       let from = parseDate(item.ValidFrom),
@@ -128,7 +130,7 @@ actor VarsomService: VarsomFetching {
 
         do {
             let data = try await APIClient.fetchData(url: url, timeout: 15)
-            let items = try JSONDecoder().decode([FloodResponse]?.self, from: data) ?? []
+            let items = try decoder.decode([FloodResponse]?.self, from: data) ?? []
             return items.compactMap { item -> VarsomWarning? in
                 guard item.activityLevelInt > 1,
                       let fromStr = item.ValidFrom, let from = parseDate(fromStr),

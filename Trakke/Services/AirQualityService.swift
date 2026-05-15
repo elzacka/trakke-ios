@@ -77,6 +77,8 @@ actor AirQualityService: AirQualityFetching {
     private var cache: (key: String, data: AirQualityData, expiresAt: Date, lastModified: String?)?
     private static let fallbackTTL: TimeInterval = 3600
 
+    private let decoder = JSONDecoder()
+
     // Actor-isolated formatter — safe without nonisolated(unsafe)
     private let iso8601 = ISO8601DateFormatter()
 
@@ -133,7 +135,7 @@ actor AirQualityService: AirQualityFetching {
 
         guard result.ok else { return nil }
 
-        guard let response = try? JSONDecoder().decode(AQResponse.self, from: result.data) else {
+        guard let response = try? decoder.decode(AQResponse.self, from: result.data) else {
             return nil
         }
 
