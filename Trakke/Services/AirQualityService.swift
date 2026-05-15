@@ -111,37 +111,29 @@ actor AirQualityService: AirQualityFetching {
 
         guard let url = components.url else { return nil }
 
-        var request = URLRequest(url: url)
-        request.setValue(APIClient.userAgent, forHTTPHeaderField: "User-Agent")
-
-        // MET ToS: send If-Modified-Since when we have cached data
         let cacheKey = String(format: "%.2f,%.2f", lat, lon)
-        if let cache, cache.key == cacheKey, let lastModified = cache.lastModified {
-            request.setValue(lastModified, forHTTPHeaderField: "If-Modified-Since")
-        }
+        let ifModifiedSince = (cache?.key == cacheKey) ? cache?.lastModified : nil
 
-        let data: Data
-        let httpResponse: HTTPURLResponse
+        let result: ConditionalFetchResult
         do {
-            let (responseData, urlResponse) = try await APIClient.session.data(for: request)
-            guard let http = urlResponse as? HTTPURLResponse else { return nil }
-            data = responseData
-            httpResponse = http
+            result = try await APIClient.fetchDataConditional(
+                url: url,
+                ifModifiedSince: ifModifiedSince
+            )
         } catch {
             Logger.weather.warning("Air quality fetch (\(areaclass)) failed: \(error.localizedDescription, privacy: .private)")
             return nil
         }
 
-        // MET ToS: respect 304 Not Modified
-        if httpResponse.statusCode == 304, let cache, cache.key == cacheKey {
-            let newExpiry = Self.parseExpires(httpResponse) ?? Date().addingTimeInterval(Self.fallbackTTL)
+        if result.notModified, let cache, cache.key == cacheKey {
+            let newExpiry = result.expires(fallbackTTL: Self.fallbackTTL)
             self.cache = (key: cacheKey, data: cache.data, expiresAt: newExpiry, lastModified: cache.lastModified)
             return cache.data
         }
 
-        guard httpResponse.statusCode == 200 else { return nil }
+        guard result.ok else { return nil }
 
-        guard let response = try? JSONDecoder().decode(AQResponse.self, from: data) else {
+        guard let response = try? JSONDecoder().decode(AQResponse.self, from: result.data) else {
             return nil
         }
 
@@ -159,7 +151,7 @@ actor AirQualityService: AirQualityFetching {
             return nil
         }
 
-        let result = AirQualityData(
+        let aqResult = AirQualityData(
             aqi: aqiValue,
             aqiClass: AQIClass(aqi: aqiValue),
             pm25: entry.variables["pm25_concentration"]?.value ?? nil,
@@ -170,21 +162,14 @@ actor AirQualityService: AirQualityFetching {
             time: time
         )
 
-        let expiresAt = Self.parseExpires(httpResponse) ?? Date().addingTimeInterval(Self.fallbackTTL)
-        let lastModified = httpResponse.value(forHTTPHeaderField: "Last-Modified")
-        cache = (key: cacheKey, data: result, expiresAt: expiresAt, lastModified: lastModified)
+        let expiresAt = result.expires(fallbackTTL: Self.fallbackTTL)
+        cache = (key: cacheKey, data: aqResult, expiresAt: expiresAt, lastModified: result.lastModified)
 
-        return result
+        return aqResult
     }
 
     func clearCache() {
         cache = nil
-    }
-
-    // MARK: - HTTP Header Parsing
-
-    private static func parseExpires(_ response: HTTPURLResponse) -> Date? {
-        HTTPDateParser.parseExpires(response)
     }
 }
 

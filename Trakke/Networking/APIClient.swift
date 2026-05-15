@@ -137,6 +137,75 @@ enum APIClient {
         throw lastError ?? APIError.networkError(URLError(.unknown).localizedDescription)
     }
 
+    /// Conditional GET with retry on timeout/5xx/429, User-Agent injection, and
+    /// pass-through of `200`/`304`/`4xx` so the caller can branch on cache state.
+    /// Use this for upstream services that require `If-Modified-Since`/`Last-Modified`
+    /// negotiation (MET ToS).
+    static func fetchDataConditional(
+        url: URL,
+        ifModifiedSince: String? = nil,
+        timeout: TimeInterval? = nil,
+        additionalHeaders: [String: String] = [:]
+    ) async throws -> ConditionalFetchResult {
+        var request = URLRequest(url: url)
+        request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
+        if let timeout {
+            request.timeoutInterval = timeout
+        }
+        if let ifModifiedSince {
+            request.setValue(ifModifiedSince, forHTTPHeaderField: "If-Modified-Since")
+        }
+        for (key, value) in additionalHeaders {
+            request.setValue(value, forHTTPHeaderField: key)
+        }
+
+        var lastError: Error?
+        for attempt in 0...1 {
+            if attempt > 0 {
+                try await Task.sleep(for: .seconds(1))
+            }
+
+            let data: Data
+            let response: URLResponse
+            do {
+                (data, response) = try await session.data(for: request)
+            } catch let error as URLError where error.code == .timedOut {
+                lastError = APIError.timeout
+                continue
+            } catch let error as URLError where error.code == .networkConnectionLost {
+                lastError = APIError.networkError(error.localizedDescription)
+                continue
+            } catch {
+                throw APIError.networkError(error.localizedDescription)
+            }
+
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw APIError.invalidResponse
+            }
+
+            switch httpResponse.statusCode {
+            case 429:
+                if attempt < 1 {
+                    let retryAfter = min(
+                        Double(httpResponse.value(forHTTPHeaderField: "Retry-After") ?? "") ?? 2,
+                        30
+                    )
+                    try await Task.sleep(for: .seconds(retryAfter))
+                    lastError = APIError.rateLimited
+                    continue
+                }
+                throw APIError.rateLimited
+            case 500...599:
+                lastError = APIError.httpError(statusCode: httpResponse.statusCode)
+                continue
+            default:
+                return ConditionalFetchResult(data: data, response: httpResponse)
+            }
+        }
+
+        throw lastError ?? APIError.networkError(URLError(.unknown).localizedDescription)
+    }
+
     static func buildURL(
         base: String,
         path: String,
@@ -145,5 +214,19 @@ enum APIClient {
         var components = URLComponents(string: base + path)
         components?.queryItems = queryItems
         return components?.url
+    }
+}
+
+struct ConditionalFetchResult: Sendable {
+    let data: Data
+    let response: HTTPURLResponse
+
+    var statusCode: Int { response.statusCode }
+    var notModified: Bool { response.statusCode == 304 }
+    var ok: Bool { (200...299).contains(response.statusCode) }
+    var lastModified: String? { response.value(forHTTPHeaderField: "Last-Modified") }
+
+    func expires(fallbackTTL: TimeInterval) -> Date {
+        HTTPDateParser.parseExpires(response, fallbackTTL: fallbackTTL)
     }
 }

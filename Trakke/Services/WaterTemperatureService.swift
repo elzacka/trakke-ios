@@ -146,26 +146,21 @@ actor WaterTemperatureService: WaterTemperatureFetching {
             return OceanFetchResult(temperature: nil, expiresAt: Date.now.addingTimeInterval(Self.fallbackTTL), lastModified: nil)
         }
 
-        var request = URLRequest(url: url, timeoutInterval: Self.timeout)
-        request.setValue(Self.userAgent, forHTTPHeaderField: "User-Agent")
-
-        // Send If-Modified-Since if we have a cached Last-Modified (MET ToS requirement)
         let key = cacheKey(lat: lat, lon: lon)
-        if let cached = cache[key], let lastModified = cached.lastModified {
-            request.setValue(lastModified, forHTTPHeaderField: "If-Modified-Since")
-        }
-
-        let (data, response) = try await APIClient.session.data(for: request)
-
-        guard let httpResponse = response as? HTTPURLResponse else {
+        let result: ConditionalFetchResult
+        do {
+            result = try await APIClient.fetchDataConditional(
+                url: url,
+                ifModifiedSince: cache[key]?.lastModified,
+                timeout: Self.timeout
+            )
+        } catch {
             return OceanFetchResult(temperature: nil, expiresAt: Date.now.addingTimeInterval(Self.fallbackTTL), lastModified: nil)
         }
 
-        let expiresAt = Self.parseExpires(from: httpResponse)
-        let lastModified = httpResponse.value(forHTTPHeaderField: "Last-Modified")
+        let expiresAt = result.expires(fallbackTTL: Self.fallbackTTL)
 
-        // 304 Not Modified: keep cached data, refresh expiry
-        if httpResponse.statusCode == 304 {
+        if result.notModified {
             return OceanFetchResult(
                 temperature: cache[key]?.result.oceanTemperature,
                 expiresAt: expiresAt,
@@ -173,14 +168,14 @@ actor WaterTemperatureService: WaterTemperatureFetching {
             )
         }
 
-        guard httpResponse.statusCode == 200 else {
-            return OceanFetchResult(temperature: nil, expiresAt: expiresAt, lastModified: lastModified)
+        guard result.ok else {
+            return OceanFetchResult(temperature: nil, expiresAt: expiresAt, lastModified: result.lastModified)
         }
 
         return OceanFetchResult(
-            temperature: parseOceanForecast(data),
+            temperature: parseOceanForecast(result.data),
             expiresAt: expiresAt,
-            lastModified: lastModified
+            lastModified: result.lastModified
         )
     }
 

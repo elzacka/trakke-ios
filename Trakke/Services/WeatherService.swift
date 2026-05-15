@@ -39,7 +39,6 @@ protocol WeatherFetching: Sendable {
 
 actor WeatherService: WeatherFetching {
     private static let baseURL = "https://api.met.no/weatherapi/locationforecast/2.0/compact"
-    private static let userAgent = APIClient.userAgent
     private static let fallbackTTL: TimeInterval = 7200 // 2 hours, used when Expires header is missing
     private static let timeout: TimeInterval = 15
 
@@ -77,65 +76,45 @@ actor WeatherService: WeatherFetching {
 
         guard let url = components.url else { throw APIError.invalidURL }
 
-        var request = URLRequest(url: url)
-        request.setValue(Self.userAgent, forHTTPHeaderField: "User-Agent")
-        request.timeoutInterval = Self.timeout
-
-        // Send If-Modified-Since if we have a cached Last-Modified (MET ToS requirement)
-        if let cached = cache[cacheKey], let lastModified = cached.lastModified {
-            request.setValue(lastModified, forHTTPHeaderField: "If-Modified-Since")
-        }
-
         do {
-            let (data, response) = try await APIClient.session.data(for: request)
-            guard let httpResponse = response as? HTTPURLResponse else {
-                throw APIError.invalidResponse
+            let result = try await APIClient.fetchDataConditional(
+                url: url,
+                ifModifiedSince: cache[cacheKey]?.lastModified,
+                timeout: Self.timeout
+            )
+
+            if result.notModified, let cached = cache[cacheKey] {
+                cache[cacheKey] = CachedForecast(
+                    forecast: cached.forecast,
+                    expiresAt: result.expires(fallbackTTL: Self.fallbackTTL),
+                    lastModified: cached.lastModified
+                )
+                return cached.forecast
             }
 
-            if httpResponse.statusCode == 304 {
-                // Not modified: refresh expiry from new Expires header, keep cached data
-                if let cached = cache[cacheKey] {
-                    let expires = Self.parseExpires(from: httpResponse)
-                    cache[cacheKey] = CachedForecast(
-                        forecast: cached.forecast,
-                        expiresAt: expires,
-                        lastModified: cached.lastModified
-                    )
-                    return cached.forecast
-                }
-            }
-
-            if httpResponse.statusCode == 429 {
+            guard result.ok else {
                 if let cached = cache[cacheKey] { return cached.forecast }
-                throw APIError.rateLimited
-            }
-            guard (200...299).contains(httpResponse.statusCode) else {
-                if let cached = cache[cacheKey] { return cached.forecast }
-                throw APIError.httpError(statusCode: httpResponse.statusCode)
+                throw APIError.httpError(statusCode: result.statusCode)
             }
 
-            let metResponse = try JSONDecoder().decode(MetApiResponse.self, from: data)
+            let metResponse = try JSONDecoder().decode(MetApiResponse.self, from: result.data)
             let forecast = parseMetData(metResponse, lat: truncLat, lon: truncLon)
-
-            let expires = Self.parseExpires(from: httpResponse)
-            let lastModified = httpResponse.value(forHTTPHeaderField: "Last-Modified")
             cache[cacheKey] = CachedForecast(
                 forecast: forecast,
-                expiresAt: expires,
-                lastModified: lastModified
+                expiresAt: result.expires(fallbackTTL: Self.fallbackTTL),
+                lastModified: result.lastModified
             )
             evictStaleCacheEntries()
             return forecast
+        } catch APIError.rateLimited {
+            if let cached = cache[cacheKey] { return cached.forecast }
+            throw APIError.rateLimited
         } catch let error as APIError {
             throw error
         } catch {
             if let cached = cache[cacheKey] { return cached.forecast }
             throw error
         }
-    }
-
-    private static func parseExpires(from response: HTTPURLResponse) -> Date {
-        HTTPDateParser.parseExpires(response, fallbackTTL: fallbackTTL)
     }
 
     private func evictStaleCacheEntries() {

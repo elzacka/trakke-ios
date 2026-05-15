@@ -1,7 +1,7 @@
 import Foundation
 
 enum HTTPDateParser {
-    nonisolated(unsafe) private static let formatter: DateFormatter = {
+    private static let formatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss zzz"
         formatter.locale = Locale(identifier: "en_US_POSIX")
