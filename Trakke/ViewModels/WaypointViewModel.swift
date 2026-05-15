@@ -77,7 +77,6 @@ final class WaypointViewModel {
         waypoint.isVisible.toggle()
         waypoint.updatedAt = Date()
         save("waypoint")
-        loadWaypoints()
     }
 
     func setCategoryVisibility(_ category: String?, visible: Bool) {
@@ -93,7 +92,6 @@ final class WaypointViewModel {
             wp.updatedAt = now
         }
         save("waypoint")
-        loadWaypoints()
     }
 
     func isCategoryAllVisible(_ category: String?) -> Bool {
@@ -119,7 +117,6 @@ final class WaypointViewModel {
             waypoint.updatedAt = now
         }
         save("show only waypoint")
-        loadWaypoints()
     }
 
     func setAllVisible(_ visible: Bool) {
@@ -129,7 +126,6 @@ final class WaypointViewModel {
             wp.updatedAt = now
         }
         save("set all waypoints visible")
-        loadWaypoints()
     }
 
     var isAnyVisible: Bool {
@@ -183,7 +179,6 @@ final class WaypointViewModel {
             waypoint.elevation = elevation
             waypoint.updatedAt = Date()
             save("waypoint")
-            loadWaypoints()
         }
     }
 

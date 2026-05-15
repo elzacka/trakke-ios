@@ -236,7 +236,6 @@ final class ActivityViewModel {
         } catch {
             saveError = error.localizedDescription
         }
-        loadActivities()
     }
 
     // MARK: - Bulk visibility (no `showOnly` — activities are historical, not
@@ -252,7 +251,6 @@ final class ActivityViewModel {
         } catch {
             saveError = error.localizedDescription
         }
-        loadActivities()
     }
 
     func isCategoryAllVisible(_ category: String?) -> Bool {
@@ -269,7 +267,6 @@ final class ActivityViewModel {
         } catch {
             saveError = error.localizedDescription
         }
-        loadActivities()
     }
 
     var isAnyVisible: Bool {
@@ -285,7 +282,6 @@ final class ActivityViewModel {
         } catch {
             saveError = error.localizedDescription
         }
-        loadActivities()
     }
 
     /// Edit name and/or category in one go.
@@ -299,7 +295,6 @@ final class ActivityViewModel {
         } catch {
             saveError = error.localizedDescription
         }
-        loadActivities()
     }
 
     /// All distinct, non-empty categories in alphabetical order.
