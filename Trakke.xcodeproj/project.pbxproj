@@ -28,6 +28,7 @@
 		179B0EBCF39D2951E91EEC48 /* ActivityViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37D830B9D98AF2D9D6DFD5C6 /* ActivityViewModel.swift */; };
 		18538A7B175D443E829908D5 /* lightssleetshowersandthunder_day.svg in Resources */ = {isa = PBXBuildFile; fileRef = 80744533CAD21157C5E8236A /* lightssleetshowersandthunder_day.svg */; };
 		1AD38502496121EB9B131456 /* ArtsdatabankenImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0807CEACE5F08F12855256A /* ArtsdatabankenImageService.swift */; };
+		1B36496B029EF9F494B6FB96 /* CurrentConditionsCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7626F9A3B9D18A8E2B4DF23 /* CurrentConditionsCard.swift */; };
 		1C2E72AD02B9FAAC7AAEE4AC /* SchemaV1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C8DDE1214C07FA3A9B1983 /* SchemaV1.swift */; };
 		1D9A23F5850C6EE463CFDB14 /* war_memorials.geojson in Resources */ = {isa = PBXBuildFile; fileRef = B556205BBD2E3537CA10167A /* war_memorials.geojson */; };
 		1EBC5680B70831AFB4408496 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0100C1D0198B9660EA1B145 /* EmptyStateView.swift */; };
@@ -495,6 +496,7 @@
 		E244C4D83CFC0CC9C9551368 /* Brukerveiledning.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Brukerveiledning.md; sourceTree = "<group>"; };
 		E376D0F5EB94F98815210090 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		E41564F1F3B99A090C488A2B /* ActivityRecordingToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityRecordingToolbar.swift; sourceTree = "<group>"; };
+		E7626F9A3B9D18A8E2B4DF23 /* CurrentConditionsCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentConditionsCard.swift; sourceTree = "<group>"; };
 		E805A0D492B79F77EC63EDB1 /* SheetCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheetCoordinator.swift; sourceTree = "<group>"; };
 		E9DAF6F4A9C59304113A8AE8 /* heavysleetshowers_day.svg */ = {isa = PBXFileReference; path = heavysleetshowers_day.svg; sourceTree = "<group>"; };
 		EAD31263DF1383B4F9570BD7 /* WeatherViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherViewModel.swift; sourceTree = "<group>"; };
@@ -1011,6 +1013,7 @@
 		F4907F3CCF211D3183412955 /* Weather */ = {
 			isa = PBXGroup;
 			children = (
+				E7626F9A3B9D18A8E2B4DF23 /* CurrentConditionsCard.swift */,
 				221FFB6A9D3755A4F47D4774 /* WeatherSheet.swift */,
 				C18516D4096D860B26F52A5B /* WeatherWidgetView.swift */,
 			);
@@ -1266,6 +1269,7 @@
 				F2B59E7DD08B9DFB49E61F6C /* ContentView+Navigation.swift in Sources */,
 				82AB66960A754A939F84BB4B /* ContentView.swift in Sources */,
 				23C4ABC8368D581B7E310078 /* CoordinateService.swift in Sources */,
+				1B36496B029EF9F494B6FB96 /* CurrentConditionsCard.swift in Sources */,
 				B504F3974DF265838508C5DE /* DeleteAllDataView.swift in Sources */,
 				DB58AD496DAD0EACF1A2B2DA /* DeviationChipView.swift in Sources */,
 				A011A16CC8B1E4F180CC290F /* DownloadAreaSheet.swift in Sources */,
