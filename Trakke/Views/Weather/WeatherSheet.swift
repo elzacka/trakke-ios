@@ -82,8 +82,8 @@ struct WeatherSheet: View {
         CardSection(String(localized: "weather.warnings")) {
             VStack(spacing: 0) {
                 let warnings = viewModel.varsomWarnings
-                ForEach(Array(warnings.enumerated()), id: \.element.id) { index, warning in
-                    if index > 0 {
+                ForEach(warnings) { warning in
+                    if warnings.first?.id != warning.id {
                         Divider().padding(.leading, .Trakke.dividerLeading)
                     }
                     varsomRow(warning)
@@ -450,8 +450,8 @@ struct WeatherSheet: View {
                 if !hours.isEmpty {
                     CardSection(String(localized: "weather.hourly")) {
                         VStack(spacing: 0) {
-                            ForEach(Array(hours.enumerated()), id: \.element.time) { index, hour in
-                                if index > 0 {
+                            ForEach(hours, id: \.time) { hour in
+                                if hours.first?.time != hour.time {
                                     Divider().padding(.leading, .Trakke.dividerLeading)
                                 }
                                 hourlyRow(hour)

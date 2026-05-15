@@ -158,8 +158,8 @@ struct RouteListSheet: View {
 
             if expandedCategories.contains(title) {
                 VStack(spacing: 0) {
-                    ForEach(Array(items.enumerated()), id: \.element.id) { index, route in
-                        if index > 0 {
+                    ForEach(items) { route in
+                        if items.first?.id != route.id {
                             Divider().padding(.leading, .Trakke.dividerLeading)
                         }
                         NavigationLink(value: route) {

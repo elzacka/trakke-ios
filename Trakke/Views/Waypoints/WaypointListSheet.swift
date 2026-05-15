@@ -159,8 +159,8 @@ struct WaypointListSheet: View {
 
             if expandedCategories.contains(title) {
                 VStack(spacing: 0) {
-                    ForEach(Array(items.enumerated()), id: \.element.id) { index, waypoint in
-                        if index > 0 {
+                    ForEach(items) { waypoint in
+                        if items.first?.id != waypoint.id {
                             Divider()
                         }
                         NavigationLink(value: waypoint) {

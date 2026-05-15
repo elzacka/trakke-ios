@@ -203,8 +203,8 @@ struct ActivityListSheet: View {
 
             if expandedCategories.contains(title) {
                 VStack(spacing: 0) {
-                    ForEach(Array(items.enumerated()), id: \.element.id) { index, activity in
-                        if index > 0 {
+                    ForEach(items) { activity in
+                        if items.first?.id != activity.id {
                             Divider().padding(.leading, .Trakke.dividerLeading)
                         }
                         activityRow(activity)

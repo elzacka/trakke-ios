@@ -83,8 +83,8 @@ struct DownloadManagerSheet: View {
                     .padding(.horizontal, .Trakke.xs)
 
                 CardSection(String(localized: "offline.packs")) {
-                    ForEach(Array(viewModel.packs.enumerated()), id: \.element.id) { index, pack in
-                        if index > 0 {
+                    ForEach(viewModel.packs) { pack in
+                        if viewModel.packs.first?.id != pack.id {
                             Divider().padding(.leading, .Trakke.dividerLeading)
                         }
                         packRow(pack)
