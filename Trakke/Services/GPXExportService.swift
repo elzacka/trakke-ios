@@ -3,94 +3,99 @@ import OSLog
 
 enum GPXExportService {
     static func exportRoute(_ route: Route, waypoints: [Waypoint] = []) -> String {
-        var body = ""
+        // Pre-size the parts buffer: ~6 lines per waypoint + 4 framing lines + 1 line per trackpoint.
+        var parts: [String] = []
+        parts.reserveCapacity(waypoints.count * 6 + 4 + route.coordinates.count)
 
         for wp in waypoints {
             guard wp.coordinates.count >= 2 else { continue }
             let lon = wp.coordinates[0]
             let lat = wp.coordinates[1]
             guard lon.isFinite, lat.isFinite else { continue }
-            body += "\n  <wpt lat=\"\(lat)\" lon=\"\(lon)\">"
+            parts.append("\n  <wpt lat=\"\(lat)\" lon=\"\(lon)\">")
             if let elevation = wp.elevation {
-                body += "\n    <ele>\(elevation)</ele>"
+                parts.append("\n    <ele>\(elevation)</ele>")
             }
-            body += "\n    <time>\(iso8601(wp.createdAt))</time>"
-            body += "\n    <name>\(escapeXML(wp.name))</name>"
+            parts.append("\n    <time>\(iso8601(wp.createdAt))</time>")
+            parts.append("\n    <name>\(escapeXML(wp.name))</name>")
             if let category = wp.category {
-                body += "\n    <type>\(escapeXML(category))</type>"
+                parts.append("\n    <type>\(escapeXML(category))</type>")
             }
-            body += "\n  </wpt>"
+            parts.append("\n  </wpt>")
         }
 
-        body += "\n  <trk>"
-        body += "\n    <name>\(escapeXML(route.name))</name>"
-        body += "\n    <trkseg>"
+        parts.append("\n  <trk>")
+        parts.append("\n    <name>\(escapeXML(route.name))</name>")
+        parts.append("\n    <trkseg>")
 
         for coord in route.coordinates {
             guard coord.count >= 2 else { continue }
             let lon = coord[0]
             let lat = coord[1]
             guard lon.isFinite, lat.isFinite else { continue }
-            body += "\n      <trkpt lat=\"\(lat)\" lon=\"\(lon)\"></trkpt>"
+            parts.append("\n      <trkpt lat=\"\(lat)\" lon=\"\(lon)\"></trkpt>")
         }
 
-        body += "\n    </trkseg>"
-        body += "\n  </trk>"
+        parts.append("\n    </trkseg>")
+        parts.append("\n  </trk>")
 
-        return gpxDocument(name: route.name, createdAt: route.createdAt, body: body)
+        return gpxDocument(name: route.name, createdAt: route.createdAt, body: parts.joined())
     }
 
     static func exportWaypoints(_ waypoints: [Waypoint], name: String = "Mine steder") -> String {
-        var body = ""
-
         let sorted = waypoints.sorted {
             $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
         }
+
+        var parts: [String] = []
+        parts.reserveCapacity(sorted.count * 6)
 
         for wp in sorted {
             guard wp.coordinates.count >= 2 else { continue }
             let lon = wp.coordinates[0]
             let lat = wp.coordinates[1]
             guard lon.isFinite, lat.isFinite else { continue }
-            body += "\n  <wpt lat=\"\(lat)\" lon=\"\(lon)\">"
+            parts.append("\n  <wpt lat=\"\(lat)\" lon=\"\(lon)\">")
             if let elevation = wp.elevation {
-                body += "\n    <ele>\(elevation)</ele>"
+                parts.append("\n    <ele>\(elevation)</ele>")
             }
-            body += "\n    <time>\(iso8601(wp.createdAt))</time>"
-            body += "\n    <name>\(escapeXML(wp.name))</name>"
+            parts.append("\n    <time>\(iso8601(wp.createdAt))</time>")
+            parts.append("\n    <name>\(escapeXML(wp.name))</name>")
             if let category = wp.category {
-                body += "\n    <type>\(escapeXML(category))</type>"
+                parts.append("\n    <type>\(escapeXML(category))</type>")
             }
-            body += "\n  </wpt>"
+            parts.append("\n  </wpt>")
         }
 
-        return gpxDocument(name: name, createdAt: Date(), body: body)
+        return gpxDocument(name: name, createdAt: Date(), body: parts.joined())
     }
 
     static func exportActivity(_ activity: Activity) -> String {
-        var body = "\n  <trk>"
-        body += "\n    <name>\(escapeXML(activity.name))</name>"
-        body += "\n    <trkseg>"
+        var parts: [String] = []
+        parts.reserveCapacity(activity.trackPoints.count * 4 + 4)
+        parts.append("\n  <trk>")
+        parts.append("\n    <name>\(escapeXML(activity.name))</name>")
+        parts.append("\n    <trkseg>")
 
         for point in activity.trackPoints {
             guard point.count >= 2 else { continue }
             let lon = point[0]
             let lat = point[1]
             guard lon.isFinite, lat.isFinite else { continue }
-            body += "\n      <trkpt lat=\"\(lat)\" lon=\"\(lon)\">"
+            parts.append("\n      <trkpt lat=\"\(lat)\" lon=\"\(lon)\">")
             if point.count >= 3, point[2].isFinite {
-                body += "\n        <ele>\(point[2])</ele>"
+                parts.append("\n        <ele>\(point[2])</ele>")
             }
             if point.count >= 4, point[3].isFinite {
-                body += "\n        <time>\(iso8601(Date(timeIntervalSince1970: point[3])))</time>"
+                parts.append("\n        <time>\(iso8601(Date(timeIntervalSince1970: point[3])))</time>")
             }
-            body += "\n      </trkpt>"
+            parts.append("\n      </trkpt>")
         }
 
-        body += "\n    </trkseg>"
-        body += "\n  </trk>"
+        parts.append("\n    </trkseg>")
+        parts.append("\n  </trk>")
 
-        return gpxDocument(name: activity.name, createdAt: activity.startedAt, body: body)
+        return gpxDocument(name: activity.name, createdAt: activity.startedAt, body: parts.joined())
     }
 
     static func sanitizeFilename(_ name: String) -> String {
