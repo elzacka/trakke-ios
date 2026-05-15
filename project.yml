@@ -15,8 +15,6 @@ packages:
   MapLibreSwiftUI:
     url: https://github.com/maplibre/swiftui-dsl
     from: "0.25.0"
-  MGRS:
-    path: LocalPackages/mgrs-ios
   GRDB:
     url: https://github.com/groue/GRDB.swift
     from: "7.10.0"
@@ -24,8 +22,8 @@ packages:
 settings:
   base:
     SWIFT_VERSION: "6.3"
-    MARKETING_VERSION: "1.4.0"
-    CURRENT_PROJECT_VERSION: 4
+    MARKETING_VERSION: "1.5.0"
+    CURRENT_PROJECT_VERSION: 1
     SWIFT_STRICT_CONCURRENCY: complete
   configs:
     Debug:
@@ -69,8 +67,6 @@ targets:
       - package: MapLibreNative
         product: MapLibre
       - package: MapLibreSwiftUI
-      - package: MGRS
-        product: MGRS
       - package: GRDB
         product: GRDB
     entitlements:
