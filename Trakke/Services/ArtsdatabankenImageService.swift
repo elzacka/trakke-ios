@@ -19,16 +19,23 @@ actor ArtsdatabankenImageService: ArtsdatabankenImageProviding {
     private static let catalogURL = "https://ai.artsdatabanken.no/taxon/images"
     private static let mediaBaseURL = "https://artsdatabanken.no/Media"
     private static let imageSize = "480x480"
-    private static let maxCacheEntries = 30
 
     private var catalog: [String: String]?
-    private var imageCache: [String: UIImage] = [:]
-    private var cacheOrder: [String] = []
+
+    /// NSCache evicts on system memory pressure — actor-safe because NSCache
+    /// performs its own internal locking and is documented thread-safe.
+    private let imageCache: NSCache<NSString, UIImage> = {
+        let cache = NSCache<NSString, UIImage>()
+        cache.countLimit = 30
+        cache.totalCostLimit = 20 * 1024 * 1024
+        return cache
+    }()
 
     /// Fetch a species profile image by scientific name.
     /// Returns nil if no image is available or on network failure.
     func image(for scientificName: String) async -> UIImage? {
-        if let cached = imageCache[scientificName] {
+        let key = scientificName as NSString
+        if let cached = imageCache.object(forKey: key) {
             return cached
         }
 
@@ -46,7 +53,8 @@ actor ArtsdatabankenImageService: ArtsdatabankenImageProviding {
                 Logger.knowledge.warning("Failed to decode image for \(scientificName, privacy: .public)")
                 return nil
             }
-            insertCache(scientificName, image: image)
+            let cost = (image.cgImage?.bytesPerRow ?? 0) * (image.cgImage?.height ?? 0)
+            imageCache.setObject(image, forKey: key, cost: cost)
             return image
         } catch {
             Logger.knowledge.error("Failed to fetch image for \(scientificName, privacy: .public): \(error.localizedDescription)")
@@ -56,8 +64,7 @@ actor ArtsdatabankenImageService: ArtsdatabankenImageProviding {
 
     /// Clear all cached images and the catalog. Called by "Slett alle data".
     func clearCache() {
-        imageCache.removeAll()
-        cacheOrder.removeAll()
+        imageCache.removeAllObjects()
         catalog = nil
     }
 
@@ -71,6 +78,7 @@ actor ArtsdatabankenImageService: ArtsdatabankenImageProviding {
     }
 
     private var isLoadingCatalog = false
+    private let decoder = JSONDecoder()
 
     private func loadCatalog() async {
         isLoadingCatalog = true
@@ -79,19 +87,11 @@ actor ArtsdatabankenImageService: ArtsdatabankenImageProviding {
 
         do {
             let data = try await APIClient.fetchData(url: url, optional: true)
-            catalog = try JSONDecoder().decode([String: String].self, from: data)
+            catalog = try decoder.decode([String: String].self, from: data)
             Logger.knowledge.info("Loaded Artsdatabanken image catalog: \(self.catalog?.count ?? 0) species")
         } catch {
             Logger.knowledge.error("Failed to load Artsdatabanken catalog: \(error.localizedDescription, privacy: .private)")
         }
     }
 
-    private func insertCache(_ key: String, image: UIImage) {
-        imageCache[key] = image
-        cacheOrder.append(key)
-        while cacheOrder.count > Self.maxCacheEntries {
-            let evicted = cacheOrder.removeFirst()
-            imageCache.removeValue(forKey: evicted)
-        }
-    }
 }
