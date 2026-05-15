@@ -44,6 +44,7 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
     private var lastHeadingTime: Date?
     private var lastHeadingValue: Double = 0
     private var smoothedHeading: Double = 0
+    nonisolated(unsafe) private var defaultsObserver: NSObjectProtocol?
     private static let headingMinInterval: TimeInterval = 0.2  // ~5 Hz max
     private static let headingMinDelta: Double = 2.0           // degrees
     private static let headingSmoothingFactor: Double = 0.25   // low-pass filter (0 = ignore new, 1 = no smoothing)
@@ -54,6 +55,20 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationAuthStatus = locationManager.authorizationStatus
 
+        loadOverlaysFromDefaults()
+        // PreferencesSheet writes overlay flags via @AppStorage — observe
+        // UserDefaults so the map state stays in sync without ContentView
+        // having to mediate between the two.
+        defaultsObserver = NotificationCenter.default.addObserver(
+            forName: UserDefaults.didChangeNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            MainActor.assumeIsolated {
+                self?.loadOverlaysFromDefaults()
+            }
+        }
+
         // Clean up any orphaned CLBackgroundActivitySession from a previous
         // crash or force-quit during active navigation. CLBackgroundActivitySession
         // persists across app terminations; creating a new session invalidates
@@ -63,6 +78,28 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
             CLBackgroundActivitySession().invalidate()
             locationManager.allowsBackgroundLocationUpdates = false
             locationManager.showsBackgroundLocationIndicator = false
+        }
+    }
+
+    deinit {
+        if let observer = defaultsObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
+    }
+
+    // MARK: - Overlay sync
+
+    private func loadOverlaysFromDefaults() {
+        let defaults = UserDefaults.standard
+        var overlays: Set<OverlayLayer> = []
+        if defaults.bool(forKey: AppStorageKeys.overlayTurrutebasen) { overlays.insert(.turrutebasen) }
+        if defaults.bool(forKey: AppStorageKeys.overlayHillshading) { overlays.insert(.hillshading) }
+        if defaults.bool(forKey: AppStorageKeys.overlayNaturvernomrader) { overlays.insert(.naturvernomrader) }
+        if defaults.bool(forKey: AppStorageKeys.overlayBratthetskart) { overlays.insert(.bratthetskart) }
+        if defaults.bool(forKey: AppStorageKeys.overlayUtmRunenett) { overlays.insert(.utmRunenett) }
+        if defaults.bool(forKey: AppStorageKeys.overlayNaturskog) { overlays.insert(.naturskog) }
+        if overlays != enabledOverlays {
+            enabledOverlays = overlays
         }
     }
 

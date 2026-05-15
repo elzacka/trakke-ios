@@ -57,16 +57,6 @@ struct ContentView: View {
     @AppStorage(AppStorageKeys.showZoomControls) private var showZoomControls = false
     @AppStorage(AppStorageKeys.showScaleBar) private var showScaleBar = false
     @AppStorage(AppStorageKeys.enableRotation) private var enableRotation = true
-    @AppStorage(AppStorageKeys.overlayTurrutebasen) private var overlayTurrutebasen = false
-    @AppStorage(AppStorageKeys.overlayHillshading) private var overlayHillshading = false
-    @AppStorage(AppStorageKeys.overlayNaturvernomrader) private var overlayNaturvernomrader = false
-    @AppStorage(AppStorageKeys.overlayNaturskog) private var overlayNaturskog = false
-    @AppStorage(AppStorageKeys.overlayBratthetskart) private var overlayBratthetskart = false
-    @AppStorage(AppStorageKeys.overlayUtmRunenett) private var overlayUtmRunenett = false
-    @AppStorage(AppStorageKeys.naturskogLayerType) private var naturskogLayerType = OverlayLayer.naturskogSannsynlighet.rawValue
-    private var overlayFingerprint: String {
-        "\(overlayTurrutebasen)\(overlayHillshading)\(overlayNaturvernomrader)\(overlayNaturskog)\(overlayBratthetskart)\(overlayUtmRunenett)\(naturskogLayerType)"
-    }
     @Environment(\.modelContext) private var modelContext
 
     var body: some View {
@@ -81,13 +71,11 @@ struct ContentView: View {
             offlineViewModel.startObserving()
             connectivityMonitor.start()
             BundledPOIService.preloadAll()
-            syncOverlays()
             if UserDefaults.standard.bool(forKey: AppStorageKeys.dbRecoveryOccurred) {
                 UserDefaults.standard.removeObject(forKey: AppStorageKeys.dbRecoveryOccurred)
                 showDbRecoveryAlert = true
             }
         }
-        .onChange(of: overlayFingerprint) { syncOverlays() }
         .onDisappear {
             offlineViewModel.stopObserving()
             connectivityMonitor.stop()
@@ -167,21 +155,6 @@ struct ContentView: View {
                 sheets.active = .waypointList
             }
         }
-    }
-
-    // MARK: - Overlay Sync
-
-    private func syncOverlays() {
-        var overlays = Set<OverlayLayer>()
-        if overlayTurrutebasen { overlays.insert(.turrutebasen) }
-        if overlayHillshading { overlays.insert(.hillshading) }
-        if overlayNaturvernomrader { overlays.insert(.naturvernomrader) }
-        if overlayBratthetskart { overlays.insert(.bratthetskart) }
-        if overlayUtmRunenett { overlays.insert(.utmRunenett) }
-        if overlayNaturskog, let layer = OverlayLayer(rawValue: naturskogLayerType), layer.isNaturskog {
-            overlays.insert(layer)
-        }
-        mapViewModel.enabledOverlays = overlays
     }
 
     // MARK: - Clean Map
