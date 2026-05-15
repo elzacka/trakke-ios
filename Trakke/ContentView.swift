@@ -352,7 +352,14 @@ struct ContentView: View {
                 .safeAreaPadding(.bottom)
             }
 
-            modeToolbar
+            ModeToolbar(
+                mode: mapMode,
+                routeViewModel: routeViewModel,
+                measurementViewModel: measurementViewModel,
+                offlineViewModel: offlineViewModel,
+                onRouteSave: { sheets.active = .routeSave },
+                onDownloadArea: { sheets.active = .downloadArea }
+            )
 
             if activityViewModel.isRecording {
                 ActivityRecordingToolbar(
@@ -380,12 +387,12 @@ struct ContentView: View {
 
             // Offline area warning toast
             if offlineViewModel.showLeftAreaWarning {
-                offlineWarningToast
+                OfflineWarningToast(viewModel: offlineViewModel)
             }
 
             // Download completion toast
             if offlineViewModel.completionMessage != nil {
-                downloadCompleteToast
+                DownloadCompleteToast(viewModel: offlineViewModel)
             }
         }
         .tint(Color.Trakke.brand)
@@ -443,40 +450,7 @@ struct ContentView: View {
         }
     }
 
-    // MARK: - Mode Toolbar
-
-    @ViewBuilder
-    private var modeToolbar: some View {
-        switch mapMode {
-        case .drawing:
-            DrawingToolbar(
-                pointCount: routeViewModel.drawingCoordinates.count,
-                formattedDistance: routeViewModel.formattedDrawingDistance,
-                onCancel: { routeViewModel.cancelDrawing() },
-                onUndo: { routeViewModel.undoLastPoint() },
-                onDone: { sheets.active = .routeSave }
-            )
-        case .measuring:
-            MeasurementToolbar(
-                mode: measurementViewModel.mode ?? .distance,
-                formattedResult: measurementViewModel.formattedResult,
-                hasPoints: !measurementViewModel.points.isEmpty,
-                onCancel: { measurementViewModel.stop() },
-                onUndo: { measurementViewModel.undoLastPoint() },
-                onClear: { measurementViewModel.clearAll() }
-            )
-        case .selecting:
-            SelectionToolbar(
-                hasValidSelection: offlineViewModel.hasValidSelection,
-                estimatedTileCount: offlineViewModel.estimatedTileCount,
-                estimatedSize: offlineViewModel.estimatedSize,
-                onCancel: { offlineViewModel.cancelSelection() },
-                onDone: { sheets.active = .downloadArea }
-            )
-        case .idle, .navigating:
-            EmptyView()
-        }
-    }
+    // ModeToolbar moved to Views/Map/ModeToolbar.swift.
 
     // MARK: - Sheet Routing
 
@@ -714,49 +688,8 @@ struct ContentView: View {
     // MARK: - Navigation
     // See ContentView+Navigation.swift for navigation method implementations.
 
-    // MARK: - Toast Views
-
-    private var offlineWarningToast: some View {
-        Text(String(localized: "offline.leftArea"))
-            .font(Font.Trakke.caption)
-            .foregroundStyle(Color.Trakke.textInverse)
-            .padding(.horizontal, .Trakke.lg)
-            .padding(.vertical, .Trakke.sm)
-            .background(Color.Trakke.warning)
-            .clipShape(Capsule())
-            .frame(maxHeight: .infinity, alignment: .bottom)
-            .padding(.bottom, 80)
-            .transition(reduceMotion ? .opacity : .move(edge: .bottom).combined(with: .opacity))
-            .task {
-                try? await Task.sleep(for: .seconds(5))
-                withAnimation(reduceMotion ? nil : .default) {
-                    offlineViewModel.showLeftAreaWarning = false
-                }
-            }
-    }
-
-    private var downloadCompleteToast: some View {
-        HStack(spacing: .Trakke.sm) {
-            Image(systemName: "checkmark.circle.fill")
-            Text(String(localized: "offline.downloadComplete \(offlineViewModel.completionMessage ?? "")"))
-                .font(Font.Trakke.caption)
-        }
-        .foregroundStyle(Color.Trakke.textInverse)
-        .padding(.horizontal, .Trakke.lg)
-        .padding(.vertical, .Trakke.sm)
-        .background(Color.Trakke.brand)
-        .clipShape(Capsule())
-        .trakkeControlShadow()
-        .frame(maxHeight: .infinity, alignment: .bottom)
-        .padding(.bottom, 80)
-        .transition(reduceMotion ? .opacity : .move(edge: .bottom).combined(with: .opacity))
-        .task {
-            try? await Task.sleep(for: .seconds(4))
-            withAnimation(reduceMotion ? nil : .default) {
-                offlineViewModel.completionMessage = nil
-            }
-        }
-    }
+    // OfflineWarningToast and DownloadCompleteToast moved to
+    // Views/Components/OfflineToasts.swift.
 }
 
 #Preview {
