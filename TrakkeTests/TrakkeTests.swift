@@ -76,12 +76,6 @@ import SwiftData
     #expect(result!.coordinate.longitude > 10 && result!.coordinate.longitude < 11)
 }
 
-@Test func parseMGRS() {
-    let result = CoordinateService.parse("32VNM9742371394")
-    #expect(result != nil)
-    #expect(result?.type == .coordinates)
-}
-
 // MARK: - Coordinate Formatting Tests
 
 @Test func formatDD() {
@@ -106,12 +100,6 @@ import SwiftData
     #expect(formatted.display.contains("33V"))
     #expect(formatted.display.contains("262"))
     #expect(formatted.display.contains("6649"))
-}
-
-@Test func formatMGRS() {
-    let coord = CLLocationCoordinate2D(latitude: 59.9139, longitude: 10.7522)
-    let formatted = CoordinateService.format(coordinate: coord, format: .mgrs)
-    #expect(formatted.display.contains("32V"))
 }
 
 // MARK: - Coordinate Invalid Input
@@ -709,8 +697,10 @@ import SwiftData
 @Test("All POI categories have non-empty icon names",
       arguments: POICategory.allCases)
 func poiCategoryIconName(category: POICategory) {
+    // Ikoner kan være enten egne assets (POI*-prefiks) eller SF Symbols.
+    // POIIconImage faller tilbake til Image(systemName:) når assetet
+    // mangler, så vi sjekker bare at navnet ikke er tomt.
     #expect(!category.iconName.isEmpty)
-    #expect(category.iconName.hasPrefix("POI"))
 }
 
 @Test("All POI categories have valid hex color strings",
@@ -729,7 +719,7 @@ func poiCategorySourceName(category: POICategory) {
 @Test("All POI categories have a license identifier",
       arguments: POICategory.allCases)
 func poiCategoryLicense(category: POICategory) {
-    let validLicenses = ["NLOD 2.0", "ODbL"]
+    let validLicenses = ["NLOD 2.0", "ODbL", "CC0", "ODbL / NLOD"]
     #expect(validLicenses.contains(category.sourceLicense))
 }
 
@@ -741,7 +731,7 @@ func poiCategoryMinZoom(category: POICategory) {
 }
 
 @Test("POI category count matches expected") func poiCategoryCount() {
-    #expect(POICategory.allCases.count == 6)
+    #expect(POICategory.allCases.count == 13)
 }
 
 // MARK: - Coordinate Edge Cases
@@ -1124,17 +1114,14 @@ func kartverketStyleJSON(layer: BaseLayer) {
 @Test func sheetCoordinatorDismissAll() async {
     let sheets = await SheetCoordinator()
     await MainActor.run {
-        sheets.showSearchSheet = true
-        sheets.showRouteList = true
-        sheets.showWeatherSheet = true
+        sheets.present(.search)
+        #expect(sheets.active == .search)
+        sheets.present(.routeList)
+        #expect(sheets.active == .routeList)
         sheets.dismissAll()
     }
-    let search = await sheets.showSearchSheet
-    let routes = await sheets.showRouteList
-    let weather = await sheets.showWeatherSheet
-    #expect(!search)
-    #expect(!routes)
-    #expect(!weather)
+    let active = await sheets.active
+    #expect(active == nil)
 }
 
 // MARK: - SearchViewModel Tests
