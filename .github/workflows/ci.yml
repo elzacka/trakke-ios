@@ -14,11 +14,9 @@ jobs:
   build-and-test:
     runs-on: macos-15
     timeout-minutes: 30
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Select Xcode
         run: |
@@ -40,7 +38,7 @@ jobs:
         run: xcodegen generate
 
       - name: Cache SPM packages
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~/Library/Developer/Xcode/DerivedData/**/SourcePackages
@@ -98,7 +96,7 @@ jobs:
             build
 
       - name: Upload test results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: always()
         with:
           name: test-results-${{ github.run_number }}
