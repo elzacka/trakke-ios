@@ -9,6 +9,7 @@ final class NavigationViewModel {
     // MARK: - Public State
 
     var isActive = false
+    var isPaused = false
     var mode: NavigationMode = .route
     var routeCoordinates: [CLLocationCoordinate2D] = []
     var progress: NavigationProgress?
@@ -21,6 +22,10 @@ final class NavigationViewModel {
     var destination: CLLocationCoordinate2D?
     var compassBearing: Double = 0
     var compassDistance: Double = 0
+    /// Avstand til destinasjon ved start av kompass-navigasjon — brukes til
+    /// å unngå feilaktig "Fremme!" når brukeren starter nær destinasjonen
+    /// (f.eks. ved retrace av en rundtur som ender der den startet).
+    private var compassStartDistance: Double?
     var isComputingRoute = false
     var routeError: String?
     var instructions: [TurnInstruction] = []
@@ -30,10 +35,10 @@ final class NavigationViewModel {
     // MARK: - Private State
 
     private let navigationService = NavigationService()
-    private let routingService: any RouteFetching
+    private let routingService: RoutingService
     private var routeComputationTask: Task<Bool, Never>?
 
-    init(routingService: any RouteFetching = RoutingService()) {
+    init(routingService: RoutingService = RoutingService()) {
         self.routingService = routingService
     }
     private var elevationProfile: [ElevationPoint] = []
@@ -48,7 +53,6 @@ final class NavigationViewModel {
     private var offTrackSince: Date?
     private var nextInstructionIndex: Int?
     private var pendingTurnHaptics: Set<Int> = []
-    private let hapticFeedback = HapticFeedbackService()
 
     // Navigation update throttling: GPS updates arrive at ~1 Hz, but snap-to-route
     // and progress calculations are expensive. Updates are skipped if less than
@@ -75,8 +79,9 @@ final class NavigationViewModel {
         routeComputationTask?.cancel()
         destination = dest
         isComputingRoute = true
+        isPaused = false  // Defensiv: en tidligere økt kan ha etterlatt true
         routeError = nil
-        hapticFeedback.prepare()
+        HapticFeedback.prepare()
 
         let task = Task { [weak self] () -> Bool in
             guard let self else { return false }
@@ -107,6 +112,21 @@ final class NavigationViewModel {
             }
         }
         routeComputationTask = task
+
+        // Sikkerhetsnett: tving feilstatus etter 18s hvis URLSession-timeout
+        // ikke har gitt utslag (f.eks. når waitsForConnectivity holder
+        // forespørselen i kø uten å avslutte).
+        let timeoutTask = Task { @MainActor [weak self] in
+            try? await Task.sleep(for: .seconds(18))
+            guard let self, self.isComputingRoute else { return }
+            self.routeComputationTask?.cancel()
+            self.isComputingRoute = false
+            if self.routeError == nil {
+                self.routeError = String(localized: "navigation.routeErrorTimeout")
+            }
+        }
+        defer { timeoutTask.cancel() }
+
         return await task.value
     }
 
@@ -129,10 +149,12 @@ final class NavigationViewModel {
         instructions = []
         routeSummary = route.name
         destination = routeCoordinates.last
-        hapticFeedback.prepare()
+        HapticFeedback.prepare()
 
         mode = .route
         isActive = true
+        isPaused = false  // Defensiv: en tidligere økt kan ha etterlatt true
+        hasArrived = false
         lastSegmentIndex = 0
         consecutiveOffTrackReadings = 0
     }
@@ -145,10 +167,26 @@ final class NavigationViewModel {
         destination = dest
         mode = .compass
         isActive = true
+        isPaused = false  // Defensiv: en tidligere økt kan ha etterlatt true
         hasArrived = false
         routeCoordinates = []
         instructions = []
-        hapticFeedback.prepare()
+        compassStartDistance = nil  // Settes ved første GPS-oppdatering
+        HapticFeedback.prepare()
+    }
+
+    // MARK: - Pause / Resume
+
+    /// Pauser navigasjon visuelt. Stats fryses og GPS-oppdateringer ignoreres,
+    /// men hele rute-tilstanden beholdes så bruker kan fortsette med resume.
+    func pauseNavigation() {
+        guard isActive else { return }
+        isPaused = true
+    }
+
+    func resumeNavigation() {
+        guard isActive else { return }
+        isPaused = false
     }
 
     // MARK: - Stop Navigation
@@ -157,6 +195,7 @@ final class NavigationViewModel {
         routeComputationTask?.cancel()
         routeComputationTask = nil
         isActive = false
+        isPaused = false
         mode = .route
         routeCoordinates = []
         progress = nil
@@ -197,7 +236,7 @@ final class NavigationViewModel {
     // MARK: - Process Location Update
 
     func processLocationUpdate(_ location: CLLocation) async {
-        guard isActive, !isProcessingUpdate else { return }
+        guard isActive, !isPaused, !isProcessingUpdate else { return }
 
         // Throttle: skip updates that arrive faster than 1/sec
         if let last = lastProcessedTime,
@@ -292,8 +331,13 @@ final class NavigationViewModel {
             }
         }
 
-        // Arrival detection
-        if !hasArrived && remaining < Self.arrivalThreshold {
+        // Arrival detection — krev at brukeren faktisk har beveget seg
+        // langs ruten. Forhindrer falsk "Fremme!" når GPS-posisjon snapper
+        // nær sluttpunktet ved oppstart (f.eks. for en sløyfe-aktivitet).
+        let minTraveledForArrival = min(50.0, totalDistance * 0.1)
+        if !hasArrived
+            && remaining < Self.arrivalThreshold
+            && traveled > minTraveledForArrival {
             hasArrived = true
             triggerArrivalFeedback()
         }
@@ -307,7 +351,21 @@ final class NavigationViewModel {
         compassBearing = Bearing.bearing(from: location.coordinate, to: dest)
         compassDistance = Haversine.distance(from: location.coordinate, to: dest)
 
-        if !hasArrived && compassDistance < Self.arrivalThreshold {
+        // Sett startdistanse ved første GPS-fix. Vi tillater ikke "Fremme!"
+        // før brukeren faktisk har beveget seg vekk fra start og nærmer seg
+        // destinasjonen igjen — uten dette vil retrace av en rundtur som
+        // ender nær start utløse arrival umiddelbart.
+        if compassStartDistance == nil {
+            compassStartDistance = compassDistance
+        }
+
+        guard let startDistance = compassStartDistance else { return }
+        let minStartDistance = Self.arrivalThreshold * 2  // 60m
+        let hasMovedMeaningfully = startDistance > minStartDistance
+
+        if !hasArrived
+            && compassDistance < Self.arrivalThreshold
+            && hasMovedMeaningfully {
             hasArrived = true
             triggerArrivalFeedback()
         }
@@ -350,9 +408,9 @@ final class NavigationViewModel {
         // if a single update jumps both (rare but possible after long throttle).
         for threshold in pendingTurnHaptics.sorted(by: >) where distToTurn <= Double(threshold) {
             if threshold <= 15 {
-                hapticFeedback.nudge()
+                HapticFeedback.nudge()
             } else {
-                hapticFeedback.tap()
+                HapticFeedback.tap()
             }
             pendingTurnHaptics.remove(threshold)
         }
@@ -493,10 +551,10 @@ final class NavigationViewModel {
 
         isOffTrack = true
         lastDeviationAlertTime = now
-        hapticFeedback.warning()
+        HapticFeedback.warning()
     }
 
     private func triggerArrivalFeedback() {
-        hapticFeedback.success()
+        HapticFeedback.success()
     }
 }

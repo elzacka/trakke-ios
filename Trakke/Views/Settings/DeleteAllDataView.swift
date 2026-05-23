@@ -35,24 +35,22 @@ struct DeleteAllDataView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .buttonStyle(.trakkeDanger)
-                .confirmationDialog(
-                    String(localized: "settings.deleteAllData.title"),
+                .trakkeDialog(
                     isPresented: $showConfirmation,
-                    titleVisibility: .visible
-                ) {
-                    Button(String(localized: "settings.deleteAllData.confirm"), role: .destructive) {
+                    title: String(localized: "settings.deleteAllData.title"),
+                    message: String(localized: "settings.deleteAllData.message"),
+                    primary: .destructive(String(localized: "common.yes")) {
                         deleteAllData()
-                    }
-                } message: {
-                    Text(String(localized: "settings.deleteAllData.message"))
-                }
+                    },
+                    cancel: .cancel(String(localized: "common.no"))
+                )
 
                 Spacer(minLength: .Trakke.lg)
             }
             .padding(.horizontal, .Trakke.sheetHorizontal)
             .padding(.top, .Trakke.sheetTop)
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.Trakke.background)
         .tint(Color.Trakke.brand)
         .navigationTitle(String(localized: "settings.deleteAllData"))
         .navigationBarTitleDisplayMode(.inline)

@@ -2,66 +2,90 @@ import SwiftUI
 
 struct WeatherSheet: View {
     @Bindable var viewModel: WeatherViewModel
+    /// Inline-modus: ingen NavigationStack/title — kalleren håndterer
+    /// navigation-konteksten. Brukes når WeatherSheet embeddes som en
+    /// underfane i Info-fanen.
+    var inline = false
 
     var body: some View {
-        NavigationStack {
-            Group {
-                if viewModel.isLoading {
-                    ProgressView(String(localized: "weather.loading"))
-                } else if let forecast = viewModel.forecast {
-                    forecastContent(forecast)
-                } else if let error = viewModel.error {
-                    ContentUnavailableView(
-                        String(localized: "weather.error"),
-                        systemImage: "cloud.slash",
-                        description: Text(error)
-                    )
-                } else {
-                    ContentUnavailableView(
-                        String(localized: "weather.noData"),
-                        systemImage: "location.slash",
-                        description: Text(String(localized: "weather.noDataDescription"))
-                    )
-                }
+        if inline {
+            weatherStates
+                .tint(Color.Trakke.brand)
+        } else {
+            NavigationStack {
+                weatherStates
+                    .tint(Color.Trakke.brand)
+                    .navigationTitle(String(localized: "weather.title"))
+                    .navigationBarTitleDisplayMode(.inline)
             }
-            .tint(Color.Trakke.brand)
-            .navigationTitle(String(localized: "weather.title"))
-            .navigationBarTitleDisplayMode(.inline)
+        }
+    }
+
+    @ViewBuilder
+    private var weatherStates: some View {
+        if viewModel.isLoading {
+            ProgressView(String(localized: "weather.loading"))
+        } else if let forecast = viewModel.forecast {
+            forecastContent(forecast)
+        } else if let error = viewModel.error {
+            ContentUnavailableView(
+                String(localized: "weather.error"),
+                systemImage: "cloud.slash",
+                description: Text(error)
+            )
+        } else {
+            ContentUnavailableView(
+                String(localized: "weather.noData"),
+                systemImage: "location.slash",
+                description: Text(String(localized: "weather.noDataDescription"))
+            )
         }
     }
 
     // MARK: - Forecast Content
 
+    @ViewBuilder
     private func forecastContent(_ forecast: WeatherForecast) -> some View {
-        ScrollView {
-            VStack(spacing: .Trakke.cardGap) {
-                CardSection(String(localized: "weather.current")) {
-                    CurrentConditionsCard(
-                        data: forecast.current,
-                        hourlyData: forecast.hourly,
-                        water: viewModel.waterTemperature,
-                        airQuality: viewModel.airQuality,
-                        daylight: viewModel.daylight
-                    )
+        if inline {
+            forecastVStack(forecast)
+                .navigationDestination(for: Int.self) { dayIndex in
+                    dayDetailView(dayIndex: dayIndex, forecast: forecast)
                 }
-
-                if hasAnyWarning(forecast: forecast) {
-                    warningsSection(forecast: forecast)
-                }
-
-                CardSection(String(localized: "weather.forecast")) {
-                    weeklyList(forecast: forecast)
-                }
-
-                attributionFooter(forecast)
+        } else {
+            ScrollView {
+                forecastVStack(forecast)
             }
-            .padding(.horizontal, .Trakke.sheetHorizontal)
-            .padding(.top, .Trakke.sheetTop)
+            .background(Color.Trakke.background)
+            .navigationDestination(for: Int.self) { dayIndex in
+                dayDetailView(dayIndex: dayIndex, forecast: forecast)
+            }
         }
-        .background(Color(.systemGroupedBackground))
-        .navigationDestination(for: Int.self) { dayIndex in
-            dayDetailView(dayIndex: dayIndex, forecast: forecast)
+    }
+
+    private func forecastVStack(_ forecast: WeatherForecast) -> some View {
+        VStack(spacing: .Trakke.cardGap) {
+            CardSection(String(localized: "weather.current")) {
+                CurrentConditionsCard(
+                    data: forecast.current,
+                    hourlyData: forecast.hourly,
+                    water: viewModel.waterTemperature,
+                    airQuality: viewModel.airQuality,
+                    daylight: viewModel.daylight
+                )
+            }
+
+            if hasAnyWarning(forecast: forecast) {
+                warningsSection(forecast: forecast)
+            }
+
+            CardSection(String(localized: "weather.forecast")) {
+                weeklyList(forecast: forecast)
+            }
+
+            attributionFooter(forecast)
         }
+        .padding(.horizontal, inline ? 0 : .Trakke.sheetHorizontal)
+        .padding(.top, inline ? 0 : .Trakke.sheetTop)
     }
 
     // MARK: - Warnings Section
@@ -464,7 +488,7 @@ struct WeatherSheet: View {
             .padding(.top, .Trakke.sheetTop)
             .padding(.bottom, .Trakke.lg)
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.Trakke.background)
         .navigationTitle(formatFullDate(day.time))
         .navigationBarTitleDisplayMode(.inline)
     }

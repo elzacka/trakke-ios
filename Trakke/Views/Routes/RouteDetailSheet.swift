@@ -11,40 +11,27 @@ struct RouteDetailSheet: View {
     @State private var showEditDialog = false
 
     var body: some View {
-        if isEmbedded {
-            content
-        } else {
-            NavigationStack {
-                content
+        VStack(spacing: 0) {
+            if !isEmbedded {
+                TrakkeSheetHeader(title: route.name)
             }
-        }
-    }
 
-    private var content: some View {
-        ScrollView {
-            VStack(spacing: .Trakke.cardGap) {
-                routeInfoCard
-                elevationCard
-                actionsCard
+            ScrollView {
+                VStack(spacing: .Trakke.cardGap) {
+                    routeInfoCard
+                    elevationCard
+                    actionsCard
 
-                Spacer(minLength: .Trakke.lg)
-            }
-            .padding(.horizontal, .Trakke.sheetHorizontal)
-            .padding(.top, .Trakke.sheetTop)
-        }
-        .background(Color(.systemGroupedBackground))
-        .tint(Color.Trakke.brand)
-        .navigationTitle(route.name)
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    showEditDialog = true
-                } label: {
-                    Label(String(localized: "common.edit"), systemImage: "pencil")
+                    Spacer(minLength: .Trakke.lg)
                 }
+                .padding(.horizontal, .Trakke.sheetHorizontal)
+                .padding(.top, isEmbedded ? .Trakke.sheetTop : .Trakke.sm)
+                .padding(.bottom, .Trakke.xxl)
             }
         }
+        .background(Color.Trakke.background)
+        .tint(Color.Trakke.brand)
+        .modifier(EmbeddedNavTitleModifier(isEmbedded: isEmbedded, title: route.name))
         .sheet(isPresented: $showEditDialog) {
             EditNameCategorySheet(
                 title: String(localized: "common.edit"),
@@ -72,9 +59,9 @@ struct RouteDetailSheet: View {
                     .font(Font.Trakke.bodyMedium)
                 Text(viewModel.formattedDistance(route.distance))
                     .font(Font.Trakke.caption)
-                    .foregroundStyle(Color.Trakke.textTertiary)
+                    .foregroundStyle(Color.Trakke.textSoft)
             }
-            .padding(.vertical, .Trakke.xs)
+            .padding(.vertical, .Trakke.rowVertical)
 
             if let gain = route.elevationGain, gain > 0 {
                 Divider().padding(.leading, .Trakke.dividerLeading)
@@ -114,9 +101,10 @@ struct RouteDetailSheet: View {
                     set: { _ in viewModel.toggleVisibility(route) }
                 ))
                 .labelsHidden()
+                .toggleStyle(.trakke)
                 .accessibilityLabel(String(localized: "routes.visibleOnMap"))
             }
-            .padding(.vertical, .Trakke.xs)
+            .padding(.vertical, .Trakke.rowVertical)
         }
     }
 
@@ -129,21 +117,21 @@ struct RouteDetailSheet: View {
                     ProgressView()
                     Text(String(localized: "elevation.loading"))
                         .font(Font.Trakke.caption)
-                        .foregroundStyle(Color.Trakke.textTertiary)
+                        .foregroundStyle(Color.Trakke.textSoft)
                         .padding(.leading, .Trakke.sm)
                 }
-                .padding(.vertical, .Trakke.xs)
+                .padding(.vertical, .Trakke.rowVertical)
             } else if !viewModel.elevationProfile.isEmpty {
                 ElevationProfileView(
                     points: viewModel.elevationProfile,
                     stats: viewModel.elevationStats
                 )
-                .padding(.vertical, .Trakke.xs)
+                .padding(.vertical, .Trakke.rowVertical)
             } else {
                 Text(String(localized: "elevation.unavailable"))
                     .font(Font.Trakke.caption)
-                    .foregroundStyle(Color.Trakke.textTertiary)
-                    .padding(.vertical, .Trakke.xs)
+                    .foregroundStyle(Color.Trakke.textSoft)
+                    .padding(.vertical, .Trakke.rowVertical)
             }
         }
     }
@@ -163,6 +151,14 @@ struct RouteDetailSheet: View {
             }
 
             Button {
+                showEditDialog = true
+            } label: {
+                Label(String(localized: "common.edit"), systemImage: "pencil")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .buttonStyle(.trakkeSecondary)
+
+            Button {
                 if let url = viewModel.exportGPX(for: route) {
                     shareURL = ShareableURL(url: url)
                 }
@@ -178,16 +174,15 @@ struct RouteDetailSheet: View {
                 Label(String(localized: "common.delete"), systemImage: "trash")
             }
             .buttonStyle(.trakkeDanger)
-            .confirmationDialog(
-                String(localized: "routes.delete.title"),
+            .trakkeDialog(
                 isPresented: $showDeleteConfirmation,
-                titleVisibility: .visible
-            ) {
-                Button(String(localized: "routes.delete.confirm"), role: .destructive) {
+                title: String(localized: "routes.delete.title"),
+                primary: .destructive(String(localized: "common.yes")) {
                     viewModel.deleteRoute(route)
                     dismiss()
-                }
-            }
+                },
+                cancel: .cancel(String(localized: "common.no"))
+            )
         }
     }
 
@@ -200,9 +195,27 @@ struct RouteDetailSheet: View {
             Spacer()
             Text(value)
                 .font(Font.Trakke.bodyRegular.monospacedDigit())
-                .foregroundStyle(Color.Trakke.textTertiary)
+                .foregroundStyle(Color.Trakke.textSoft)
         }
-        .padding(.vertical, .Trakke.xs)
+        .padding(.vertical, .Trakke.rowVertical)
     }
 
+}
+
+/// Setter navigationTitle bare når viewet er pushet (isEmbedded), så parent
+/// NavigationStack viser tittel og back-knapp i toolbaren. Når viewet
+/// presenteres som top-level sheet, viser TrakkeSheetHeader tittelen i stedet.
+private struct EmbeddedNavTitleModifier: ViewModifier {
+    let isEmbedded: Bool
+    let title: String
+
+    func body(content: Content) -> some View {
+        if isEmbedded {
+            content
+                .navigationTitle(title)
+                .navigationBarTitleDisplayMode(.inline)
+        } else {
+            content
+        }
+    }
 }

@@ -2,17 +2,9 @@ import Foundation
 import CryptoKit
 import OSLog
 
-protocol PackDownloading: Sendable {
-    func download(pack: KnowledgePack) async -> AsyncStream<DownloadProgress>
-    func cancelDownload(packId: String) async
-    func installedPacks() async -> [InstalledPackInfo]
-    func deletePack(packId: String) async throws
-    func deleteAllPacks() async throws
-}
-
 // MARK: - Pack Download Manager
 
-actor PackDownloadManager: PackDownloading {
+actor PackDownloadManager {
     private var activeDownloads: [String: Task<Void, Never>] = [:]
 
     // MARK: - Download

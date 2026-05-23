@@ -40,7 +40,6 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
     }
 
     private let locationManager = CLLocationManager()
-    private var backgroundSession: CLBackgroundActivitySession?
     private var lastHeadingTime: Date?
     private var lastHeadingValue: Double = 0
     private var smoothedHeading: Double = 0
@@ -69,10 +68,12 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
             }
         }
 
-        // Clean up any orphaned CLBackgroundActivitySession from a previous
-        // crash or force-quit during active navigation. CLBackgroundActivitySession
-        // persists across app terminations; creating a new session invalidates
-        // any existing one, then we immediately invalidate the new one.
+        // Defensive cleanup: prior builds created a CLBackgroundActivitySession
+        // for "navigate with screen off" support. The session persisted across
+        // force-quit, leaving a Dynamic Island indicator and consuming battery
+        // — incompatible with the "Mens appen er i bruk"-permission users grant.
+        // Creating a fresh session invalidates any prior one, then we invalidate
+        // immediately. Runs once for users upgrading from such a build.
         if UserDefaults.standard.bool(forKey: AppStorageKeys.navigationSessionActive) {
             UserDefaults.standard.set(false, forKey: AppStorageKeys.navigationSessionActive)
             CLBackgroundActivitySession().invalidate()
@@ -175,10 +176,6 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
 
     // MARK: - Navigation
 
-    private var supportsBackgroundLocation: Bool {
-        (Bundle.main.object(forInfoDictionaryKey: "UIBackgroundModes") as? [String])?.contains("location") == true
-    }
-
     func startNavigation() {
         guard locationAuthStatus == .authorizedWhenInUse || locationAuthStatus == .authorizedAlways else {
             startTrackingLocation()
@@ -188,21 +185,13 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
         isNavigating = true
         isTrackingUser = true
 
-        // Configure for navigation: more frequent updates
+        // Configure for navigation: more frequent updates while in the foreground.
+        // No CLBackgroundActivitySession — Tråkke honours the "When in Use"
+        // permission strictly. Location pauses when the user backgrounds the
+        // app and resumes when they return. Avoids Dynamic Island indicator
+        // persistence after force-quit and unnecessary battery drain.
         locationManager.distanceFilter = 5.0
         locationManager.activityType = .fitness
-
-        // CLBackgroundActivitySession keeps the app alive for location updates
-        // when the user navigates away. Requires UIBackgroundModes: location in Info.plist.
-        // The session is held as a strong reference and invalidated in stopNavigation().
-        // We track the active state in UserDefaults so orphaned sessions from
-        // crashes can be cleaned up on next launch (see init).
-        if supportsBackgroundLocation {
-            locationManager.allowsBackgroundLocationUpdates = true
-            locationManager.showsBackgroundLocationIndicator = true
-            backgroundSession = CLBackgroundActivitySession()
-            UserDefaults.standard.set(true, forKey: AppStorageKeys.navigationSessionActive)
-        }
 
         locationManager.startUpdatingLocation()
         locationManager.startUpdatingHeading()
@@ -216,22 +205,13 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
         lastHeadingValue = 0
 
         // Fully stop all location services first to ensure a clean break.
-        // This prevents any navigation-mode settings (background updates,
-        // indicator, distance filter) from lingering.
         locationManager.stopUpdatingLocation()
         locationManager.stopUpdatingHeading()
-        locationManager.allowsBackgroundLocationUpdates = false
-        locationManager.showsBackgroundLocationIndicator = false
         locationManager.distanceFilter = kCLDistanceFilterNone
         locationManager.activityType = .other
 
-        backgroundSession?.invalidate()
-        backgroundSession = nil
-        UserDefaults.standard.set(false, forKey: AppStorageKeys.navigationSessionActive)
-
-        // Restart basic location tracking (without background mode) for the
-        // map's user position dot. This uses default settings (no distance
-        // filter, no background indicator).
+        // Restart basic location tracking for the map's user position dot.
+        // This uses default settings (no distance filter).
         if isTrackingUser {
             locationManager.startUpdatingLocation()
         }

@@ -4,60 +4,47 @@ import SwiftUI
 
 struct ArticleDetailView: View {
     let article: KnowledgeArticle
+    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: .Trakke.cardGap) {
-                // MARK: - Body
-                MarkdownBodyView(markdown: article.body)
+        VStack(spacing: 0) {
+            TrakkeSheetHeader(title: article.title, onBack: { dismiss() })
 
-                // MARK: - Source
-                if !article.source.isEmpty {
-                    CardSection(String(localized: "knowledge.source")) {
-                        if let urlString = article.sourceURL,
-                           let url = URL(string: urlString),
-                           url.scheme == "https" {
-                            Link(destination: url) {
-                                HStack {
-                                    Text(article.source)
-                                        .font(Font.Trakke.bodyRegular)
-                                    Spacer()
-                                    Image(systemName: "arrow.up.right")
-                                        .font(Font.Trakke.captionSoft)
-                                        .foregroundStyle(Color.Trakke.textTertiary)
+            ScrollView {
+                VStack(alignment: .leading, spacing: .Trakke.cardGap) {
+                    MarkdownBodyView(markdown: article.body)
+
+                    if !article.source.isEmpty {
+                        CardSection(String(localized: "knowledge.source")) {
+                            if let urlString = article.sourceURL,
+                               let url = URL(string: urlString),
+                               url.scheme == "https" {
+                                Link(destination: url) {
+                                    HStack {
+                                        Text(article.source)
+                                            .font(Font.Trakke.bodyRegular)
+                                        Spacer()
+                                        Image(systemName: "arrow.up.right")
+                                            .font(Font.Trakke.captionSoft)
+                                            .foregroundStyle(Color.Trakke.textSoft)
+                                    }
                                 }
+                            } else {
+                                Text(article.source)
+                                    .font(Font.Trakke.bodyRegular)
                             }
-                        } else {
-                            Text(article.source)
-                                .font(Font.Trakke.bodyRegular)
                         }
                     }
-                }
 
-                Spacer(minLength: .Trakke.lg)
-            }
-            .padding(.horizontal, .Trakke.sheetHorizontal)
-            .padding(.top, .Trakke.sheetTop)
-        }
-        .background(Color(.systemGroupedBackground))
-        .tint(Color.Trakke.brand)
-        .navigationTitle(article.title)
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                if let category = article.articleCategory {
-                    Group {
-                        if let name = category.iconName {
-                            Image(systemName: name)
-                        } else if let glyph = category.iconGlyph {
-                            Text(glyph).font(Font.Trakke.bodyMedium)
-                        }
-                    }
-                    .foregroundStyle(Color.Trakke.brand)
-                    .accessibilityHidden(true)
+                    Spacer(minLength: .Trakke.lg)
                 }
+                .padding(.horizontal, .Trakke.sheetHorizontal)
+                .padding(.top, .Trakke.sheetTop)
             }
         }
+        .background(Color.Trakke.background)
+        .tint(Color.Trakke.brand)
+        .toolbar(.hidden, for: .navigationBar)
     }
 }
 

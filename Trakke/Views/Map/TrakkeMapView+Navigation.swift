@@ -21,8 +21,10 @@ extension TrakkeMapView.Coordinator {
     // MARK: - Navigation Layer IDs
 
     private static let navRemainingSrcID = "nav-remaining-src"
+    private static let navRemainingCasingLyrID = "nav-remaining-casing-lyr"
     private static let navRemainingLyrID = "nav-remaining-lyr"
     private static let navWalkedSrcID = "nav-walked-src"
+    private static let navWalkedCasingLyrID = "nav-walked-casing-lyr"
     private static let navWalkedLyrID = "nav-walked-lyr"
     private static let navArrowsLyrID = "nav-arrows-lyr"
     private static let navCompassSrcID = "nav-compass-src"
@@ -194,13 +196,27 @@ extension TrakkeMapView.Coordinator {
                 )
                 style.addSource(source)
 
+                // White casing first (renders below) for max contrast on
+                // Kartverket topo. Design-system spec: 1.5pt casing each side
+                // → 5pt colored stroke + 3pt total → 8pt casing.
+                let casing = MLNLineStyleLayer(
+                    identifier: Self.navRemainingCasingLyrID,
+                    source: source
+                )
+                casing.lineColor = NSExpression(forConstantValue: UIColor.Trakke.mapHalo)
+                casing.lineWidth = NSExpression(forConstantValue: 8)
+                casing.lineOpacity = NSExpression(forConstantValue: 0.95)
+                casing.lineCap = NSExpression(forConstantValue: "round")
+                casing.lineJoin = NSExpression(forConstantValue: "round")
+                style.addLayer(casing)
+
                 let layer = MLNLineStyleLayer(
                     identifier: Self.navRemainingLyrID,
                     source: source
                 )
-                layer.lineColor = NSExpression(forConstantValue: UIColor.Trakke.brand)
+                layer.lineColor = NSExpression(forConstantValue: UIColor.Trakke.mapRoute)
                 layer.lineWidth = NSExpression(forConstantValue: 5)
-                layer.lineOpacity = NSExpression(forConstantValue: 0.9)
+                layer.lineOpacity = NSExpression(forConstantValue: 0.95)
                 layer.lineCap = NSExpression(forConstantValue: "round")
                 layer.lineJoin = NSExpression(forConstantValue: "round")
                 style.addLayer(layer)
@@ -243,13 +259,26 @@ extension TrakkeMapView.Coordinator {
                 )
                 style.addSource(source)
 
+                // Dimmed casing + dimmed amber: still visible on topo, but
+                // visually demoted vs the upcoming-route layer ahead.
+                let casing = MLNLineStyleLayer(
+                    identifier: Self.navWalkedCasingLyrID,
+                    source: source
+                )
+                casing.lineColor = NSExpression(forConstantValue: UIColor.Trakke.mapHalo)
+                casing.lineWidth = NSExpression(forConstantValue: 7)
+                casing.lineOpacity = NSExpression(forConstantValue: 0.6)
+                casing.lineCap = NSExpression(forConstantValue: "round")
+                casing.lineJoin = NSExpression(forConstantValue: "round")
+                style.addLayer(casing)
+
                 let layer = MLNLineStyleLayer(
                     identifier: Self.navWalkedLyrID,
                     source: source
                 )
-                layer.lineColor = NSExpression(forConstantValue: UIColor.Trakke.brand)
+                layer.lineColor = NSExpression(forConstantValue: UIColor.Trakke.mapRoute)
                 layer.lineWidth = NSExpression(forConstantValue: 4)
-                layer.lineOpacity = NSExpression(forConstantValue: 0.3)
+                layer.lineOpacity = NSExpression(forConstantValue: 0.45)
                 layer.lineCap = NSExpression(forConstantValue: "round")
                 layer.lineJoin = NSExpression(forConstantValue: "round")
                 style.addLayer(layer)
@@ -286,9 +315,9 @@ extension TrakkeMapView.Coordinator {
                 identifier: Self.navCompassLyrID,
                 source: source
             )
-            layer.lineColor = NSExpression(forConstantValue: UIColor.Trakke.brand)
-            layer.lineWidth = NSExpression(forConstantValue: 3)
-            layer.lineOpacity = NSExpression(forConstantValue: 0.7)
+            layer.lineColor = NSExpression(forConstantValue: UIColor.Trakke.mapRoute)
+            layer.lineWidth = NSExpression(forConstantValue: 4)
+            layer.lineOpacity = NSExpression(forConstantValue: 0.9)
             layer.lineDashPattern = NSExpression(forConstantValue: [2, 4])
             layer.lineCap = NSExpression(forConstantValue: "round")
             style.addLayer(layer)
@@ -303,12 +332,12 @@ extension TrakkeMapView.Coordinator {
     private func clearRouteNavLayers(from style: MLNStyle) {
         removeLayersAndSource(
             from: style,
-            layerIDs: [Self.navArrowsLyrID, Self.navRemainingLyrID],
+            layerIDs: [Self.navArrowsLyrID, Self.navRemainingLyrID, Self.navRemainingCasingLyrID],
             sourceID: Self.navRemainingSrcID
         )
         removeLayersAndSource(
             from: style,
-            layerIDs: [Self.navWalkedLyrID],
+            layerIDs: [Self.navWalkedLyrID, Self.navWalkedCasingLyrID],
             sourceID: Self.navWalkedSrcID
         )
     }

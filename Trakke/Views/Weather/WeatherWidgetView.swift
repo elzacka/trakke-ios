@@ -4,38 +4,41 @@ struct WeatherWidgetView: View {
     let viewModel: WeatherViewModel
     var onTap: () -> Void
 
+    /// Samme størrelse som de andre kart-knappene (kompass, zoom, FAB).
+    private let buttonSize: CGFloat = 56
+
     var body: some View {
         Button(action: onTap) {
             Group {
                 if viewModel.isLoading {
                     ProgressView()
-                        .scaleEffect(0.7)
-                        .frame(width: .Trakke.touchMin, height: .Trakke.touchMin)
+                        .scaleEffect(0.8)
+                        .frame(width: buttonSize, height: buttonSize)
                 } else if let forecast = viewModel.forecast {
                     VStack(spacing: .Trakke.labelGap) {
                         Image(forecast.current.symbol)
                             .resizable()
                             .scaledToFit()
-                            .frame(width: .Trakke.xxl, height: .Trakke.xxl)
+                            .frame(width: 28, height: 28)
                         Text("\(Int(forecast.current.temperature.rounded()))°")
                             .font(Font.Trakke.caption.weight(.semibold).monospacedDigit())
                             .foregroundStyle(Color.Trakke.text)
                     }
-                    .frame(width: .Trakke.touchMin, height: .Trakke.touchMin)
+                    .frame(width: buttonSize, height: buttonSize)
                 } else if viewModel.error != nil {
                     Image(systemName: "cloud.slash")
-                        .font(Font.Trakke.caption)
-                        .foregroundStyle(Color.Trakke.textTertiary)
-                        .frame(width: .Trakke.touchMin, height: .Trakke.touchMin)
+                        .font(Font.Trakke.bodyMedium)
+                        .foregroundStyle(Color.Trakke.textSoft)
+                        .frame(width: buttonSize, height: buttonSize)
                 } else {
                     Image(systemName: "cloud")
-                        .font(Font.Trakke.caption)
-                        .foregroundStyle(Color.Trakke.textTertiary)
-                        .frame(width: .Trakke.touchMin, height: .Trakke.touchMin)
+                        .font(Font.Trakke.bodyMedium)
+                        .foregroundStyle(Color.Trakke.textSoft)
+                        .frame(width: buttonSize, height: buttonSize)
                 }
             }
-            .background(Color.Trakke.background)
-            .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.md))
+            .background(Color.Trakke.surface)
+            .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.xl))
             .trakkeControlShadow()
         }
         .accessibilityLabel(accessibilityText)

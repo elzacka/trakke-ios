@@ -33,10 +33,10 @@ final class KnowledgeViewModel {
 
     // MARK: - Private
 
-    private let catalogService: any PackCatalogFetching
-    private let downloadManager: any PackDownloading
-    private let queryService: any PackQuerying
-    private let remoteArticleService: any RemoteArticleFetching
+    private let catalogService: PackCatalogService
+    private let downloadManager: PackDownloadManager
+    private let queryService: PackQueryService
+    private let remoteArticleService: RemoteArticleService
     private var queryTask: Task<Void, Never>?
     private var downloadTasks: [String: Task<Void, Never>] = [:]
     private var remoteUpdateTask: Task<Void, Never>?
@@ -45,10 +45,10 @@ final class KnowledgeViewModel {
     private static let debounceInterval: Duration = .milliseconds(500)
 
     init(
-        catalogService: any PackCatalogFetching = PackCatalogService(),
-        downloadManager: any PackDownloading = PackDownloadManager(),
-        queryService: any PackQuerying = PackQueryService(),
-        remoteArticleService: any RemoteArticleFetching = RemoteArticleService()
+        catalogService: PackCatalogService = PackCatalogService(),
+        downloadManager: PackDownloadManager = PackDownloadManager(),
+        queryService: PackQueryService = PackQueryService(),
+        remoteArticleService: RemoteArticleService = RemoteArticleService()
     ) {
         self.catalogService = catalogService
         self.downloadManager = downloadManager

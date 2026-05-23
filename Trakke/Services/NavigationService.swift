@@ -21,10 +21,14 @@ actor NavigationService {
             fromIndex: fromIndex
         ) else { return nil }
 
+        // Pass cumulativeDistances so remainingDistance takes the O(1) path.
+        // Without this, every GPS update walked the full polyline (O(N)) on a
+        // long route — measured > 100 ms per call on dense urban routes.
         let remaining = remainingDistance(
             fromIndex: snap.segmentIndex,
             snappedCoordinate: snap.snappedCoordinate,
-            routeCoordinates: routeCoordinates
+            routeCoordinates: routeCoordinates,
+            cumulativeDistances: cumulativeDistances
         )
 
         let (gain, loss) = remainingElevation(

@@ -29,7 +29,8 @@ struct ModeToolbar: View {
                 hasPoints: !measurementViewModel.points.isEmpty,
                 onCancel: { measurementViewModel.stop() },
                 onUndo: { measurementViewModel.undoLastPoint() },
-                onClear: { measurementViewModel.clearAll() }
+                onClear: { measurementViewModel.clearAll() },
+                onSelectMode: { measurementViewModel.setMode($0) }
             )
         case .selecting:
             SelectionToolbar(

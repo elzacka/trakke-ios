@@ -30,7 +30,7 @@ struct LocationPrimerView: View {
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, .Trakke.md)
                         .background(Color.Trakke.brand)
-                        .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.md))
+                        .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))
                 }
 
                 Button {
@@ -44,7 +44,7 @@ struct LocationPrimerView: View {
             }
         }
         .padding(.Trakke.xl)
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.Trakke.surface)
         .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.xl))
         .trakkeCardShadow()
         .frame(maxWidth: 400)

@@ -30,7 +30,15 @@ extension Color {
         static let text = Color(hex: "1a1d1b")
         static let textSecondary = Color(hex: "4a4f47")
         static let textTertiary = Color(hex: "4e534a")
+        static let textSoft = Color(hex: "7c8278")
         static let textInverse = Color(hex: "ffffff")
+
+        // MARK: Borders (PWA-trofast)
+        static let border = Color(hex: "e4e5e1")
+        static let borderStrong = Color(hex: "c9ccc5")
+
+        // MARK: Toggle (custom — varm dempet salviegrønn for av-tilstand)
+        static let toggleTrackOff = Color(hex: "cdd2c7")
 
         // MARK: Functional
         static let red = Color(hex: "c23a34")
@@ -54,12 +62,18 @@ extension Color {
         // MARK: Map data palette
         // Distinct from brand: map-data colours need maximum contrast against
         // Kartverket topo (which is itself green + red + blue + beige). Brand
-        // green stays for UI chrome. Cartographer consensus (Knut/Monsen/Frej):
-        // amber for planned routes, cobalt for recorded activities, both with
-        // a 1.5pt white casing under a 4pt coloured stroke.
-        static let mapRoute = Color(hex: "E07000")
+        // green stays for UI chrome.
+        //
+        // Routes + waypoints: deep saturated teal. Reads as a clear outdoor
+        // marker without competing with brand-green for UI authority, and
+        // stays distinct from Kartverket's pastel water/building blues thanks
+        // to high chroma + white casing.
+        // Activities: cobalt — kept distinct from routes so a recorded track
+        // and a planned route never blur together on the same map.
+        // Casing: 1.5pt white each side under a 4pt coloured stroke.
+        static let mapRoute = Color(hex: "0F766E")
         static let mapActivity = Color(hex: "2255AA")
-        static let mapWaypoint = Color(hex: "E07000")
+        static let mapWaypoint = Color(hex: "0F766E")
         static let mapHalo = Color(hex: "FFFFFF")
 
         // MARK: Route Palette (user-overridable per route)
@@ -88,9 +102,9 @@ extension UIColor {
         static let measurement = UIColor(hex: "d97706")
 
         // Map data palette — see Color.Trakke.* counterparts.
-        static let mapRoute = UIColor(hex: "E07000")
+        static let mapRoute = UIColor(hex: "0F766E")
         static let mapActivity = UIColor(hex: "2255AA")
-        static let mapWaypoint = UIColor(hex: "E07000")
+        static let mapWaypoint = UIColor(hex: "0F766E")
         static let mapHalo = UIColor.white
 
         // POI Categories

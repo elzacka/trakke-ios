@@ -1,5 +1,9 @@
 import SwiftUI
 
+/// Nav-HUD — én sammenhengende horisontal pille på toppen av skjermen,
+/// inspirert av HiiKER men i Tråkkes egne tokens. Ingen tekstlabels, bare
+/// ikoner og verdier. Ingen knapper i bunnen — pause og avslutt er
+/// integrert som ikon-knapper i samme pille.
 struct NavigationOverlayView: View {
     let navigationVM: NavigationViewModel
     let userHeading: Double?
@@ -13,15 +17,25 @@ struct NavigationOverlayView: View {
     var onCategoryTapped: () -> Void
     var onEmergencyTapped: () -> Void
     var onWeatherTapped: () -> Void
-    var onMerTapped: () -> Void
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var showNavigationMenu = false
-    @ScaledMetric(relativeTo: .title) private var compassArrowSize: CGFloat = 48
+    @State private var showMoreMenu = false
 
     var body: some View {
-        VStack {
-            Spacer()
+        VStack(spacing: .Trakke.sm) {
+            // MARK: - Topp: sving-instruks-pille (når aktiv)
+            if case .route = navigationVM.mode,
+               let instruction = navigationVM.nextInstruction,
+               !navigationVM.isPaused {
+                turnInstructionPill(instruction)
+                    .padding(.horizontal, .Trakke.lg)
+            }
 
+            // MARK: - Topp: HiiKER-stil sammenhengende bar
+            topNavBar
+                .padding(.horizontal, .Trakke.lg)
+                .padding(.top, .Trakke.sm)
+
+            // MARK: - Sentralt: off-track + GPS + ankomst
             if navigationVM.isOffTrack {
                 DeviationChipView(
                     distance: navigationVM.offTrackDistance,
@@ -29,7 +43,13 @@ struct NavigationOverlayView: View {
                     onReroute: onReroute,
                     onDismiss: { navigationVM.dismissDeviation() }
                 )
+                .padding(.horizontal, .Trakke.lg)
             }
+
+            gpsIndicator
+                .padding(.horizontal, .Trakke.lg)
+
+            Spacer()
 
             if navigationVM.hasArrived {
                 arrivalBanner
@@ -40,271 +60,251 @@ struct NavigationOverlayView: View {
                         )
                     }
             }
-
-            VStack(spacing: 0) {
-                switch navigationVM.mode {
-                case .route:
-                    routeHUD
-                case .compass:
-                    compassHUD
-                }
-
-                Divider()
-                actionBar
-            }
-            .background(.regularMaterial)
-            .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.xl))
-            .padding(.horizontal, .Trakke.sheetHorizontal)
-
-            // Compact menu button below navigation HUD
-            HStack {
-                Spacer()
-                Button {
-                    showNavigationMenu = true
-                } label: {
-                    Image(systemName: "ellipsis")
-                        .font(Font.Trakke.bodyMedium)
-                        .foregroundStyle(Color.Trakke.textInverse)
-                        .frame(width: .Trakke.touchMin, height: .Trakke.touchMin)
-                        .background(Color.Trakke.brand.opacity(0.85))
-                        .clipShape(Circle())
-                        .trakkeControlShadow()
-                }
-                .accessibilityLabel(String(localized: "fab.menu"))
-                .padding(.trailing, .Trakke.xxl)
-                .confirmationDialog(
-                    String(localized: "fab.menu"),
-                    isPresented: $showNavigationMenu,
-                    titleVisibility: .hidden
-                ) {
-                    Button(String(localized: "search.title")) { delayedAction(onSearchTapped) }
-                    Button(String(localized: "categories.title")) { delayedAction(onCategoryTapped) }
-                    Button(String(localized: "emergency.title")) { delayedAction(onEmergencyTapped) }
-                    Button(String(localized: "weather.title")) { delayedAction(onWeatherTapped) }
-                    Button(String(localized: "more.title")) { delayedAction(onMerTapped) }
-                }
-            }
-            .padding(.bottom, .Trakke.sm)
         }
         .safeAreaPadding(.bottom)
     }
 
-    // MARK: - Route HUD
+    // MARK: - Nav-bar (sammenhengende pille)
 
-    private var routeHUD: some View {
-        VStack(spacing: .Trakke.sm) {
-            if let progress = navigationVM.progress {
-                HStack(spacing: 0) {
-                    statCell(
-                        label: String(localized: "navigation.remaining"),
-                        value: formatDistance(progress.distanceRemaining)
-                    )
-                    Divider().frame(height: 36)
-                    statCell(
-                        label: String(localized: "navigation.elevationProfile"),
-                        value: formatElevation(
-                            gain: progress.elevationGainRemaining,
-                            loss: progress.elevationLossRemaining
-                        )
-                    )
-                    Divider().frame(height: 36)
-                    statCell(
-                        label: String(localized: "navigation.timeRemaining"),
-                        value: formatTime(progress.estimatedTimeRemaining)
-                    )
-                }
-                .accessibilityElement(children: .combine)
-                .accessibilityLabel(statsAccessibilityLabel(progress))
-
-                ProgressView(value: progress.fractionCompleted)
-                    .tint(Color.Trakke.brand)
-                    .padding(.horizontal, .Trakke.cardPadH)
-                    .accessibilityLabel(String(localized: "navigation.progress"))
-                    .accessibilityValue("\(Int(progress.fractionCompleted * 100)) %")
-
-                gpsIndicator
-                    .padding(.horizontal, .Trakke.cardPadH)
-            }
-
-            if navigationVM.isComputingRoute {
-                Divider()
-                HStack(spacing: .Trakke.sm) {
-                    ProgressView()
-                        .controlSize(.small)
-                        .tint(Color.Trakke.brand)
-                        .accessibilityHidden(true)
-                    Text(String(localized: "navigation.computingRoute"))
-                        .font(Font.Trakke.bodyRegular)
-                        .foregroundStyle(Color.Trakke.textSecondary)
-                    Spacer()
-                }
-                .padding(.horizontal, .Trakke.cardPadH)
-                .padding(.vertical, .Trakke.sm)
-                .accessibilityElement(children: .combine)
-            } else if let instruction = navigationVM.nextInstruction {
-                Divider()
-                let distToTurn: Double? = {
-                    guard let progress = navigationVM.progress else { return nil }
-                    let d = instruction.distance - (progress.totalDistance - progress.distanceRemaining)
-                    return d > 0 ? d : nil
-                }()
-                let isImminent = (distToTurn ?? .infinity) < 100
-                HStack(spacing: .Trakke.sm) {
-                    Image(systemName: turnIcon(instruction.type))
-                        .font(isImminent ? .title3.weight(.semibold) : Font.Trakke.bodyMedium)
-                        .foregroundStyle(Color.Trakke.brand)
-                        .frame(width: 32)
-                        .accessibilityHidden(true)
-
-                    VStack(alignment: .leading, spacing: .Trakke.labelGap) {
-                        Text(instruction.text)
-                            .font(Font.Trakke.bodyMedium)
-                            .lineLimit(3)
-                        if let distToTurn {
-                            Text(formatDistance(distToTurn))
-                                .font(
-                                    isImminent
-                                        ? Font.Trakke.bodyMedium.monospacedDigit().bold()
-                                        : Font.Trakke.caption.monospacedDigit()
-                                )
-                                .foregroundStyle(
-                                    isImminent ? Color.Trakke.brand : Color.Trakke.textTertiary
-                                )
-                                .contentTransition(.numericText(countsDown: true))
-                                .animation(
-                                    reduceMotion ? nil : .easeInOut(duration: 0.3),
-                                    value: Int(distToTurn / 5) * 5
-                                )
-                        }
-                    }
-
-                    Spacer()
-                }
-                .padding(.horizontal, .Trakke.cardPadH)
-                .padding(.vertical, .Trakke.sm)
-            }
-
+    @ViewBuilder
+    private var topNavBar: some View {
+        switch navigationVM.mode {
+        case .route:
+            routeNavBar
+        case .compass:
+            compassNavBar
         }
-        .padding(.top, .Trakke.cardPadV)
     }
 
-    // MARK: - Compass HUD
+    private var routeNavBar: some View {
+        HStack(spacing: 0) {
+            pauseResumeButton
 
-    private var compassHUD: some View {
-        VStack(spacing: .Trakke.md) {
-            let relativeBearing = computeRelativeBearing()
+            if let progress = navigationVM.progress {
+                navBarDivider
+                navBarStat(icon: "clock", value: formatTime(progress.estimatedTimeRemaining))
+                navBarDivider
+                navBarStat(icon: "arrow.up", value: "+\(Int(progress.elevationGainRemaining)) m")
+                navBarDivider
+                navBarStat(icon: "point.topleft.down.to.point.bottomright.curvepath", value: formatDistance(progress.distanceRemaining))
+            }
+
+            navBarDivider
+            moreButton
+            navBarDivider
+            stopButton
+        }
+        .background(Color.Trakke.surface.opacity(0.92))
+        .clipShape(Capsule())
+        .trakkeControlShadow()
+        .accessibilityElement(children: .contain)
+        .trakkeDialog(
+            isPresented: $showMoreMenu,
+            buttons: moreMenuButtons
+        )
+    }
+
+    private var compassNavBar: some View {
+        HStack(spacing: 0) {
+            pauseResumeButton
+
+            navBarDivider
+            compassDirectionCell
+
+            navBarDivider
+            navBarStat(
+                icon: "point.topleft.down.to.point.bottomright.curvepath",
+                value: formatDistance(navigationVM.compassDistance)
+            )
+
+            navBarDivider
+            moreButton
+            navBarDivider
+            stopButton
+        }
+        .background(Color.Trakke.surface.opacity(0.92))
+        .clipShape(Capsule())
+        .trakkeControlShadow()
+        .accessibilityElement(children: .contain)
+        .trakkeDialog(
+            isPresented: $showMoreMenu,
+            buttons: moreMenuButtons
+        )
+    }
+
+    private var moreMenuButtons: [TrakkeDialogButton] {
+        var buttons: [TrakkeDialogButton] = []
+
+        switch navigationVM.mode {
+        case .route:
+            buttons.append(.primary(String(localized: "navigation.switchToCompass")) {
+                onSwitchToCompass()
+            })
+        case .compass:
+            buttons.append(.primary(String(localized: "navigation.switchToRoute")) {
+                onSwitchToRoute()
+            })
+        }
+
+        let cameraLabel: String = navigationVM.cameraMode == .northUp
+            ? String(localized: "navigation.cameraMode.courseUp")
+            : String(localized: "navigation.cameraMode.northUp")
+        buttons.append(.primary(cameraLabel) {
+            onToggleCamera()
+        })
+
+        buttons.append(.cancel())
+        return buttons
+    }
+
+    // MARK: - Bar-celler
+
+    private var pauseResumeButton: some View {
+        Button {
+            if navigationVM.isPaused {
+                navigationVM.resumeNavigation()
+            } else {
+                navigationVM.pauseNavigation()
+            }
+        } label: {
+            Image(systemName: navigationVM.isPaused ? "play.fill" : "pause.fill")
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(Color.Trakke.brand)
+                .frame(width: 48, height: 44)
+                .contentShape(Rectangle())
+        }
+        .accessibilityLabel(
+            navigationVM.isPaused
+                ? String(localized: "navigation.resume")
+                : String(localized: "navigation.pause")
+        )
+    }
+
+    private var stopButton: some View {
+        Button(action: onStop) {
+            Image(systemName: "stop.fill")
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(Color.Trakke.red)
+                .frame(width: 48, height: 44)
+                .contentShape(Rectangle())
+        }
+        .accessibilityLabel(String(localized: "navigation.stopNavigation"))
+    }
+
+    private var moreButton: some View {
+        Button {
+            showMoreMenu = true
+        } label: {
+            Image(systemName: "ellipsis")
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(Color.Trakke.textSoft)
+                .frame(width: 44, height: 44)
+                .contentShape(Rectangle())
+        }
+        .accessibilityLabel(String(localized: "navigation.more"))
+    }
+
+    private var compassDirectionCell: some View {
+        let relativeBearing = computeRelativeBearing()
+        return HStack(spacing: .Trakke.xs) {
             Image(systemName: "location.north.fill")
-                .font(Font.Trakke.compassArrow)
+                .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(Color.Trakke.brand)
                 .rotationEffect(.degrees(relativeBearing))
                 .animation(
                     reduceMotion ? nil : .easeInOut(duration: 0.5),
                     value: relativeBearing
                 )
-                .accessibilityLabel(
-                    String(localized: "navigation.bearing")
-                        + ": \(Int(navigationVM.compassBearing))\u{00B0}"
-                )
-
-            VStack(spacing: .Trakke.xs) {
-                Text(formatDistance(navigationVM.compassDistance))
-                    .font(Font.Trakke.numeralXLarge)
-                    .foregroundStyle(Color.Trakke.brand)
-
-                Text(bearingText(navigationVM.compassBearing))
-                    .font(Font.Trakke.caption)
-                    .foregroundStyle(Color.Trakke.textTertiary)
-            }
-
-            gpsIndicator
+            Text(bearingText(navigationVM.compassBearing))
+                .font(.system(size: 14, weight: .semibold).monospacedDigit())
+                .foregroundStyle(Color.Trakke.text)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
         }
-        .padding(.vertical, .Trakke.cardPadV)
-        .padding(.horizontal, .Trakke.cardPadH)
-    }
-
-    // MARK: - Action Bar
-
-    private var actionBar: some View {
-        HStack {
-            switch navigationVM.mode {
-            case .route:
-                Button {
-                    Task { _ = await navigationVM.reverseRoute() }
-                } label: {
-                    Label(String(localized: "navigation.reverse"), systemImage: "arrow.uturn.right")
-                        .font(Font.Trakke.bodyRegular)
-                        .labelStyle(.iconOnly)
-                }
-                .frame(minWidth: .Trakke.touchMin, minHeight: .Trakke.touchMin)
-                .disabled(navigationVM.isComputingRoute)
-                .accessibilityLabel(String(localized: "navigation.reverse"))
-
-                Button {
-                    onSwitchToCompass()
-                } label: {
-                    Label(String(localized: "navigation.switchToCompass"), systemImage: "safari")
-                        .font(Font.Trakke.bodyRegular)
-                        .labelStyle(.iconOnly)
-                }
-                .frame(minWidth: .Trakke.touchMin, minHeight: .Trakke.touchMin)
-                .accessibilityLabel(String(localized: "navigation.switchToCompass"))
-
-                cameraModeButton
-
-            case .compass:
-                if isConnected {
-                    Button {
-                        onSwitchToRoute()
-                    } label: {
-                        Label(
-                            String(localized: "navigation.switchToRoute"),
-                            systemImage: "point.topleft.down.to.point.bottomright.curvepath"
-                        )
-                        .font(Font.Trakke.bodyRegular)
-                    }
-                    .frame(minWidth: .Trakke.touchMin, minHeight: .Trakke.touchMin)
-                    .disabled(navigationVM.isComputingRoute)
-                }
-
-                cameraModeButton
-            }
-
-            Spacer()
-
-            Button(role: .destructive) {
-                onStop()
-            } label: {
-                Text(String(localized: "navigation.stopNavigation"))
-                    .font(Font.Trakke.bodyMedium)
-                    .foregroundStyle(Color.Trakke.red)
-            }
-            .frame(minWidth: .Trakke.touchMin, minHeight: .Trakke.touchMin)
-        }
-        .padding(.horizontal, .Trakke.cardPadH)
-        .padding(.vertical, .Trakke.sm)
-    }
-
-    @ViewBuilder
-    private var cameraModeButton: some View {
-        Button {
-            onToggleCamera()
-        } label: {
-            // Distinct icons per direction:
-            // - In northUp: show a course-up indicator (the action target).
-            // - In courseUp: show a marked "N" (the action target).
-            Image(systemName: navigationVM.cameraMode == .northUp
-                  ? "location.north.line.fill" : "n.circle.fill")
-                .font(Font.Trakke.bodyRegular)
-        }
-        .frame(minWidth: .Trakke.touchMin, minHeight: .Trakke.touchMin)
+        .padding(.horizontal, .Trakke.sm)
+        .frame(minHeight: 44)
+        .accessibilityElement(children: .combine)
         .accessibilityLabel(
-            navigationVM.cameraMode == .northUp
-                ? String(localized: "navigation.cameraMode.courseUp")
-                : String(localized: "navigation.cameraMode.northUp")
+            String(localized: "navigation.bearing")
+                + ": \(Int(navigationVM.compassBearing))\u{00B0}"
         )
     }
 
-    // MARK: - GPS Indicator
+    private func navBarStat(icon: String, value: String) -> some View {
+        HStack(spacing: .Trakke.xs) {
+            Image(systemName: icon)
+                .font(.system(size: 12, weight: .regular))
+                .foregroundStyle(Color.Trakke.textSoft)
+            Text(value)
+                .font(.system(size: 14, weight: .semibold).monospacedDigit())
+                .foregroundStyle(Color.Trakke.text)
+                .contentTransition(.numericText())
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+        }
+        .padding(.horizontal, .Trakke.sm)
+        .frame(maxWidth: .infinity, minHeight: 44)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(value)
+    }
+
+    private var navBarDivider: some View {
+        Rectangle()
+            .fill(Color.Trakke.border)
+            .frame(width: 1, height: 24)
+    }
+
+    // MARK: - Sving-instruks-pille
+
+    private func turnInstructionPill(_ instruction: TurnInstruction) -> some View {
+        let distToTurn: Double? = {
+            guard let progress = navigationVM.progress else { return nil }
+            let d = instruction.distance - (progress.totalDistance - progress.distanceRemaining)
+            return d > 0 ? d : nil
+        }()
+        let isImminent = (distToTurn ?? .infinity) < 100
+
+        return HStack(spacing: .Trakke.md) {
+            Image(systemName: turnIcon(instruction.type))
+                .font(isImminent ? .title3.weight(.semibold) : .body.weight(.semibold))
+                .foregroundStyle(isImminent ? Color.Trakke.textInverse : Color.Trakke.brand)
+                .frame(width: 32)
+                .accessibilityHidden(true)
+
+            VStack(alignment: .leading, spacing: .Trakke.labelGap) {
+                Text(instruction.text)
+                    .font(Font.Trakke.bodyMedium)
+                    .foregroundStyle(isImminent ? Color.Trakke.textInverse : Color.Trakke.text)
+                    .lineLimit(2)
+                if let distToTurn {
+                    Text(formatDistance(distToTurn))
+                        .font(
+                            isImminent
+                                ? Font.Trakke.bodyMedium.monospacedDigit()
+                                : Font.Trakke.caption.monospacedDigit()
+                        )
+                        .foregroundStyle(
+                            isImminent ? Color.Trakke.textInverse.opacity(0.9) : Color.Trakke.textSoft
+                        )
+                        .contentTransition(.numericText(countsDown: true))
+                        .animation(
+                            reduceMotion ? nil : .easeInOut(duration: 0.3),
+                            value: Int(distToTurn / 5) * 5
+                        )
+                }
+            }
+
+            Spacer()
+        }
+        .padding(.horizontal, .Trakke.cardPadH)
+        .padding(.vertical, .Trakke.sm)
+        .frame(minHeight: 56)
+        .background(isImminent ? Color.Trakke.brand : Color.Trakke.surface.opacity(0.92))
+        .clipShape(Capsule())
+        .trakkeControlShadow()
+    }
+
+    // MARK: - GPS-indikator
 
     @ViewBuilder
     private var gpsIndicator: some View {
@@ -312,86 +312,58 @@ struct NavigationOverlayView: View {
         case .good:
             EmptyView()
         case .reduced:
-            HStack(spacing: .Trakke.xs) {
-                Image(systemName: "antenna.radiowaves.left.and.right.slash")
-                    .font(Font.Trakke.captionSoft)
-                    .accessibilityHidden(true)
-                Text(String(localized: "navigation.gpsReduced"))
-                    .font(Font.Trakke.captionSoft)
-            }
-            .foregroundStyle(Color.Trakke.yellow)
+            gpsPill(icon: "antenna.radiowaves.left.and.right.slash", color: Color.Trakke.yellow)
         case .lost:
-            HStack(spacing: .Trakke.xs) {
-                Image(systemName: "location.slash")
-                    .font(Font.Trakke.captionSoft)
-                    .accessibilityHidden(true)
-                Text(String(localized: "navigation.gpsLost"))
-                    .font(Font.Trakke.captionSoft)
-            }
-            .foregroundStyle(Color.Trakke.red)
+            gpsPill(icon: "location.slash", color: Color.Trakke.red)
         }
     }
 
-    // MARK: - Arrival Banner
+    private func gpsPill(icon: String, color: Color) -> some View {
+        Image(systemName: icon)
+            .font(.system(size: 14, weight: .semibold))
+            .foregroundStyle(color)
+            .padding(.horizontal, .Trakke.md)
+            .padding(.vertical, .Trakke.xs)
+            .background(Color.Trakke.surface.opacity(0.92))
+            .clipShape(Capsule())
+            .trakkeControlShadow()
+            .accessibilityLabel(
+                navigationVM.gpsQuality == .lost
+                    ? String(localized: "navigation.gpsLost")
+                    : String(localized: "navigation.gpsReduced")
+            )
+    }
+
+    // MARK: - Arrival-banner
 
     private var arrivalBanner: some View {
-        Text(String(localized: "navigation.arrived"))
-            .font(Font.Trakke.bodyMedium)
-            .foregroundStyle(Color.Trakke.textInverse)
-            .padding(.horizontal, .Trakke.lg)
-            .padding(.vertical, .Trakke.sm)
-            .background(Color.Trakke.brand)
-            .clipShape(Capsule())
-            .padding(.bottom, .Trakke.sm)
+        HStack(spacing: .Trakke.sm) {
+            Image(systemName: "flag.checkered")
+                .font(.system(size: 16, weight: .semibold))
+            Text(String(localized: "navigation.arrived"))
+                .font(Font.Trakke.bodyMedium)
+        }
+        .foregroundStyle(Color.Trakke.textInverse)
+        .padding(.horizontal, .Trakke.lg)
+        .padding(.vertical, .Trakke.sm)
+        .background(Color.Trakke.brand)
+        .clipShape(Capsule())
+        .padding(.bottom, .Trakke.sm)
     }
 
     // MARK: - Helpers
 
-    private func statCell(label: String, value: String) -> some View {
-        VStack(spacing: .Trakke.labelGap) {
-            Text(label)
-                .font(Font.Trakke.captionSoft)
-                .foregroundStyle(Color.Trakke.textTertiary)
-            Text(value)
-                .font(Font.Trakke.bodyRegular.monospacedDigit().bold())
-                .foregroundStyle(Color.Trakke.brand)
-        }
-        .frame(maxWidth: .infinity)
-    }
-
-    private func statsAccessibilityLabel(_ progress: NavigationProgress) -> String {
-        let distance = formatDistance(progress.distanceRemaining)
-        let gain = Int(progress.elevationGainRemaining)
-        let loss = Int(progress.elevationLossRemaining)
-        let elevationLabel = String(
-            localized: "navigation.elevationProfile.a11y \(gain) \(loss)"
-        )
-        let time = formatTime(progress.estimatedTimeRemaining)
-        return "\(distance) \(String(localized: "navigation.remaining")), \(elevationLabel), \(time) \(String(localized: "navigation.timeRemaining"))"
-    }
-
     private func formatDistance(_ meters: Double) -> String {
         MeasurementService.formatDistance(meters)
-    }
-
-    private func formatElevation(gain: Double, loss: Double) -> String {
-        "+\(Int(gain)) / −\(Int(loss)) m"
     }
 
     private func formatTime(_ seconds: TimeInterval) -> String {
         let hours = Int(seconds) / 3600
         let minutes = (Int(seconds) % 3600) / 60
         if hours > 0 {
-            return "\(hours) t \(minutes) min"
+            return "\(hours)t \(minutes)m"
         }
-        return "\(minutes) min"
-    }
-
-    private func delayedAction(_ action: @escaping () -> Void) {
-        Task { @MainActor in
-            try? await Task.sleep(for: .milliseconds(300))
-            action()
-        }
+        return "\(minutes)m"
     }
 
     private func computeRelativeBearing() -> Double {
@@ -417,7 +389,7 @@ struct NavigationOverlayView: View {
         case 292.5..<337.5: direction = "NV"
         default: direction = ""
         }
-        return "\(Int(n))\u{00B0} (\(direction))"
+        return "\(Int(n))\u{00B0} \(direction)"
     }
 
     private func turnIcon(_ type: TurnType) -> String {
@@ -437,5 +409,3 @@ struct NavigationOverlayView: View {
         }
     }
 }
-
-

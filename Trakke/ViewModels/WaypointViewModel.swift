@@ -73,6 +73,17 @@ final class WaypointViewModel {
         loadWaypoints()
     }
 
+    func deleteAllWaypoints() {
+        guard let context = modelContext else { return }
+        do {
+            try context.delete(model: Waypoint.self)
+            save("waypoint")
+            loadWaypoints()
+        } catch {
+            saveError = error.localizedDescription
+        }
+    }
+
     func toggleVisibility(_ waypoint: Waypoint) {
         waypoint.isVisible.toggle()
         waypoint.updatedAt = Date()

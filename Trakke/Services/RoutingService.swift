@@ -31,24 +31,23 @@ enum RoutingError: Error, LocalizedError {
 
 // MARK: - Routing Service
 
-protocol RouteFetching: Sendable {
-    func computeRoute(from origin: CLLocationCoordinate2D, to destination: CLLocationCoordinate2D) async throws -> ComputedRoute
-    func clearCache() async
-}
-
-/// Routes are computed via FOSSGIS's public Valhalla instance (valhalla1.openstreetmap.de).
-/// This is a community-hosted service with no SLA or uptime guarantee. If the server is
-/// unreachable, the UI falls back to compass-based navigation. Rate limiting is enforced
-/// client-side via `minRequestInterval`. A self-hosted Valhalla instance would eliminate
-/// this external dependency if needed in the future.
+/// Routes are computed via Stadia Maps' hosted Valhalla service (EU endpoint), which
+/// provides the same JSON contract as upstream Valhalla. EU residency keeps traffic
+/// within EU/EEA. If the server is unreachable, the UI falls back to compass-based
+/// navigation. Rate limiting is enforced client-side via `minRequestInterval`.
 ///
-/// FOSSGIS demo-server fair-use: 1 req/user/sec, 100 req/sec total. The
-/// `X-Client-Id` header lets FOSSGIS identify Tråkke traffic if they need to reach out.
-actor RoutingService: RouteFetching {
-    private static let baseURL = "https://valhalla1.openstreetmap.de/route"
-    private static let clientId = "trakke-ios"
-    private static let timeout: TimeInterval = 30
-    private static let minRequestInterval: TimeInterval = 1.5
+/// Authentication uses an API key read from `Info.plist` (key
+/// `TrakkeStadiaMapsAPIKey`) and sent as `Authorization: Stadia-Auth <key>`. The
+/// property name registered with Stadia is `trakke-ios` — dashboard-only metadata,
+/// not transmitted with requests.
+actor RoutingService {
+    private static let baseURL = URL(string: "https://api-eu.stadiamaps.com/route/v1")!
+    private static let timeout: TimeInterval = 15
+    private static let minRequestInterval: TimeInterval = 0.5
+
+    private static func apiKey() -> String? {
+        Bundle.main.object(forInfoDictionaryKey: "TrakkeStadiaMapsAPIKey") as? String
+    }
 
     private var lastRequestTime: Date?
     private var cache: [String: (route: ComputedRoute, cachedAt: Date)] = [:]
@@ -78,15 +77,13 @@ actor RoutingService: RouteFetching {
         // Build request
         let requestBody = Self.buildRequestBody(from: origin, to: destination)
 
-        guard let url = URL(string: Self.baseURL) else {
-            throw RoutingError.noRoute
-        }
-
-        var request = URLRequest(url: url)
+        var request = URLRequest(url: Self.baseURL)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(APIClient.userAgent, forHTTPHeaderField: "User-Agent")
-        request.setValue(Self.clientId, forHTTPHeaderField: "X-Client-Id")
+        if let key = Self.apiKey() {
+            request.setValue("Stadia-Auth \(key)", forHTTPHeaderField: "Authorization")
+        }
         request.timeoutInterval = Self.timeout
         request.httpBody = requestBody
 

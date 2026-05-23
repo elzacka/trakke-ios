@@ -36,7 +36,7 @@ struct ActivityDetailSheet: View {
             .padding(.horizontal, .Trakke.sheetHorizontal)
             .padding(.top, .Trakke.sheetTop)
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.Trakke.background)
         .tint(Color.Trakke.brand)
         .navigationTitle(activity.name)
         .navigationBarTitleDisplayMode(.inline)
@@ -114,16 +114,15 @@ struct ActivityDetailSheet: View {
             }
             .buttonStyle(.trakkeDanger)
             .accessibilityHint(String(localized: "accessibility.deleteHint"))
-            .confirmationDialog(
-                String(localized: "activity.delete.title"),
+            .trakkeDialog(
                 isPresented: $showDeleteConfirmation,
-                titleVisibility: .visible
-            ) {
-                Button(String(localized: "activity.delete.confirm"), role: .destructive) {
+                title: String(localized: "activity.delete.title"),
+                primary: .destructive(String(localized: "common.yes")) {
                     viewModel.deleteActivity(activity)
                     dismiss()
-                }
-            }
+                },
+                cancel: .cancel(String(localized: "common.no"))
+            )
         }
     }
 
@@ -153,7 +152,7 @@ struct ActivityDetailSheet: View {
                     value: "\(Int(activity.elevationLoss)) m"
                 )
             }
-            .padding(.vertical, .Trakke.xs)
+            .padding(.vertical, .Trakke.rowVertical)
         }
     }
 
@@ -167,7 +166,7 @@ struct ActivityDetailSheet: View {
                 Text(String(localized: "activity.noElevationData"))
                     .font(Font.Trakke.caption)
                     .foregroundStyle(Color.Trakke.textTertiary)
-                    .padding(.vertical, .Trakke.sm)
+                    .padding(.vertical, .Trakke.rowVertical)
             }
         }
     }
@@ -267,8 +266,7 @@ struct ActivityDetailSheet: View {
         let paceSecondsPerKm = activity.duration / (activity.distance / 1000)
         let minutes = Int(paceSecondsPerKm) / 60
         let seconds = Int(paceSecondsPerKm) % 60
-        let formatted = String(format: "%d:%02d", minutes, seconds)
-        return String(localized: "activity.paceValue \(formatted)")
+        return String(format: "%d:%02d min/km", minutes, seconds)
     }
 
     private struct ElevPoint {

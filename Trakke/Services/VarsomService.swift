@@ -41,16 +41,9 @@ struct VarsomWarning: Sendable, Identifiable {
     }
 }
 
-// MARK: - Protocol
-
-protocol VarsomFetching: Sendable {
-    func fetchWarnings(at coordinate: CLLocationCoordinate2D) async -> [VarsomWarning]
-    func clearCache() async
-}
-
 // MARK: - Varsom Service
 
-actor VarsomService: VarsomFetching {
+actor VarsomService {
     private var cache: (warnings: [VarsomWarning], fetchedAt: Date, coordinate: CLLocationCoordinate2D)?
     private static let cacheTTL: TimeInterval = 3600 // 1 hour
 
@@ -82,8 +75,7 @@ actor VarsomService: VarsomFetching {
     private func fetchAvalanche(lat: Double, lon: Double) async -> [VarsomWarning] {
         let truncLat = (lat * 10000).rounded() / 10000
         let truncLon = (lon * 10000).rounded() / 10000
-        let urlString = "https://api01.nve.no/hydrology/forecast/avalanche/v6.3.0/api/AvalancheWarningByCoordinates/Detail/\(truncLat)/\(truncLon)/1"
-        guard let url = URL(string: urlString) else { return [] }
+        let url = URL(string: "https://api01.nve.no/hydrology/forecast/avalanche/v6.3.0/api/AvalancheWarningByCoordinates/Detail/\(truncLat)/\(truncLon)/1")!
 
         do {
             let data = try await APIClient.fetchData(url: url, timeout: 15)
@@ -125,8 +117,7 @@ actor VarsomService: VarsomFetching {
         guard let endDate = calendar.date(byAdding: .day, value: 3, to: today) else { return [] }
         let endStr = urlDateFormatter.string(from: endDate)
 
-        let urlString = "https://api01.nve.no/hydrology/forecast/flood/v1.0.6/api/Warning/County/nb/\(startDate)/\(endStr)"
-        guard let url = URL(string: urlString) else { return [] }
+        let url = URL(string: "https://api01.nve.no/hydrology/forecast/flood/v1.0.6/api/Warning/County/nb/\(startDate)/\(endStr)")!
 
         do {
             let data = try await APIClient.fetchData(url: url, timeout: 15)

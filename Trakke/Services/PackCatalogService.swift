@@ -1,19 +1,8 @@
 import Foundation
 
-protocol PackCatalogFetching: Sendable {
-    func fetchCatalog(forceRefresh: Bool) async throws -> PackCatalog
-    func clearCache() async
-}
-
-extension PackCatalogFetching {
-    func fetchCatalog() async throws -> PackCatalog {
-        try await fetchCatalog(forceRefresh: false)
-    }
-}
-
 // MARK: - Pack Catalog Service
 
-actor PackCatalogService: PackCatalogFetching {
+actor PackCatalogService {
     private var cachedCatalog: PackCatalog?
     private var cachedAt: Date?
     private static let cacheTTL: TimeInterval = 3600 // 1 hour

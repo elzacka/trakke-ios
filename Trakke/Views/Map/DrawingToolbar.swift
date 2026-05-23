@@ -8,79 +8,39 @@ struct DrawingToolbar: View {
     var onDone: () -> Void
 
     var body: some View {
-        VStack {
-            Spacer()
-
-            VStack(spacing: .Trakke.sm) {
-                if pointCount >= 2 {
-                    HStack(spacing: .Trakke.rowVertical) {
-                        Image(systemName: "point.topleft.down.to.point.bottomright.curvepath")
-                            .font(Font.Trakke.caption)
-                            .accessibilityHidden(true)
-                        Text(formattedDistance)
-                            .font(Font.Trakke.numeralLarge)
-                            .foregroundStyle(Color.Trakke.brand)
-                    }
-                    .accessibilityElement(children: .combine)
-                    .accessibilityLabel(String(localized: "accessibility.route.distance \(formattedDistance)"))
-                    .padding(.horizontal, .Trakke.lg)
-                    .padding(.vertical, .Trakke.sm)
-                    .background(.regularMaterial)
-                    .clipShape(Capsule())
-                } else {
-                    Text(String(localized: "route.drawingHint"))
-                        .font(Font.Trakke.bodyRegular)
-                        .foregroundStyle(Color.Trakke.textTertiary)
-                        .padding(.horizontal, .Trakke.lg)
-                        .padding(.vertical, .Trakke.sm)
-                        .background(.regularMaterial)
-                        .clipShape(Capsule())
-                }
-
-                HStack(spacing: .Trakke.lg) {
-                    Button(role: .destructive) {
-                        onCancel()
-                    } label: {
-                        Label(String(localized: "common.cancel"), systemImage: "xmark")
-                            .foregroundStyle(Color.Trakke.red)
-                            .padding(.horizontal, .Trakke.lg)
-                            .padding(.vertical, .Trakke.sm)
-                            .frame(minHeight: .Trakke.touchMin)
-                            .background(.regularMaterial)
-                            .clipShape(Capsule())
-                    }
-                    .accessibilityLabel(String(localized: "common.cancel"))
-
-                    Button {
-                        onUndo()
-                    } label: {
-                        Label(String(localized: "route.undo"), systemImage: "arrow.uturn.backward")
-                            .padding(.horizontal, .Trakke.lg)
-                            .padding(.vertical, .Trakke.sm)
-                            .frame(minHeight: .Trakke.touchMin)
-                            .background(.regularMaterial)
-                            .clipShape(Capsule())
-                    }
-                    .disabled(pointCount == 0)
-                    .accessibilityLabel(String(localized: "route.undo"))
-
-                    Button {
-                        onDone()
-                    } label: {
-                        Label(String(localized: "common.done"), systemImage: "checkmark")
-                            .padding(.horizontal, .Trakke.lg)
-                            .padding(.vertical, .Trakke.sm)
-                            .frame(minHeight: .Trakke.touchMin)
-                            .background(Color.Trakke.brand)
-                            .foregroundStyle(Color.Trakke.textInverse)
-                            .clipShape(Capsule())
-                    }
-                    .disabled(pointCount < 2)
-                    .accessibilityLabel(String(localized: "common.done"))
-                }
+        MapActionBar(position: .top) {
+            if pointCount >= 2 {
+                MapActionStat(
+                    icon: "point.topleft.down.to.point.bottomright.curvepath",
+                    value: formattedDistance,
+                    accessibilityLabel: String(localized: "accessibility.route.distance \(formattedDistance)")
+                )
+            } else {
+                MapActionHint(text: String(localized: "route.drawingHint"))
             }
-            .padding(.bottom, .Trakke.lg)
+
+            MapActionDivider()
+            MapActionButton(
+                systemImage: "xmark",
+                role: .destructive,
+                accessibilityLabel: String(localized: "common.cancel"),
+                action: onCancel
+            )
+            MapActionDivider()
+            MapActionButton(
+                systemImage: "arrow.uturn.backward",
+                isEnabled: pointCount > 0,
+                accessibilityLabel: String(localized: "route.undo"),
+                action: onUndo
+            )
+            MapActionDivider()
+            MapActionButton(
+                systemImage: "checkmark",
+                role: .primary,
+                isEnabled: pointCount >= 2,
+                accessibilityLabel: String(localized: "common.done"),
+                action: onDone
+            )
         }
-        .safeAreaPadding(.bottom)
     }
 }

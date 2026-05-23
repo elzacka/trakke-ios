@@ -22,7 +22,7 @@ struct KommuneDetailView: View {
             .padding(.horizontal, .Trakke.sheetHorizontal)
             .padding(.top, .Trakke.sheetTop)
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.Trakke.background)
         .tint(Color.Trakke.brand)
         .navigationTitle(kommune.name)
         .navigationBarTitleDisplayMode(.inline)

@@ -13,40 +13,27 @@ struct WaypointDetailSheet: View {
     @State private var copied = false
 
     var body: some View {
-        if isEmbedded {
-            content
-        } else {
-            NavigationStack {
-                content
+        VStack(spacing: 0) {
+            if !isEmbedded {
+                TrakkeSheetHeader(title: waypoint.name)
             }
-        }
-    }
 
-    private var content: some View {
-        ScrollView {
-            VStack(spacing: .Trakke.cardGap) {
-                infoCard
-                coordinatesCard
-                actionsCard
+            ScrollView {
+                VStack(spacing: .Trakke.cardGap) {
+                    infoCard
+                    coordinatesCard
+                    actionsCard
 
-                Spacer(minLength: .Trakke.lg)
-            }
-            .padding(.horizontal, .Trakke.sheetHorizontal)
-            .padding(.top, .Trakke.sheetTop)
-        }
-        .background(Color(.systemGroupedBackground))
-        .tint(Color.Trakke.brand)
-        .navigationTitle(waypoint.name)
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    onEdit?(waypoint)
-                } label: {
-                    Label(String(localized: "common.edit"), systemImage: "pencil")
+                    Spacer(minLength: .Trakke.lg)
                 }
+                .padding(.horizontal, .Trakke.sheetHorizontal)
+                .padding(.top, isEmbedded ? .Trakke.sheetTop : .Trakke.sm)
+                .padding(.bottom, .Trakke.xxl)
             }
         }
+        .background(Color.Trakke.background)
+        .tint(Color.Trakke.brand)
+        .modifier(WaypointEmbeddedNavTitleModifier(isEmbedded: isEmbedded, title: waypoint.name))
     }
 
     // MARK: - Info Card
@@ -59,11 +46,11 @@ struct WaypointDetailSheet: View {
                 if let category = waypoint.category, !category.isEmpty {
                     Text(category)
                         .font(Font.Trakke.caption)
-                        .foregroundStyle(Color.Trakke.textTertiary)
+                        .foregroundStyle(Color.Trakke.textSoft)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.vertical, .Trakke.labelGap)
+            .padding(.vertical, .Trakke.rowVertical)
 
             if let elevation = waypoint.elevation {
                 Divider().padding(.leading, .Trakke.dividerLeading)
@@ -73,9 +60,9 @@ struct WaypointDetailSheet: View {
                     Spacer()
                     Text("\(Int(elevation)) moh.")
                         .font(Font.Trakke.bodyRegular.monospacedDigit())
-                        .foregroundStyle(Color.Trakke.textTertiary)
+                        .foregroundStyle(Color.Trakke.textSoft)
                 }
-                .padding(.vertical, .Trakke.xs)
+                .padding(.vertical, .Trakke.rowVertical)
             }
 
             Divider().padding(.leading, .Trakke.dividerLeading)
@@ -91,9 +78,10 @@ struct WaypointDetailSheet: View {
                     set: { _ in viewModel.toggleVisibility(waypoint) }
                 ))
                 .labelsHidden()
+                .toggleStyle(.trakke)
                 .accessibilityLabel(String(localized: "waypoints.showOnMap"))
             }
-            .padding(.vertical, .Trakke.xs)
+            .padding(.vertical, .Trakke.rowVertical)
         }
     }
 
@@ -156,24 +144,48 @@ struct WaypointDetailSheet: View {
             }
 
             Button {
+                onEdit?(waypoint)
+            } label: {
+                Label(String(localized: "common.edit"), systemImage: "pencil")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .buttonStyle(.trakkeSecondary)
+
+            Button {
                 showDeleteConfirmation = true
             } label: {
                 Label(String(localized: "common.delete"), systemImage: "trash")
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
             .buttonStyle(.trakkeDanger)
-            .confirmationDialog(
-                String(localized: "waypoints.deleteConfirmTitle"),
+            .trakkeDialog(
                 isPresented: $showDeleteConfirmation,
-                titleVisibility: .visible
-            ) {
-                Button(String(localized: "common.delete"), role: .destructive) {
+                title: String(localized: "waypoints.deleteConfirmTitle"),
+                message: String(localized: "waypoints.deleteConfirmMessage \(waypoint.name)"),
+                primary: .destructive(String(localized: "common.yes")) {
                     viewModel.deleteWaypoint(waypoint)
                     dismiss()
-                }
-            } message: {
-                Text(String(localized: "waypoints.deleteConfirmMessage \(waypoint.name)"))
-            }
+                },
+                cancel: .cancel(String(localized: "common.no"))
+            )
+        }
+    }
+}
+
+/// Setter navigationTitle bare når viewet er pushet (isEmbedded), så parent
+/// NavigationStack viser tittel og back-knapp i toolbaren. Når viewet
+/// presenteres som top-level sheet, viser TrakkeSheetHeader tittelen i stedet.
+private struct WaypointEmbeddedNavTitleModifier: ViewModifier {
+    let isEmbedded: Bool
+    let title: String
+
+    func body(content: Content) -> some View {
+        if isEmbedded {
+            content
+                .navigationTitle(title)
+                .navigationBarTitleDisplayMode(.inline)
+        } else {
+            content
         }
     }
 }

@@ -26,32 +26,35 @@ enum MapMode: Equatable {
 }
 
 struct ContentView: View {
+    // State is internal so ContentView+* extensions in sibling files can read it.
     @State var mapViewModel = MapViewModel()
-    @State private var searchViewModel = SearchViewModel()
-    @State private var poiViewModel = POIViewModel()
+    @State var searchViewModel = SearchViewModel()
+    @State var poiViewModel = POIViewModel()
     @State var routeViewModel = RouteViewModel()
-    @State private var waypointViewModel = WaypointViewModel()
-    @State private var offlineViewModel = OfflineViewModel()
-    @State private var weatherViewModel = WeatherViewModel()
-    @State private var measurementViewModel = MeasurementViewModel()
+    @State var waypointViewModel = WaypointViewModel()
+    @State var offlineViewModel = OfflineViewModel()
+    @State var weatherViewModel = WeatherViewModel()
+    @State var measurementViewModel = MeasurementViewModel()
     @State var navigationViewModel = NavigationViewModel()
-    @State private var sosViewModel = SOSViewModel()
+    @State var sosViewModel = SOSViewModel()
     @State var activityViewModel = ActivityViewModel()
-    @State private var knowledgeViewModel = KnowledgeViewModel()
-    @State private var sheets = SheetCoordinator()
-    @State private var connectivityMonitor = ConnectivityMonitor()
-    @State private var navigationDestination: CLLocationCoordinate2D?
-    @State private var isFABMenuOpen = false
+    @State var knowledgeViewModel = KnowledgeViewModel()
+    @State var sheets = SheetCoordinator()
+    @State var connectivityMonitor = ConnectivityMonitor()
+    @State var navigationDestination: CLLocationCoordinate2D?
+    @State var isFABMenuOpen = false
+    @State var selectedTab: AppTab = .home
+    @State var sheetDetent: PresentationDetent = .large
     /// Non-nil while the long-press confirmation dialog is presented for the
     /// given coordinate. Nil dismisses the dialog. Replaces a paired
     /// (showLongPressOptions, longPressCoordinate) flag set.
-    @State private var longPressCoordinate: CLLocationCoordinate2D?
+    @State var longPressCoordinate: CLLocationCoordinate2D?
     @State var navigatingRouteId: String?
     @State var showRouteError = false
-    @State private var showStopConfirmation = false
-    @State private var showDbRecoveryAlert = false
-    @State private var isCleanMapActive = false
-    private let haptics = HapticFeedbackService()
+    @State var showRouteComputingIndicator = false
+    @State var showStopConfirmation = false
+    @State var showDbRecoveryAlert = false
+    @State var isCleanMapActive = false
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @AppStorage(AppStorageKeys.showWeatherWidget) private var showWeatherWidget = false
@@ -85,6 +88,83 @@ struct ContentView: View {
         .onChange(of: searchViewModel.query) {
             mapViewModel.searchPinCoordinate = nil
         }
+        .onChange(of: isFABMenuOpen) { _, isOpen in
+            if isOpen {
+                selectedTab = .home
+                sheetDetent = .large
+            }
+        }
+        .sheet(isPresented: $isFABMenuOpen) {
+            AppMenuSheet(
+                selectedTab: $selectedTab,
+                poiViewModel: poiViewModel,
+                searchViewModel: searchViewModel,
+                mapViewModel: mapViewModel,
+                weatherViewModel: weatherViewModel,
+                knowledgeViewModel: knowledgeViewModel,
+                measurementViewModel: measurementViewModel,
+                offlineViewModel: offlineViewModel,
+                sosViewModel: sosViewModel,
+                routeViewModel: routeViewModel,
+                waypointViewModel: waypointViewModel,
+                activityViewModel: activityViewModel,
+                onSearchResultSelected: { result in
+                    mapViewModel.searchPinCoordinate = result.coordinate
+                    mapViewModel.centerOn(coordinate: result.coordinate, zoom: 14)
+                    searchViewModel.clearSearch()
+                    isFABMenuOpen = false
+                },
+                onStartCustomOfflineSelection: {
+                    offlineViewModel.startSelection(
+                        center: mapViewModel.currentCenter,
+                        zoom: mapViewModel.currentZoom
+                    )
+                },
+                onRouteSelected: { route in
+                    isFABMenuOpen = false
+                    startFollowingRoute(route)
+                },
+                onNewRoute: {
+                    isFABMenuOpen = false
+                    routeViewModel.startDrawing()
+                },
+                onWaypointEdit: { waypoint in
+                    isFABMenuOpen = false
+                    sheets.editingWaypoint = waypoint
+                    // Defer sheet-presentasjon til etter AppMenuSheet er dismissed,
+                    // ellers blokkerer den nye sheet-presentasjonen.
+                    DispatchQueue.main.async {
+                        sheets.active = .waypointEdit
+                    }
+                },
+                onWaypointNavigate: { coordinate in
+                    isFABMenuOpen = false
+                    navigationDestination = coordinate
+                    DispatchQueue.main.async {
+                        sheets.active = .navigationStart
+                    }
+                },
+                onActivitySelected: { _ in },
+                onActivityRetrace: { coordinate in
+                    isFABMenuOpen = false
+                    navigationDestination = coordinate
+                    sheets.active = .navigationStart
+                },
+                onActivityFollow: { activity in
+                    isFABMenuOpen = false
+                    followActivity(activity)
+                },
+                onStartRecording: {
+                    isFABMenuOpen = false
+                    startActivityRecording()
+                },
+                onDeleteAllData: clearAllServiceCaches
+            )
+            .presentationDetents([.medium, .large], selection: $sheetDetent)
+            .presentationDragIndicator(.hidden)
+            .presentationBackgroundInteraction(.enabled(upThrough: .medium))
+            .interactiveDismissDisabled(false)
+        }
         .onChange(of: mapViewModel.locationAuthStatus) {
             if navigationViewModel.isActive,
                (mapViewModel.locationAuthStatus == .denied
@@ -107,54 +187,20 @@ struct ContentView: View {
                 )
             }
         }
-        .onOpenURL { url in
-            // Files shared to Tråkke via "Open with" or AirDrop can contain waypoints,
-            // tracks (which may be either planned routes or recorded activities), or
-            // any mix (GeoJSON). Prefer Activity over Route when track points carry
-            // timestamps — that's the strongest signal a file is a recorded trip.
-            var activityCount = 0
-            var routeCount = 0
-            var waypointCount = 0
-            switch url.pathExtension.lowercased() {
-            case "geojson", "json":
-                // Parse GeoJSON once and dispatch to each view model. Previously each
-                // VM parsed the same file independently, decoding the JSON 3 times.
-                do {
-                    let result = try GeoJSONImportService.parse(from: url)
-                    let filename = url.importedItemName
-                    activityCount = activityViewModel.insertImported(result.activities, filename: filename)
-                    if activityCount == 0 {
-                        routeCount = routeViewModel.insertImported(result.routes, filename: filename)
-                    }
-                    waypointCount = waypointViewModel.insertImported(result.waypoints, filename: filename)
-                } catch {
-                    routeViewModel.importMessage = String(localized: "routes.importError")
+        .onOpenURL { url in handleOpenedFile(url) }
+        .task(id: navigationViewModel.isComputingRoute) {
+            // Debounce indikatoren: vis først hvis beregningen tar mer enn 250 ms.
+            // Stadia svarer typisk på ~120 ms; uten debounce flimrer kapselen.
+            if navigationViewModel.isComputingRoute {
+                try? await Task.sleep(for: .milliseconds(250))
+                guard !Task.isCancelled, navigationViewModel.isComputingRoute else { return }
+                withAnimation(.easeOut(duration: 0.15)) {
+                    showRouteComputingIndicator = true
                 }
-            case "gpx":
-                // GPX parsers each scan for a different element type, so per-VM
-                // calls are kept here. XMLParser is streaming and cheap; the 3-pass
-                // cost is negligible compared to the GeoJSON case.
-                activityCount = activityViewModel.importFile(from: url)
-                routeCount = (activityCount > 0) ? 0 : routeViewModel.importFile(from: url)
-                waypointCount = waypointViewModel.importFile(from: url)
-            default:
-                break
-            }
-            sheets.dismissAll()
-            // Multiple types in one file: open the unified MyStuff sheet so the
-            // user can navigate between lists. Otherwise jump directly to the
-            // relevant list.
-            let typesImported = (activityCount > 0 ? 1 : 0)
-                + (routeCount > 0 ? 1 : 0)
-                + (waypointCount > 0 ? 1 : 0)
-            if typesImported > 1 {
-                sheets.active = .merSheet
-            } else if activityCount > 0 {
-                sheets.active = .activityList
-            } else if routeCount > 0 {
-                sheets.active = .routeList
-            } else if waypointCount > 0 {
-                sheets.active = .waypointList
+            } else {
+                withAnimation(.easeOut(duration: 0.15)) {
+                    showRouteComputingIndicator = false
+                }
             }
         }
     }
@@ -168,7 +214,7 @@ struct ContentView: View {
     private var effectiveOverlays: Set<OverlayLayer> { isCleanMapActive ? [] : mapViewModel.enabledOverlays }
 
     private func toggleCleanMap() {
-        haptics.success()
+        HapticFeedback.success()
         withAnimation(reduceMotion ? .none : .easeInOut(duration: 0.3)) {
             isCleanMapActive.toggle()
         }
@@ -270,11 +316,6 @@ struct ContentView: View {
 
             MapControlsOverlay(
                 viewModel: mapViewModel,
-                onSearchTapped: { sheets.active = .search },
-                onCategoryTapped: { sheets.active = .categoryPicker },
-                onMerTapped: { sheets.active = .merSheet },
-                onWeatherTapped: { sheets.active = .weather },
-                onEmergencyTapped: { sheets.active = .emergency },
                 enabledOverlays: effectiveOverlays,
                 isMenuOpen: $isFABMenuOpen,
                 weatherContent: Group {
@@ -322,35 +363,39 @@ struct ContentView: View {
                     onSearchTapped: { sheets.active = .search },
                     onCategoryTapped: { sheets.active = .categoryPicker },
                     onEmergencyTapped: { sheets.active = .emergency },
-                    onWeatherTapped: { sheets.active = .weather },
-                    onMerTapped: { sheets.active = .merSheet }
+                    onWeatherTapped: { sheets.active = .weather }
                 )
-                .confirmationDialog(
-                    String(localized: "navigation.stopConfirmTitle"),
+                .trakkeDialog(
                     isPresented: $showStopConfirmation,
-                    titleVisibility: .visible
-                ) {
-                    Button(String(localized: "navigation.stop"), role: .destructive) {
+                    title: String(localized: "navigation.stopConfirmTitle"),
+                    primary: .destructive(String(localized: "common.yes")) {
                         stopNavigation()
-                    }
-                }
+                    },
+                    cancel: .cancel(String(localized: "common.no"))
+                )
             }
 
-            if navigationViewModel.isComputingRoute {
+            if showRouteComputingIndicator {
                 VStack {
                     Spacer()
                     HStack(spacing: .Trakke.sm) {
                         ProgressView()
+                            .tint(Color.Trakke.brand)
                         Text(String(localized: "navigation.computingRoute"))
                             .font(Font.Trakke.bodyRegular)
+                            .foregroundStyle(Color.Trakke.text)
                     }
                     .padding(.horizontal, .Trakke.lg)
                     .padding(.vertical, .Trakke.sm)
                     .background(.regularMaterial)
                     .clipShape(Capsule())
                     .padding(.bottom, .Trakke.lg)
+                    .accessibilityElement(children: .combine)
+                    .accessibilityLabel(String(localized: "navigation.computingRoute"))
+                    .accessibilityAddTraits(.updatesFrequently)
                 }
                 .safeAreaPadding(.bottom)
+                .transition(.opacity.combined(with: .scale(scale: 0.96)))
             }
 
             ModeToolbar(
@@ -367,6 +412,7 @@ struct ContentView: View {
                     formattedDistance: activityViewModel.formattedDistance,
                     formattedDuration: activityViewModel.formattedDuration,
                     formattedElevationGain: activityViewModel.formattedElevationGain,
+                    stackBelowNav: navigationViewModel.isActive,
                     onStop: { sheets.active = .activitySave }
                 )
             }
@@ -403,275 +449,61 @@ struct ContentView: View {
         .onChange(of: measurementViewModel.isActive) { _, isActive in
             if isActive, sheets.active == .measurement { sheets.active = nil }
         }
-        .alert(
-            String(localized: "navigation.routeErrorTitle"),
-            isPresented: $showRouteError
-        ) {
-            Button(String(localized: "common.ok")) {}
-        } message: {
-            Text(navigationViewModel.routeError ?? String(localized: "navigation.routeErrorGeneric"))
-        }
-        .alert(
-            String(localized: "settings.dbRecovery.title"),
-            isPresented: $showDbRecoveryAlert
-        ) {
-            Button(String(localized: "common.ok")) {}
-        } message: {
-            Text(String(localized: "settings.dbRecovery.message"))
-        }
-        .alert(
-            String(localized: "error.saveFailed"),
+        .trakkeDialog(
+            isPresented: $showRouteError,
+            title: String(localized: "navigation.routeErrorTitle"),
+            message: navigationViewModel.routeError ?? String(localized: "navigation.routeErrorGeneric"),
+            buttons: [.primary(String(localized: "common.ok")) {}]
+        )
+        .trakkeDialog(
+            isPresented: $showDbRecoveryAlert,
+            title: String(localized: "settings.dbRecovery.title"),
+            message: String(localized: "settings.dbRecovery.message"),
+            buttons: [.primary(String(localized: "common.ok")) {}]
+        )
+        .trakkeDialog(
             isPresented: Binding(
                 get: { routeViewModel.saveError != nil || waypointViewModel.saveError != nil || activityViewModel.saveError != nil },
                 set: { if !$0 { routeViewModel.saveError = nil; waypointViewModel.saveError = nil; activityViewModel.saveError = nil } }
-            )
-        ) {
-            Button(String(localized: "common.ok")) {}
-        } message: {
-            Text(routeViewModel.saveError ?? waypointViewModel.saveError ?? activityViewModel.saveError ?? "")
-        }
-        .confirmationDialog(
-            "",
+            ),
+            title: String(localized: "error.saveFailed"),
+            message: routeViewModel.saveError ?? waypointViewModel.saveError ?? activityViewModel.saveError ?? "",
+            buttons: [.primary(String(localized: "common.ok")) {}]
+        )
+        .trakkeDialog(
             isPresented: Binding(
                 get: { longPressCoordinate != nil },
                 set: { if !$0 { longPressCoordinate = nil } }
             ),
-            titleVisibility: .hidden
-        ) {
-            Button(String(localized: "waypoints.addWaypoint")) {
-                if let coord = longPressCoordinate {
-                    waypointViewModel.startPlacing(at: coord)
-                    sheets.editingWaypoint = nil
-                    sheets.active = .waypointEdit
-                }
-            }
-            Button(String(localized: "navigation.navigateHere")) {
-                if let coord = longPressCoordinate {
-                    navigationDestination = coord
-                    sheets.active = .navigationStart
-                }
-            }
-        }
+            buttons: [
+                .primary(String(localized: "waypoints.addWaypoint")) {
+                    if let coord = longPressCoordinate {
+                        waypointViewModel.startPlacing(at: coord)
+                        sheets.editingWaypoint = nil
+                        // Utsett sheet-presentasjon én runloop-tick så
+                        // fullScreenCover-dialog rekker å dismisses før ny sheet
+                        // prøver å presentere (unngår presentasjons-race).
+                        DispatchQueue.main.async {
+                            sheets.active = .waypointEdit
+                        }
+                    }
+                },
+                .primary(String(localized: "navigation.navigateHere")) {
+                    if let coord = longPressCoordinate {
+                        navigationDestination = coord
+                        DispatchQueue.main.async {
+                            sheets.active = .navigationStart
+                        }
+                    }
+                },
+                .cancel()
+            ]
+        )
     }
 
     // ModeToolbar moved to Views/Map/ModeToolbar.swift.
 
-    // MARK: - Sheet Routing
-
-    @ViewBuilder
-    private func sheetContent(for active: ActiveSheet) -> some View {
-        switch active {
-        case .search:
-            SearchSheet(
-                viewModel: searchViewModel,
-                onResultSelected: { result in
-                    mapViewModel.searchPinCoordinate = result.coordinate
-                    mapViewModel.centerOn(coordinate: result.coordinate, zoom: 14)
-                }
-            )
-            .presentationDetents([.medium, .large])
-            .presentationDragIndicator(.visible)
-
-        case .categoryPicker:
-            CategoryPickerSheet(viewModel: poiViewModel)
-                .presentationDetents([.large])
-                .presentationDragIndicator(.visible)
-
-        case .poiDetail:
-            if let poi = poiViewModel.selectedPOI {
-                POIDetailSheet(
-                    poi: poi,
-                    onNavigate: { coordinate in
-                        navigationDestination = coordinate
-                        sheets.active = .navigationStart
-                    }
-                )
-                .presentationDetents([.medium, .large])
-                .presentationDragIndicator(.visible)
-            }
-
-        case .routeList:
-            RouteListSheet(
-                viewModel: routeViewModel,
-                onRouteSelected: { route in
-                    sheets.active = nil
-                    startFollowingRoute(route)
-                },
-                onNewRoute: {
-                    routeViewModel.startDrawing()
-                }
-            )
-            .presentationDetents([.medium, .large])
-            .presentationDragIndicator(.visible)
-
-        case .routeSave:
-            RouteSaveSheet(viewModel: routeViewModel)
-                .presentationDetents([.medium])
-                .presentationDragIndicator(.visible)
-
-        case .merSheet:
-            MerSheet(
-                routeViewModel: routeViewModel,
-                waypointViewModel: waypointViewModel,
-                activityViewModel: activityViewModel,
-                knowledgeViewModel: knowledgeViewModel,
-                mapViewModel: mapViewModel,
-                offlineViewModel: offlineViewModel,
-                onRouteSelected: { route in
-                    startFollowingRoute(route)
-                },
-                onNewRoute: {
-                    routeViewModel.startDrawing()
-                },
-                onWaypointEdit: { wp in
-                    sheets.editingWaypoint = wp
-                    sheets.active = .waypointEdit
-                },
-                onWaypointNavigate: { coordinate in
-                    navigationDestination = coordinate
-                    sheets.active = .navigationStart
-                },
-                onActivityRetrace: { coordinate in
-                    navigationDestination = coordinate
-                    sheets.active = .navigationStart
-                },
-                onActivityFollow: { activity in
-                    followActivity(activity)
-                },
-                onStartRecording: {
-                    startActivityRecording()
-                },
-                onMeasurementTapped: { sheets.active = .measurement },
-                onOfflineTapped: { sheets.active = .offlineSetup },
-                onDeleteAllData: clearAllServiceCaches
-            )
-
-        case .waypointList:
-            WaypointListSheet(
-                viewModel: waypointViewModel,
-                onWaypointSelected: { _ in },
-                onWaypointEdit: { wp in
-                    sheets.editingWaypoint = wp
-                    sheets.active = .waypointEdit
-                },
-                onWaypointNavigate: { coordinate in
-                    navigationDestination = coordinate
-                    sheets.active = .navigationStart
-                }
-            )
-            .presentationDetents([.medium, .large])
-            .presentationDragIndicator(.visible)
-
-        case .waypointDetail:
-            if let wp = waypointViewModel.selectedWaypoint {
-                WaypointDetailSheet(
-                    viewModel: waypointViewModel,
-                    waypoint: wp,
-                    onEdit: { waypoint in
-                        sheets.editingWaypoint = waypoint
-                        sheets.active = .waypointEdit
-                    },
-                    onNavigate: { coordinate in
-                        navigationDestination = coordinate
-                        sheets.active = .navigationStart
-                    }
-                )
-                .presentationDetents([.medium, .large])
-                .presentationDragIndicator(.visible)
-            }
-
-        case .waypointEdit:
-            WaypointEditSheet(
-                viewModel: waypointViewModel,
-                editingWaypoint: sheets.editingWaypoint
-            )
-            .presentationDetents([.medium])
-            .presentationDragIndicator(.visible)
-
-        case .offlineManager:
-            DownloadManagerSheet(
-                viewModel: offlineViewModel,
-                onNewDownload: {
-                    sheets.active = .offlineSetup
-                }
-            )
-            .presentationDetents([.medium, .large])
-            .presentationDragIndicator(.visible)
-
-        case .downloadArea:
-            DownloadAreaSheet(viewModel: offlineViewModel)
-                .presentationDetents([.medium, .large])
-                .presentationDragIndicator(.visible)
-
-        case .offlineSetup:
-            OfflineSetupSheet(
-                viewModel: offlineViewModel,
-                onCustom: {
-                    offlineViewModel.startSelection(
-                        center: mapViewModel.currentCenter,
-                        zoom: mapViewModel.currentZoom
-                    )
-                }
-            )
-
-        case .weather:
-            WeatherSheet(viewModel: weatherViewModel)
-                .presentationDetents([.large])
-                .presentationDragIndicator(.visible)
-
-        case .measurement:
-            MeasurementSheet(viewModel: measurementViewModel)
-                .presentationDetents([.height(200)])
-                .presentationDragIndicator(.visible)
-
-        case .navigationStart:
-            if let dest = navigationDestination {
-                NavigationStartSheet(
-                    destination: dest,
-                    userLocation: mapViewModel.userLocation,
-                    isConnected: connectivityMonitor.isConnected,
-                    onRouteNavigation: { startRouteNavigation(to: dest) },
-                    onCompassNavigation: { startCompassNavigation(to: dest) }
-                )
-                .presentationDetents([.medium])
-                .presentationDragIndicator(.visible)
-            }
-
-        case .emergency:
-            EmergencySheet(
-                userLocation: mapViewModel.userLocation,
-                sosViewModel: sosViewModel
-            )
-            .presentationDetents([.medium, .large])
-            .presentationDragIndicator(.visible)
-            .onDisappear { sosViewModel.deactivate() }
-
-        case .activityList:
-            ActivityListSheet(
-                viewModel: activityViewModel,
-                routeViewModel: routeViewModel,
-                onActivitySelected: { _ in },
-                onStartRecording: {
-                    startActivityRecording()
-                },
-                onRetrace: { coordinate in
-                    navigationDestination = coordinate
-                    sheets.active = .navigationStart
-                },
-                onFollowAgain: { activity in
-                    sheets.active = nil
-                    followActivity(activity)
-                }
-            )
-            .presentationDetents([.medium, .large])
-            .presentationDragIndicator(.visible)
-
-        case .activitySave:
-            ActivitySaveSheet(viewModel: activityViewModel)
-                .presentationDetents([.medium])
-                .presentationDragIndicator(.visible)
-        }
-    }
+    // Sheet routing lives in Views/ContentView+Sheets.swift.
 
     // MARK: - GDPR Cache Clearing
 

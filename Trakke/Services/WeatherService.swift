@@ -32,13 +32,8 @@ struct WeatherForecast: Sendable {
 
 // MARK: - Weather Service
 
-protocol WeatherFetching: Sendable {
-    func getForecast(lat: Double, lon: Double) async throws -> WeatherForecast
-    func clearCache() async
-}
-
-actor WeatherService: WeatherFetching {
-    private static let baseURL = "https://api.met.no/weatherapi/locationforecast/2.0/compact"
+actor WeatherService {
+    private static let baseURL = URL(string: "https://api.met.no/weatherapi/locationforecast/2.0/compact")!
     private static let fallbackTTL: TimeInterval = 7200 // 2 hours, used when Expires header is missing
     private static let timeout: TimeInterval = 15
 
@@ -58,25 +53,24 @@ actor WeatherService: WeatherFetching {
         cache.removeAll()
     }
 
+    /// Fetch the forecast for a coordinate. Cache policy:
+    /// - Fresh entry (within Expires header window) → return cached, no network call.
+    /// - Otherwise revalidate with If-Modified-Since. On 304 refresh TTL and return cached.
+    /// - On any network/HTTP/decode failure, return stale cached entry if available;
+    ///   otherwise propagate the error. Stale-on-error is the single fallback policy.
     func getForecast(lat: Double, lon: Double) async throws -> WeatherForecast {
         let truncLat = (lat * 10000).rounded() / 10000
         let truncLon = (lon * 10000).rounded() / 10000
         let cacheKey = "\(truncLat),\(truncLon)"
 
-        // Respect Expires header from previous response (MET ToS requirement)
         if let cached = cache[cacheKey], cached.expiresAt > Date() {
             return cached.forecast
         }
 
-        guard var components = URLComponents(string: Self.baseURL) else {
-            throw APIError.invalidURL
-        }
-        components.queryItems = [
+        let url = Self.baseURL.appending(queryItems: [
             URLQueryItem(name: "lat", value: String(truncLat)),
             URLQueryItem(name: "lon", value: String(truncLon)),
-        ]
-
-        guard let url = components.url else { throw APIError.invalidURL }
+        ])
 
         do {
             let result = try await APIClient.fetchDataConditional(
@@ -94,10 +88,7 @@ actor WeatherService: WeatherFetching {
                 return cached.forecast
             }
 
-            guard result.ok else {
-                if let cached = cache[cacheKey] { return cached.forecast }
-                throw APIError.httpError(statusCode: result.statusCode)
-            }
+            guard result.ok else { throw APIError.httpError(statusCode: result.statusCode) }
 
             let metResponse = try decoder.decode(MetApiResponse.self, from: result.data)
             let forecast = parseMetData(metResponse, lat: truncLat, lon: truncLon)
@@ -108,13 +99,8 @@ actor WeatherService: WeatherFetching {
             )
             evictStaleCacheEntries()
             return forecast
-        } catch APIError.rateLimited {
-            if let cached = cache[cacheKey] { return cached.forecast }
-            throw APIError.rateLimited
-        } catch let error as APIError {
-            throw error
         } catch {
-            if let cached = cache[cacheKey] { return cached.forecast }
+            if let stale = cache[cacheKey] { return stale.forecast }
             throw error
         }
     }

@@ -1,111 +1,9 @@
 import SwiftUI
 @preconcurrency import MapLibre
 
-// MARK: - MapView Subclass
-
-/// Prevents MapLibre from falling back to the deprecated
-/// UIViewController.automaticallyAdjustsScrollViewInsets during layout.
-/// Setting automaticallyAdjustsContentInset after super.init populates the
-/// internal _automaticallyAdjustContentInsetHolder ivar, which makes
-/// MapLibre's layout skip the deprecated VC property check entirely.
-///
-/// MapLibre 6.26.0 still emits a one-time NSLog warning during init via
-/// dispatch_once in commonInitWithOptions: (MLNMapView.mm:776-780). This
-/// fires before super.init returns, so it cannot be suppressed from consumer
-/// code. No MLNMapOptions, static method, or log-level setting can disable it.
-/// The MapLibre team has a TODO to remove it but had not acted on it through
-/// 6.26.0. The warning is cosmetic -- the subclass correctly prevents
-/// the deprecated behavior from affecting layout.
-private class TrakkeMLNMapView: MLNMapView {
-    override init(frame: CGRect, styleURL: URL?) {
-        super.init(frame: frame, styleURL: styleURL)
-        self.automaticallyAdjustsContentInset = false
-    }
-
-    @available(*, unavailable)
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) is not supported")
-    }
-}
-
-// MARK: - POI Annotation
-
-class POIAnnotation: MLNPointAnnotation {
-    let poi: POI
-
-    init(poi: POI) {
-        self.poi = poi
-        super.init()
-        self.coordinate = poi.coordinate
-        self.title = poi.name
-        self.subtitle = poi.category.displayName
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) not supported")
-    }
-}
-
-// MARK: - Indexed Point Annotations
-
-class IndexedPointAnnotation: MLNPointAnnotation {
-    let index: Int
-
-    init(coordinate: CLLocationCoordinate2D, index: Int) {
-        self.index = index
-        super.init()
-        self.coordinate = coordinate
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) not supported")
-    }
-}
-
-final class RoutePointAnnotation: IndexedPointAnnotation {}
-final class MeasurementPointAnnotation: IndexedPointAnnotation {}
-final class SelectionCornerAnnotation: IndexedPointAnnotation {}
-
-// MARK: - Waypoint Annotation
-
-class WaypointAnnotation: MLNPointAnnotation {
-    let waypoint: Waypoint
-
-    init(waypoint: Waypoint) {
-        self.waypoint = waypoint
-        super.init()
-        guard waypoint.coordinates.count >= 2 else { return }
-        self.coordinate = CLLocationCoordinate2D(
-            latitude: waypoint.coordinates[1],
-            longitude: waypoint.coordinates[0]
-        )
-        self.title = waypoint.name
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) not supported")
-    }
-}
-
-// MARK: - Search Pin Annotation
-
-class SearchPinAnnotation: MLNPointAnnotation {}
-
-// MARK: - Activity Polyline
-
-/// MLNPolyline subclass used so route-polyline refresh logic can skip these
-/// (and vice versa) by type check instead of pointer identity.
-class ActivityPolyline: MLNPolyline {}
-
-/// Wider white polyline rendered UNDERNEATH a coloured route/activity polyline
-/// to lift it visually off the Kartverket topographic background. Cartographer
-/// consensus (Knut/Monsen/Frej): a white casing is essential for legibility on
-/// any topographic map where the foreground line might compete with vegetation,
-/// trail symbols or contour lines.
-class RouteHaloPolyline: MLNPolyline {}
-class ActivityHaloPolyline: MLNPolyline {}
-
 // MARK: - Map View
+// Annotation type definitions (POIAnnotation, WaypointAnnotation, RoutePointAnnotation, …)
+// live in MapAnnotations.swift.
 
 struct TrakkeMapView: UIViewRepresentable {
     @Bindable var viewModel: MapViewModel
@@ -211,10 +109,9 @@ struct TrakkeMapView: UIViewRepresentable {
     }
 
     func updateUIView(_ mapView: MLNMapView, context: Context) {
-        // Show MapLibre's built-in compass only when the camera is rotating with
-        // the user's heading — otherwise the rotation indicator is meaningless.
-        let showCompass = isNavigating && navigationCameraMode == .courseUp
-        mapView.compassView.compassVisibility = showCompass ? .visible : .hidden
+        // MapLibre's built-in compass kolliderer visuelt med app-en sin egen
+        // "tilbakestill nord"-knapp i MapControlsOverlay. Hold den alltid skjult.
+        mapView.compassView.compassVisibility = .hidden
         mapView.allowsRotating = enableRotation
 
         // Reset heading if requested
@@ -344,13 +241,13 @@ struct TrakkeMapView: UIViewRepresentable {
         // Replaces MapLibre's isDraggable system which conflicts with our gesture setup.
         var cornerPanGesture: UIPanGestureRecognizer?
         var isDraggingSelection = false
-        private var draggingCornerIndex: Int?
-        private var draggingMeasurementIndex: Int?
-        private var draggingRouteIndex: Int?
+        var draggingCornerIndex: Int?
+        var draggingMeasurementIndex: Int?
+        var draggingRouteIndex: Int?
 
         // Reusable haptic generators (avoids creating new instances per gesture)
-        private let lightHaptic = UIImpactFeedbackGenerator(style: .light)
-        private let mediumHaptic = UIImpactFeedbackGenerator(style: .medium)
+        let lightHaptic = UIImpactFeedbackGenerator(style: .light)
+        let mediumHaptic = UIImpactFeedbackGenerator(style: .medium)
 
         var currentPOIIds: Set<String> = []
         var currentWaypointIds: Set<String> = []
@@ -366,6 +263,8 @@ struct TrakkeMapView: UIViewRepresentable {
         var measurementPolyline: MLNPolyline?
         var measurementPolygon: MLNPolygon?
         var measurementAnnotations: [MeasurementPointAnnotation] = []
+        var lastMeasurementCoordinates: [CLLocationCoordinate2D] = []
+        var lastMeasurementMode: MeasurementMode?
         var searchPinAnnotation: SearchPinAnnotation?
         var navLayersActive = false
         var lastNavSegmentIndex = -1
@@ -399,176 +298,7 @@ struct TrakkeMapView: UIViewRepresentable {
             self.onSelectionCornerDragged = onSelectionCornerDragged
         }
 
-        // MARK: - Tap Gesture
-
-        @objc func handleMapTap(_ gesture: UITapGestureRecognizer) {
-            guard isDrawingMode || isMeasuringMode,
-                  let mapView = gesture.view as? MLNMapView else { return }
-            let point = gesture.location(in: mapView)
-            let coordinate = mapView.convert(point, toCoordinateFrom: mapView)
-            lightHaptic.impactOccurred()
-            onMapTapped?(coordinate)
-        }
-
-        @objc func handleMapLongPress(_ gesture: UILongPressGestureRecognizer) {
-            guard gesture.state == .began,
-                  !isDrawingMode, !isMeasuringMode, !isSelectingArea,
-                  let mapView = gesture.view as? MLNMapView else { return }
-            let point = gesture.location(in: mapView)
-            let coordinate = mapView.convert(point, toCoordinateFrom: mapView)
-            mediumHaptic.impactOccurred()
-            onMapLongPressed?(coordinate)
-        }
-
-        // MARK: - Gesture Recognizer Delegate
-
-        func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-            // For the custom pan gesture: begin if the touch is near any draggable point
-            // (selection corner, measurement point, or route drawing point).
-            // Returning false makes the gesture "fail", allowing the map's built-in pan to proceed.
-            if gestureRecognizer === cornerPanGesture {
-                guard let mapView = gestureRecognizer.view as? MLNMapView else { return false }
-                let touchPoint = gestureRecognizer.location(in: mapView)
-                let hitRadius: CGFloat = 30
-
-                // Check selection corners
-                for annotation in selectionAnnotations {
-                    let annotationPoint = mapView.convert(annotation.coordinate, toPointTo: mapView)
-                    let dx = touchPoint.x - annotationPoint.x
-                    let dy = touchPoint.y - annotationPoint.y
-                    if dx * dx + dy * dy < hitRadius * hitRadius {
-                        draggingCornerIndex = annotation.index
-                        return true
-                    }
-                }
-
-                // Check measurement points
-                for annotation in measurementAnnotations {
-                    let annotationPoint = mapView.convert(annotation.coordinate, toPointTo: mapView)
-                    let dx = touchPoint.x - annotationPoint.x
-                    let dy = touchPoint.y - annotationPoint.y
-                    if dx * dx + dy * dy < hitRadius * hitRadius {
-                        draggingMeasurementIndex = annotation.index
-                        return true
-                    }
-                }
-
-                // Check route drawing points
-                for annotation in drawingAnnotations {
-                    let annotationPoint = mapView.convert(annotation.coordinate, toPointTo: mapView)
-                    let dx = touchPoint.x - annotationPoint.x
-                    let dy = touchPoint.y - annotationPoint.y
-                    if dx * dx + dy * dy < hitRadius * hitRadius {
-                        draggingRouteIndex = annotation.index
-                        return true
-                    }
-                }
-
-                return false
-            }
-            return true
-        }
-
-        func gestureRecognizer(
-            _ gestureRecognizer: UIGestureRecognizer,
-            shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
-        ) -> Bool {
-            // Never allow the corner pan gesture to fire simultaneously with any other pan.
-            if gestureRecognizer === cornerPanGesture || otherGestureRecognizer === cornerPanGesture {
-                return false
-            }
-            return true
-        }
-
-        // MARK: - Custom Point Drag Gesture
-
-        @objc func handleCornerPan(_ gesture: UIPanGestureRecognizer) {
-            guard let mapView = gesture.view as? MLNMapView else { return }
-            let touchPoint = gesture.location(in: mapView)
-            let coord = mapView.convert(touchPoint, toCoordinateFrom: mapView)
-
-            if let cornerIndex = draggingCornerIndex {
-                handleSelectionCornerDrag(gesture, mapView: mapView, cornerIndex: cornerIndex, coord: coord)
-            } else if let measureIndex = draggingMeasurementIndex {
-                handleMeasurementPointDrag(gesture, mapView: mapView, pointIndex: measureIndex, coord: coord)
-            } else if let routeIndex = draggingRouteIndex {
-                handleRoutePointDrag(gesture, mapView: mapView, pointIndex: routeIndex, coord: coord)
-            }
-        }
-
-        private func handleSelectionCornerDrag(
-            _ gesture: UIPanGestureRecognizer,
-            mapView: MLNMapView,
-            cornerIndex: Int,
-            coord: CLLocationCoordinate2D
-        ) {
-            let sorted = selectionAnnotations.sorted { $0.index < $1.index }
-            switch gesture.state {
-            case .began:
-                isDraggingSelection = true
-                mediumHaptic.impactOccurred()
-            case .changed:
-                if cornerIndex < sorted.count { sorted[cornerIndex].coordinate = coord }
-                rebuildSelectionRect(on: mapView)
-            case .ended, .cancelled:
-                if cornerIndex < sorted.count { sorted[cornerIndex].coordinate = coord }
-                isDraggingSelection = false
-                draggingCornerIndex = nil
-                rebuildSelectionRect(on: mapView)
-                onSelectionCornerDragged?(cornerIndex, coord)
-            default: break
-            }
-        }
-
-        private func handleMeasurementPointDrag(
-            _ gesture: UIPanGestureRecognizer,
-            mapView: MLNMapView,
-            pointIndex: Int,
-            coord: CLLocationCoordinate2D
-        ) {
-            switch gesture.state {
-            case .began:
-                mediumHaptic.impactOccurred()
-            case .changed:
-                if pointIndex < measurementAnnotations.count {
-                    measurementAnnotations[pointIndex].coordinate = coord
-                }
-                rebuildMeasurementShape(on: mapView)
-            case .ended, .cancelled:
-                if pointIndex < measurementAnnotations.count {
-                    measurementAnnotations[pointIndex].coordinate = coord
-                }
-                draggingMeasurementIndex = nil
-                rebuildMeasurementShape(on: mapView)
-                onMeasurementPointDragged?(pointIndex, coord)
-            default: break
-            }
-        }
-
-        private func handleRoutePointDrag(
-            _ gesture: UIPanGestureRecognizer,
-            mapView: MLNMapView,
-            pointIndex: Int,
-            coord: CLLocationCoordinate2D
-        ) {
-            switch gesture.state {
-            case .began:
-                mediumHaptic.impactOccurred()
-            case .changed:
-                if pointIndex < drawingAnnotations.count {
-                    drawingAnnotations[pointIndex].coordinate = coord
-                }
-                rebuildDrawingPolyline(on: mapView)
-            case .ended, .cancelled:
-                if pointIndex < drawingAnnotations.count {
-                    drawingAnnotations[pointIndex].coordinate = coord
-                }
-                draggingRouteIndex = nil
-                rebuildDrawingPolyline(on: mapView)
-                onRoutePointDragged?(pointIndex, coord)
-            default: break
-            }
-        }
+        // Gesture handlers live in TrakkeMapView+Gestures.swift.
 
         // MARK: - Map Delegate
 
@@ -628,135 +358,7 @@ struct TrakkeMapView: UIViewRepresentable {
             }
         }
 
-        // MARK: - Overlay Layer Management
-
-        func updateOverlays(on mapView: MLNMapView, enabled: Set<OverlayLayer>) {
-            desiredOverlays = enabled
-            reconcileOverlays(with: mapView.style)
-        }
-
-        private func reconcileOverlays(with style: MLNStyle?) {
-            guard let style else { return }
-
-            // Verify applied overlays actually exist in the style.
-            // If a style reload happened without going through didFinishLoading
-            // (e.g., fullScreenCover dismiss), layers may be gone but tracking stale.
-            let stale = appliedOverlays.filter { style.layer(withIdentifier: $0.layerID) == nil }
-            if !stale.isEmpty {
-                appliedOverlays.subtract(stale)
-            }
-
-            guard desiredOverlays != appliedOverlays else { return }
-
-            let toRemove = appliedOverlays.subtracting(desiredOverlays)
-            let toAdd = desiredOverlays.subtracting(appliedOverlays)
-
-            for overlay in toRemove {
-                removeOverlayLayer(overlay, from: style)
-            }
-            for overlay in toAdd {
-                addOverlayLayer(overlay, to: style)
-            }
-
-            appliedOverlays = desiredOverlays
-        }
-
-        private func addOverlayLayer(_ overlay: OverlayLayer, to style: MLNStyle) {
-            if overlay == .hillshading {
-                addHillshadeLayer(to: style)
-                return
-            }
-
-            guard style.source(withIdentifier: overlay.sourceID) == nil,
-                  let tileURL = overlay.tileURL else { return }
-
-            let source = MLNRasterTileSource(
-                identifier: overlay.sourceID,
-                tileURLTemplates: [tileURL],
-                options: [
-                    .tileSize: 256,
-                    .minimumZoomLevel: overlay.minZoom,
-                    .maximumZoomLevel: overlay.maxZoom,
-                ]
-            )
-            style.addSource(source)
-
-            let layer = MLNRasterStyleLayer(identifier: overlay.layerID, source: source)
-            layer.rasterOpacity = NSExpression(forConstantValue: overlay.opacity)
-            style.addLayer(layer)
-        }
-
-        private func removeOverlayLayer(_ overlay: OverlayLayer, from style: MLNStyle) {
-            if overlay == .hillshading {
-                removeHillshadeLayer(from: style)
-                return
-            }
-
-            if let layer = style.layer(withIdentifier: overlay.layerID) {
-                style.removeLayer(layer)
-            }
-            if let source = style.source(withIdentifier: overlay.sourceID) {
-                style.removeSource(source)
-            }
-        }
-
-        // MARK: - Client-Side DEM Hillshade
-
-        private func addHillshadeLayer(to style: MLNStyle) {
-            guard style.source(withIdentifier: TerrainConstants.demSourceID) == nil else { return }
-
-            let demSource = MLNRasterDEMSource(
-                identifier: TerrainConstants.demSourceID,
-                tileURLTemplates: [TerrainConstants.demTileURL],
-                options: [
-                    .tileSize: 256,
-                    .minimumZoomLevel: MapConstants.minZoom,
-                    .maximumZoomLevel: TerrainConstants.maxDEMZoom,
-                    .demEncoding: NSNumber(value: MLNDEMEncoding.terrarium.rawValue),
-                ]
-            )
-            style.addSource(demSource)
-
-            let hillshade = MLNHillshadeStyleLayer(
-                identifier: TerrainConstants.hillshadeLayerID,
-                source: demSource
-            )
-            hillshade.hillshadeExaggeration = NSExpression(
-                forConstantValue: NSNumber(value: TerrainConstants.defaultExaggeration)
-            )
-            // MapLibre 6.24+ added multidirectional hillshade. illuminationDirection,
-            // shadowColor and highlightColor now accept arrays (one entry per light
-            // source). Passing a scalar triggers `-[__NSCFNumber count]` / similar
-            // crashes when the layer renders. Accent color stays scalar.
-            hillshade.hillshadeIlluminationDirection = NSExpression(
-                forConstantValue: [NSNumber(value: TerrainConstants.defaultIlluminationDirection)]
-            )
-            hillshade.hillshadeIlluminationAnchor = NSExpression(
-                forConstantValue: "viewport"
-            )
-            hillshade.hillshadeShadowColor = NSExpression(
-                forConstantValue: [UIColor(white: 0.0, alpha: 0.8)]
-            )
-            hillshade.hillshadeAccentColor = NSExpression(
-                forConstantValue: UIColor(white: 0.0, alpha: 0.15)
-            )
-
-            if let baseLayer = style.layer(withIdentifier: viewModel.baseLayer.layerID) {
-                style.insertLayer(hillshade, above: baseLayer)
-            } else {
-                style.addLayer(hillshade)
-            }
-        }
-
-        private func removeHillshadeLayer(from style: MLNStyle) {
-            if let layer = style.layer(withIdentifier: TerrainConstants.hillshadeLayerID) {
-                style.removeLayer(layer)
-            }
-            if let source = style.source(withIdentifier: TerrainConstants.demSourceID) {
-                style.removeSource(source)
-            }
-        }
-
+        // Overlay layer + hillshade management lives in TrakkeMapView+Overlays.swift.
 
         // Note: MapLibre's built-in annotation drag (didChange dragState) is not used.
         // All point dragging is handled by our custom pan gesture (handleCornerPan)

@@ -4,6 +4,13 @@ import OSLog
 /// Displays the user guide fetched from GitHub.
 /// Content updates automatically when Brukerveiledning.md is updated in the repo.
 struct UserGuideSheet: View {
+    /// Inline-modus: ingen egen NavigationStack — kalleren har allerede en
+    /// NavigationStack og bruker visningen som push-destinasjon.
+    var inline = false
+    /// Embedded-modus: rendrer kun markdown-blokkene uten egen ScrollView,
+    /// uten navigation-tittel og uten back-to-top-knapp. Brukes når
+    /// visningen sitter inni en akkordeon eller annen container.
+    var embedded = false
     @State private var markdown: String?
     @State private var isLoading = true
 
@@ -12,28 +19,59 @@ struct UserGuideSheet: View {
     )!
 
     var body: some View {
-        NavigationStack {
-            Group {
-                if isLoading {
-                    ProgressView()
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                } else if let markdown, !markdown.isEmpty {
-                    UserGuideBodyView(markdown: markdown)
-                } else {
-                    ContentUnavailableView(
-                        String(localized: "userguide.unavailable"),
-                        systemImage: "doc.text",
-                        description: Text(String(localized: "userguide.unavailable.detail"))
-                    )
+        Group {
+            if embedded {
+                embeddedContent
+            } else if inline {
+                content
+            } else {
+                NavigationStack {
+                    content
                 }
             }
-            .background(Color(.systemGroupedBackground))
-            .tint(Color.Trakke.brand)
-            .navigationTitle(String(localized: "userguide.title"))
-            .navigationBarTitleDisplayMode(.inline)
         }
         .task {
             await loadGuide()
+        }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        Group {
+            if isLoading {
+                ProgressView()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else if let markdown, !markdown.isEmpty {
+                UserGuideBodyView(markdown: markdown)
+            } else {
+                ContentUnavailableView(
+                    String(localized: "userguide.unavailable"),
+                    systemImage: "doc.text",
+                    description: Text(String(localized: "userguide.unavailable.detail"))
+                )
+            }
+        }
+        .background(Color.Trakke.background)
+        .tint(Color.Trakke.brand)
+        .navigationTitle(String(localized: "userguide.title"))
+        .navigationBarTitleDisplayMode(.inline)
+    }
+
+    @ViewBuilder
+    private var embeddedContent: some View {
+        if isLoading {
+            HStack {
+                ProgressView()
+                Spacer()
+            }
+            .padding(.vertical, .Trakke.sm)
+        } else if let markdown, !markdown.isEmpty {
+            UserGuideBodyView(markdown: markdown, embedded: true)
+        } else {
+            Text(String(localized: "userguide.unavailable"))
+                .font(Font.Trakke.bodyRegular)
+                .foregroundStyle(Color.Trakke.textSoft)
+                .padding(.vertical, .Trakke.sm)
         }
     }
 
@@ -62,6 +100,9 @@ struct UserGuideSheet: View {
 /// Renders the user guide as a single continuous scroll with section headings as landmarks.
 private struct UserGuideBodyView: View {
     let markdown: String
+    /// Embedded: render kun blokkene i en VStack — parent håndterer scroll,
+    /// og back-to-top er ikke relevant (akkordeonen kollapser i stedet).
+    var embedded: Bool = false
     @State private var parsedBlocks: [MarkdownBlock]?
     @State private var showBackToTop = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -76,28 +117,33 @@ private struct UserGuideBodyView: View {
     var body: some View {
         let blocks = parsedBlocks ?? []
 
+        Group {
+            if embedded {
+                blocksList(blocks: blocks, includeTopAnchor: false)
+            } else {
+                fullScrollBody(blocks: blocks)
+            }
+        }
+        .task(id: markdown) {
+            parsedBlocks = MarkdownParser.parse(markdown, options: Self.parseOptions)
+        }
+    }
+
+    @ViewBuilder
+    private func fullScrollBody(blocks: [MarkdownBlock]) -> some View {
         ScrollViewReader { proxy in
             ScrollView {
-                VStack(alignment: .leading, spacing: .Trakke.md) {
-                    Color.clear.frame(height: 0).id(Self.topID)
-
-                    ForEach(Array(blocks.enumerated()), id: \.offset) { index, block in
-                        blockView(block)
-                            .id(anchorID(for: block) ?? "block-\(index)")
-                    }
-
-                    Spacer(minLength: .Trakke.xxl)
-                }
-                .padding(.horizontal, .Trakke.sheetHorizontal)
-                .padding(.top, .Trakke.sheetTop)
-                .background(
-                    GeometryReader { geo in
-                        Color.clear.preference(
-                            key: ScrollOffsetKey.self,
-                            value: geo.frame(in: .named("guideScroll")).minY
-                        )
-                    }
-                )
+                blocksList(blocks: blocks, includeTopAnchor: true)
+                    .padding(.horizontal, .Trakke.sheetHorizontal)
+                    .padding(.top, .Trakke.sheetTop)
+                    .background(
+                        GeometryReader { geo in
+                            Color.clear.preference(
+                                key: ScrollOffsetKey.self,
+                                value: geo.frame(in: .named("guideScroll")).minY
+                            )
+                        }
+                    )
             }
             .coordinateSpace(name: "guideScroll")
             .onPreferenceChange(ScrollOffsetKey.self) { offset in
@@ -120,7 +166,7 @@ private struct UserGuideBodyView: View {
                             .foregroundStyle(Color.Trakke.brand)
                             .frame(width: .Trakke.touchMin, height: .Trakke.touchMin)
                             .background(.regularMaterial)
-                            .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.md))
+                            .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))
                             .trakkeControlShadow()
                     }
                     .padding(.trailing, .Trakke.sheetHorizontal)
@@ -130,8 +176,19 @@ private struct UserGuideBodyView: View {
                 }
             }
         }
-        .task(id: markdown) {
-            parsedBlocks = MarkdownParser.parse(markdown, options: Self.parseOptions)
+    }
+
+    @ViewBuilder
+    private func blocksList(blocks: [MarkdownBlock], includeTopAnchor: Bool) -> some View {
+        VStack(alignment: .leading, spacing: .Trakke.md) {
+            if includeTopAnchor {
+                Color.clear.frame(height: 0).id(Self.topID)
+            }
+            ForEach(Array(blocks.enumerated()), id: \.offset) { index, block in
+                blockView(block)
+                    .id(anchorID(for: block) ?? "block-\(index)")
+            }
+            Spacer(minLength: embedded ? .Trakke.md : .Trakke.xxl)
         }
     }
 

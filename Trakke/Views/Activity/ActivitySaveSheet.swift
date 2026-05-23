@@ -45,7 +45,7 @@ struct ActivitySaveSheet: View {
                 .padding(.horizontal, .Trakke.sheetHorizontal)
                 .padding(.top, .Trakke.sheetTop)
             }
-            .background(Color(.systemGroupedBackground))
+            .background(Color.Trakke.background)
             .tint(Color.Trakke.brand)
             .navigationTitle(String(localized: "activity.save.title"))
             .navigationBarTitleDisplayMode(.inline)
@@ -69,18 +69,16 @@ struct ActivitySaveSheet: View {
                     }
                 }
             }
-            .confirmationDialog(
-                String(localized: "activity.discard.title"),
+            .trakkeDialog(
                 isPresented: $showDiscardConfirmation,
-                titleVisibility: .visible
-            ) {
-                Button(String(localized: "activity.discard.confirm"), role: .destructive) {
+                title: String(localized: "activity.discard.title"),
+                message: String(localized: "activity.discard.message"),
+                primary: .destructive(String(localized: "common.yes")) {
                     viewModel.stopWithoutSaving()
                     dismiss()
-                }
-            } message: {
-                Text(String(localized: "activity.discard.message"))
-            }
+                },
+                cancel: .cancel(String(localized: "common.no"))
+            )
             .onAppear {
                 name = defaultName
                 isNameFocused = true

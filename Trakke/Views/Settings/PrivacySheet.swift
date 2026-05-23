@@ -5,6 +5,13 @@ import OSLog
 /// UserGuideSheet: fetch the live `PERSONVERN.md` from the GitHub repo so users
 /// see updates between app releases, with the bundled copy as offline fallback.
 struct PrivacySheet: View {
+    /// Inline-modus: ingen egen NavigationStack — kalleren har allerede en
+    /// NavigationStack og bruker visningen som push-destinasjon.
+    var inline = false
+    /// Embedded-modus: rendrer kun markdown-blokkene uten egen ScrollView
+    /// og uten navigation-tittel. Brukes når visningen sitter inni en
+    /// akkordeon.
+    var embedded = false
     @State private var markdown: String?
     @State private var isLoading = true
 
@@ -13,28 +20,59 @@ struct PrivacySheet: View {
     )!
 
     var body: some View {
-        NavigationStack {
-            Group {
-                if isLoading {
-                    ProgressView()
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                } else if let markdown, !markdown.isEmpty {
-                    PrivacyBodyView(markdown: markdown)
-                } else {
-                    ContentUnavailableView(
-                        String(localized: "privacy.unavailable"),
-                        systemImage: "hand.raised",
-                        description: Text(String(localized: "privacy.unavailable.detail"))
-                    )
+        Group {
+            if embedded {
+                embeddedContent
+            } else if inline {
+                content
+            } else {
+                NavigationStack {
+                    content
                 }
             }
-            .background(Color(.systemGroupedBackground))
-            .tint(Color.Trakke.brand)
-            .navigationTitle(String(localized: "info.privacy.policy"))
-            .navigationBarTitleDisplayMode(.inline)
         }
         .task {
             await loadPrivacy()
+        }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        Group {
+            if isLoading {
+                ProgressView()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else if let markdown, !markdown.isEmpty {
+                PrivacyBodyView(markdown: markdown)
+            } else {
+                ContentUnavailableView(
+                    String(localized: "privacy.unavailable"),
+                    systemImage: "hand.raised",
+                    description: Text(String(localized: "privacy.unavailable.detail"))
+                )
+            }
+        }
+        .background(Color.Trakke.background)
+        .tint(Color.Trakke.brand)
+        .navigationTitle(String(localized: "info.privacy.policy"))
+        .navigationBarTitleDisplayMode(.inline)
+    }
+
+    @ViewBuilder
+    private var embeddedContent: some View {
+        if isLoading {
+            HStack {
+                ProgressView()
+                Spacer()
+            }
+            .padding(.vertical, .Trakke.sm)
+        } else if let markdown, !markdown.isEmpty {
+            PrivacyBodyView(markdown: markdown, embedded: true)
+        } else {
+            Text(String(localized: "privacy.unavailable"))
+                .font(Font.Trakke.bodyRegular)
+                .foregroundStyle(Color.Trakke.textSoft)
+                .padding(.vertical, .Trakke.sm)
         }
     }
 
@@ -64,6 +102,8 @@ struct PrivacySheet: View {
 /// pipeline as the user guide, plus table support for the data-sources section.
 private struct PrivacyBodyView: View {
     let markdown: String
+    /// Embedded: render kun blokkene i en VStack — parent håndterer scroll.
+    var embedded: Bool = false
     @State private var parsedBlocks: [MarkdownBlock]?
 
     private static let parseOptions = MarkdownParserOptions(
@@ -75,18 +115,29 @@ private struct PrivacyBodyView: View {
     var body: some View {
         let blocks = parsedBlocks ?? []
 
-        ScrollView {
-            VStack(alignment: .leading, spacing: .Trakke.md) {
-                ForEach(Array(blocks.enumerated()), id: \.offset) { _, block in
-                    blockView(block)
+        Group {
+            if embedded {
+                blocksList(blocks: blocks)
+            } else {
+                ScrollView {
+                    blocksList(blocks: blocks)
+                        .padding(.horizontal, .Trakke.sheetHorizontal)
+                        .padding(.top, .Trakke.sheetTop)
                 }
-                Spacer(minLength: .Trakke.xxl)
             }
-            .padding(.horizontal, .Trakke.sheetHorizontal)
-            .padding(.top, .Trakke.sheetTop)
         }
         .task(id: markdown) {
             parsedBlocks = MarkdownParser.parse(markdown, options: Self.parseOptions)
+        }
+    }
+
+    @ViewBuilder
+    private func blocksList(blocks: [MarkdownBlock]) -> some View {
+        VStack(alignment: .leading, spacing: .Trakke.md) {
+            ForEach(Array(blocks.enumerated()), id: \.offset) { _, block in
+                blockView(block)
+            }
+            Spacer(minLength: embedded ? .Trakke.md : .Trakke.xxl)
         }
     }
 

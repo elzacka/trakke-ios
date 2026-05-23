@@ -30,7 +30,7 @@ struct MeasurementSheet: View {
             .padding(.top, .Trakke.sheetTop)
             .padding(.bottom, .Trakke.sm)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-            .background(Color(.systemGroupedBackground))
+            .background(Color.Trakke.background)
             .tint(Color.Trakke.brand)
             .navigationTitle(String(localized: "measurement.title"))
             .navigationBarTitleDisplayMode(.inline)

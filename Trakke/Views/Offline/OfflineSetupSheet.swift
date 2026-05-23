@@ -1,60 +1,39 @@
 import SwiftUI
 
-// MARK: - Tab Identitet
-
-private enum OfflineSetupTab: Hashable, CaseIterable, Identifiable {
-    case custom
-    case kommune
-
-    var id: Self { self }
-
-    var localizedTitle: String {
-        switch self {
-        case .custom: return String(localized: "offline.choice.custom")
-        case .kommune: return String(localized: "offline.choice.kommune")
-        }
-    }
-}
-
-// MARK: - OfflineSetupSheet
-
 /// Konsolidert flate for å starte nedlasting av et offline-kartområde.
-/// Erstatter OfflineChoiceSheet og KommuneBrowserSheet — to flater er
-/// nå én sheet med segmenter. KommuneDetailView pushes fortsatt via
-/// NavigationStack.
+/// Én sammenhengende liste i Tråkkes menyvalg-standard: én rad for å tegne
+/// eget område på kartet, og kommune-tre under (alfabetisk per fylke).
+/// KommuneDetailView pushes via parent NavigationStack når en kommune velges.
 struct OfflineSetupSheet: View {
     @Bindable var viewModel: OfflineViewModel
     var onCustom: () -> Void
+    /// Inline-modus: ingen NavigationStack/title/presentationDetents — kalleren
+    /// (f.eks. Verktøy-fanen) gir sin egen NavigationStack og sheet-kontekst.
+    var inline = false
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var selectedTab: OfflineSetupTab = .custom
     @State private var expandedFylker: Set<String> = []
 
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 0) {
-                Picker("", selection: $selectedTab) {
-                    ForEach(OfflineSetupTab.allCases) { tab in
-                        Text(tab.localizedTitle).tag(tab)
-                    }
-                }
-                .pickerStyle(.segmented)
-                .padding(.horizontal, .Trakke.sheetHorizontal)
-                .padding(.vertical, .Trakke.sm)
-
-                Group {
-                    switch selectedTab {
-                    case .custom: customContent
-                    case .kommune: kommuneContent
-                    }
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        if inline {
+            innerContent
+        } else {
+            NavigationStack {
+                innerContent
             }
-            .background(Color(.systemGroupedBackground))
+            .presentationDetents([.large])
+            .presentationDragIndicator(.visible)
+        }
+    }
+
+    private var innerContent: some View {
+        scrollableContent
+            .background(Color.Trakke.background)
             .tint(Color.Trakke.brand)
-            .navigationTitle(String(localized: "offline.choice.title"))
+            .navigationTitle(inline ? "" : String(localized: "offline.choice.title"))
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar(inline ? .hidden : .visible, for: .navigationBar)
             .navigationDestination(for: KommuneRegion.self) { kommune in
                 KommuneDetailView(kommune: kommune, viewModel: viewModel)
             }
@@ -64,159 +43,126 @@ struct OfflineSetupSheet: View {
             )
             .searchSuggestions {}
             .onAppear {
-                if selectedTab == .kommune {
-                    viewModel.loadKommuner()
-                }
+                viewModel.loadKommuner()
             }
-            .onChange(of: selectedTab) { _, newTab in
-                if newTab == .kommune {
-                    viewModel.loadKommuner()
-                }
-            }
-        }
-        .presentationDetents([.large])
-        .presentationDragIndicator(.visible)
     }
 
-    // MARK: - Tab: Egendefinert
-
-    private var customContent: some View {
+    private var scrollableContent: some View {
         ScrollView {
             VStack(spacing: .Trakke.cardGap) {
-                CardSection {
-                    VStack(alignment: .leading, spacing: .Trakke.md) {
-                        Text(String(localized: "offline.choice.custom.subtitle"))
-                            .font(Font.Trakke.bodyRegular)
-                            .foregroundStyle(Color.Trakke.textSecondary)
-                            .fixedSize(horizontal: false, vertical: true)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-
-                        Button {
+                // Tegn eget område på kartet
+                CardSection(String(localized: "offline.choice.custom")) {
+                    TrakkeMenuRow(
+                        label: String(localized: "offline.selectArea"),
+                        action: {
                             dismiss()
                             onCustom()
-                        } label: {
-                            Label(
-                                String(localized: "offline.selectArea"),
-                                systemImage: "rectangle.dashed"
-                            )
-                            .frame(maxWidth: .infinity, alignment: .leading)
                         }
-                        .buttonStyle(.trakkePrimary)
-                    }
-                    .padding(.vertical, .Trakke.sm)
+                    )
                 }
 
-                Spacer(minLength: .Trakke.lg)
+                // Kommune-tre per fylke
+                kommuneSection
             }
             .padding(.horizontal, .Trakke.sheetHorizontal)
             .padding(.top, .Trakke.sheetTop)
+            .padding(.bottom, .Trakke.xxl)
         }
     }
-
-    // MARK: - Tab: Kommune
 
     @ViewBuilder
-    private var kommuneContent: some View {
-        if viewModel.kommuner.isEmpty {
-            EmptyStateView(
-                icon: "mappin.slash",
-                title: String(localized: "kommune.empty.title"),
-                subtitle: String(localized: "kommune.empty.subtitle")
-            )
-        } else if viewModel.filteredKommuner.isEmpty {
-            EmptyStateView(
-                icon: "magnifyingglass",
-                title: String(localized: "kommune.noResults.title"),
-                subtitle: String(localized: "kommune.noResults.subtitle")
-            )
-        } else {
-            kommuneList
+    private var kommuneSection: some View {
+        if !viewModel.kommuner.isEmpty {
+            if viewModel.filteredKommuner.isEmpty {
+                CardSection {
+                    Text(String(localized: "kommune.noResults.title"))
+                        .font(Font.Trakke.bodyRegular)
+                        .foregroundStyle(Color.Trakke.textSoft)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.vertical, .Trakke.sm)
+                }
+            } else {
+                ForEach(Array(viewModel.kommunerByFylke.enumerated()), id: \.element.fylke) { index, group in
+                    fylkeSection(
+                        group: group,
+                        sectionTitle: index == 0 ? String(localized: "kommune.section.header") : ""
+                    )
+                }
+            }
         }
     }
 
-    private var kommuneList: some View {
-        ScrollView {
-            VStack(spacing: .Trakke.sm) {
-                ForEach(viewModel.kommunerByFylke, id: \.fylke) { group in
-                    let isExpanded = !viewModel.kommuneSearchQuery.isEmpty || expandedFylker.contains(group.fylke)
-                    CardSection {
-                        Button {
-                            withAnimation(reduceMotion ? .none : .easeInOut(duration: 0.2)) {
-                                if expandedFylker.contains(group.fylke) {
-                                    expandedFylker.remove(group.fylke)
-                                } else {
-                                    expandedFylker.insert(group.fylke)
-                                }
+    private func fylkeSection(
+        group: (fylke: String, kommuner: [KommuneRegion]),
+        sectionTitle: String = ""
+    ) -> some View {
+        let isExpanded = !viewModel.kommuneSearchQuery.isEmpty || expandedFylker.contains(group.fylke)
+
+        return CardSection(sectionTitle) {
+            VStack(spacing: 0) {
+                TrakkeMenuRow(
+                    label: group.fylke,
+                    subtitle: nil,
+                    action: {
+                        withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.2)) {
+                            if expandedFylker.contains(group.fylke) {
+                                expandedFylker.remove(group.fylke)
+                            } else {
+                                expandedFylker.insert(group.fylke)
                             }
-                        } label: {
-                            HStack {
-                                Text(group.fylke)
-                                    .font(Font.Trakke.bodyMedium)
-                                    .foregroundStyle(Color.Trakke.text)
-                                Spacer()
-                                Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
-                                    .font(Font.Trakke.captionSoft)
-                                    .foregroundStyle(Color.Trakke.textTertiary)
-                            }
-                            .padding(.vertical, .Trakke.xs)
-                            .contentShape(Rectangle())
+                        }
+                    },
+                    trailing: {
+                        Image(systemName: "chevron.down")
+                            .font(Font.Trakke.captionSoft.weight(.semibold))
+                            .foregroundStyle(Color.Trakke.textSoft)
+                            .rotationEffect(.degrees(isExpanded ? 180 : 0))
+                    }
+                )
+
+                if isExpanded {
+                    ForEach(Array(group.kommuner.enumerated()), id: \.element.id) { _, kommune in
+                        Divider().padding(.leading, .Trakke.dividerLeading)
+                        NavigationLink(value: kommune) {
+                            kommuneRow(kommune)
                         }
                         .buttonStyle(.plain)
-                        .accessibilityLabel(group.fylke)
-                        .accessibilityHint(isExpanded
-                            ? String(localized: "accessibility.tapToCollapse")
-                            : String(localized: "accessibility.tapToExpand"))
-
-                        if isExpanded {
-                            ForEach(Array(group.kommuner.enumerated()), id: \.element.id) { _, kommune in
-                                Divider().padding(.leading, .Trakke.dividerLeading)
-                                NavigationLink(value: kommune) {
-                                    kommuneRow(kommune)
-                                }
-                                .buttonStyle(.plain)
-                            }
-                        }
                     }
                 }
-
-                Spacer(minLength: .Trakke.lg)
             }
-            .padding(.horizontal, .Trakke.sheetHorizontal)
-            .padding(.top, .Trakke.sheetTop)
         }
     }
 
     private func kommuneRow(_ kommune: KommuneRegion) -> some View {
-        HStack {
-            Text(kommune.name)
-                .font(Font.Trakke.bodyRegular)
-                .foregroundStyle(Color.Trakke.text)
+        let isDownloaded = viewModel.isKommuneDownloaded(kommune)
+        let sizeText: String? = {
+            guard !isDownloaded else { return nil }
+            let maxZoom = kommune.optimalMaxZoom()
+            let tiles = kommune.estimatedTileCount(minZoom: 8, maxZoom: maxZoom)
+            return OfflineMapService.formatBytes(OfflineMapService.estimateSize(tileCount: tiles))
+        }()
 
-            Spacer()
-
-            if viewModel.isKommuneDownloaded(kommune) {
-                Image(systemName: "checkmark.circle.fill")
-                    .font(Font.Trakke.caption)
-                    .foregroundStyle(Color.Trakke.brand)
-            } else {
-                let maxZoom = kommune.optimalMaxZoom()
-                let tiles = kommune.estimatedTileCount(minZoom: 8, maxZoom: maxZoom)
-                let size = OfflineMapService.formatBytes(OfflineMapService.estimateSize(tileCount: tiles))
-                Text(size)
-                    .font(Font.Trakke.captionSoft)
-                    .foregroundStyle(Color.Trakke.textTertiary)
-                    .padding(.horizontal, .Trakke.badgePadH)
-                    .padding(.vertical, .Trakke.badgePadV)
-                    .background(Color.Trakke.brandTint)
-                    .clipShape(Capsule())
+        return TrakkeMenuRow(
+            label: kommune.name,
+            accessibilityValue: isDownloaded
+                ? String(localized: "kommune.detail.alreadyDownloaded")
+                : sizeText,
+            trailing: {
+                HStack(spacing: .Trakke.sm) {
+                    if isDownloaded {
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(Font.Trakke.captionSoft.weight(.semibold))
+                            .foregroundStyle(Color.Trakke.brand)
+                            .accessibilityHidden(true)
+                    } else if let sizeText {
+                        Text(sizeText)
+                            .font(Font.Trakke.captionSoft.monospacedDigit())
+                            .foregroundStyle(Color.Trakke.textSoft)
+                            .accessibilityHidden(true)
+                    }
+                    TrakkeMenuRowChevron()
+                }
             }
-
-            Image(systemName: "chevron.right")
-                .font(Font.Trakke.captionSoft)
-                .foregroundStyle(Color.Trakke.textTertiary)
-        }
-        .padding(.vertical, .Trakke.xs)
-        .contentShape(Rectangle())
-        .accessibilityLabel(kommune.name)
+        )
     }
 }

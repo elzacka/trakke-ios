@@ -8,69 +8,35 @@ struct SelectionToolbar: View {
     var onDone: () -> Void
 
     var body: some View {
-        VStack {
-            Spacer()
-
-            VStack(spacing: .Trakke.sm) {
-                if hasValidSelection {
-                    HStack(spacing: .Trakke.rowVertical) {
-                        if estimatedTileCount > 20_000 {
-                            Image(systemName: "exclamationmark.triangle.fill")
-                                .font(Font.Trakke.caption)
-                                .accessibilityHidden(true)
-                        }
-                        Image(systemName: "square.grid.3x3")
-                            .font(Font.Trakke.caption)
-                            .accessibilityHidden(true)
-                        Text(String(localized: "offline.tiles \(estimatedTileCount)"))
-                            .font(Font.Trakke.bodyRegular.monospacedDigit())
-                        Text("(\(estimatedSize))")
-                            .font(Font.Trakke.caption)
-                            .foregroundStyle(Color.Trakke.textTertiary)
-                    }
-                    .accessibilityElement(children: .combine)
-                    .foregroundStyle(estimatedTileCount > 20_000 ? Color.Trakke.red : Color.Trakke.text)
-                    .accessibilityLabel(estimatedTileCount > 20_000
+        MapActionBar(position: .top) {
+            if hasValidSelection {
+                MapActionStat(
+                    icon: estimatedTileCount > 20_000 ? "exclamationmark.triangle.fill" : "square.grid.3x3",
+                    value: "\(estimatedTileCount) (\(estimatedSize))",
+                    color: estimatedTileCount > 20_000 ? Color.Trakke.red : Color.Trakke.text,
+                    accessibilityLabel: estimatedTileCount > 20_000
                         ? String(localized: "offline.tooManyTiles")
                         : String(localized: "offline.tiles \(estimatedTileCount)")
-                    )
-                    .padding(.horizontal, .Trakke.lg)
-                    .padding(.vertical, .Trakke.sm)
-                    .background(.regularMaterial)
-                    .clipShape(Capsule())
-                }
-
-                HStack(spacing: .Trakke.lg) {
-                    Button(role: .destructive) {
-                        onCancel()
-                    } label: {
-                        Label(String(localized: "common.cancel"), systemImage: "xmark")
-                            .foregroundStyle(Color.Trakke.red)
-                            .padding(.horizontal, .Trakke.lg)
-                            .padding(.vertical, .Trakke.sm)
-                            .frame(minHeight: .Trakke.touchMin)
-                            .background(.regularMaterial)
-                            .clipShape(Capsule())
-                    }
-                    .accessibilityLabel(String(localized: "common.cancel"))
-
-                    Button {
-                        onDone()
-                    } label: {
-                        Label(String(localized: "common.done"), systemImage: "checkmark")
-                            .padding(.horizontal, .Trakke.lg)
-                            .padding(.vertical, .Trakke.sm)
-                            .frame(minHeight: .Trakke.touchMin)
-                            .background(Color.Trakke.brand)
-                            .foregroundStyle(Color.Trakke.textInverse)
-                            .clipShape(Capsule())
-                    }
-                    .disabled(!hasValidSelection)
-                    .accessibilityLabel(String(localized: "common.done"))
-                }
+                )
+            } else {
+                MapActionHint(text: String(localized: "offline.selectAreaHint"))
             }
-            .padding(.bottom, .Trakke.lg)
+
+            MapActionDivider()
+            MapActionButton(
+                systemImage: "xmark",
+                role: .destructive,
+                accessibilityLabel: String(localized: "common.cancel"),
+                action: onCancel
+            )
+            MapActionDivider()
+            MapActionButton(
+                systemImage: "checkmark",
+                role: .primary,
+                isEnabled: hasValidSelection,
+                accessibilityLabel: String(localized: "common.done"),
+                action: onDone
+            )
         }
-        .safeAreaPadding(.bottom)
     }
 }

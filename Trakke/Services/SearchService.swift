@@ -99,12 +99,7 @@ private let outdoorTypes = Set(["fjell", "vann", "dal", "bre", "fjord", "øy"])
 
 // MARK: - Search Service
 
-protocol SearchFetching: Sendable {
-    func search(query: String) async throws -> [SearchResult]
-    func clearCache() async
-}
-
-actor SearchService: SearchFetching {
+actor SearchService {
     private static let stednavnBase = "https://ws.geonorge.no"
     private static let stednavnPath = "/stedsnavn/v1/navn"
     private static let adresseBase = "https://ws.geonorge.no"

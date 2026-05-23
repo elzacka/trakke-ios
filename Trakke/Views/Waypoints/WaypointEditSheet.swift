@@ -29,7 +29,7 @@ struct WaypointEditSheet: View {
                 .padding(.horizontal, .Trakke.sheetHorizontal)
                 .padding(.top, .Trakke.sheetTop)
             }
-            .background(Color(.systemGroupedBackground))
+            .background(Color.Trakke.background)
             .tint(Color.Trakke.brand)
             .navigationTitle(String(localized: isEditing ? "common.edit" : "waypoints.new"))
             .navigationBarTitleDisplayMode(.inline)

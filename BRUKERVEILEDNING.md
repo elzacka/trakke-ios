@@ -163,10 +163,11 @@ Du kan starte navigasjon mens turen tas opp — opptak og navigasjon mottar GPS 
 
 ### Egendefinert område
 
-1. Dra i hjørnene for å velge område
-2. Trykk «Ferdig»
-3. Velg navn, bakgrunnskart og zoomnivå
-4. Trykk «Last ned»
+1. Trykk «Velg område»
+2. Dra i hjørnene for å justere området
+3. Trykk «Ferdig»
+4. Velg navn, bakgrunnskart og zoomnivå
+5. Trykk «Last ned»
 
 ### Last ned per kommune
 

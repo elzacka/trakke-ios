@@ -6,15 +6,9 @@ import RegexBuilder
 
 /// Fetches Knowledge articles from a GitHub content repository.
 /// Articles are cached locally and only re-downloaded when their checksum changes.
-protocol RemoteArticleFetching: Sendable {
-    func fetchUpdates() async
-    func cachedArticles() async -> [KnowledgeArticle]
-    func clearCache() async
-}
-
-actor RemoteArticleService: RemoteArticleFetching {
-    private static let catalogURL = "https://raw.githubusercontent.com/elzacka/trakke-content/main/catalog.json"
-    private static let rawBaseURL = "https://raw.githubusercontent.com/elzacka/trakke-content/main/"
+actor RemoteArticleService {
+    private static let catalogURL = URL(string: "https://raw.githubusercontent.com/elzacka/trakke-content/main/catalog.json")!
+    private static let rawBaseURL = URL(string: "https://raw.githubusercontent.com/elzacka/trakke-content/main/")!
     private static let cacheDir = "articles"
 
     private var catalog: RemoteCatalog?
@@ -23,9 +17,8 @@ actor RemoteArticleService: RemoteArticleFetching {
 
     func fetchUpdates() async {
         do {
-            guard let url = URL(string: Self.catalogURL) else { return }
             let data = try await APIClient.fetchData(
-                url: url,
+                url: Self.catalogURL,
                 additionalHeaders: ["Cache-Control": "no-cache"],
                 optional: true
             )
@@ -93,8 +86,8 @@ actor RemoteArticleService: RemoteArticleFetching {
 
     private func downloadArticle(_ entry: CatalogEntry) async -> Bool {
         let safeFile = Self.sanitizeFileName(entry.file)
-        guard !safeFile.isEmpty,
-              let url = URL(string: Self.rawBaseURL + safeFile) else { return false }
+        guard !safeFile.isEmpty else { return false }
+        let url = Self.rawBaseURL.appendingPathComponent(safeFile)
 
         guard let data = try? await APIClient.fetchData(url: url, optional: true),
               let content = String(data: data, encoding: .utf8) else {

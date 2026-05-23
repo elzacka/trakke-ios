@@ -48,6 +48,17 @@ final class RouteViewModel {
         loadRoutes()
     }
 
+    func deleteAllRoutes() {
+        guard let context = modelContext else { return }
+        do {
+            try context.delete(model: Route.self)
+            save("delete all routes")
+            loadRoutes()
+        } catch {
+            saveError = error.localizedDescription
+        }
+    }
+
     func toggleVisibility(_ route: Route) {
         route.isVisible.toggle()
         route.updatedAt = Date()

@@ -3,7 +3,7 @@ import SwiftUI
 struct InfoSheet: View {
     var isEmbedded = false
     /// Inline-modus: ingen ScrollView/NavigationStack/title — kalleren
-    /// (f.eks. accordion-vert i Mer-fanen) håndterer scroll og kontekst.
+    /// (f.eks. Info-fanen) håndterer scroll og NavigationStack.
     var inline = false
 
     var body: some View {
@@ -18,68 +18,81 @@ struct InfoSheet: View {
         }
     }
 
-    @State private var showUserGuide = false
-    @State private var showPrivacySheet = false
-
     private var infoContent: some View {
         ScrollView {
             contentVStack
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.Trakke.background)
         .tint(Color.Trakke.brand)
         .navigationTitle(String(localized: "info.title"))
         .navigationBarTitleDisplayMode(.inline)
-        .sheet(isPresented: $showUserGuide) {
-            UserGuideSheet()
-                .presentationDragIndicator(.visible)
-        }
-        .sheet(isPresented: $showPrivacySheet) {
-            PrivacySheet()
-                .presentationDragIndicator(.visible)
-        }
     }
 
     private var contentVStack: some View {
         VStack(spacing: .Trakke.cardGap) {
-                    // MARK: - User Guide & Links (uten pynt-ikoner)
-                    CardSection {
-                        infoMenuButton(label: String(localized: "userguide.title"), trailing: .chevron) {
-                            showUserGuide = true
-                        }
+            // MARK: - 1. Kom i gang
+            //
+            // To akkordeoner deler samme kort under én tittel. Bruker
+            // bare-modus av ExpandableSection slik at de ikke får hvert
+            // sitt kort. Markdown rendres inline i parent-scrollen —
+            // ingen push, ingen sheet-stack, ingen skjermoverganger.
+            CardSection(String(localized: "info.section.gettingStarted")) {
+                ExpandableSection(
+                    String(localized: "userguide.title"),
+                    bare: true
+                ) {
+                    UserGuideSheet(embedded: true)
+                }
 
-                        Divider().padding(.leading, .Trakke.dividerLeading)
+                Divider().padding(.leading, .Trakke.dividerLeading)
 
-                        infoMenuButton(label: String(localized: "info.privacy.policy"), trailing: .chevron) {
-                            showPrivacySheet = true
-                        }
+                ExpandableSection(
+                    String(localized: "info.privacy.policy"),
+                    bare: true
+                ) {
+                    PrivacySheet(embedded: true)
+                }
+            }
 
-                        Divider().padding(.leading, .Trakke.dividerLeading)
+            // MARK: - 2. Om appen
+            //
+            // Statisk identitet — plassert i midten slik at versjon synes
+            // uten å scrolle, og gir et visuelt anker mellom de fire
+            // akkordeonene over og under.
+            CardSection(String(localized: "info.appInfo")) {
+                TrakkeMenuRow(
+                    label: String(localized: "info.version"),
+                    accessibilityValue: appVersion,
+                    trailing: { TrakkeMenuRowValue(value: appVersion) }
+                )
+                Divider().padding(.leading, .Trakke.dividerLeading)
+                TrakkeMenuRow(
+                    label: String(localized: "info.developer"),
+                    accessibilityValue: "Tazk",
+                    trailing: { TrakkeMenuRowValue(value: "Tazk") }
+                )
+                Divider().padding(.leading, .Trakke.dividerLeading)
+                Link(destination: URL(string: "https://github.com/elzacka/trakke-ios")!) {
+                    TrakkeMenuRow(
+                        label: String(localized: "info.sourceCode"),
+                        trailing: { TrakkeMenuRowExternal() }
+                    )
+                }
+                .accessibilityHint(String(localized: "accessibility.opensExternalLink"))
+            }
 
-                        Link(destination: URL(string: "https://github.com/elzacka/trakke-ios")!) {
-                            HStack(spacing: .Trakke.md) {
-                                Text(String(localized: "info.sourceCode"))
-                                    .font(Font.Trakke.bodyRegular)
-                                    .foregroundStyle(Color.Trakke.text)
-                                Spacer()
-                                Image(systemName: "arrow.up.right")
-                                    .font(Font.Trakke.captionSoft)
-                                    .foregroundStyle(Color.Trakke.textTertiary)
-                            }
-                            .frame(minHeight: .Trakke.touchMin)
-                            .contentShape(Rectangle())
-                        }
-                        .accessibilityLabel(String(localized: "info.sourceCode"))
-                        .accessibilityHint(String(localized: "accessibility.opensExternalLink"))
-                    }
-
-                    // MARK: - Data Sources
-                    //
-                    // Rekkefølgen følger README: grunnkart først (Kartverket),
-                    // deretter kart-utvidelser (terreng, vern), så tjenester
-                    // (rute, vær, varsler), så spesifikke POI-leverandører,
-                    // og til slutt OpenStreetMap som samle-kilde for resten.
-                    ExpandableSection(String(localized: "info.dataSources")) {
-                        VStack(spacing: 0) {
+            // MARK: - 3. Datagrunnlag og kode
+            //
+            // To akkordeoner i samme kort. Rekkefølgen i Datakilder
+            // følger README: grunnkart først (Kartverket), deretter
+            // utvidelser, tjenester, POI-leverandører, og til slutt
+            // OpenStreetMap som samle-kilde.
+            CardSection(String(localized: "info.section.attribution")) {
+                ExpandableSection(
+                    String(localized: "info.dataSources"),
+                    bare: true
+                ) {
+                    VStack(spacing: 0) {
                         dataSourceRow(
                             name: "Kartverket",
                             detail: String(localized: "info.kartverket.detail"),
@@ -99,9 +112,10 @@ struct InfoSheet: View {
                         )
                         Divider()
                         dataSourceRow(
-                            name: "FOSSGIS / Valhalla",
+                            name: "Stadia Maps / Valhalla",
                             detail: String(localized: "info.valhalla.detail"),
-                            license: "MIT / ODbL"
+                            license: "MIT / ODbL",
+                            attributionURL: URL(string: "https://stadiamaps.com/attribution/")
                         )
                         Divider()
                         dataSourceRow(
@@ -163,50 +177,42 @@ struct InfoSheet: View {
                             detail: String(localized: "info.osm.detail"),
                             license: "ODbL"
                         )
-                        }
                     }
+                }
 
-                    // MARK: - Open Source (alphabetical, expandable)
-                    ExpandableSection(String(localized: "info.openSource")) {
-                        VStack(spacing: 0) {
-                            dataSourceRow(
-                                name: "GRDB",
-                                detail: String(localized: "info.grdb.detail"),
-                                license: "MIT"
-                            )
-                            Divider()
-                            dataSourceRow(
-                                name: "MapLibre",
-                                detail: String(localized: "info.maplibre.detail"),
-                                license: "BSD / ISC"
-                            )
-                            Divider()
-                            dataSourceRow(
-                                name: "Material Symbols",
-                                detail: String(localized: "info.materialsymbols.detail"),
-                                license: "Apache 2.0"
-                            )
-                            Divider()
-                            dataSourceRow(
-                                name: "Tabler Icons",
-                                detail: String(localized: "info.tabler.detail"),
-                                license: "MIT"
-                            )
-                        }
-                    }
+                Divider().padding(.leading, .Trakke.dividerLeading)
 
-                    // MARK: - App Info
-                    CardSection(String(localized: "info.appInfo")) {
-                        infoRow(
-                            label: String(localized: "info.version"),
-                            value: appVersion
+                ExpandableSection(
+                    String(localized: "info.openSource"),
+                    bare: true
+                ) {
+                    VStack(spacing: 0) {
+                        dataSourceRow(
+                            name: "GRDB",
+                            detail: String(localized: "info.grdb.detail"),
+                            license: "MIT"
                         )
-                        Divider().padding(.leading, .Trakke.dividerLeading)
-                        infoRow(
-                            label: String(localized: "info.developer"),
-                            value: "Tazk"
+                        Divider()
+                        dataSourceRow(
+                            name: "MapLibre",
+                            detail: String(localized: "info.maplibre.detail"),
+                            license: "BSD / ISC"
+                        )
+                        Divider()
+                        dataSourceRow(
+                            name: "Material Symbols",
+                            detail: String(localized: "info.materialsymbols.detail"),
+                            license: "Apache 2.0"
+                        )
+                        Divider()
+                        dataSourceRow(
+                            name: "Tabler Icons",
+                            detail: String(localized: "info.tabler.detail"),
+                            license: "MIT"
                         )
                     }
+                }
+            }
 
             Spacer(minLength: .Trakke.lg)
         }
@@ -214,81 +220,64 @@ struct InfoSheet: View {
         .padding(.top, inline ? 0 : .Trakke.sheetTop)
     }
 
-    // MARK: - Data Source Row
+    // MARK: - Data source row
+    //
+    // Tre-linjers anatomi: navn (eventuelt som lenke), kort detalj og en
+    // lisens-pill. Pillen gjør det enkelt å skanne lisensvilkår uten å lese
+    // hver rad i detalj. arrow.up.right vises kun på rader som faktisk har
+    // ekstern attribusjons-URL.
 
     private func dataSourceRow(
         name: String,
         detail: String,
-        license: String
+        license: String,
+        attributionURL: URL? = nil
     ) -> some View {
         VStack(alignment: .leading, spacing: .Trakke.labelGap) {
-            HStack {
-                Text(name)
-                    .font(Font.Trakke.bodyMedium)
+            HStack(spacing: .Trakke.sm) {
+                if let url = attributionURL {
+                    Link(destination: url) {
+                        HStack(spacing: .Trakke.xs) {
+                            Text(name)
+                                .font(Font.Trakke.bodyMedium)
+                                .foregroundStyle(Color.Trakke.text)
+                            Image(systemName: "arrow.up.right")
+                                .font(Font.Trakke.captionSoft)
+                                .foregroundStyle(Color.Trakke.textSoft)
+                        }
+                    }
+                    .accessibilityLabel(name)
+                    .accessibilityHint(String(localized: "accessibility.opensExternalLink"))
+                } else {
+                    Text(name)
+                        .font(Font.Trakke.bodyMedium)
+                        .foregroundStyle(Color.Trakke.text)
+                }
                 Spacer()
-                Text(license)
-                    .font(Font.Trakke.captionSoft)
-                    .foregroundStyle(Color.Trakke.textTertiary)
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 2)
-                    .background(Color.Trakke.brandTint)
-                    .clipShape(Capsule())
+                licensePill(license)
             }
             Text(detail)
                 .font(Font.Trakke.caption)
-                .foregroundStyle(Color.Trakke.textTertiary)
+                .foregroundStyle(Color.Trakke.textSoft)
         }
-        .padding(.vertical, .Trakke.rowVertical)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.vertical, .Trakke.sm)
     }
 
-    // MARK: - Info Row
-
-    private func infoRow(label: String, value: String) -> some View {
-        HStack {
-            Text(label)
-                .font(Font.Trakke.bodyRegular)
-            Spacer()
-            Text(value)
-                .font(Font.Trakke.bodyRegular)
-                .foregroundStyle(Color.Trakke.textTertiary)
-        }
-        .padding(.vertical, .Trakke.rowVertical)
+    private func licensePill(_ license: String) -> some View {
+        Text(license)
+            .font(Font.Trakke.captionSoft)
+            .foregroundStyle(Color.Trakke.textSecondary)
+            .padding(.horizontal, .Trakke.badgePadH)
+            .padding(.vertical, .Trakke.badgePadV)
+            .background(Color.Trakke.brandTint)
+            .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.sm))
+            .accessibilityLabel(String(localized: "info.license") + ": " + license)
     }
 
     private var appVersion: String {
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
         let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1"
         return "\(version) (\(build))"
-    }
-
-    // MARK: - Menu row (uten ledende ikon)
-
-    private enum TrailingGlyph {
-        case chevron
-    }
-
-    private func infoMenuButton(
-        label: String,
-        trailing: TrailingGlyph,
-        action: @escaping () -> Void
-    ) -> some View {
-        Button(action: action) {
-            HStack(spacing: .Trakke.md) {
-                Text(label)
-                    .font(Font.Trakke.bodyRegular)
-                    .foregroundStyle(Color.Trakke.text)
-                Spacer()
-                switch trailing {
-                case .chevron:
-                    Image(systemName: "chevron.right")
-                        .font(Font.Trakke.captionSoft)
-                        .foregroundStyle(Color.Trakke.textTertiary)
-                }
-            }
-            .frame(minHeight: .Trakke.touchMin)
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel(label)
     }
 }

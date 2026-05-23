@@ -517,12 +517,37 @@ func cameraModeRawValues() {
     let dest = CLLocationCoordinate2D(latitude: 59.0, longitude: 10.0)
     await vm.startCompassNavigation(to: dest)
 
-    // Simulate being very close to destination
-    let location = CLLocation(latitude: 59.00001, longitude: 10.00001)
-    await vm.processLocationUpdate(location)
+    // Først: brukeren starter langt fra destinasjonen (>60m).
+    let startLocation = CLLocation(latitude: 59.001, longitude: 10.001)
+    await vm.processLocationUpdate(startLocation)
+
+    let arrivedAtStart = await vm.hasArrived
+    #expect(!arrivedAtStart, "Skal ikke være fremme ved start når avstand er over arrival-terskel")
+
+    // Vent slik at throttle (1/sec) ikke hopper over neste oppdatering.
+    try? await Task.sleep(for: .milliseconds(1100))
+
+    // Deretter: brukeren beveger seg nær destinasjonen.
+    let nearLocation = CLLocation(latitude: 59.00001, longitude: 10.00001)
+    await vm.processLocationUpdate(nearLocation)
 
     let arrived = await vm.hasArrived
     #expect(arrived)
+}
+
+@Test func navigationViewModelCompassNoFalseArrivalAtStart() async {
+    // Regressjon: ved retrace av en rundtur som ender nær start skal vi ikke
+    // utløse "Fremme!" umiddelbart bare fordi brukeren er nær destinasjonen.
+    let vm = await NavigationViewModel()
+    let dest = CLLocationCoordinate2D(latitude: 59.0, longitude: 10.0)
+    await vm.startCompassNavigation(to: dest)
+
+    // Brukeren starter allerede innenfor arrival-terskel av destinasjonen.
+    let nearStart = CLLocation(latitude: 59.00005, longitude: 10.00005)
+    await vm.processLocationUpdate(nearStart)
+
+    let arrived = await vm.hasArrived
+    #expect(!arrived, "Skal ikke være fremme ved start når brukeren ikke har beveget seg")
 }
 
 // MARK: - ComputedRoute Tests

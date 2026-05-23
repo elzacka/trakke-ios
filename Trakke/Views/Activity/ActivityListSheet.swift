@@ -34,28 +34,11 @@ struct ActivityListSheet: View {
     }
 
     private var activityContent: some View {
-        Group {
-            if viewModel.activities.isEmpty {
-                emptyState
-            } else {
-                activityList
-            }
-        }
-        .background(Color(.systemGroupedBackground))
+        activityList
+        .background(Color.Trakke.background)
         .tint(Color.Trakke.brand)
         .navigationTitle(String(localized: "activity.title"))
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    dismissFully()
-                    onStartRecording()
-                } label: {
-                    Image(systemName: "record.circle")
-                }
-                .accessibilityLabel(String(localized: "activity.startRecording"))
-            }
-        }
         .fileImporter(
             isPresented: $showFileImporter,
             allowedContentTypes: [.gpx, .geoJSON],
@@ -106,17 +89,6 @@ struct ActivityListSheet: View {
         }
     }
 
-    private var emptyState: some View {
-        EmptyStateView(
-            icon: "figure.hiking",
-            title: String(localized: "activity.empty.title"),
-            subtitle: String(localized: "activity.empty.subtitle"),
-            actionLabel: String(localized: "import.file"),
-            actionIcon: "square.and.arrow.up",
-            action: { showFileImporter = true }
-        )
-    }
-
     private var importBanner: some View {
         Text(viewModel.importMessage ?? "")
             .font(Font.Trakke.caption)
@@ -138,6 +110,20 @@ struct ActivityListSheet: View {
     private var activityList: some View {
         ScrollView {
             VStack(spacing: .Trakke.cardGap) {
+                // Primær handling
+                Button {
+                    dismissFully()
+                    onStartRecording()
+                } label: {
+                    Label(
+                        String(localized: "activity.log"),
+                        systemImage: "plus"
+                    )
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .buttonStyle(.trakkeSecondary)
+
+                // Turhistorikk rett under primær handling
                 ForEach(viewModel.categories, id: \.self) { category in
                     activityGroup(title: category, category: category, items: viewModel.activities(for: category))
                 }
@@ -152,61 +138,10 @@ struct ActivityListSheet: View {
                     )
                 }
 
-                Button {
-                    showFileImporter = true
-                } label: {
-                    HStack(spacing: .Trakke.sm) {
-                        if viewModel.isImporting {
-                            ProgressView()
-                                .controlSize(.small)
-                                .tint(Color.Trakke.brand)
-                            Text(String(localized: "import.inProgress"))
-                        } else {
-                            Image(systemName: "square.and.arrow.up")
-                            Text(String(localized: "import.file"))
-                        }
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                .buttonStyle(.trakkeSecondary)
-                .disabled(viewModel.isImporting)
-
-                Button {
-                    if let url = viewModel.exportAllGPX() {
-                        shareURL = ShareableURL(url: url)
-                    }
-                } label: {
-                    Label(
-                        String(localized: "import.exportAll"),
-                        systemImage: "square.and.arrow.down"
-                    )
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                .buttonStyle(.trakkeSecondary)
-                .disabled(viewModel.activities.isEmpty)
-
-                if viewModel.activities.count >= 2 {
-                    bulkVisibilityButton
-                }
-
-                Button {
-                    showDeleteAllConfirmation = true
-                } label: {
-                    Label(String(localized: "activity.deleteAll"), systemImage: "trash")
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                .buttonStyle(.trakkeDanger)
-                .confirmationDialog(
-                    String(localized: "activity.deleteAll.title"),
-                    isPresented: $showDeleteAllConfirmation,
-                    titleVisibility: .visible
-                ) {
-                    Button(String(localized: "activity.deleteAll.confirm"), role: .destructive) {
-                        viewModel.deleteAllActivities()
-                    }
-                } message: {
-                    Text(String(localized: "activity.deleteAll.message"))
-                }
+                // Sekundærhandlinger — importer, eksporter, slett.
+                // Ikon-bar høyrejustert: signaliserer at dette er
+                // utility-handlinger, ikke primær-flyten.
+                secondaryActionBar
 
                 Spacer(minLength: .Trakke.lg)
             }
@@ -230,7 +165,7 @@ struct ActivityListSheet: View {
                 }
                 .padding(.horizontal, .Trakke.cardPadH)
                 .padding(.vertical, .Trakke.cardPadV)
-                .background(Color(.secondarySystemGroupedBackground))
+                .background(Color.Trakke.surface)
                 .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))
                 .padding(.top, .Trakke.sm)
             }
@@ -238,66 +173,67 @@ struct ActivityListSheet: View {
     }
 
     private func activityRow(_ activity: Activity) -> some View {
-        NavigationLink(value: activity) {
-            VStack(alignment: .leading, spacing: .Trakke.xs) {
-                HStack {
-                    Text(activity.name)
-                        .font(Font.Trakke.bodyMedium)
-                        .foregroundStyle(Color.Trakke.text)
-                    Spacer()
-                    Text(activity.startedAt, style: .date)
-                        .font(Font.Trakke.captionSoft)
+        HStack(spacing: 0) {
+            NavigationLink(value: activity) {
+                VStack(alignment: .leading, spacing: .Trakke.xs) {
+                    HStack {
+                        Text(activity.name)
+                            .font(Font.Trakke.bodyMedium)
+                            .foregroundStyle(Color.Trakke.text)
+                        Spacer()
+                        Text(activity.startedAt, style: .date)
+                            .font(Font.Trakke.captionSoft)
+                            .foregroundStyle(Color.Trakke.textTertiary)
+                    }
+
+                    // Én sentral verdi i listen: distanse. Varighet og høydemeter
+                    // lever i ActivityDetailSheet — listen skal hjelpe deg finne
+                    // «den jeg gikk på søndag», ikke vise hele statistikken.
+                    Text(ActivityViewModel.formatDistance(activity.distance))
+                        .font(Font.Trakke.caption)
                         .foregroundStyle(Color.Trakke.textTertiary)
                 }
-
-                // Én sentral verdi i listen: distanse. Varighet og høydemeter
-                // lever i ActivityDetailSheet — listen skal hjelpe deg finne
-                // «den jeg gikk på søndag», ikke vise hele statistikken.
-                Text(ActivityViewModel.formatDistance(activity.distance))
-                    .font(Font.Trakke.caption)
-                    .foregroundStyle(Color.Trakke.textTertiary)
+                .padding(.vertical, .Trakke.rowVertical)
+                .opacity(activity.isVisible ? 1 : 0.45)
+                .contentShape(Rectangle())
             }
-            .padding(.vertical, .Trakke.rowVertical)
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .contextMenu {
-            Button {
-                viewModel.toggleVisibility(activity)
-            } label: {
-                Label(
-                    activity.isVisible
-                        ? String(localized: "activity.hideFromMap")
-                        : String(localized: "activity.showOnMap"),
-                    systemImage: activity.isVisible ? "eye.slash" : "eye"
-                )
-            }
-
-            Button {
-                editingActivity = activity
-            } label: {
-                Label(String(localized: "common.edit"), systemImage: "pencil")
-            }
-
-            if let routeViewModel {
+            .buttonStyle(.plain)
+            .contextMenu {
                 Button {
-                    viewModel.convertToRoute(activity, using: routeViewModel)
+                    editingActivity = activity
                 } label: {
-                    Label(
-                        String(localized: "activity.convertToRoute"),
-                        systemImage: "point.topleft.down.to.point.bottomright.curvepath"
-                    )
+                    Label(String(localized: "common.edit"), systemImage: "pencil")
+                }
+
+                if let routeViewModel {
+                    Button {
+                        viewModel.convertToRoute(activity, using: routeViewModel)
+                    } label: {
+                        Label(
+                            String(localized: "activity.convertToRoute"),
+                            systemImage: "point.topleft.down.to.point.bottomright.curvepath"
+                        )
+                    }
+                }
+
+                Button(role: .destructive) {
+                    viewModel.deleteActivity(activity)
+                } label: {
+                    Label(String(localized: "common.delete"), systemImage: "trash")
                 }
             }
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel(activityAccessibilityLabel(activity))
 
-            Button(role: .destructive) {
-                viewModel.deleteActivity(activity)
-            } label: {
-                Label(String(localized: "common.delete"), systemImage: "trash")
+            VisibilityToggleButton(
+                isVisible: activity.isVisible,
+                accessibilityLabel: activity.isVisible
+                    ? String(localized: "activity.hideFromMap")
+                    : String(localized: "activity.showOnMap")
+            ) {
+                viewModel.toggleVisibility(activity)
             }
         }
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(activityAccessibilityLabel(activity))
     }
 
     private func activityAccessibilityLabel(_ activity: Activity) -> String {
@@ -350,11 +286,17 @@ struct ActivityListSheet: View {
             Button {
                 viewModel.setCategoryVisibility(category, visible: !allVisible)
             } label: {
-                Image(systemName: allVisible ? "eye" : "eye.slash")
-                    .font(Font.Trakke.captionSoft.weight(.semibold))
-                    .foregroundStyle(Color.Trakke.textTertiary)
-                    .frame(width: 44, height: 44)
-                    .contentShape(Rectangle())
+                Group {
+                    if allVisible {
+                        Image(systemName: "checkmark")
+                            .font(Font.Trakke.bodyMedium)
+                            .foregroundStyle(Color.Trakke.brand)
+                    } else {
+                        Color.clear
+                    }
+                }
+                .frame(width: 44, height: 44)
+                .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
             .accessibilityLabel(
@@ -385,23 +327,48 @@ struct ActivityListSheet: View {
         }
     }
 
-    // MARK: - Bulk Visibility (footer)
+    // MARK: - Secondary action bar (importer / eksporter / slett)
 
-    private var bulkVisibilityButton: some View {
-        let anyVisible = viewModel.isAnyVisible
-        return Button {
-            viewModel.setAllVisible(!anyVisible)
-        } label: {
-            HStack(spacing: .Trakke.sm) {
-                Image(systemName: anyVisible ? "eye.slash" : "eye")
-                Text(
-                    anyVisible
-                        ? String(localized: "activity.hideAllOnMap")
-                        : String(localized: "activity.showAllOnMap")
-                )
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
+    private var secondaryActionBar: some View {
+        HStack(spacing: .Trakke.sm) {
+            Spacer()
+
+            TrakkeIconButton(
+                systemImage: "square.and.arrow.up",
+                isLoading: viewModel.isImporting,
+                accessibilityLabel: viewModel.isImporting
+                    ? String(localized: "import.inProgress")
+                    : String(localized: "import.file"),
+                action: { showFileImporter = true }
+            )
+
+            TrakkeIconButton(
+                systemImage: "square.and.arrow.down",
+                isEnabled: !viewModel.activities.isEmpty,
+                accessibilityLabel: String(localized: "import.exportAll"),
+                action: {
+                    if let url = viewModel.exportAllGPX() {
+                        shareURL = ShareableURL(url: url)
+                    }
+                }
+            )
+
+            TrakkeIconButton(
+                systemImage: "trash",
+                role: .destructive,
+                isEnabled: !viewModel.activities.isEmpty,
+                accessibilityLabel: String(localized: "activity.deleteAll"),
+                action: { showDeleteAllConfirmation = true }
+            )
+            .trakkeDialog(
+                isPresented: $showDeleteAllConfirmation,
+                title: String(localized: "activity.deleteAll.title"),
+                message: String(localized: "activity.deleteAll.message"),
+                primary: .destructive(String(localized: "common.yes")) {
+                    viewModel.deleteAllActivities()
+                },
+                cancel: .cancel(String(localized: "common.no"))
+            )
         }
-        .buttonStyle(.trakkeSecondary)
     }
 }

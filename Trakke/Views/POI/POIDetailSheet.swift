@@ -1,86 +1,42 @@
 import SwiftUI
 import CoreLocation
 
+/// Detalj-sheet for et POI på kartet — bruker samme designspråk som resten
+/// av appen: TrakkeSheetHeader øverst, off-white bakgrunn, flate CardSection-
+/// kort, brand-tekst og PWA-trofaste farger.
 struct POIDetailSheet: View {
     let poi: POI
     var onNavigate: ((CLLocationCoordinate2D) -> Void)?
     @State private var copied = false
 
     var body: some View {
-        NavigationStack {
+        VStack(spacing: 0) {
+            TrakkeSheetHeader(title: poi.name)
+
             ScrollView {
                 VStack(alignment: .leading, spacing: .Trakke.cardGap) {
-                    // Kategori-navnet ligger allerede i toolbaren (kategori-ikon)
-                    // og i Type-feltet under Detaljer — egen «kategori-strek»
-                    // her ville vært tredje gangen vi sier samme sak.
-
-                    // MARK: - Details
-                    if !poi.details.isEmpty {
-                        CardSection(String(localized: "poi.details")) {
+                    // MARK: - Felter (alle bruker innebygget overskrift)
+                    CardSection {
+                        if !poi.details.isEmpty {
                             ForEach(Array(sortedDetails.enumerated()), id: \.element.key) { index, detail in
                                 if index > 0 {
                                     Divider().padding(.leading, .Trakke.dividerLeading)
                                 }
-                                VStack(alignment: .leading, spacing: .Trakke.labelGap) {
-                                    Text(localizedDetailKey(detail.key))
-                                        .font(Font.Trakke.caption)
-                                        .foregroundStyle(Color.Trakke.textTertiary)
-                                    Text(localizedDetailValue(key: detail.key, value: detail.value))
-                                        .font(Font.Trakke.bodyRegular)
-                                }
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.vertical, .Trakke.rowVertical)
-                            }
-                        }
-                    }
-
-                    // MARK: - Coordinates
-                    CardSection(String(localized: "poi.coordinates")) {
-                        let formatted = CoordinateService.format(
-                            coordinate: poi.coordinate,
-                            format: .dd
-                        )
-                        HStack {
-                            Text(formatted.display)
-                                .font(Font.Trakke.bodyRegular.monospacedDigit())
-                            Spacer()
-                            Button {
-                                UIPasteboard.general.setItems(
-                                    [["public.utf8-plain-text": formatted.copyText]],
-                                    options: [.expirationDate: Date().addingTimeInterval(300)]
+                                fieldRow(
+                                    label: localizedDetailKey(detail.key),
+                                    value: localizedDetailValue(key: detail.key, value: detail.value)
                                 )
-                                copied = true
-                                Task {
-                                    try? await Task.sleep(for: .milliseconds(1500))
-                                    copied = false
-                                }
-                            } label: {
-                                Image(systemName: copied ? "checkmark" : "doc.on.doc")
-                                    .font(Font.Trakke.bodyRegular)
-                                    .foregroundStyle(Color.Trakke.brand)
-                                    .frame(minWidth: .Trakke.touchMin, minHeight: .Trakke.touchMin)
-                                    .contentShape(Rectangle())
                             }
-                            .accessibilityLabel(String(localized: "common.copy"))
+                            Divider().padding(.leading, .Trakke.dividerLeading)
                         }
-                    }
 
-                    // MARK: - External Link
-                    if let link = poi.details["link"],
-                       let url = URL(string: link),
-                       url.scheme == "https" {
-                        CardSection {
-                            Link(destination: url) {
-                                HStack {
-                                    Text(String(localized: "poi.moreInfo"))
-                                        .font(Font.Trakke.bodyRegular)
-                                    Spacer()
-                                    Image(systemName: "arrow.up.right")
-                                        .font(Font.Trakke.captionSoft)
-                                        .foregroundStyle(Color.Trakke.textTertiary)
-                                }
-                                .padding(.vertical, .Trakke.labelGap)
-                            }
+                        coordinatesFieldRow
+
+                        if let link = poi.details["link"],
+                           let url = URL(string: link),
+                           url.scheme == "https" {
+                            Divider().padding(.leading, .Trakke.dividerLeading)
+                            externalLinkFieldRow(url: url)
                         }
                     }
 
@@ -99,27 +55,95 @@ struct POIDetailSheet: View {
                         Text(poi.category.sourceName)
                     }
                     .font(Font.Trakke.caption)
-                    .foregroundStyle(Color.Trakke.textTertiary)
+                    .foregroundStyle(Color.Trakke.textSoft)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, .Trakke.xs)
 
                     Spacer(minLength: .Trakke.lg)
                 }
                 .padding(.horizontal, .Trakke.sheetHorizontal)
-                .padding(.top, .Trakke.sheetTop)
-            }
-            .background(Color(.systemGroupedBackground))
-            .tint(Color.Trakke.brand)
-            .navigationTitle(poi.name)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    POIIconImage(name: poi.category.iconName, size: 22)
-                        .foregroundStyle(Color(hex: poi.category.color))
-                        .accessibilityHidden(true)
-                }
+                .padding(.top, .Trakke.sm)
+                .padding(.bottom, .Trakke.xxl)
             }
         }
+        .background(Color.Trakke.background)
+        .tint(Color.Trakke.brand)
+    }
+
+    // MARK: - Felt-rader (innebygget overskrift)
+
+    /// Standard tekst-rad: liten label på topp, verdi under.
+    private func fieldRow(label: String, value: String) -> some View {
+        VStack(alignment: .leading, spacing: .Trakke.labelGap) {
+            Text(label)
+                .font(Font.Trakke.caption)
+                .foregroundStyle(Color.Trakke.textSoft)
+            Text(value)
+                .font(Font.Trakke.bodyRegular)
+                .foregroundStyle(Color.Trakke.text)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.vertical, .Trakke.rowVertical)
+    }
+
+    /// Koordinat-rad: label "Koordinater" øverst + monospace-verdi med kopier-knapp.
+    private var coordinatesFieldRow: some View {
+        let formatted = CoordinateService.format(coordinate: poi.coordinate, format: .dd)
+        return HStack(alignment: .top) {
+            VStack(alignment: .leading, spacing: .Trakke.labelGap) {
+                Text(String(localized: "poi.coordinates"))
+                    .font(Font.Trakke.caption)
+                    .foregroundStyle(Color.Trakke.textSoft)
+                Text(formatted.display)
+                    .font(Font.Trakke.bodyRegular.monospacedDigit())
+                    .foregroundStyle(Color.Trakke.text)
+            }
+            Spacer()
+            Button {
+                UIPasteboard.general.setItems(
+                    [["public.utf8-plain-text": formatted.copyText]],
+                    options: [.expirationDate: Date().addingTimeInterval(300)]
+                )
+                copied = true
+                Task {
+                    try? await Task.sleep(for: .milliseconds(1500))
+                    copied = false
+                }
+            } label: {
+                Image(systemName: copied ? "checkmark" : "doc.on.doc")
+                    .font(Font.Trakke.bodyRegular)
+                    .foregroundStyle(Color.Trakke.brand)
+                    .frame(minWidth: .Trakke.touchMin, minHeight: .Trakke.touchMin)
+                    .contentShape(Rectangle())
+            }
+            .accessibilityLabel(String(localized: "common.copy"))
+        }
+        .padding(.vertical, .Trakke.rowVertical)
+    }
+
+    /// Ekstern-lenke-rad: label "Lenke" øverst + tappable Link med arrow-glyph.
+    private func externalLinkFieldRow(url: URL) -> some View {
+        Link(destination: url) {
+            HStack {
+                VStack(alignment: .leading, spacing: .Trakke.labelGap) {
+                    Text(String(localized: "poi.moreInfo"))
+                        .font(Font.Trakke.caption)
+                        .foregroundStyle(Color.Trakke.textSoft)
+                    Text(url.host ?? url.absoluteString)
+                        .font(Font.Trakke.bodyRegular)
+                        .foregroundStyle(Color.Trakke.text)
+                        .lineLimit(1)
+                        .truncationMode(.middle)
+                }
+                Spacer()
+                Image(systemName: "arrow.up.right")
+                    .font(Font.Trakke.captionSoft.weight(.semibold))
+                    .foregroundStyle(Color.Trakke.textSoft)
+            }
+            .padding(.vertical, .Trakke.rowVertical)
+            .contentShape(Rectangle())
+        }
+        .accessibilityLabel(String(localized: "poi.moreInfo"))
     }
 
     // MARK: - Helpers

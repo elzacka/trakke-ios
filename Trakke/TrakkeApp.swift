@@ -132,6 +132,7 @@ struct TrakkeApp: App {
         WindowGroup {
             ContentView()
                 .preferredColorScheme(.light)
+                .toggleStyle(.trakke)
         }
         .modelContainer(modelContainer)
     }

@@ -13,6 +13,7 @@ struct WaypointListSheet: View {
     @State private var showFileImporter = false
     @State private var shareURL: ShareableURL?
     @State private var expandedCategories: Set<String> = []
+    @State private var showDeleteAllConfirmation = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private func dismissFully() {
@@ -33,7 +34,6 @@ struct WaypointListSheet: View {
         Group {
                 if viewModel.waypoints.isEmpty {
                     EmptyStateView(
-                        icon: "mappin",
                         title: String(localized: "waypoints.empty.title"),
                         subtitle: String(localized: "waypoints.empty.subtitle"),
                         actionLabel: String(localized: "import.file"),
@@ -45,7 +45,7 @@ struct WaypointListSheet: View {
                 }
             }
             .tint(Color.Trakke.brand)
-            .background(Color(.systemGroupedBackground))
+            .background(Color.Trakke.background)
             .navigationTitle(String(localized: "waypoints.title"))
             .navigationBarTitleDisplayMode(.inline)
             .fileImporter(
@@ -106,51 +106,24 @@ struct WaypointListSheet: View {
                     )
                 }
 
-                VStack(spacing: .Trakke.sm) {
-                    Button {
-                        showFileImporter = true
-                    } label: {
-                        HStack(spacing: .Trakke.sm) {
-                            if viewModel.isImporting {
-                                ProgressView()
-                                    .controlSize(.small)
-                                    .tint(Color.Trakke.brand)
-                                Text(String(localized: "import.inProgress"))
-                            } else {
-                                Image(systemName: "square.and.arrow.up")
-                                Text(String(localized: "import.file"))
-                            }
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-                    .buttonStyle(.trakkeSecondary)
-                    .disabled(viewModel.isImporting)
-
-                    Button {
-                        if let url = viewModel.exportAllGPX() {
-                            shareURL = ShareableURL(url: url)
-                        }
-                    } label: {
-                        Label(
-                            String(localized: "import.exportAll"),
-                            systemImage: "square.and.arrow.down"
-                        )
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-                    .buttonStyle(.trakkeSecondary)
-                    .disabled(viewModel.waypoints.isEmpty)
-
-                    if viewModel.waypoints.count >= 2 {
-                        bulkVisibilityButton
-                    }
+                // Bulk-synlighet beholdes for Steder: punktene kan vises på
+                // kartet uten å overstyre topo-lesningen slik mange ruter/turer
+                // ville gjort.
+                if viewModel.waypoints.count >= 2 {
+                    bulkVisibilityButton
                 }
+
+                // Sekundærhandlinger — importer, eksporter, slett.
+                // Ikon-bar høyrejustert: signaliserer at dette er
+                // utility-handlinger, ikke primær-flyten.
+                secondaryActionBar
 
                 Spacer(minLength: .Trakke.lg)
             }
             .padding(.horizontal, .Trakke.sheetHorizontal)
             .padding(.top, .Trakke.sheetTop)
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.Trakke.background)
         .tint(Color.Trakke.brand)
     }
 
@@ -166,22 +139,33 @@ struct WaypointListSheet: View {
                         if items.first?.id != waypoint.id {
                             Divider()
                         }
-                        NavigationLink(value: waypoint) {
-                            waypointRow(waypoint)
-                                // Make the whole row hit-testable so long press
-                                // works on padding / Spacer area, not just the
-                                // label text.
-                                .contentShape(Rectangle())
-                        }
-                        .buttonStyle(.plain)
-                        .contextMenu {
-                            contextMenuItems(for: waypoint)
+                        HStack(spacing: 0) {
+                            NavigationLink(value: waypoint) {
+                                waypointRow(waypoint)
+                                    // Make the whole row hit-testable so long press
+                                    // works on padding / Spacer area, not just the
+                                    // label text.
+                                    .contentShape(Rectangle())
+                            }
+                            .buttonStyle(.plain)
+                            .contextMenu {
+                                contextMenuItems(for: waypoint)
+                            }
+
+                            VisibilityToggleButton(
+                                isVisible: waypoint.isVisible,
+                                accessibilityLabel: waypoint.isVisible
+                                    ? String(localized: "waypoints.hideFromMap")
+                                    : String(localized: "waypoints.showOnMap")
+                            ) {
+                                viewModel.toggleVisibility(waypoint)
+                            }
                         }
                     }
                 }
                 .padding(.horizontal, .Trakke.cardPadH)
                 .padding(.vertical, .Trakke.cardPadV)
-                .background(Color(.secondarySystemGroupedBackground))
+                .background(Color.Trakke.surface)
                 .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))
                 .padding(.top, .Trakke.sm)
             }
@@ -205,14 +189,6 @@ struct WaypointListSheet: View {
             }
 
             Spacer()
-
-            // NavigationLink supplies its own disclosure chevron; only show the
-            // eye.slash pip when the waypoint is hidden from the map.
-            if !waypoint.isVisible {
-                Image(systemName: "eye.slash")
-                    .font(Font.Trakke.captionSoft)
-                    .foregroundStyle(Color.Trakke.textTertiary)
-            }
         }
         .padding(.vertical, .Trakke.rowVertical)
         .opacity(waypoint.isVisible ? 1 : 0.45)
@@ -271,11 +247,17 @@ struct WaypointListSheet: View {
             Button {
                 viewModel.setCategoryVisibility(category, visible: !allVisible)
             } label: {
-                Image(systemName: allVisible ? "eye" : "eye.slash")
-                    .font(Font.Trakke.captionSoft.weight(.semibold))
-                    .foregroundStyle(Color.Trakke.textTertiary)
-                    .frame(width: 44, height: 44)
-                    .contentShape(Rectangle())
+                Group {
+                    if allVisible {
+                        Image(systemName: "checkmark")
+                            .font(Font.Trakke.bodyMedium)
+                            .foregroundStyle(Color.Trakke.brand)
+                    } else {
+                        Color.clear
+                    }
+                }
+                .frame(width: 44, height: 44)
+                .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
             .accessibilityLabel(
@@ -303,6 +285,51 @@ struct WaypointListSheet: View {
             }
             .buttonStyle(.plain)
             .accessibilityHidden(true)
+        }
+    }
+
+    // MARK: - Secondary action bar (importer / eksporter / slett)
+
+    private var secondaryActionBar: some View {
+        HStack(spacing: .Trakke.sm) {
+            Spacer()
+
+            TrakkeIconButton(
+                systemImage: "square.and.arrow.up",
+                isLoading: viewModel.isImporting,
+                accessibilityLabel: viewModel.isImporting
+                    ? String(localized: "import.inProgress")
+                    : String(localized: "import.file"),
+                action: { showFileImporter = true }
+            )
+
+            TrakkeIconButton(
+                systemImage: "square.and.arrow.down",
+                isEnabled: !viewModel.waypoints.isEmpty,
+                accessibilityLabel: String(localized: "import.exportAll"),
+                action: {
+                    if let url = viewModel.exportAllGPX() {
+                        shareURL = ShareableURL(url: url)
+                    }
+                }
+            )
+
+            TrakkeIconButton(
+                systemImage: "trash",
+                role: .destructive,
+                isEnabled: !viewModel.waypoints.isEmpty,
+                accessibilityLabel: String(localized: "waypoints.deleteAll"),
+                action: { showDeleteAllConfirmation = true }
+            )
+            .trakkeDialog(
+                isPresented: $showDeleteAllConfirmation,
+                title: String(localized: "waypoints.deleteAll.title"),
+                message: String(localized: "waypoints.deleteAll.message"),
+                primary: .destructive(String(localized: "common.yes")) {
+                    viewModel.deleteAllWaypoints()
+                },
+                cancel: .cancel(String(localized: "common.no"))
+            )
         }
     }
 
@@ -340,17 +367,6 @@ struct WaypointListSheet: View {
             Label(
                 String(localized: "waypoints.showOnlyThis"),
                 systemImage: "eye.circle"
-            )
-        }
-
-        Button {
-            viewModel.toggleVisibility(waypoint)
-        } label: {
-            Label(
-                waypoint.isVisible
-                    ? String(localized: "waypoints.hideFromMap")
-                    : String(localized: "waypoints.showOnMap"),
-                systemImage: waypoint.isVisible ? "eye.slash" : "eye"
             )
         }
 

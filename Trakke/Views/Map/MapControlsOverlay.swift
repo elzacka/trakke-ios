@@ -2,11 +2,6 @@ import SwiftUI
 
 struct MapControlsOverlay<WeatherContent: View>: View {
     @Bindable var viewModel: MapViewModel
-    var onSearchTapped: (() -> Void)?
-    var onCategoryTapped: (() -> Void)?
-    var onMerTapped: (() -> Void)?
-    var onWeatherTapped: (() -> Void)?
-    var onEmergencyTapped: (() -> Void)?
     var enabledOverlays: Set<OverlayLayer> = []
     @Binding var isMenuOpen: Bool
     var weatherContent: WeatherContent
@@ -20,41 +15,12 @@ struct MapControlsOverlay<WeatherContent: View>: View {
     var isInsideOfflineArea = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    private var menuItems: [(icon: String, label: String, action: () -> Void)] {
-        [
-            ("magnifyingglass", String(localized: "search.title"), { onSearchTapped?() }),
-            (viewModel.isTrackingUser ? "location.fill" : "location", String(localized: "map.controls.myPosition"), { viewModel.centerOnUser() }),
-            ("square.grid.2x2", String(localized: "categories.title"), { onCategoryTapped?() }),
-            ("light.beacon.max.fill", String(localized: "emergency.title"), { onEmergencyTapped?() }),
-            ("cloud.sun", String(localized: "weather.title"), { onWeatherTapped?() }),
-            ("ellipsis", String(localized: "more.title"), { onMerTapped?() }),
-        ]
-    }
-
     var body: some View {
         ZStack {
-            if isMenuOpen {
-                Color.black.opacity(0.15)
-                    .ignoresSafeArea()
-                    .onTapGesture {
-                        withAnimation(reduceMotion ? .none : .spring(duration: 0.3)) { isMenuOpen = false }
-                    }
-            }
-
             VStack {
                 if !isConnected {
                     offlineChip
                         .transition(.move(edge: .top).combined(with: .opacity))
-                }
-
-                HStack {
-                    Spacer()
-                    VStack(alignment: .trailing, spacing: .Trakke.sm) {
-                        if showCompass {
-                            compassButton
-                        }
-                        weatherContent
-                    }
                 }
                 Spacer()
             }
@@ -66,6 +32,7 @@ struct MapControlsOverlay<WeatherContent: View>: View {
                 Spacer()
 
                 HStack(alignment: .bottom) {
+                    // Bunn venstre: målestokk over Kartverket-attribusjon, samme stil
                     VStack(alignment: .leading, spacing: .Trakke.rowVertical) {
                         if showScaleBar {
                             scaleBar
@@ -75,18 +42,20 @@ struct MapControlsOverlay<WeatherContent: View>: View {
 
                     Spacer()
 
-                    if !hideMenuAndZoom {
-                        VStack(alignment: .trailing, spacing: .Trakke.md) {
-                            if isMenuOpen {
-                                fabMenuContent
-                            } else {
-                                if showZoomControls {
-                                    zoomControls
-                                }
-                            }
-
-                            fabButton
+                    // Bunn høyre: alle innstillings-styrte knapper + FAB nederst.
+                    // Dynamisk posisjonering — VStack skipper rader som ikke vises,
+                    // så FAB ligger alltid på samme stable plassering uansett hvilke
+                    // overlay-knapper som er aktive. Vises også under navigasjon
+                    // og andre kart-modi.
+                    VStack(alignment: .trailing, spacing: .Trakke.sm) {
+                        if showCompass {
+                            compassButton
                         }
+                        weatherContent
+                        if showZoomControls && !isMenuOpen {
+                            zoomControls
+                        }
+                        fabButton
                     }
                 }
                 .padding(.horizontal, .Trakke.xxl)
@@ -139,54 +108,6 @@ struct MapControlsOverlay<WeatherContent: View>: View {
         .trakkeFABShadow()
     }
 
-    // MARK: - FAB Menu Items
-
-    private var fabMenuContent: some View {
-        VStack(alignment: .trailing, spacing: .Trakke.sm) {
-            ForEach(Array(menuItems.enumerated()), id: \.offset) { index, item in
-                fabMenuItem(icon: item.icon, label: item.label) {
-                    item.action()
-                    withAnimation(reduceMotion ? .none : .spring(duration: 0.3)) { isMenuOpen = false }
-                }
-                .transition(.asymmetric(
-                    insertion: .move(edge: .bottom).combined(with: .opacity),
-                    removal: .opacity
-                ))
-                .animation(
-                    reduceMotion ? .none : .spring(duration: 0.35).delay(Double(menuItems.count - 1 - index) * 0.03),
-                    value: isMenuOpen
-                )
-            }
-        }
-    }
-
-    private func fabMenuItem(
-        icon: String,
-        label: String,
-        action: @escaping () -> Void
-    ) -> some View {
-        Button(action: action) {
-            HStack(spacing: .Trakke.md) {
-                Image(systemName: icon)
-                    .font(Font.Trakke.bodyMedium)
-                    .foregroundStyle(Color.Trakke.brand)
-                    .frame(width: .Trakke.xxl)
-                    .accessibilityHidden(true)
-
-                Text(label)
-                    .font(Font.Trakke.bodyMedium)
-                    .foregroundStyle(Color.Trakke.brand)
-
-                Spacer()
-            }
-            .padding(.horizontal, .Trakke.lg)
-            .frame(height: .Trakke.touchMin)
-            .background(.regularMaterial)
-            .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))
-        }
-        .frame(minWidth: 200, maxWidth: 260)
-    }
-
     // MARK: - Zoom Controls
 
     private var zoomControls: some View {
@@ -197,12 +118,12 @@ struct MapControlsOverlay<WeatherContent: View>: View {
                 Image(systemName: "plus")
                     .font(Font.Trakke.bodyMedium)
                     .foregroundStyle(Color.Trakke.brand)
-                    .frame(width: .Trakke.touchMin, height: .Trakke.touchMin)
+                    .frame(width: 56, height: 56)
             }
             .accessibilityLabel(String(localized: "map.controls.zoomIn"))
 
             Divider()
-                .frame(width: 28)
+                .frame(width: 36)
 
             Button {
                 viewModel.zoomOut()
@@ -210,12 +131,12 @@ struct MapControlsOverlay<WeatherContent: View>: View {
                 Image(systemName: "minus")
                     .font(Font.Trakke.bodyMedium)
                     .foregroundStyle(Color.Trakke.brand)
-                    .frame(width: .Trakke.touchMin, height: .Trakke.touchMin)
+                    .frame(width: 56, height: 56)
             }
             .accessibilityLabel(String(localized: "map.controls.zoomOut"))
         }
-        .background(Color.Trakke.background)
-        .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.md))
+        .background(Color.Trakke.surface)
+        .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.xl))
         .trakkeControlShadow()
     }
 
@@ -225,27 +146,26 @@ struct MapControlsOverlay<WeatherContent: View>: View {
         let scale = scaleInfo
         return HStack(spacing: .Trakke.xs) {
             Rectangle()
-                .fill(Color.Trakke.text.opacity(0.7))
+                .fill(Color.Trakke.textTertiary)
                 .frame(width: scale.widthPt, height: 2)
                 .overlay(alignment: .leading) {
                     Rectangle()
-                        .fill(Color.Trakke.text.opacity(0.7))
+                        .fill(Color.Trakke.textTertiary)
                         .frame(width: 1, height: 6)
                 }
                 .overlay(alignment: .trailing) {
                     Rectangle()
-                        .fill(Color.Trakke.text.opacity(0.7))
+                        .fill(Color.Trakke.textTertiary)
                         .frame(width: 1, height: 6)
                 }
             Text(scale.label)
                 .font(Font.Trakke.captionSoft)
-                .foregroundStyle(Color.Trakke.text)
+                .foregroundStyle(Color.Trakke.textTertiary)
         }
         .padding(.horizontal, .Trakke.sm)
         .padding(.vertical, .Trakke.xs)
-        .background(Color.Trakke.background)
+        .background(.ultraThinMaterial)
         .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.sm))
-        .trakkeControlShadow()
     }
 
     private var scaleInfo: (widthPt: CGFloat, label: String) {
@@ -293,20 +213,25 @@ struct MapControlsOverlay<WeatherContent: View>: View {
 
     // MARK: - Compass
 
+    /// Kombinert kompass + min posisjon: ett trykk sentrerer kartet på brukeren
+    /// og resetter rotasjonen til nord-opp. Erstatter den separate
+    /// lokasjon-knappen — én knapp gjør begge.
     private var compassButton: some View {
         Button {
             viewModel.shouldResetHeading = true
+            viewModel.centerOnUser()
         } label: {
             Image(systemName: "location.north.fill")
                 .font(Font.Trakke.bodyMedium)
-                .foregroundStyle(Color.Trakke.text)
+                .foregroundStyle(Color.Trakke.red)
                 .rotationEffect(.degrees(-viewModel.currentHeading))
-                .frame(width: .Trakke.touchMin, height: .Trakke.touchMin)
-                .background(Color.Trakke.background)
-                .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.md))
+                .frame(width: 56, height: 56)
+                .background(Color.Trakke.surface)
+                .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.xl))
                 .trakkeControlShadow()
         }
         .accessibilityLabel(String(localized: "map.controls.compass"))
+        .accessibilityHint(String(localized: "map.controls.myPosition"))
     }
 
     // MARK: - Offline Chip
@@ -324,7 +249,7 @@ struct MapControlsOverlay<WeatherContent: View>: View {
         }
         .padding(.horizontal, .Trakke.md)
         .padding(.vertical, .Trakke.sm)
-        .background(Color.Trakke.background)
+        .background(Color.Trakke.surface)
         .clipShape(Capsule())
         .trakkeControlShadow()
         .accessibilityLabel(isInsideOfflineArea

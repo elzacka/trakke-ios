@@ -7,7 +7,6 @@ enum ActiveSheet: Identifiable, Hashable {
     case poiDetail
     case routeList
     case routeSave
-    case merSheet
     case waypointList
     case waypointDetail
     case waypointEdit

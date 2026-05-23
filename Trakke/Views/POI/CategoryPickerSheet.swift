@@ -49,7 +49,7 @@ struct CategoryPickerSheet: View {
                 .padding(.horizontal, .Trakke.sheetHorizontal)
                 .padding(.top, .Trakke.sheetTop)
             }
-            .background(Color(.systemGroupedBackground))
+            .background(Color.Trakke.background)
             .navigationTitle(String(localized: "categories.title"))
             .navigationBarTitleDisplayMode(.inline)
             .tint(Color.Trakke.brand)

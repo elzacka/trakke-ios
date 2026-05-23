@@ -30,7 +30,7 @@ struct DownloadManagerSheet: View {
                 packList
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.Trakke.background)
         .tint(Color.Trakke.brand)
         .navigationTitle(String(localized: "offline.title"))
         .navigationBarTitleDisplayMode(.inline)
@@ -49,27 +49,23 @@ struct DownloadManagerSheet: View {
                 .accessibilityLabel(String(localized: "offline.download"))
             }
         }
-        .alert(
-            String(localized: "offline.deleteConfirm.title"),
+        .trakkeDialog(
             isPresented: Binding(
                 get: { packToDelete != nil },
                 set: { if !$0 { packToDelete = nil } }
-            )
-        ) {
-            Button(String(localized: "common.delete"), role: .destructive) {
+            ),
+            title: String(localized: "offline.deleteConfirm.title"),
+            message: packToDelete.map { String(localized: "offline.deleteConfirm.message \($0.name)") },
+            primary: .destructive(String(localized: "common.yes")) {
                 if let pack = packToDelete {
                     viewModel.deletePack(pack)
                 }
                 packToDelete = nil
-            }
-            Button(String(localized: "common.cancel"), role: .cancel) {
+            },
+            cancel: .cancel(String(localized: "common.no")) {
                 packToDelete = nil
             }
-        } message: {
-            if let pack = packToDelete {
-                Text(String(localized: "offline.deleteConfirm.message \(pack.name)"))
-            }
-        }
+        )
     }
 
     private var packList: some View {
@@ -109,7 +105,7 @@ struct DownloadManagerSheet: View {
             .padding(.horizontal, .Trakke.sheetHorizontal)
             .padding(.top, .Trakke.sheetTop)
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.Trakke.background)
     }
 
     private func packRow(_ pack: OfflinePackInfo) -> some View {

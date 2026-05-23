@@ -60,18 +60,11 @@ enum AQIClass: Int, Sendable {
 
 import SwiftUI
 
-// MARK: - Service Protocol
-
-protocol AirQualityFetching: Sendable {
-    func getAirQuality(lat: Double, lon: Double) async throws -> AirQualityData?
-    func clearCache() async
-}
-
 // MARK: - Air Quality Service
 
 /// Fetches air quality forecasts from Meteorologisk institutt's airqualityforecast API.
 /// Respects MET API ToS: uses If-Modified-Since/Expires headers for caching.
-actor AirQualityService: AirQualityFetching {
+actor AirQualityService {
     private static let baseURL = "https://api.met.no/weatherapi/airqualityforecast/0.1/"
 
     private var cache: (key: String, data: AirQualityData, expiresAt: Date, lastModified: String?)?

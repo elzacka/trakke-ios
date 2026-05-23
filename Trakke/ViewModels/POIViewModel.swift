@@ -9,14 +9,14 @@ final class POIViewModel {
     var selectedPOI: POI?
     var isLoading = false
 
-    private let poiService: any POIFetching
+    private let poiService: POIService
     private var loadTask: Task<Void, Never>?
     private var lastBounds: ViewportBounds?
     private var lastZoom: Double = 0
     private static let debounceInterval: Duration = .milliseconds(1500)
     private static let maxAnnotations = 2000
 
-    init(poiService: any POIFetching = POIService()) {
+    init(poiService: POIService = POIService()) {
         self.poiService = poiService
     }
 

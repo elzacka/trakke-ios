@@ -12,6 +12,7 @@ struct RouteListSheet: View {
     @State private var showFileImporter = false
     @State private var editingRoute: Route?
     @State private var shareURL: ShareableURL?
+    @State private var showDeleteAllConfirmation = false
     // Collapsed by default — modern iOS pattern (Files, Notes, Mail use the
     // same disclosure style). Set persisted only in-memory; user expands what
     // they need each visit.
@@ -32,35 +33,11 @@ struct RouteListSheet: View {
     }
 
     private var routeContent: some View {
-        Group {
-            if viewModel.routes.isEmpty {
-                EmptyStateView(
-                    icon: "point.topleft.down.to.point.bottomright.curvepath",
-                    title: String(localized: "routes.empty.title"),
-                    subtitle: String(localized: "routes.empty.subtitle"),
-                    actionLabel: String(localized: "import.file"),
-                    actionIcon: "square.and.arrow.up",
-                    action: { showFileImporter = true }
-                )
-            } else {
-                routeList
-            }
-        }
-        .background(Color(.systemGroupedBackground))
+        routeList
+        .background(Color.Trakke.background)
         .tint(Color.Trakke.brand)
         .navigationTitle(String(localized: "routes.title"))
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    onNewRoute?()
-                    dismissFully()
-                } label: {
-                    Image(systemName: "plus")
-                }
-                .accessibilityLabel(String(localized: "routes.new"))
-            }
-        }
         .fileImporter(
             isPresented: $showFileImporter,
             allowedContentTypes: [.gpx, .geoJSON],
@@ -107,8 +84,20 @@ struct RouteListSheet: View {
     private var routeList: some View {
         ScrollView {
             VStack(spacing: .Trakke.cardGap) {
-                // Categorised groups first (alphabetical), then uncategorised under
-                // "Lagrede ruter" so users without category usage see the original layout.
+                // Primær handling
+                Button {
+                    onNewRoute?()
+                    dismissFully()
+                } label: {
+                    Label(
+                        String(localized: "routes.draw"),
+                        systemImage: "plus"
+                    )
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .buttonStyle(.trakkeSecondary)
+
+                // Lagrede ruter rett under primær handling
                 ForEach(viewModel.categories, id: \.self) { category in
                     routeGroup(title: category, category: category, items: viewModel.routes(for: category))
                 }
@@ -123,51 +112,17 @@ struct RouteListSheet: View {
                     )
                 }
 
-                VStack(spacing: .Trakke.sm) {
-                    Button {
-                        showFileImporter = true
-                    } label: {
-                        HStack(spacing: .Trakke.sm) {
-                            if viewModel.isImporting {
-                                ProgressView()
-                                    .controlSize(.small)
-                                    .tint(Color.Trakke.brand)
-                                Text(String(localized: "import.inProgress"))
-                            } else {
-                                Image(systemName: "square.and.arrow.up")
-                                Text(String(localized: "import.file"))
-                            }
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-                    .buttonStyle(.trakkeSecondary)
-                    .disabled(viewModel.isImporting)
-
-                    Button {
-                        if let url = viewModel.exportAllGPX() {
-                            shareURL = ShareableURL(url: url)
-                        }
-                    } label: {
-                        Label(
-                            String(localized: "import.exportAll"),
-                            systemImage: "square.and.arrow.down"
-                        )
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-                    .buttonStyle(.trakkeSecondary)
-                    .disabled(viewModel.routes.isEmpty)
-
-                    if viewModel.routes.count >= 2 {
-                        bulkVisibilityButton
-                    }
-                }
+                // Sekundærhandlinger — importer, eksporter, slett.
+                // Ikon-bar høyrejustert: signaliserer at dette er
+                // utility-handlinger, ikke primær-flyten.
+                secondaryActionBar
 
                 Spacer(minLength: .Trakke.lg)
             }
             .padding(.horizontal, .Trakke.sheetHorizontal)
             .padding(.top, .Trakke.sheetTop)
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.Trakke.background)
     }
 
     private func routeGroup(title: String, category: String?, items: [Route]) -> some View {
@@ -180,58 +135,58 @@ struct RouteListSheet: View {
                         if items.first?.id != route.id {
                             Divider().padding(.leading, .Trakke.dividerLeading)
                         }
-                        NavigationLink(value: route) {
-                            routeRow(route)
-                                // Make the whole row hit-testable so long press
-                                // works on padding / Spacer area, not just the
-                                // label text.
-                                .contentShape(Rectangle())
-                        }
-                        .buttonStyle(.plain)
-                        .contextMenu {
-                            // Solo first — most powerful single-purpose action
-                            // for the "show only this" planning flow.
-                            Button {
-                                viewModel.showOnly(route)
-                                UIAccessibility.post(
-                                    notification: .announcement,
-                                    argument: String(localized: "list.showOnlyThis.announce \(route.name)")
-                                )
-                            } label: {
-                                Label(
-                                    String(localized: "routes.showOnlyThis"),
-                                    systemImage: "eye.circle"
-                                )
+                        HStack(spacing: 0) {
+                            NavigationLink(value: route) {
+                                routeRow(route)
+                                    // Make the whole row hit-testable so long press
+                                    // works on padding / Spacer area, not just the
+                                    // label text.
+                                    .contentShape(Rectangle())
+                            }
+                            .buttonStyle(.plain)
+                            .contextMenu {
+                                // Solo first — most powerful single-purpose action
+                                // for the "show only this" planning flow.
+                                Button {
+                                    viewModel.showOnly(route)
+                                    UIAccessibility.post(
+                                        notification: .announcement,
+                                        argument: String(localized: "list.showOnlyThis.announce \(route.name)")
+                                    )
+                                } label: {
+                                    Label(
+                                        String(localized: "routes.showOnlyThis"),
+                                        systemImage: "eye.circle"
+                                    )
+                                }
+
+                                Button {
+                                    editingRoute = route
+                                } label: {
+                                    Label(String(localized: "common.edit"), systemImage: "pencil")
+                                }
+
+                                Button(role: .destructive) {
+                                    viewModel.deleteRoute(route)
+                                } label: {
+                                    Label(String(localized: "common.delete"), systemImage: "trash")
+                                }
                             }
 
-                            Button {
+                            VisibilityToggleButton(
+                                isVisible: route.isVisible,
+                                accessibilityLabel: route.isVisible
+                                    ? String(localized: "routes.hideFromMap")
+                                    : String(localized: "routes.showOnMap")
+                            ) {
                                 viewModel.toggleVisibility(route)
-                            } label: {
-                                Label(
-                                    route.isVisible
-                                        ? String(localized: "routes.hideFromMap")
-                                        : String(localized: "routes.showOnMap"),
-                                    systemImage: route.isVisible ? "eye.slash" : "eye"
-                                )
-                            }
-
-                            Button {
-                                editingRoute = route
-                            } label: {
-                                Label(String(localized: "common.edit"), systemImage: "pencil")
-                            }
-
-                            Button(role: .destructive) {
-                                viewModel.deleteRoute(route)
-                            } label: {
-                                Label(String(localized: "common.delete"), systemImage: "trash")
                             }
                         }
                     }
                 }
                 .padding(.horizontal, .Trakke.cardPadH)
                 .padding(.vertical, .Trakke.cardPadV)
-                .background(Color(.secondarySystemGroupedBackground))
+                .background(Color.Trakke.surface)
                 .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))
                 .padding(.top, .Trakke.sm)
             }
@@ -257,14 +212,6 @@ struct RouteListSheet: View {
             }
 
             Spacer()
-
-            // Status pip only when hidden. The NavigationLink renders its own
-            // disclosure chevron, so a manual chevron would duplicate it.
-            if !route.isVisible {
-                Image(systemName: "eye.slash")
-                    .font(Font.Trakke.captionSoft)
-                    .foregroundStyle(Color.Trakke.textTertiary)
-            }
         }
         .padding(.vertical, .Trakke.rowVertical)
         .opacity(route.isVisible ? 1 : 0.45)
@@ -323,11 +270,17 @@ struct RouteListSheet: View {
             Button {
                 viewModel.setCategoryVisibility(category, visible: !allVisible)
             } label: {
-                Image(systemName: allVisible ? "eye" : "eye.slash")
-                    .font(Font.Trakke.captionSoft.weight(.semibold))
-                    .foregroundStyle(Color.Trakke.textTertiary)
-                    .frame(width: 44, height: 44)
-                    .contentShape(Rectangle())
+                Group {
+                    if allVisible {
+                        Image(systemName: "checkmark")
+                            .font(Font.Trakke.bodyMedium)
+                            .foregroundStyle(Color.Trakke.brand)
+                    } else {
+                        Color.clear
+                    }
+                }
+                .frame(width: 44, height: 44)
+                .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
             .accessibilityLabel(
@@ -358,24 +311,49 @@ struct RouteListSheet: View {
         }
     }
 
-    // MARK: - Bulk Visibility (footer)
+    // MARK: - Secondary action bar (importer / eksporter / slett)
 
-    private var bulkVisibilityButton: some View {
-        let anyVisible = viewModel.isAnyVisible
-        return Button {
-            viewModel.setAllVisible(!anyVisible)
-        } label: {
-            HStack(spacing: .Trakke.sm) {
-                Image(systemName: anyVisible ? "eye.slash" : "eye")
-                Text(
-                    anyVisible
-                        ? String(localized: "routes.hideAllOnMap")
-                        : String(localized: "routes.showAllOnMap")
-                )
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
+    private var secondaryActionBar: some View {
+        HStack(spacing: .Trakke.sm) {
+            Spacer()
+
+            TrakkeIconButton(
+                systemImage: "square.and.arrow.up",
+                isLoading: viewModel.isImporting,
+                accessibilityLabel: viewModel.isImporting
+                    ? String(localized: "import.inProgress")
+                    : String(localized: "import.file"),
+                action: { showFileImporter = true }
+            )
+
+            TrakkeIconButton(
+                systemImage: "square.and.arrow.down",
+                isEnabled: !viewModel.routes.isEmpty,
+                accessibilityLabel: String(localized: "import.exportAll"),
+                action: {
+                    if let url = viewModel.exportAllGPX() {
+                        shareURL = ShareableURL(url: url)
+                    }
+                }
+            )
+
+            TrakkeIconButton(
+                systemImage: "trash",
+                role: .destructive,
+                isEnabled: !viewModel.routes.isEmpty,
+                accessibilityLabel: String(localized: "routes.deleteAll"),
+                action: { showDeleteAllConfirmation = true }
+            )
+            .trakkeDialog(
+                isPresented: $showDeleteAllConfirmation,
+                title: String(localized: "routes.deleteAll.title"),
+                message: String(localized: "routes.deleteAll.message"),
+                primary: .destructive(String(localized: "common.yes")) {
+                    viewModel.deleteAllRoutes()
+                },
+                cancel: .cancel(String(localized: "common.no"))
+            )
         }
-        .buttonStyle(.trakkeSecondary)
     }
 
     // MARK: - Import Banner

@@ -13,17 +13,17 @@ final class WeatherViewModel {
     var varsomWarnings: [VarsomWarning] = []
     var airQuality: AirQualityData?
 
-    private let service: any WeatherFetching
-    private let waterService: any WaterTemperatureFetching
-    private let varsomService: any VarsomFetching
-    private let airQualityService: any AirQualityFetching
+    private let service: WeatherService
+    private let waterService: WaterTemperatureService
+    private let varsomService: VarsomService
+    private let airQualityService: AirQualityService
     private var lastFetchCoordinate: CLLocationCoordinate2D?
 
     init(
-        service: any WeatherFetching = WeatherService(),
-        waterService: any WaterTemperatureFetching = WaterTemperatureService(),
-        varsomService: any VarsomFetching = VarsomService(),
-        airQualityService: any AirQualityFetching = AirQualityService()
+        service: WeatherService = WeatherService(),
+        waterService: WaterTemperatureService = WaterTemperatureService(),
+        varsomService: VarsomService = VarsomService(),
+        airQualityService: AirQualityService = AirQualityService()
     ) {
         self.service = service
         self.waterService = waterService

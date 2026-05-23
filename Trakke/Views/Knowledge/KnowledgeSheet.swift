@@ -49,7 +49,7 @@ struct KnowledgeSheet: View {
         ScrollView {
             contentVStack
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.Trakke.background)
         .tint(Color.Trakke.brand)
         .navigationTitle(String(localized: "knowledge.title"))
         .navigationBarTitleDisplayMode(.inline)
@@ -57,27 +57,16 @@ struct KnowledgeSheet: View {
 
     private var contentVStack: some View {
         VStack(spacing: .Trakke.cardGap) {
-            CardSection("") {
+            CardSection(String(localized: "knowledge.categories")) {
                 ForEach(Array(sortedCategories.enumerated()), id: \.element) { index, category in
                     if index > 0 {
                         Divider().padding(.leading, .Trakke.dividerLeading)
                     }
                     NavigationLink(value: destination(for: category)) {
-                        HStack(spacing: .Trakke.md) {
-                            categoryIcon(category)
-                                .foregroundStyle(Color.Trakke.brand)
-                                .frame(width: 24)
-                            Text(category.displayName)
-                                .font(Font.Trakke.bodyRegular)
-                                .foregroundStyle(Color.Trakke.text)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(Font.Trakke.captionSoft)
-                                .foregroundStyle(Color.Trakke.textTertiary)
-                                .accessibilityHidden(true)
-                        }
-                        .frame(minHeight: .Trakke.touchMin)
-                        .contentShape(Rectangle())
+                        TrakkeMenuRow(
+                            label: category.displayName,
+                            trailing: { TrakkeMenuRowChevron() }
+                        )
                     }
                     .buttonStyle(.plain)
                 }
@@ -90,16 +79,6 @@ struct KnowledgeSheet: View {
         .task {
             await viewModel.loadArticles()
             viewModel.fetchRemoteArticleUpdates()
-        }
-    }
-
-    @ViewBuilder
-    private func categoryIcon(_ category: ArticleCategory) -> some View {
-        if let name = category.iconName {
-            Image(systemName: name)
-        } else if let glyph = category.iconGlyph {
-            Text(glyph)
-                .font(Font.Trakke.bodyMedium)
         }
     }
 }
@@ -116,54 +95,48 @@ enum KnowledgeDestination: Hashable {
 struct KnowledgeCategoryView: View {
     let category: ArticleCategory
     @Bindable var viewModel: KnowledgeViewModel
+    @Environment(\.dismiss) private var dismiss
 
     private var filteredArticles: [KnowledgeArticle] {
         viewModel.articles.filter { $0.category == category.rawValue }
     }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: .Trakke.cardGap) {
-                if filteredArticles.isEmpty {
-                    EmptyStateView(
-                        icon: "book.closed",
-                        title: String(localized: "knowledge.articles.empty"),
-                        subtitle: String(localized: "knowledge.articles.empty.subtitle")
-                    )
-                } else {
-                    CardSection("") {
-                        ForEach(Array(filteredArticles.enumerated()), id: \.element.id) { index, article in
-                            if index > 0 {
-                                Divider().padding(.leading, .Trakke.dividerLeading)
-                            }
-                            NavigationLink(value: KnowledgeDestination.article(article)) {
-                                HStack {
-                                    Text(article.title)
-                                        .font(Font.Trakke.bodyRegular)
-                                        .foregroundStyle(Color.Trakke.text)
-                                        .multilineTextAlignment(.leading)
-                                    Spacer()
-                                    Image(systemName: "chevron.right")
-                                        .font(Font.Trakke.captionSoft)
-                                        .foregroundStyle(Color.Trakke.textTertiary)
-                                        .accessibilityHidden(true)
+        VStack(spacing: 0) {
+            TrakkeSheetHeader(title: category.displayName, onBack: { dismiss() })
+
+            ScrollView {
+                VStack(spacing: .Trakke.cardGap) {
+                    if filteredArticles.isEmpty {
+                        EmptyStateView(
+                            title: String(localized: "knowledge.articles.empty"),
+                            subtitle: String(localized: "knowledge.articles.empty.subtitle")
+                        )
+                    } else {
+                        CardSection(String(localized: "knowledge.articles")) {
+                            ForEach(Array(filteredArticles.enumerated()), id: \.element.id) { index, article in
+                                if index > 0 {
+                                    Divider().padding(.leading, .Trakke.dividerLeading)
                                 }
-                                .frame(minHeight: .Trakke.touchMin)
-                                .contentShape(Rectangle())
+                                NavigationLink(value: KnowledgeDestination.article(article)) {
+                                    TrakkeMenuRow(
+                                        label: article.title,
+                                        trailing: { TrakkeMenuRowChevron() }
+                                    )
+                                }
+                                .buttonStyle(.plain)
                             }
-                            .buttonStyle(.plain)
                         }
                     }
-                }
 
-                Spacer(minLength: .Trakke.lg)
+                    Spacer(minLength: .Trakke.lg)
+                }
+                .padding(.horizontal, .Trakke.sheetHorizontal)
+                .padding(.top, .Trakke.sheetTop)
             }
-            .padding(.horizontal, .Trakke.sheetHorizontal)
-            .padding(.top, .Trakke.sheetTop)
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.Trakke.background)
         .tint(Color.Trakke.brand)
-        .navigationTitle(category.displayName)
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.hidden, for: .navigationBar)
     }
 }

@@ -23,11 +23,11 @@ final class OfflineViewModel {
     var kommuneSearchQuery = ""
     var kommuneDownloadLayer: BaseLayer = .topo
 
-    private let service: OfflineMapManaging
+    private let service: OfflineMapService
     private var progressObserver: NSObjectProtocol?
     private var errorObserver: NSObjectProtocol?
 
-    init(service: OfflineMapManaging = OfflineMapService.shared) {
+    init(service: OfflineMapService = OfflineMapService.shared) {
         self.service = service
     }
 

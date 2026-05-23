@@ -57,6 +57,14 @@ final class MeasurementViewModel {
         self.isActive = true
     }
 
+    /// Bytter modus midt i målingen uten å nullstille punktene — samme
+    /// koordinatliste fungerer både som polylinje (avstand) og polygon (areal),
+    /// så brukeren kan veksle for å se begge målene uten å starte på nytt.
+    func setMode(_ mode: MeasurementMode) {
+        guard isActive, self.mode != mode else { return }
+        self.mode = mode
+    }
+
     func addPoint(_ coordinate: CLLocationCoordinate2D) {
         points.append(coordinate)
     }

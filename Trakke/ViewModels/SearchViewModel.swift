@@ -11,10 +11,10 @@ final class SearchViewModel {
     var selectedResult: SearchResult?
     var coordinateFormat: CoordinateFormat = .dd
 
-    private let searchService: any SearchFetching
+    private let searchService: SearchService
     private var searchTask: Task<Void, Never>?
 
-    init(searchService: any SearchFetching = SearchService()) {
+    init(searchService: SearchService = SearchService()) {
         self.searchService = searchService
     }
     private static let debounceInterval: Duration = .milliseconds(300)

@@ -23,16 +23,9 @@ struct WaterTemperatureResult: Sendable {
     let fetchedAt: Date
 }
 
-// MARK: - Protocol
-
-protocol WaterTemperatureFetching: Sendable {
-    func getWaterTemperature(lat: Double, lon: Double) async throws -> WaterTemperatureResult
-    func clearCache() async
-}
-
 // MARK: - Service
 
-actor WaterTemperatureService: WaterTemperatureFetching {
+actor WaterTemperatureService {
     private static let oceanBaseURL = "https://api.met.no/weatherapi/oceanforecast/2.0/complete"
     private static let bathingBaseURL = "https://havvarsel-frost.met.no/api/v1/obs/badevann/get"
     private static let userAgent = APIClient.userAgent

@@ -8,7 +8,7 @@ import SwiftUI
 /// - Species: `![caption](species:Scientific Name)` -- fetches from Artsdatabanken
 struct MarkdownBodyView: View {
     let markdown: String
-    var imageService: ArtsdatabankenImageProviding = ArtsdatabankenImageService.default
+    var imageService: ArtsdatabankenImageService = ArtsdatabankenImageService.default
     @State private var selectedImage: ImageRef?
     @State private var parsedBlocks: [MarkdownBlock]?
 
@@ -101,7 +101,7 @@ struct MarkdownBodyView: View {
                     Image(name)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.md))
+                        .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))
 
                     if !caption.isEmpty {
                         Text(caption)
@@ -142,7 +142,7 @@ struct MarkdownBodyView: View {
 private struct SpeciesImageBlock: View {
     let scientificName: String
     let caption: String
-    var imageService: ArtsdatabankenImageProviding = ArtsdatabankenImageService.default
+    var imageService: ArtsdatabankenImageService = ArtsdatabankenImageService.default
     let onTap: (UIImage) -> Void
     @State private var image: UIImage?
     @State private var isLoading = true
@@ -154,7 +154,7 @@ private struct SpeciesImageBlock: View {
                     Image(uiImage: image)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.md))
+                        .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))
 
                     speciesCaption
                 }
@@ -165,7 +165,7 @@ private struct SpeciesImageBlock: View {
             .accessibilityHint(String(localized: "image.fullscreen.hint"))
         } else if isLoading {
             VStack(alignment: .leading, spacing: .Trakke.xs) {
-                RoundedRectangle(cornerRadius: .TrakkeRadius.md)
+                RoundedRectangle(cornerRadius: .TrakkeRadius.lg)
                     .fill(Color(.systemGray6))
                     .aspectRatio(1, contentMode: .fit)
                     .overlay {
@@ -235,9 +235,9 @@ struct MarkdownTableView: View {
                 }
             }
         }
-        .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.md))
+        .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))
         .overlay(
-            RoundedRectangle(cornerRadius: .TrakkeRadius.md)
+            RoundedRectangle(cornerRadius: .TrakkeRadius.lg)
                 .stroke(Color(.separator), lineWidth: 0.5)
         )
     }

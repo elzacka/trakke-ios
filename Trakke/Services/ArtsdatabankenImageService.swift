@@ -2,22 +2,16 @@ import Foundation
 import OSLog
 import SwiftUI
 
-/// Protocol for dependency injection and testability.
-protocol ArtsdatabankenImageProviding: Sendable {
-    func image(for scientificName: String) async -> UIImage?
-    func clearCache() async
-}
-
 /// Fetches and caches species profile images from Artsdatabanken.
 ///
 /// Image pipeline: scientific name -> media ID (from catalog) -> WebP image data -> UIImage.
 /// The catalog is fetched once and cached for the session. Individual images are cached
 /// in URLCache (via APIClient.session) with Artsdatabanken's 8-hour cache-control.
-actor ArtsdatabankenImageService: ArtsdatabankenImageProviding {
+actor ArtsdatabankenImageService {
     static let `default` = ArtsdatabankenImageService()
 
-    private static let catalogURL = "https://ai.artsdatabanken.no/taxon/images"
-    private static let mediaBaseURL = "https://artsdatabanken.no/Media"
+    private static let catalogURL = URL(string: "https://ai.artsdatabanken.no/taxon/images")!
+    private static let mediaBaseURL = URL(string: "https://artsdatabanken.no/Media")!
     private static let imageSize = "480x480"
 
     private var catalog: [String: String]?
@@ -43,9 +37,9 @@ actor ArtsdatabankenImageService: ArtsdatabankenImageProviding {
             return nil
         }
 
-        guard let url = URL(string: "\(Self.mediaBaseURL)/\(mediaID)?mode=\(Self.imageSize)") else {
-            return nil
-        }
+        let url = Self.mediaBaseURL
+            .appendingPathComponent(mediaID)
+            .appending(queryItems: [URLQueryItem(name: "mode", value: Self.imageSize)])
 
         do {
             let data = try await APIClient.fetchData(url: url, optional: true)
@@ -83,10 +77,10 @@ actor ArtsdatabankenImageService: ArtsdatabankenImageProviding {
     private func loadCatalog() async {
         isLoadingCatalog = true
         defer { isLoadingCatalog = false }
-        guard catalog == nil, let url = URL(string: Self.catalogURL) else { return }
+        guard catalog == nil else { return }
 
         do {
-            let data = try await APIClient.fetchData(url: url, optional: true)
+            let data = try await APIClient.fetchData(url: Self.catalogURL, optional: true)
             catalog = try decoder.decode([String: String].self, from: data)
             Logger.knowledge.info("Loaded Artsdatabanken image catalog: \(self.catalog?.count ?? 0) species")
         } catch {

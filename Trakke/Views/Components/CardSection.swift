@@ -14,7 +14,7 @@ struct CardSection<Content: View>: View {
             if !title.isEmpty {
                 Text(title)
                     .font(Font.Trakke.sectionHeader)
-                    .foregroundStyle(Color.Trakke.textTertiary)
+                    .foregroundStyle(Color.Trakke.textSoft)
                     .textCase(.uppercase)
                     .padding(.horizontal, .Trakke.xs)
                     .padding(.bottom, .Trakke.sm)
@@ -26,7 +26,7 @@ struct CardSection<Content: View>: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, .Trakke.cardPadH)
             .padding(.vertical, .Trakke.cardPadV)
-            .background(Color(.secondarySystemGroupedBackground))
+            .background(Color.Trakke.surface)
             .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))
         }
     }

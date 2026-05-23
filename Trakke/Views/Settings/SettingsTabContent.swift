@@ -1,0 +1,32 @@
+import SwiftUI
+
+/// Innstillinger-fanen — bruker eksisterende PreferencesSheet i inline-modus
+/// for å gjenbruke all togglerne, koordinatformat og slett-alle-data-flyt.
+/// TrakkeSheetHeader på toppen erstatter iOS-default `.navigationTitle`,
+/// og NavigationStack rundt gjør at NavigationLink til DeleteAllDataView
+/// fortsatt fungerer.
+struct SettingsTabContent: View {
+    @Bindable var mapViewModel: MapViewModel
+    @Bindable var knowledgeViewModel: KnowledgeViewModel
+    var onDeleteAllData: (() -> Void)?
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 0) {
+                TrakkeSheetHeader(title: String(localized: "appTab.settings"))
+
+                ScrollView {
+                    PreferencesSheet(
+                        mapViewModel: mapViewModel,
+                        knowledgeViewModel: knowledgeViewModel,
+                        onDeleteAllData: onDeleteAllData,
+                        inline: true
+                    )
+                    .padding(.bottom, .Trakke.xxl + 60)
+                }
+            }
+            .background(Color.Trakke.background)
+            .toolbar(.hidden, for: .navigationBar)
+        }
+    }
+}

@@ -22,7 +22,6 @@ struct PreferencesSheet: View {
     @AppStorage(AppStorageKeys.overlayNaturskog) private var overlayNaturskog = false
     @Environment(\.dismiss) private var dismiss
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var coordinateInfoFormat: CoordinateFormat?
 
     var body: some View {
         if inline {
@@ -40,7 +39,7 @@ struct PreferencesSheet: View {
         ScrollView {
             contentVStack
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.Trakke.background)
         .tint(Color.Trakke.brand)
         .navigationTitle(String(localized: "settings.title"))
         .navigationBarTitleDisplayMode(.inline)
@@ -50,13 +49,14 @@ struct PreferencesSheet: View {
         VStack(spacing: .Trakke.cardGap) {
                     // MARK: - Base Layer
                     CardSection(String(localized: "settings.baseLayer")) {
-                        Picker(String(localized: "settings.baseLayer"), selection: $mapViewModel.baseLayer) {
-                            ForEach(BaseLayer.allCases) { layer in
-                                Text(layer.displayName).tag(layer)
+                        VStack(spacing: 0) {
+                            ForEach(Array(BaseLayer.allCases.enumerated()), id: \.element) { index, layer in
+                                if index > 0 {
+                                    Divider().padding(.leading, .Trakke.dividerLeading)
+                                }
+                                baseLayerRow(layer)
                             }
                         }
-                        .pickerStyle(.segmented)
-                        .labelsHidden()
                     }
 
                     // MARK: - Overlay Layers
@@ -135,6 +135,7 @@ struct PreferencesSheet: View {
                             }
                         }
                     }
+                    .id("coordinateFormatSection")
 
                     // MARK: - Reset (ikke destruktiv — bare tilbakestiller togglerne)
                     Button {
@@ -161,39 +162,23 @@ struct PreferencesSheet: View {
                     // MARK: - Slett alle data — egen skjerm (GDPR Art. 17)
                     // Skilt fra togglerne over slik at destruktive valg ikke
                     // ligger ved siden av kosmetiske brytere.
-                    NavigationLink {
-                        DeleteAllDataView(
-                            mapViewModel: mapViewModel,
-                            knowledgeViewModel: knowledgeViewModel,
-                            onDeleteAllData: onDeleteAllData
-                        )
-                    } label: {
-                        HStack(spacing: .Trakke.md) {
-                            Image(systemName: "trash")
-                                .font(Font.Trakke.bodyMedium)
-                                .foregroundStyle(Color.Trakke.red)
-                                .frame(width: 24)
-                                .accessibilityHidden(true)
-
-                            Text(String(localized: "settings.deleteAllData"))
-                                .font(Font.Trakke.bodyRegular)
-                                .foregroundStyle(Color.Trakke.text)
-
-                            Spacer()
-
-                            Image(systemName: "chevron.right")
-                                .font(Font.Trakke.captionSoft)
-                                .foregroundStyle(Color.Trakke.textTertiary)
-                                .accessibilityHidden(true)
+                    CardSection {
+                        NavigationLink {
+                            DeleteAllDataView(
+                                mapViewModel: mapViewModel,
+                                knowledgeViewModel: knowledgeViewModel,
+                                onDeleteAllData: onDeleteAllData
+                            )
+                        } label: {
+                            TrakkeMenuRow(
+                                icon: "trash",
+                                label: String(localized: "settings.deleteAllData"),
+                                iconColor: Color.Trakke.red,
+                                trailing: { TrakkeMenuRowChevron() }
+                            )
                         }
-                        .padding(.horizontal, .Trakke.cardPadH)
-                        .padding(.vertical, .Trakke.cardPadV)
-                        .background(Color(.secondarySystemGroupedBackground))
-                        .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))
-                        .frame(minHeight: .Trakke.touchMin)
-                        .contentShape(Rectangle())
+                        .buttonStyle(.plain)
                     }
-                    .buttonStyle(.plain)
 
             Spacer(minLength: .Trakke.lg)
         }
@@ -201,46 +186,30 @@ struct PreferencesSheet: View {
         .padding(.top, .Trakke.sheetTop)
     }
 
-    // MARK: - Toggle Row
+    // MARK: - Radio Rows (base layer + coordinate format)
+
+    private func baseLayerRow(_ layer: BaseLayer) -> some View {
+        let isSelected = mapViewModel.baseLayer == layer
+
+        return TrakkeMenuRow(
+            label: layer.displayName,
+            action: { mapViewModel.baseLayer = layer },
+            trailing: { TrakkeMenuRowCheckmark(isSelected: isSelected) }
+        )
+        .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : .isButton)
+    }
 
     private func coordinateFormatRow(_ format: CoordinateFormat) -> some View {
-        HStack {
-            Toggle(isOn: Binding(
-                get: { coordinateFormat == format },
-                set: { if $0 { coordinateFormat = format } }
-            )) {
-                HStack(spacing: .Trakke.xs) {
-                    Text(format.formatTitle)
-                        .font(Font.Trakke.bodyRegular)
-                        .lineLimit(1)
+        let isSelected = coordinateFormat == format
 
-                    Button {
-                        coordinateInfoFormat = format
-                    } label: {
-                        Image(systemName: "info.circle")
-                            .font(Font.Trakke.captionSoft)
-                            .foregroundStyle(Color.Trakke.textTertiary)
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(String(localized: "settings.format.info"))
-                }
-            }
-            .tint(Color.Trakke.brand)
-        }
-        .padding(.vertical, .Trakke.xs)
-        .trakkeTooltip(isPresented: Binding(
-            get: { coordinateInfoFormat == format },
-            set: { if !$0 { coordinateInfoFormat = nil } }
-        )) {
-            TrakkeTooltip(
-                title: format.formatTitle,
-                text: format.formatTooltip,
-                sections: [(
-                    header: String(localized: "settings.format.example"),
-                    text: format.exampleCoordinate
-                )]
-            )
-        }
+        return TrakkeMenuRow(
+            label: format.formatShortTitle,
+            subtitle: format.exampleCoordinate,
+            subtitleFont: Font.Trakke.captionSoft.monospacedDigit(),
+            action: { coordinateFormat = format },
+            trailing: { TrakkeMenuRowCheckmark(isSelected: isSelected) }
+        )
+        .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : .isButton)
     }
 
     private func settingsToggle(
@@ -251,7 +220,7 @@ struct PreferencesSheet: View {
             Text(label)
                 .font(Font.Trakke.bodyRegular)
         }
-        .tint(Color.Trakke.brand)
+        .toggleStyle(.trakke)
         .padding(.vertical, .Trakke.xs)
     }
 }
@@ -265,6 +234,16 @@ extension CoordinateFormat {
         case .dd: return "DD \u{2013} Desimalgrader (standard)"
         case .dms: return "DMS \u{2013} Grader, minutter, sekunder"
         case .utm: return "UTM \u{2013} Universal Transverse Mercator"
+        }
+    }
+
+    /// Komprimert tittel — én linje, uten "(standard)" og fulle navn.
+    /// Brukt i radio-rader der formatet vises sammen med eksempel-koordinat.
+    var formatShortTitle: String {
+        switch self {
+        case .dd: return "Desimalgrader (DD)"
+        case .dms: return "Grader, minutter, sekunder (DMS)"
+        case .utm: return "UTM (sone 33)"
         }
     }
 

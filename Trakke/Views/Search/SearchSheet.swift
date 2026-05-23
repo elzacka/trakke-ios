@@ -12,7 +12,7 @@ struct SearchSheet: View {
                 Divider()
                 resultsList
             }
-            .background(Color(.systemGroupedBackground))
+            .background(Color.Trakke.background)
             .tint(Color.Trakke.brand)
             .navigationTitle(String(localized: "search.title"))
             .navigationBarTitleDisplayMode(.inline)
@@ -46,7 +46,7 @@ struct SearchSheet: View {
         }
         .padding(.horizontal, .Trakke.md)
         .padding(.vertical, .Trakke.sm)
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.Trakke.surface)
         .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))
         .overlay(
             RoundedRectangle(cornerRadius: .TrakkeRadius.lg)
@@ -83,7 +83,7 @@ struct SearchSheet: View {
             } else {
                 List(viewModel.results) { result in
                     SearchResultRow(result: result)
-                        .listRowBackground(Color(.systemGroupedBackground))
+                        .listRowBackground(Color.Trakke.background)
                         .onTapGesture {
                             viewModel.selectResult(result)
                             onResultSelected(result)

@@ -52,8 +52,13 @@ extension CGFloat {
         /// Emergency CTA button height — intentionally oversized for SOS actions
         static let touchCTA: CGFloat = 72
 
-        // Button padding — between md (12) and lg (16) for primary/secondary/danger buttons
-        static let buttonPadV: CGFloat = 14
+        /// Minimum bunn-padding for innhold inni AppMenuSheet — sikrer
+        /// komfortabel klaring over den flytende BottomNavBar (52pt pille +
+        /// 12pt margin + 24pt visuell luft = 88pt).
+        static let bottomNavClearance: CGFloat = 88
+
+        // Button padding — kompakt vertikalt for å unngå dominerende knapper
+        static let buttonPadV: CGFloat = 10
 
         // Icon slots for list rows
         static let iconSlot: CGFloat = 24      // SF Symbol icons in navigation rows
@@ -64,9 +69,18 @@ extension CGFloat {
         static let badgePadV: CGFloat = 2
     }
 
+    /// Enhetlig hjørneskala — bruk den minste verdien som matcher rollen.
+    ///
+    /// - `sm` (6pt): Små badges, chips, scale bar.
+    /// - `lg` (12pt): Innholdsflater — kort, knapper, søkefelt, listeelementer.
+    /// - `xl` (16pt): Fremtredende flater — modaler/dialoger, store CTA-er,
+    ///   store kart-knapper (FAB, kompass, vær-pille).
+    /// - `sheet` (20pt): iOS sheet-presentasjon (system).
+    ///
+    /// Mellomverdien `md` (8pt) er fjernet — vi bruker bare disse fire trinnene
+    /// for å holde uttrykket enhetlig.
     enum TrakkeRadius {
         static let sm: CGFloat = 6
-        static let md: CGFloat = 8
         static let lg: CGFloat = 12
         static let xl: CGFloat = 16
         /// Matches iOS 26 system default; set explicitly to prevent future regressions
