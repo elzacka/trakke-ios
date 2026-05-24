@@ -115,7 +115,7 @@ struct EmergencySheet: View {
             trailing: {
                 Image(systemName: "phone.fill")
                     .font(Font.Trakke.captionSoft.weight(.semibold))
-                    .foregroundStyle(Color.Trakke.brand)
+                    .foregroundStyle(Color.Trakke.brandLight)
             }
         )
         .accessibilityLabel("\(label), \(number)")
@@ -124,14 +124,18 @@ struct EmergencySheet: View {
 
     // MARK: - SOS-signal-kort
 
+    /// «Lydsignal»-toggle står igjen i sitt eget kort. «Aktiver SOS»
+    /// flyttet ut som en frittstående brandLight-pille — samme stil som
+    /// Avstand/Areal/Velg område — slik at handlingen visuelt skiller seg
+    /// fra innstillings-toggle, men holdes nær med liten vertikal luft.
     private var signalCard: some View {
-        CardSection {
-            VStack(spacing: 0) {
+        VStack(spacing: .Trakke.sm) {
+            CardSection {
                 Toggle(isOn: $sosViewModel.audioEnabled) {
                     HStack(spacing: .Trakke.md) {
                         Image(systemName: "speaker.wave.2")
                             .font(.system(size: 18, weight: .regular))
-                            .foregroundStyle(Color.Trakke.brand)
+                            .foregroundStyle(Color.Trakke.brandLight)
                             .frame(width: 24)
                         Text(String(localized: "sos.audio"))
                             .font(Font.Trakke.bodyRegular)
@@ -141,28 +145,22 @@ struct EmergencySheet: View {
                 .toggleStyle(.trakke)
                 .padding(.vertical, 12)
                 .frame(minHeight: .Trakke.touchMin)
-
-                Divider().padding(.leading, .Trakke.dividerLeading)
-
-                Button {
-                    sosViewModel.activate()
-                } label: {
-                    HStack(spacing: .Trakke.md) {
-                        Image(systemName: "light.beacon.max.fill")
-                            .font(.system(size: 18, weight: .regular))
-                            .foregroundStyle(Color.Trakke.red)
-                            .frame(width: 24)
-                        Text(String(localized: "sos.activate"))
-                            .font(Font.Trakke.bodyRegular)
-                            .foregroundStyle(Color.Trakke.red)
-                        Spacer()
-                    }
-                    .padding(.vertical, 12)
-                    .frame(minHeight: .Trakke.touchMin)
-                    .contentShape(Rectangle())
-                }
-                .accessibilityLabel(String(localized: "sos.activate"))
             }
+
+            Button {
+                sosViewModel.activate()
+            } label: {
+                Label(
+                    String(localized: "sos.activate"),
+                    systemImage: "light.beacon.max.fill"
+                )
+                // minHeight 48 + buttonPadV 10×2 = 68pt total, matcher
+                // Lydsignal-kortets høyde (cardPadV 12 + toggle-rad 44 +
+                // cardPadV 12). Sikrer visuell jevnhet med kortet over.
+                .frame(maxWidth: .infinity, minHeight: 48, alignment: .leading)
+            }
+            .buttonStyle(.trakkeSecondary)
+            .accessibilityLabel(String(localized: "sos.activate"))
         }
     }
 }
@@ -234,7 +232,7 @@ private struct CoordinatesCard: View {
             } label: {
                 Image(systemName: copiedId == id ? "checkmark" : "doc.on.doc")
                     .font(Font.Trakke.bodyRegular)
-                    .foregroundStyle(Color.Trakke.brand)
+                    .foregroundStyle(Color.Trakke.brandLight)
                     .frame(minWidth: .Trakke.touchMin, minHeight: .Trakke.touchMin)
                     .contentShape(Rectangle())
             }

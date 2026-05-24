@@ -46,7 +46,7 @@ struct TrakkeSheetHeader: View {
         Button(action: action) {
             Image(systemName: "chevron.left")
                 .font(.system(size: 16, weight: .semibold))
-                .foregroundStyle(Color.Trakke.brand)
+                .foregroundStyle(Color.Trakke.brandLight)
                 .frame(width: .Trakke.touchMin, height: .Trakke.touchMin)
                 .contentShape(Rectangle())
         }

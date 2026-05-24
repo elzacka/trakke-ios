@@ -20,6 +20,10 @@ extension Color {
         // MARK: Brand
         static let brand = Color(hex: "3e4533")
         static let brandDark = Color(hex: "2e3326")
+        /// Mellom-grønn for handlingsknapper (action-bar-ikoner og
+        /// fullbredde-knapper). Gir ~4.4:1 kontrast med hvit symbol/tekst
+        /// (passer WCAG 1.4.11 for UI-komponenter).
+        static let brandLight = Color(hex: "757d68")
         static let brandTint = Color(hex: "e9ece6")
 
         // MARK: Neutrals

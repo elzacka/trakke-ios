@@ -42,7 +42,7 @@ struct NavigationStartSheet: View {
                                         .font(Font.Trakke.bodyMedium)
                                     Text(String(localized: "navigation.computeRouteDescription"))
                                         .font(Font.Trakke.caption)
-                                        .foregroundStyle(Color.Trakke.textTertiary)
+                                        .foregroundStyle(Color.Trakke.surface.opacity(0.85))
                                 }
                                 Spacer()
                                 Image(systemName: "point.topleft.down.to.point.bottomright.curvepath")
@@ -64,7 +64,7 @@ struct NavigationStartSheet: View {
                                         .font(Font.Trakke.bodyMedium)
                                     Text(String(localized: "navigation.compassDescription"))
                                         .font(Font.Trakke.caption)
-                                        .foregroundStyle(Color.Trakke.textTertiary)
+                                        .foregroundStyle(Color.Trakke.surface.opacity(0.85))
                                 }
                                 Spacer()
                                 Image(systemName: "safari")

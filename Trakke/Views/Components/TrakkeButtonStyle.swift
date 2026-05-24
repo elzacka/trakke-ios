@@ -16,8 +16,8 @@ struct TrakkeButtonStyle: ButtonStyle {
 
     fileprivate static func foregroundColor(for variant: Variant) -> Color {
         switch variant {
-        case .primary: .white
-        case .secondary, .tertiary: Color.Trakke.brand
+        case .primary, .secondary: Color.Trakke.surface
+        case .tertiary: Color.Trakke.brand
         case .danger: Color.Trakke.red
         }
     }
@@ -25,7 +25,7 @@ struct TrakkeButtonStyle: ButtonStyle {
     fileprivate static func backgroundColor(for variant: Variant) -> Color {
         switch variant {
         case .primary: Color.Trakke.brand
-        case .secondary: Color.Trakke.surface
+        case .secondary: Color.Trakke.brandLight
         case .tertiary: Color.clear
         case .danger: Color.Trakke.surface
         }

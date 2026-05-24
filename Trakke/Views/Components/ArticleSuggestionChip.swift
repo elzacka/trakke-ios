@@ -10,10 +10,12 @@ struct ArticleSuggestionChip: View {
         HStack(spacing: .Trakke.sm) {
             Image(systemName: "book.closed")
                 .font(Font.Trakke.captionSoft)
+                .foregroundStyle(Color.Trakke.brandLight)
                 .accessibilityHidden(true)
 
             Text(text)
                 .font(Font.Trakke.caption)
+                .foregroundStyle(Color.Trakke.brand)
 
             Spacer()
 
@@ -22,12 +24,12 @@ struct ArticleSuggestionChip: View {
             } label: {
                 Image(systemName: "xmark")
                     .font(Font.Trakke.captionSoft.weight(.bold))
+                    .foregroundStyle(Color.Trakke.brandLight)
                     .frame(minWidth: .Trakke.touchMin, minHeight: .Trakke.touchMin)
                     .contentShape(Rectangle())
             }
             .accessibilityLabel(String(localized: "common.close"))
         }
-        .foregroundStyle(Color.Trakke.brand)
         .padding(.leading, .Trakke.md)
         .padding(.vertical, .Trakke.xs)
         .background(.regularMaterial)

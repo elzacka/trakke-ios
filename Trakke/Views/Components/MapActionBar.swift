@@ -119,20 +119,23 @@ struct MapActionButton: View {
         Button(action: action) {
             Image(systemName: systemImage)
                 .font(.system(size: 15, weight: .semibold))
-                .foregroundStyle(color)
+                .foregroundStyle(iconColor)
                 .frame(width: 48, height: 44)
                 .contentShape(Rectangle())
-                .opacity(isEnabled ? 1 : 0.35)
         }
         .disabled(!isEnabled)
         .accessibilityLabel(accessibilityLabel)
     }
 
-    private var color: Color {
+    /// Disabled-state bytter til textSoft i stedet for å redusere opasitet
+    /// — ikonet forblir tydelig lesbart mot den translucente kapselen,
+    /// og fargen alene signaliserer at handlingen ikke er tilgjengelig.
+    private var iconColor: Color {
+        guard isEnabled else { return Color.Trakke.textSoft }
         switch role {
-        case .neutral: Color.Trakke.brand
-        case .destructive, .recording: Color.Trakke.red
-        case .primary: Color.Trakke.brand
+        case .neutral: return Color.Trakke.brand
+        case .destructive, .recording: return Color.Trakke.red
+        case .primary: return Color.Trakke.brand
         }
     }
 }

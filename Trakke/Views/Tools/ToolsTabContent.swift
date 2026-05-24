@@ -55,6 +55,7 @@ struct ToolsTabContent: View {
         ScrollView {
             VStack(spacing: .Trakke.sm) {
                 Button {
+                    mapViewModel.searchPinCoordinate = nil
                     measurementViewModel.startMeasuring(mode: .distance)
                     dismiss()
                 } label: {
@@ -67,6 +68,7 @@ struct ToolsTabContent: View {
                 .buttonStyle(.trakkeSecondary)
 
                 Button {
+                    mapViewModel.searchPinCoordinate = nil
                     measurementViewModel.startMeasuring(mode: .area)
                     dismiss()
                 } label: {

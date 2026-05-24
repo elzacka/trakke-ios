@@ -77,17 +77,31 @@ struct NavigationOverlayView: View {
     }
 
     private var routeNavBar: some View {
-        HStack(spacing: 0) {
+        // Distanse vises alltid — bruker progress.distanceRemaining etter
+        // første GPS-oppdatering, totalDistance som fallback like etter
+        // start (eller for fulgte ruter som ennå ikke har snap-resultat).
+        // Tid og høydemeter krever progress-data, så de vises bare når
+        // tilgjengelig.
+        let distanceValue = navigationVM.progress?.distanceRemaining ?? navigationVM.totalDistance
+
+        return HStack(spacing: 0) {
             pauseResumeButton
 
-            if let progress = navigationVM.progress {
+            if let eta = navigationVM.progress?.estimatedTimeRemaining {
                 navBarDivider
-                navBarStat(icon: "clock", value: formatTime(progress.estimatedTimeRemaining))
-                navBarDivider
-                navBarStat(icon: "arrow.up", value: "+\(Int(progress.elevationGainRemaining)) m")
-                navBarDivider
-                navBarStat(icon: "point.topleft.down.to.point.bottomright.curvepath", value: formatDistance(progress.distanceRemaining))
+                navBarStat(icon: "clock", value: formatTime(eta))
             }
+
+            if let gain = navigationVM.progress?.elevationGainRemaining, gain > 0 {
+                navBarDivider
+                navBarStat(icon: "arrow.up", value: "+\(Int(gain)) m")
+            }
+
+            navBarDivider
+            navBarStat(
+                icon: "point.topleft.down.to.point.bottomright.curvepath",
+                value: formatDistance(distanceValue)
+            )
 
             navBarDivider
             moreButton

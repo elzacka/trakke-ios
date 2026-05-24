@@ -1,11 +1,11 @@
 import SwiftUI
 import CoreLocation
 
-/// Naviger-fanen — Ruter, Steder, Turer.
-/// Bruker isEmbedded-modus av RouteListSheet, WaypointListSheet og
-/// ActivityListSheet for å gjenbruke all eksisterende liste-logikk
-/// (importer, eksporter, kategorier, kontekstmeny, kart-synlighet) uten
-/// dobbel header eller dobbel NavigationStack.
+/// Naviger-fanen — to under-faner: **Turer og ruter** (sammenslått) og **Steder**.
+/// Bruker isEmbedded-modus av TracksListSheet og WaypointListSheet for å
+/// gjenbruke all eksisterende liste-logikk (importer, eksporter, kategorier,
+/// kontekstmeny, kart-synlighet) uten dobbel header eller dobbel
+/// NavigationStack.
 struct NavigateTabContent: View {
     @Bindable var routeViewModel: RouteViewModel
     @Bindable var waypointViewModel: WaypointViewModel
@@ -22,9 +22,8 @@ struct NavigateTabContent: View {
     @Environment(\.dismiss) private var dismiss
 
     private let subTabs = [
-        String(localized: "routes.title"),
+        String(localized: "tracks.title"),
         String(localized: "waypoints.title"),
-        String(localized: "activities.title"),
     ]
 
     var body: some View {
@@ -39,9 +38,8 @@ struct NavigateTabContent: View {
 
                 Group {
                     switch selectedSubTab {
-                    case 0: routeContent
+                    case 0: tracksContent
                     case 1: waypointContent
-                    case 2: activityContent
                     default: EmptyView()
                     }
                 }
@@ -52,16 +50,26 @@ struct NavigateTabContent: View {
         }
     }
 
-    // MARK: - Ruter
+    // MARK: - Turer og ruter
 
-    private var routeContent: some View {
-        RouteListSheet(
-            viewModel: routeViewModel,
+    private var tracksContent: some View {
+        TracksListSheet(
+            routeViewModel: routeViewModel,
+            activityViewModel: activityViewModel,
             onRouteSelected: { route in
                 onRouteSelected(route)
             },
+            onActivityRetrace: { coord in
+                onActivityRetrace(coord)
+            },
+            onActivityFollow: { activity in
+                onActivityFollow(activity)
+            },
             onNewRoute: {
                 onNewRoute()
+            },
+            onStartRecording: {
+                onStartRecording()
             },
             isEmbedded: true,
             dismissSheet: { dismiss() }
@@ -78,29 +86,6 @@ struct NavigateTabContent: View {
             },
             onWaypointNavigate: { coordinate in
                 onWaypointNavigate(coordinate)
-            },
-            isEmbedded: true,
-            dismissSheet: { dismiss() }
-        )
-    }
-
-    // MARK: - Turer
-
-    private var activityContent: some View {
-        ActivityListSheet(
-            viewModel: activityViewModel,
-            routeViewModel: routeViewModel,
-            onActivitySelected: { activity in
-                onActivitySelected(activity)
-            },
-            onStartRecording: {
-                onStartRecording()
-            },
-            onRetrace: { coord in
-                onActivityRetrace(coord)
-            },
-            onFollowAgain: { activity in
-                onActivityFollow(activity)
             },
             isEmbedded: true,
             dismissSheet: { dismiss() }

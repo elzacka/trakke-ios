@@ -1,9 +1,6 @@
 {
   "sourceLanguage" : "nb",
   "strings" : {
-    " (%@)" : {
-
-    },
     "··· — — — ···" : {
 
     },
@@ -1681,6 +1678,116 @@
         }
       }
     },
+    "info.networkStatus" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nettverksstatus"
+          }
+        }
+      }
+    },
+    "info.networkStatus.cellular" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mobildata"
+          }
+        }
+      }
+    },
+    "info.networkStatus.connectionType" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tilkoblingstype"
+          }
+        }
+      }
+    },
+    "info.networkStatus.none" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingen"
+          }
+        }
+      }
+    },
+    "info.networkStatus.offline" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Offline"
+          }
+        }
+      }
+    },
+    "info.networkStatus.online" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Online"
+          }
+        }
+      }
+    },
+    "info.networkStatus.other" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Annet"
+          }
+        }
+      }
+    },
+    "info.networkStatus.status" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Status"
+          }
+        }
+      }
+    },
+    "info.networkStatus.wifi" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wi-Fi"
+          }
+        }
+      }
+    },
+    "info.networkStatus.wired" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kablet"
+          }
+        }
+      }
+    },
     "info.nga.detail" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2801,7 +2908,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Retningspil mot målet (ingen dekning nødvendig)"
+            "value" : "Retningspil mot målet. Krever ikke dekning."
           }
         }
       }
@@ -2823,7 +2930,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Beregner beste tursti fra din posisjon"
+            "value" : "Beregner beste tursti fra posisjon din. Krever dekning."
           }
         }
       }
@@ -4974,6 +5081,195 @@
         }
       }
     },
+    "tracks.create.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Logg tur eller tegn rute"
+          }
+        }
+      }
+    },
+    "tracks.deleteAll.confirmMessage" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle turer og ruter slettes permanent."
+          }
+        }
+      }
+    },
+    "tracks.deleteAll.confirmTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slett alle turer og ruter?"
+          }
+        }
+      }
+    },
+    "tracks.deleteAll.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slett alle"
+          }
+        }
+      }
+    },
+    "tracks.empty.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tegn en rute før turen eller logg sporet underveis. Du kan også importere GPX- eller GeoJSON-filer."
+          }
+        }
+      }
+    },
+    "tracks.empty.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingen turer eller ruter"
+          }
+        }
+      }
+    },
+    "tracks.export.activities" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eksporter alle turer"
+          }
+        }
+      }
+    },
+    "tracks.export.routes" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eksporter alle ruter"
+          }
+        }
+      }
+    },
+    "tracks.export.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hva vil du eksportere?"
+          }
+        }
+      }
+    },
+    "tracks.import.activities %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Importerte %lld tur"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Importerte %lld turer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "tracks.import.nothing" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingen tur eller rute funnet i filen"
+          }
+        }
+      }
+    },
+    "tracks.import.routes %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Importerte %lld rute"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Importerte %lld ruter"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "tracks.saved" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lagret"
+          }
+        }
+      }
+    },
+    "tracks.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turer og ruter"
+          }
+        }
+      }
+    },
+    "tracks.uncategorized" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ukategorisert"
+          }
+        }
+      }
+    },
     "userguide.backToTop" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5470,204 +5766,6 @@
         }
       }
     },
-    "weather.assessment.cold" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kaldt. Kle deg godt i lag med ullundertøy og vindtett ytterlag."
-          }
-        }
-      }
-    },
-    "weather.assessment.cool" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kjølig. Et ekstra lag og lue kan være lurt."
-          }
-        }
-      }
-    },
-    "weather.assessment.dangerousWind" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Farlig vind. Unngå eksponerte steder og høyfjell."
-          }
-        }
-      }
-    },
-    "weather.assessment.evidence.dueTo" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "pga. vind"
-          }
-        }
-      }
-    },
-    "weather.assessment.evidence.feelsLike" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "føles som"
-          }
-        }
-      }
-    },
-    "weather.assessment.evidence.precip" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nedbør"
-          }
-        }
-      }
-    },
-    "weather.assessment.evidence.temp" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Temperatur"
-          }
-        }
-      }
-    },
-    "weather.assessment.evidence.wind" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vind"
-          }
-        }
-      }
-    },
-    "weather.assessment.extreme" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Livsfarlige vindforhold. Ikke gå ut."
-          }
-        }
-      }
-    },
-    "weather.assessment.extremeCold" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Farlig kulde. Fare for forfrysning på kort tid."
-          }
-        }
-      }
-    },
-    "weather.assessment.good" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Greie forhold. Kle deg etter temperatur og ta med ekstra lag."
-          }
-        }
-      }
-    },
-    "weather.assessment.great" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Flott turdag! Nyt været."
-          }
-        }
-      }
-    },
-    "weather.assessment.heavyPrecip" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kraftig nedbør. Ta med regnklær og vurder kortere tur."
-          }
-        }
-      }
-    },
-    "weather.assessment.likelyRain" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trolig nedbør. Ha regnklær tilgjengelig."
-          }
-        }
-      }
-    },
-    "weather.assessment.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Været i dag"
-          }
-        }
-      }
-    },
-    "weather.assessment.veryCold" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Svært kaldt. Kle deg i lag og dekk all hud."
-          }
-        }
-      }
-    },
-    "weather.assessment.windAndRain" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kuling og nedbør. Gode skallklær og vindtett utstyr er nødvendig."
-          }
-        }
-      }
-    },
-    "weather.assessment.windyCaution" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mye vind. Ta vindtette klær på eksponerte strekninger."
-          }
-        }
-      }
-    },
     "weather.bathingSpot" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5807,6 +5905,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "7-dagers varsel"
+          }
+        }
+      }
+    },
+    "weather.forecast.legend" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tallene viser maks-/min-temperatur, middelvind med vindkast, og UV-indeks (kun fra nivå 3).\n\nNoen verdier er fargelagt som varsel:\n• Vind/vindkast i oransje: stiv kuling eller mer (fra ~14 m/s). Tungt å gå mot vinden. Åpne flater og fjorder kan ha langt sterkere kast enn varselet viser.\n• Vind/vindkast i rødt: farlig vind. Unngå eksponerte fjell og høyder.\n• UV i oransje: nivå 6 eller mer (Sterk). Dekkende klær, hatt og rikelig solkrem anbefales også midt på dagen.\n• Nattetemperatur (n -3°) i rødt: under -5 °C. Sjekk klær og soveutstyr."
+          }
+        }
+      }
+    },
+    "weather.forecast.legend.label" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forklaring til varselet"
           }
         }
       }
@@ -6037,7 +6157,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Måles i prosent og sier hvor mye vanndamp luften kan inneholde. Høy fuktighet (over 80 %) gjør at kald luft kjennes kaldere fordi klær isolerer dårligere. Tørr luft (under 30 %) gjør at du blir raskere dehydrert uten å merke det.\n\nI varmt vær svekker høy fuktighet kroppens evne til å kjøle seg ned — svette fordamper dårligere, og du kan oppleve klam tung luft, slapphet, hodepine og økt belastning på hjertet. Over 75–80 % fuktighet kombinert med varme øker risikoen for overoppheting betydelig."
+            "value" : "Relativ fuktighet måles i prosent — 100 % betyr at luften er mettet med vanndamp og ikke kan ta opp mer. Høy fuktighet (over 80 %) gjør at kroppen mister varme raskere, og klær som blir fuktige av svette isolerer dårlig. Tørr luft (under 30 %) gjør at du tørster fortere uten å merke det.\n\nHelse: I varmt vær svekker høy fuktighet kroppens avkjøling — svette fordamper dårligere, og du kan kjenne klam tyngde, slapphet, hodepine og økt belastning på hjertet. Over 75–80 % fuktighet sammen med varme øker risikoen for overoppheting betydelig."
           }
         }
       }
@@ -6433,7 +6553,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Måles i millimeter — 1 mm = 1 liter vann per kvadratmeter. Sannsynligheten sier hvor sikkert det er at det kommer noe, ikke hvor mye. Fra 5 mm/t bør du ha regnklær på.\n\nVåte klær gir mye raskere varmetap enn tørre — kombinert med vind og lav temperatur er dette en hovedårsak til hypotermi (nedkjøling, kroppstemperatur under 35 °C). Barn og eldre er mest utsatt, men også friske voksne kan bli kraftig påvirket etter lengre eksponering."
+            "value" : "Måles i millimeter — 1 mm er 1 liter vann per kvadratmeter. Sannsynligheten sier om det kommer noe, ikke hvor mye.\n\nSlik kjennes nedbøren (mm per time):\n• Under 0,5 mm/t — yr eller småregn. Lette klær holder.\n• 0,5–2,5 mm/t — lett regn. Vannfast jakke er nok på kort tur.\n• 2,5–7,5 mm/t — moderat regn. Regnklær trengs på lengre tur.\n• 7,5–15 mm/t — kraftig regn. Full skall, ekstra varmt undertøy, vurder kortere rute.\n• Over 15 mm/t — styrtregn eller skybrudd. Bekker svulmer på minutter, økt rasfare i bratt terreng, lite sikt.\n\nFor snø er tommelfingerregelen at 1 mm vann gir ca. 1 cm snø — men tørr puddersnø kan gi opptil det tredobbelte.\n\nHelse: Våte klær gir mye raskere varmetap enn tørre — sammen med vind og kulde er dette en hovedgrunn til hypotermi (kroppstemperatur under 35 °C). Barn og eldre er mest utsatt, men friske voksne kan også bli kraftig påvirket etter lengre eksponering."
           }
         }
       }
@@ -6576,7 +6696,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Måles i hektopascal (hPa). Normalt havnivåtrykk er 1013 hPa. Trykket faller cirka 1 hPa per 8 meter du går opp i høyden — på 1000 moh. er trykket rundt 900 hPa. Fallende trykk varsler dårligere vær, stigende trykk betyr bedring.\n\nNår trykket faller raskt — i lavtrykk eller når du går raskt opp i fjellet — oppstår en ubalanse mellom luft i bihuler og mellomøre og omgivelsene. Det kan kjennes som press over panne og bihuler, tette ører, hodepine eller svimmelhet. Forskning viser at over en tredel av migrenepasienter merker værendringer som utløser. Personer med kroniske bihulebetennelser eller indre-øre-tilstander som gir svimmelhet, er også mer utsatt."
+            "value" : "Måles i hektopascal (hPa). Normalt trykk ved havflaten er 1013 hPa. Trykket faller cirka 1 hPa per 8 meter du stiger — på 1000 moh. er det rundt 900 hPa.\n\nHva trykket forteller om været:\n• Lavtrykk (under ca. 1010 hPa, kraftig lavtrykk 970–990 hPa): luft stiger, skyer dannes og det kommer ofte vind og nedbør. Lavtrykk betyr ikke kaldere — det bringer som regel mildere og fuktigere luft inn over landet.\n• Høytrykk (over ca. 1020 hPa, kraftig høytrykk 1025–1050 hPa): luft synker, himmelen klarner og det roer seg. Gir varme dager om sommeren, men kalde, stjerneklare netter om vinteren.\n• Fallende trykk: dårligere vær på vei. Stigende trykk: bedring på vei.\n\nHelse: Når trykket faller raskt — i lavtrykk eller når du går raskt opp i fjellet — oppstår en trykkforskjell mellom luft i bihuler og mellomøre og omgivelsene. Du kan kjenne press over panne, tette ører, hodepine eller svimmelhet. Mange migrenepasienter merker værendringer som utløser. Kroniske bihulebetennelser og indre-øre-plager som gir svimmelhet øker risikoen.\n\nKilde: Store norske leksikon."
           }
         }
       }
@@ -6961,7 +7081,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lufttemperaturen sier hvor varmt eller kaldt det er, men ikke hvor varmt det føles. «Føles som» under graden viser opplevd temperatur og tar høyde for både vind og luftfuktighet — vises kun når den avviker fra målt temperatur.\n\nI kulde trekker blodårene seg sammen, blodtrykket stiger og hjertet jobber hardere. Personer med koronarsykdom kan få brystsmerter, og personer med hjertesvikt fryser raskt fordi blodsirkulasjonen er svekket. Varme gir motsatt risiko: dehydrering og overoppheting. Meteorologisk institutt regner en hetebølge i Norge som fem dager eller mer med maksimumstemperatur over 27 °C — da øker risikoen særlig for eldre og kronisk syke."
+            "value" : "Lufttemperaturen sier hvor varmt eller kaldt det er, men ikke hvor det kjennes. «Føles som» under graden viser opplevd temperatur og tar høyde for vind og luftfuktighet — vises bare når den avviker fra målt temperatur.\n\nHelse: I kulde trekker blodårene seg sammen, blodtrykket stiger og hjertet jobber hardere. Du som har hjerte-/karsykdom er mer utsatt. I varme er det dehydrering og overoppheting som blir risikoen — drikk jevnlig, selv om du ikke er tørst. Meteorologisk institutt regner en hetebølge i Norge som fem dager eller mer med maksimum over 27 °C; eldre og kronisk syke er da særlig utsatt."
           }
         }
       }
@@ -7259,6 +7379,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "UV-indeks"
+          }
+        }
+      }
+    },
+    "weather.uv.tooltip" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UV-indeksen viser hvor sterk UV-strålingen fra sola er ved bakkenivå. Jo høyere tall, desto raskere kan huden ta skade.\n\n0–2 Lav: Liten fare. Beskyttelse er normalt ikke nødvendig.\n3–5 Moderat: Bruk solkrem (SPF 30+), solbriller og noe på hodet. Søk skygge midt på dagen.\n6–7 Sterk: Klær, hatt, solbriller og rikelig med solkrem. Søk skygge mellom kl. 12 og 15.\n8–10 Svært sterk: Hudskade kan oppstå raskt. Dekk til, bredbremmet hatt og solkrem (SPF 30–50+).\n11+ Ekstrem: Maksimal beskyttelse. Hold deg i skyggen og unngå direkte sol midt på dagen.\n\nDSA anbefaler solbeskyttelse fra og med nivå 3. UV-strålingen øker med høyden — omtrent 10 % per 1000 meter — og refleksjon fra snø og vann kan forsterke eksponeringen ytterligere.\n\nKilde: Direktoratet for strålevern og atomsikkerhet (DSA)."
           }
         }
       }
@@ -7951,7 +8082,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vedvarende vind oppgis i meter per sekund (m/s). Vindkast er høyeste 3-sekunders middelverdi og kan være vesentlig sterkere. Fra stiv kuling (14 m/s) blir det tungt å gå mot vinden. Over tregrensen og i fjorder og trange daler blir vinden ofte vesentlig sterkere enn i flatere terreng.\n\nVind blåser bort det varme luftlaget klærne dine fanger inntil huden, og du mister kroppsvarme mye raskere — selv ved milde temperaturer kan du bli raskt nedkjølt. Direkte vind tørker også ut slimhinner og gir øye-irritasjon, særlig på snø og is som reflekterer kald, tørr luft."
+            "value" : "Middelvinden oppgis i meter per sekund (m/s). Vindkast er den høyeste vindhastigheten målt over tre sekunder, og kan være langt sterkere enn middelvinden.\n\nSlik kjennes vinden (Beaufort-skalaen):\n• 0–1 m/s — stille eller nesten stille. Røyk stiger rett opp.\n• 2–3 m/s — svak vind. Du merker den i ansiktet.\n• 4–7 m/s — lett til laber bris. Behagelig sommervær.\n• 8–10 m/s — frisk bris. Klærne blafrer, småbåter får hvite bølgetopper.\n• 11–13 m/s — liten kuling. Du må snakke høyt for å bli hørt.\n• 14–16 m/s — stiv kuling. Tungt å gå mot vinden.\n• 17–24 m/s — sterk kuling til liten storm. Greiner brekker. Hold deg unna åpne høyder.\n• 25+ m/s — full storm eller mer. Livsfarlig. Unngå alle eksponerte steder.\n\nOver tregrensen og i fjorder og trange daler er vinden ofte langt sterkere enn varselet viser.\n\nHelse: Vind river bort det varme luftlaget klærne fanger inntil huden — du mister kroppsvarme mye raskere, også ved milde temperaturer. Vind tørker dessuten ut slimhinner og gir øye-irritasjon, særlig i kaldt og snørikt terreng.\n\nKilde: Store norske leksikon (Beauforts vindskala)."
           }
         }
       }

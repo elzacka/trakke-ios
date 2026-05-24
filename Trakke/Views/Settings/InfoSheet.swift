@@ -5,6 +5,10 @@ struct InfoSheet: View {
     /// Inline-modus: ingen ScrollView/NavigationStack/title — kalleren
     /// (f.eks. Info-fanen) håndterer scroll og NavigationStack.
     var inline = false
+    /// Brukt til Nettverksstatus-seksjonen. Optional siden Privacy- og
+    /// User-Guide-sheets bygger en frittstående InfoSheet uten å trenge
+    /// nett-info; da skjuler seksjonen seg.
+    var connectivityMonitor: ConnectivityMonitor? = nil
 
     var body: some View {
         if inline {
@@ -30,6 +34,16 @@ struct InfoSheet: View {
 
     private var contentVStack: some View {
         VStack(spacing: .Trakke.cardGap) {
+            // MARK: - 0. Nettverksstatus
+            //
+            // Vises bare når kalleren har sendt med en `ConnectivityMonitor`.
+            // To rader: Status (Online/Offline) + Tilkoblingstype
+            // (WiFi/Mobildata/etc.). Begge oppdateres reaktivt via
+            // @Observable-monitorens path-handler.
+            if let connectivity = connectivityMonitor {
+                networkStatusSection(connectivity)
+            }
+
             // MARK: - 1. Kom i gang
             //
             // To akkordeoner deler samme kort under én tittel. Bruker
@@ -218,6 +232,40 @@ struct InfoSheet: View {
         }
         .padding(.horizontal, inline ? 0 : .Trakke.sheetHorizontal)
         .padding(.top, inline ? 0 : .Trakke.sheetTop)
+    }
+
+    // MARK: - Network status
+
+    private func networkStatusSection(_ connectivity: ConnectivityMonitor) -> some View {
+        CardSection(String(localized: "info.networkStatus")) {
+            TrakkeMenuRow(
+                label: String(localized: "info.networkStatus.status"),
+                accessibilityValue: networkStatusValue(connectivity),
+                trailing: { TrakkeMenuRowValue(value: networkStatusValue(connectivity)) }
+            )
+            Divider().padding(.leading, .Trakke.dividerLeading)
+            TrakkeMenuRow(
+                label: String(localized: "info.networkStatus.connectionType"),
+                accessibilityValue: connectionTypeValue(connectivity),
+                trailing: { TrakkeMenuRowValue(value: connectionTypeValue(connectivity)) }
+            )
+        }
+    }
+
+    private func networkStatusValue(_ connectivity: ConnectivityMonitor) -> String {
+        connectivity.isConnected
+            ? String(localized: "info.networkStatus.online")
+            : String(localized: "info.networkStatus.offline")
+    }
+
+    private func connectionTypeValue(_ connectivity: ConnectivityMonitor) -> String {
+        switch connectivity.connectionType {
+        case .wifi: String(localized: "info.networkStatus.wifi")
+        case .cellular: String(localized: "info.networkStatus.cellular")
+        case .wired: String(localized: "info.networkStatus.wired")
+        case .other: String(localized: "info.networkStatus.other")
+        case .none: String(localized: "info.networkStatus.none")
+        }
     }
 
     // MARK: - Data source row

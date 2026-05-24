@@ -18,6 +18,7 @@ struct AppMenuSheet: View {
     @Bindable var routeViewModel: RouteViewModel
     @Bindable var waypointViewModel: WaypointViewModel
     @Bindable var activityViewModel: ActivityViewModel
+    let connectivityMonitor: ConnectivityMonitor
     var onSearchResultSelected: (SearchResult) -> Void
     var onStartCustomOfflineSelection: () -> Void
     var onRouteSelected: (Route) -> Void
@@ -77,7 +78,8 @@ struct AppMenuSheet: View {
         case .info:
             InfoTabContent(
                 weatherViewModel: weatherViewModel,
-                knowledgeViewModel: knowledgeViewModel
+                knowledgeViewModel: knowledgeViewModel,
+                connectivityMonitor: connectivityMonitor
             )
         case .settings:
             SettingsTabContent(

@@ -18,6 +18,7 @@ struct CurrentConditionsCard: View {
     @State private var showPrecipitationTooltip = false
     @State private var showPressureTooltip = false
     @State private var showHumidityTooltip = false
+    @State private var showUVTooltip = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
@@ -35,8 +36,6 @@ struct CurrentConditionsCard: View {
         let showFeelsLike = tempRounded != apparentRounded
 
         VStack(alignment: .leading, spacing: .Trakke.md) {
-            assessmentText
-
             HStack(alignment: .center, spacing: .Trakke.lg) {
                 Image(data.symbol)
                     .resizable()
@@ -136,38 +135,6 @@ struct CurrentConditionsCard: View {
         }
     }
 
-    // MARK: Assessment Text
-    //
-    // Vurderingsteksten er primært informasjonsbærende — ikke en pille,
-    // ikke et banner. Bare en setning øverst i kortet. Fargen tar
-    // farge etter alvorlighetsgrad, men ingen bakgrunn, ingen ikon.
-
-    private var assessmentText: some View {
-        let assessment = WeatherService.outdoorAssessment(
-            temperature: data.temperature,
-            windSpeed: data.windSpeed,
-            windGust: data.windGust,
-            precipitation: data.precipitation,
-            precipitationProbability: data.precipitationProbability
-        )
-        let gustLevel = WeatherService.gustWarningLevel(data.windGust ?? data.windSpeed)
-        let windLevel = WeatherService.windWarningLevel(data.windSpeed)
-        let worstLevel = max(gustLevel, windLevel)
-
-        let color: Color = switch worstLevel {
-        case .extreme, .danger: Color.Trakke.red
-        case .caution: Color.Trakke.warning
-        case .none: Color.Trakke.text
-        }
-
-        return Text(assessment)
-            .font(Font.Trakke.bodyRegular)
-            .foregroundStyle(color)
-            .fixedSize(horizontal: false, vertical: true)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .accessibilityLabel(String(localized: "weather.assessment.title") + ": " + assessment)
-    }
-
     // MARK: Stats
 
     private var windValue: String {
@@ -189,6 +156,23 @@ struct CurrentConditionsCard: View {
         } else {
             return String(localized: "weather.precipitation.none")
         }
+    }
+
+    /// Formaterer UV-indeksen som "{heltall} — {kategori}" basert på WHO/DSA-
+    /// nivå-inndeling. F.eks. 0–2 = «Lav», 3–5 = «Moderat», 6–7 = «Sterk»,
+    /// 8–10 = «Svært sterk», 11+ = «Ekstrem». Kategori-navnet gir mening til
+    /// tallet — særlig viktig på lave verdier der «0» alene ble misforstått
+    /// som «ingen data».
+    private func uvValueText(_ uv: Double) -> String {
+        let rounded = Int(uv.rounded())
+        let category: String = switch rounded {
+        case ..<3: String(localized: "weather.uv.low")
+        case 3...5: String(localized: "weather.uv.moderate")
+        case 6...7: String(localized: "weather.uv.high")
+        case 8...10: String(localized: "weather.uv.veryHigh")
+        default: String(localized: "weather.uv.extreme")
+        }
+        return "\(rounded) — \(category)"
     }
 
     private func statRow(label: String, value: String) -> some View {
@@ -226,11 +210,12 @@ struct CurrentConditionsCard: View {
                     ? String(localized: "common.showLess")
                     : String(localized: "common.showMore"))
                     .font(Font.Trakke.caption)
+                    .foregroundStyle(Color.Trakke.brand)
                 Image(systemName: "chevron.down")
                     .font(Font.Trakke.captionSoft)
+                    .foregroundStyle(Color.Trakke.brandLight)
                     .rotationEffect(.degrees(showMore ? 180 : 0))
             }
-            .foregroundStyle(Color.Trakke.brand)
             .frame(maxWidth: .infinity, alignment: .leading)
             .contentShape(Rectangle())
             .padding(.vertical, .Trakke.xs)
@@ -244,11 +229,29 @@ struct CurrentConditionsCard: View {
     @ViewBuilder
     private var detailsContent: some View {
         VStack(spacing: 0) {
-            if let uv = data.uvIndex, uv > 0 {
+            // UV-indeks vises alltid (også på nivå 0) — tooltipet
+            // forklarer hva nivåene betyr i praksis. Varsler-seksjonen
+            // viser UV separat kun ved nivå >= 3 (anbefalt beskyttelse).
+            //
+            // Format: "{tall} — {kategori}" (f.eks. "0 — Lav", "6 — Sterk").
+            // Tallet alene ble misforstått som "ingen data" på lave nivåer
+            // (sen kveld i Norge gir typisk UV 0–1 — sola er for lavt på
+            // himmelen for at UV-B når bakken).
+            if let uv = data.uvIndex {
                 statRow(
                     label: String(localized: "weather.uv"),
-                    value: String(format: "%.0f", uv)
+                    value: uvValueText(uv)
                 )
+                .contentShape(Rectangle())
+                .onTapGesture { showUVTooltip = true }
+                .accessibilityAddTraits(.isButton)
+                .accessibilityHint(String(localized: "accessibility.tapForExplanation"))
+                .trakkeTooltip(isPresented: $showUVTooltip) {
+                    TrakkeTooltipContent(
+                        title: String(localized: "weather.uv"),
+                        text: String(localized: "weather.uv.tooltip")
+                    )
+                }
                 Divider().padding(.leading, .Trakke.dividerLeading)
             }
 

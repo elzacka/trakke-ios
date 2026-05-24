@@ -5,7 +5,7 @@ import SwiftUI
 /// for å gi 1-tap synlighet-toggle uten å åpne detail-sheet.
 ///
 /// Visuelt mønster — samme som POI-underkategorier:
-/// - synlig: hake (brand-grønn)
+/// - synlig: hake (brandLight-grønn)
 /// - skjult: ingen hake (tom)
 ///
 /// Tap toggler tilstand. 44pt touch target er alltid bevart, også når
@@ -21,7 +21,7 @@ struct VisibilityToggleButton: View {
                 if isVisible {
                     Image(systemName: "checkmark")
                         .font(Font.Trakke.bodyMedium)
-                        .foregroundStyle(Color.Trakke.brand)
+                        .foregroundStyle(Color.Trakke.brandLight)
                 } else {
                     // Tom plassholder — bevarer 44pt tap-areal når haken er skjult.
                     Color.clear

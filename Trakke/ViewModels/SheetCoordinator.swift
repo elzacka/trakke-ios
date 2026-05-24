@@ -5,7 +5,10 @@ enum ActiveSheet: Identifiable, Hashable {
     case search
     case categoryPicker
     case poiDetail
-    case routeList
+    /// Sammenslaatt liste over ruter (planlagte/importerte linjer) og turer
+    /// (GPS-opptak). Erstatter de tidligere `.routeList` og `.activityList`
+    /// arkene som var separat. Tittel: «Turer og ruter».
+    case tracks
     case routeSave
     case waypointList
     case waypointDetail
@@ -17,7 +20,6 @@ enum ActiveSheet: Identifiable, Hashable {
     case measurement
     case navigationStart
     case emergency
-    case activityList
     case activitySave
 
     var id: Self { self }

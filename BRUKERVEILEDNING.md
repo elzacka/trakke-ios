@@ -4,7 +4,7 @@
 - **Knip med to fingre**: Zoome
 - **Roter med to fingre**: Rotere kartet (trykk kompasset for å snu nord opp)
 - **To fingre opp eller ned**: Tilte kartet for 3D
-- **Trykk**: Legge til punkt i tegne- eller målemodus
+- **Trykk**: Legge til punkt i tegne- eller målemodus. Ellers lukker et trykk åpne ark og menyer.
 - **Langt trykk**: Meny med «Legg til sted» og «Naviger hit»
 
 ## Rens kartet hurtig {#renskartet}
@@ -16,7 +16,7 @@
 Trykk den grønne menyknappen for å åpne menyen. Nederst i menyen ligger fem faner:
 
 - **Hjem**: Søk på sted, adresse eller koordinat
-- **Naviger**: Ruter, Steder og Turer
+- **Naviger**: Turer og ruter, og Steder
 - **Verktøy**: Måleverktøy, Offlinekart og SOS
 - **Info**: Vær, Kunnskap og Om
 - **Innstillinger**: Kartlag, visning, koordinatformat og «Slett alle data»
@@ -31,13 +31,12 @@ Kategoriene er gruppert etter tema.
 
 Zoom litt inn hvis du ikke ser ikonene på kartet. De fleste kategoriene er lagret i appen og fungerer offline. Unntaket er kulturminner - de hentes fra internett.
 
-## Ruter, Steder og Turer (Naviger-fanen) {#steder}
+## Turer og ruter, og Steder (Naviger-fanen) {#steder}
 
-Tre samlinger under én fane:
+To samlinger under én fane:
 
-- **Ruter**: Planlagte og importerte ruter
+- **Turer og ruter**: Planlagte og importerte ruter, og egne opptak. Du kan filtrere og redigere som før — kategoriene er nå delt mellom turer og ruter.
 - **Steder**: Punkter du har markert eller importert
-- **Turer**: Egne opptak
 
 ### Skjule og vise på kartet
 
@@ -61,7 +60,7 @@ For å eksportere en enkelt rute eller tur: åpne den i detaljvisning og trykk �
 
 ### Tegne en rute {#ruter}
 
-1. Åpne **Naviger → Ruter**
+1. Åpne **Naviger → Turer og ruter**
 2. Trykk «Tegn rute»
 3. Trykk på kartet for å legge til punkter
 4. Dra et punkt for å flytte det. Angre-knappen fjerner siste punkt
@@ -73,7 +72,7 @@ Langt trykk på kartet og velg «Legg til sted».
 
 ### Logge en tur {#turlogging}
 
-Åpne **Naviger → Turer** og trykk opptaksknappen. Verktøylinjen viser varighet, avstand og høydemeter underveis.
+Åpne **Naviger → Turer og ruter** og trykk opptaksknappen. Verktøylinjen viser varighet, avstand og høydemeter underveis.
 
 Opptak og navigasjon mottar GPS uavhengig av hverandre — du kan starte navigasjon mens turen tas opp uten å bryte sporet.
 
@@ -94,19 +93,17 @@ Under navigasjon: trykk kompasset for å bytte mellom nord opp og kursretning. D
 
 ### Trykk for forklaring
 
-Trykk på de ulike værdataene for en forklaring tilpasset friluftsliv. Forklaringen beskriver hva tallene betyr for turen din — ikke bare hva de er. Der det finnes utdypende kunnskapsartikkel om temaet, lenker forklaringen videre til den.
+Trykk på de ulike værdataene for en forklaring tilpasset friluftsliv. Forklaringen beskriver hva tallene betyr for turen din — ikke bare hva de er. Vind har Beaufort-skala (0 til 25+ m/s), nedbør har mm/h og snø-omregning, og lufttrykk forklarer forskjellen på lavtrykk og høytrykk. UV-tooltip nevner også høydegradienten (UV øker rundt 10 % per 1000 høydemeter). Der det finnes utdypende kunnskapsartikkel om temaet, lenker forklaringen videre til den.
 
 ### Følt temperatur
 
 Når vinden gjør det kaldere enn lufttemperaturen, vises «Føles som» under graden.
 
-### UV-varsel
+### UV-indeks
 
-Når UV-indeksen er 3 eller høyere, vises et varsel med beskyttelsesråd.
+UV-indeksen vises alltid, også når den er 0. Tallet er ledsaget av kategori, for eksempel «0 — Lav» eller «6 — Sterk». Når indeksen er 3 eller høyere, vises et eget varsel med beskyttelsesråd.
 
-### Turanbefaling
-
-Øverst i værmeldingen vurderes forholdene for utendørs aktivitet. Trykk for å se grunnlaget.
+### Endring i været
 
 Endrer været seg vesentlig de neste timene, vises et eget varsel — for eksempel «Snø fra kl. 14» eller «Mer vind fra kl. 03».
 
@@ -120,11 +117,21 @@ Aktive varsler fra NVE/Varsom vises i værmeldingen. Snøskredvarsel er basert p
 
 ### 7-dagers varsel
 
-Trykk på en dag for å se timevarsel med temperatur, vind og nedbør. Den beste turdagen er markert.
+Trykk på en dag for å se timevarsel med temperatur, vind og nedbør. Den beste turdagen er markert. Info-knappen forklarer fargeleggingen: oransje for vind og UV markerer nivå der du bør være oppmerksom, rødt markerer farlig nivå.
 
 ## Kunnskap (Info-fanen → Kunnskap) {#kunnskap}
 
 Artikler om friluftsliv og overlevelse. Trykk på et bilde i en artikkel for fullskjerm.
+
+## Om (Info-fanen → Om) {#om}
+
+### Nettverksstatus
+
+Øverst vises om appen er **Online** eller **Offline**, og hvilken tilkobling som er i bruk: Wi-Fi, mobildata, kablet, annet eller ingen. Visningen oppdateres automatisk og bruker bare lokal nettverksinformasjon på enheten — ingenting sendes ut.
+
+### Kom i gang
+
+Lenker til brukerveiledning, personvernerklæring og kildekode.
 
 ## SOS og nød (Verktøy-fanen → SOS) {#sos}
 
@@ -149,6 +156,8 @@ Dra et punkt for å justere. «Angre» fjerner siste punkt, «Nullstill» starte
 
 ## Offlinekart (Verktøy-fanen → Offlinekart) {#offline}
 
+Nedlastede kart brukes automatisk når du er uten mobildekning. Da vises en stiplet firkant på kartet som markerer grensene til de nedlastede områdene.
+
 ### Egendefinert område
 
 1. Trykk «Velg område»
@@ -159,20 +168,18 @@ Dra et punkt for å justere. «Angre» fjerner siste punkt, «Nullstill» starte
 
 Bla gjennom kommuner per fylke, eller søk etter kommunenavn. Trykk på en kommune for å starte nedlasting.
 
-Nedlastede kart brukes automatisk uten dekning. Uten dekning vises en stiplet firkant på kartet som markerer grensene til de nedlastede områdene.
-
 ## Innstillinger {#innstillinger}
 
 ### Bakgrunnskart
 
-- **Topografisk** (standard): Fargerikt topografisk kart
-- **Gråtone**: Nedtonet kart — god kontrast til egne markeringer
-- **Turkart**: Klassisk papirkart-stil
+- **Topografisk** (standard): Kart som viser terrengdetaljer.
+- **Gråtone**: Samme type kart som topografisk, men uten farger. Gir bedre kontrast til ting du velger å vise på kartet.
+- **Turkart**: Kalles også for «Rasterkart» og «Papirkart». Ligner på Kartverkets trykte papirkart.
 
 ### Kartlag
 
 - **3D-relieff**: Terrengskygge
-- **Bratthetskart**: Helningsvinkler — nyttig for snøskredvurdering
+- **Bratthetskart**: Viser bratt terreng (over 27°) der det er potensiell fare for snøskred
 - **Naturskog**: Gammelskog, naturskogsannsynlighet eller nærhet til naturskog
 - **Naturvernområder**: Vernede områder
 - **Turruter**: Merkede stier

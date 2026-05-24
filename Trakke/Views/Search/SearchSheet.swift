@@ -37,7 +37,7 @@ struct SearchSheet: View {
                     viewModel.clearSearch()
                 } label: {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundStyle(Color.Trakke.brand)
+                        .foregroundStyle(Color.Trakke.brandLight)
                         .frame(minWidth: .Trakke.touchMin, minHeight: .Trakke.touchMin)
                         .contentShape(Rectangle())
                 }

@@ -13,6 +13,12 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
     var currentZoom: Double = MapConstants.defaultZoom
     var currentHeading: Double = 0
     var shouldResetHeading = false
+    /// Markør for siste valgte søkeresultat. Settes når brukeren trykker på
+    /// et treff i søkefeltet, beholdes mens brukeren utforsker området (pan,
+    /// zoom, åpning av POI/sted-detalj, navigasjon mot punktet). Overskrives
+    /// av neste søkevalg. Nulles eksplisitt når brukeren skifter til en
+    /// kart-modus som tar kartet i bruk for noe annet (tegning, måling,
+    /// offline-områdeutvalg) eller setter et nytt punkt via langt trykk.
     var searchPinCoordinate: CLLocationCoordinate2D?
     var showLocationPrimer = false
     var currentCenter = CLLocationCoordinate2D(

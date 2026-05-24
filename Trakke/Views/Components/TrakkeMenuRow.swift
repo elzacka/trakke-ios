@@ -10,7 +10,7 @@ struct TrakkeMenuRow<Trailing: View>: View {
     /// Bruk når subtitle er numerisk og må linjeres opp vertikalt — f.eks.
     /// koordinat-eksempler. Standard `Font.Trakke.captionSoft` brukes ellers.
     var subtitleFont: Font? = nil
-    var iconColor: Color = Color.Trakke.brand
+    var iconColor: Color = Color.Trakke.brandLight
     var labelColor: Color = Color.Trakke.text
     var action: (() -> Void)? = nil
     /// Tilleggsverdi som VoiceOver skal lese — typisk innholdet i et trailing
@@ -77,7 +77,7 @@ extension TrakkeMenuRow where Trailing == TrakkeMenuRowChevron {
         icon: String? = nil,
         label: String,
         subtitle: String? = nil,
-        iconColor: Color = Color.Trakke.brand,
+        iconColor: Color = Color.Trakke.brandLight,
         labelColor: Color = Color.Trakke.text,
         action: @escaping () -> Void
     ) {
@@ -153,7 +153,7 @@ struct TrakkeMenuRowCheckmark: View {
         if isSelected {
             Image(systemName: "checkmark")
                 .font(.system(size: 14, weight: .semibold))
-                .foregroundStyle(Color.Trakke.brand)
+                .foregroundStyle(Color.Trakke.brandLight)
                 .accessibilityHidden(true)
         }
     }

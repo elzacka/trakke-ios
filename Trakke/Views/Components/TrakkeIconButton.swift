@@ -1,16 +1,18 @@
 import SwiftUI
 
 /// Standardisert ikon-knapp for sekundære handlinger inline i list-ark
-/// (importer, eksporter, slett). 44×44 tap-areal med samme `surface`-flate
-/// og rounded-rectangle-radius som CardSection — sitter naturlig inn i
-/// list-ark-layouten uten å fremstå som flytende kontroll. Brukes typisk
-/// i en høyrejustert HStack med flere ikoner som "sekundær-toolbar"
-/// nederst i listen.
+/// (importer, eksporter, slett, +). 44×44 tap-areal med brand-light
+/// bakgrunn og hvit symbol — visuelt skille fra info-rader i samme kort.
 ///
 /// VoiceOver: `accessibilityLabel` må alltid settes siden visningen er
 /// rent ikonisk. Når `isLoading` er true vises en spinner i stedet for
 /// ikonet, og knappen er disabled. Tap-arealet er konstant — ingen
 /// layout-skift når tilstand endres.
+///
+/// `role: .destructive` gir samme visuelle stil som `.neutral` (brand-
+/// light bg, hvit symbol) — bevisst valg slik at alle action-bar-knapper
+/// ser likt ut. Bekreftelses-dialog beskytter slette-handlinger;
+/// destructive-rollen beholdes for VoiceOver-semantikk.
 struct TrakkeIconButton: View {
     enum Role { case neutral, destructive }
 
@@ -27,17 +29,16 @@ struct TrakkeIconButton: View {
                 if isLoading {
                     ProgressView()
                         .controlSize(.small)
-                        .tint(color)
+                        .tint(iconColor)
                 } else {
                     Image(systemName: systemImage)
                         .font(.system(size: 17, weight: .regular))
-                        .foregroundStyle(color)
+                        .foregroundStyle(iconColor)
                 }
             }
             .frame(width: .Trakke.touchMin, height: .Trakke.touchMin)
-            .background(Color.Trakke.surface)
+            .background(backgroundColor)
             .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))
-            .opacity(isEnabled ? 1 : 0.35)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
@@ -45,10 +46,16 @@ struct TrakkeIconButton: View {
         .accessibilityLabel(accessibilityLabel)
     }
 
-    private var color: Color {
-        switch role {
-        case .neutral: Color.Trakke.brand
-        case .destructive: Color.Trakke.red
-        }
+    /// Disabled-state har lys grønntint som bakgrunn (brandTint) og
+    /// textSoft som ikon — ikonet forblir tydelig synlig (~3.7:1
+    /// kontrast på brandTint, passer WCAG 1.4.11 for UI-komponenter)
+    /// slik at brukeren ser hvilke handlinger som finnes selv før det
+    /// er innhold å handle på.
+    private var backgroundColor: Color {
+        isEnabled ? Color.Trakke.brandLight : Color.Trakke.brandTint
+    }
+
+    private var iconColor: Color {
+        isEnabled ? Color.Trakke.surface : Color.Trakke.textSoft
     }
 }

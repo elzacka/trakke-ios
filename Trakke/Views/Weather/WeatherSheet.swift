@@ -6,6 +6,7 @@ struct WeatherSheet: View {
     /// navigation-konteksten. Brukes når WeatherSheet embeddes som en
     /// underfane i Info-fanen.
     var inline = false
+    @State private var showForecastLegend = false
 
     var body: some View {
         if inline {
@@ -78,9 +79,7 @@ struct WeatherSheet: View {
                 warningsSection(forecast: forecast)
             }
 
-            CardSection(String(localized: "weather.forecast")) {
-                weeklyList(forecast: forecast)
-            }
+            forecastSection(forecast)
 
             attributionFooter(forecast)
         }
@@ -343,6 +342,53 @@ struct WeatherSheet: View {
     }
 
     // MARK: - Daily Row
+
+    /// 7-dagers-seksjon med tappbar info-knapp som forklarer fargekodingen
+    /// (oransje vind = stiv kuling eller mer, oransje UV = nivå 6 og opp).
+    /// Egen layout fordi CardSection ikke støtter custom trailing-element
+    /// i headeren.
+    @ViewBuilder
+    private func forecastSection(_ forecast: WeatherForecast) -> some View {
+        VStack(alignment: .leading, spacing: 0) {
+            HStack(spacing: .Trakke.xs) {
+                Text(String(localized: "weather.forecast"))
+                    .font(Font.Trakke.sectionHeader)
+                    .foregroundStyle(Color.Trakke.textSoft)
+                    .textCase(.uppercase)
+
+                Button {
+                    showForecastLegend = true
+                } label: {
+                    Image(systemName: "info.circle")
+                        .font(.system(size: 14, weight: .regular))
+                        .foregroundStyle(Color.Trakke.textSoft)
+                        .frame(width: 24, height: 24)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(String(localized: "weather.forecast.legend.label"))
+                .trakkeTooltip(isPresented: $showForecastLegend) {
+                    TrakkeTooltipContent(
+                        title: String(localized: "weather.forecast"),
+                        text: String(localized: "weather.forecast.legend")
+                    )
+                }
+
+                Spacer()
+            }
+            .padding(.horizontal, .Trakke.xs)
+            .padding(.bottom, .Trakke.sm)
+
+            VStack(alignment: .leading, spacing: 0) {
+                weeklyList(forecast: forecast)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, .Trakke.cardPadH)
+            .padding(.vertical, .Trakke.cardPadV)
+            .background(Color.Trakke.surface)
+            .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))
+        }
+    }
 
     private func dailyRow(_ day: WeatherData, isBestDay: Bool) -> some View {
         let gustLevel = WeatherService.gustWarningLevel(day.windGust ?? day.windSpeed)

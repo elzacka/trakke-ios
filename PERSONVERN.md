@@ -1,8 +1,8 @@
 # Personvernerklæring for Tråkke
 
-**Sist oppdatert:** 15. mai 2026
+**Sist oppdatert:** 25. mai 2026
 
-## Kort sagt
+## Kort fortalt
 
 Tråkke lagrer all data lokalt på enheten din. Ingen personopplysninger samles inn - heller ingen sporing når du bruker appen. Ingenting sendes til appens egne systemer eller til tredjeparter for analyse eller markedsføring.
 
@@ -27,7 +27,11 @@ Appen ber om posisjon kun når du aktivt velger å vise den på kartet. Du får 
 
 Posisjonen brukes til å vise deg på kartet, hente lokal værmelding, beregne ruter og registrere GPS-spor. Posisjonsdata lagres kun lokalt.
 
-### 1.3 Data vi ikke samler inn
+### 1.3 Nettverksstatus
+
+Appen viser om enheten er online eller offline, og hvilken tilkoblingstype som er i bruk (Wi-Fi, mobildata, kablet, annet eller ingen). Dette leses lokalt fra iOS via NWPathMonitor. Ingen nettverksdata sendes ut av enheten og ingenting lagres.
+
+### 1.4 Data vi ikke samler inn
 
 Ingen brukerkontoer. Ingen informasjonskapsler. Ingen enhetsidentifikatorer (IDFA). Ingen bruksstatistikk. Ingen biometriske data.
 

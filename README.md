@@ -8,7 +8,7 @@ En kartapp for iPhone, laget for tur i norsk natur. Bygget på Kartverkets kart.
 
 **Steder på kartet.** Tilfluktsrom, gapahuker, hytter, badeplasser, bålplasser, hengekøyeplasser, teltplasser, rasteplasser, fosser, huler, utsiktspunkter, kulturminner og krigsminner — slå av og på etter behov. Det meste fungerer offline.
 
-**Tur og navigasjon.** Tegn ruter, lagre steder, registrer turer med GPS. Sving-for-sving navigasjon eller kompassretning når dekningen svikter. Import og eksport av GPX og GeoJSON.
+**Tur og navigasjon.** Tegn ruter, lagre steder, registrer turer med GPS. Turer og ruter står i samme samling, med felles kategorier og filter. Sving-for-sving navigasjon eller kompassretning når dekningen svikter. Import og eksport av GPX og GeoJSON.
 
 **Vær og varsler.** Værmelding, luftkvalitet og vanntemperatur fra Meteorologisk institutt. Snøskred og flom fra NVE/Varsom. Soloppgang og solnedgang.
 
@@ -40,6 +40,18 @@ xcodebuild -project Trakke.xcodeproj -scheme Trakke \
 ```
 
 Krever Xcode 26.5 og iOS 26-simulator.
+
+### Arkitektur
+
+App-rota består av små, fokuserte enheter:
+
+- `AppCoordinator` — eier ViewModels og navigasjon-/opptaks-tilstand
+- `MapScreen` — kart med alle overlay-lag og gester
+- `SheetHost` — sheet-ruting og FAB-meny
+- `DialogHost` — dialoger
+- `AppLifecycleModifier` — `onAppear`, `onChange` og `task`-hekter
+
+`ContentView` setter disse sammen og holder seg under 100 linjer. Se [dev_only/CLAUDE.md](dev_only/CLAUDE.md) for utfyllende beskrivelse.
 
 ## Lisens
 

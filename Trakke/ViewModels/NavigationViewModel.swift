@@ -43,7 +43,7 @@ final class NavigationViewModel {
     }
     private var elevationProfile: [ElevationPoint] = []
     private var cumulativeDistances: [Double] = []
-    private var totalDistance: Double = 0
+    private(set) var totalDistance: Double = 0
     private var lastSegmentIndex = 0
     private var consecutiveOffTrackReadings = 0
     private var lastDeviationAlertTime: Date?

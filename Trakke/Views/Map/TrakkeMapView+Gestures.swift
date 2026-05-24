@@ -8,11 +8,33 @@ extension TrakkeMapView.Coordinator {
     // MARK: - Tap Gesture
 
     @objc func handleMapTap(_ gesture: UITapGestureRecognizer) {
-        guard isDrawingMode || isMeasuringMode,
-              let mapView = gesture.view as? MLNMapView else { return }
+        guard let mapView = gesture.view as? MLNMapView else { return }
         let point = gesture.location(in: mapView)
+
+        // Hit-test mot tap-bare annotasjoner (POI, steder, søke-pin) —
+        // MapLibre's didSelect:-mekanisme håndterer disse, og vi vil ikke
+        // også fyre onMapTapped (som ville lukke et nyåpnet detalj-ark).
+        let hitRadius: CGFloat = 22
+        let hitRadiusSquared = hitRadius * hitRadius
+        let tappableAnnotations: [MLNAnnotation] =
+            Array(poiAnnotationMap.values)
+            + Array(waypointAnnotationMap.values)
+            + (searchPinAnnotation.map { [$0] } ?? [])
+        for annotation in tappableAnnotations {
+            let annotationPoint = mapView.convert(annotation.coordinate, toPointTo: mapView)
+            let dx = point.x - annotationPoint.x
+            let dy = point.y - annotationPoint.y
+            if dx * dx + dy * dy < hitRadiusSquared {
+                return
+            }
+        }
+
         let coordinate = mapView.convert(point, toCoordinateFrom: mapView)
-        lightHaptic.impactOccurred()
+        // Haptisk feedback bare ved aktive tegne/måle-handlinger — tomme
+        // tap i idle (for å lukke ark) skal være stille.
+        if isDrawingMode || isMeasuringMode {
+            lightHaptic.impactOccurred()
+        }
         onMapTapped?(coordinate)
     }
 

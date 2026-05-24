@@ -127,16 +127,18 @@ struct KommuneDetailView: View {
             .frame(maxWidth: .infinity)
             .padding(.vertical, .Trakke.buttonPadV)
         } else {
+            // Bruker brandLight + hvit tekst — samme handlings-stil som
+            // .trakkeSecondary, Avstand/Areal/Velg område osv.
             Button {
                 viewModel.startKommuneDownload(kommune)
                 dismiss()
             } label: {
                 Text(String(localized: "kommune.detail.download"))
                     .font(Font.Trakke.bodyMedium)
-                    .foregroundStyle(Color.Trakke.textInverse)
+                    .foregroundStyle(Color.Trakke.surface)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, .Trakke.buttonPadV)
-                    .background(Color.Trakke.brand)
+                    .background(Color.Trakke.brandLight)
                     .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))
             }
             .disabled(viewModel.isDownloading)

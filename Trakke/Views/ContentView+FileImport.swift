@@ -18,18 +18,18 @@ extension ContentView {
             do {
                 let result = try GeoJSONImportService.parse(from: url)
                 let filename = url.importedItemName
-                activityCount = activityViewModel.insertImported(result.activities, filename: filename)
+                activityCount = coordinator.activityViewModel.insertImported(result.activities, filename: filename)
                 if activityCount == 0 {
-                    routeCount = routeViewModel.insertImported(result.routes, filename: filename)
+                    routeCount = coordinator.routeViewModel.insertImported(result.routes, filename: filename)
                 }
-                waypointCount = waypointViewModel.insertImported(result.waypoints, filename: filename)
+                waypointCount = coordinator.waypointViewModel.insertImported(result.waypoints, filename: filename)
             } catch {
-                routeViewModel.importMessage = String(localized: "routes.importError")
+                coordinator.routeViewModel.importMessage = String(localized: "routes.importError")
             }
         case "gpx":
-            activityCount = activityViewModel.importFile(from: url)
-            routeCount = (activityCount > 0) ? 0 : routeViewModel.importFile(from: url)
-            waypointCount = waypointViewModel.importFile(from: url)
+            activityCount = coordinator.activityViewModel.importFile(from: url)
+            routeCount = (activityCount > 0) ? 0 : coordinator.routeViewModel.importFile(from: url)
+            waypointCount = coordinator.waypointViewModel.importFile(from: url)
         default:
             break
         }
@@ -44,10 +44,8 @@ extension ContentView {
         if typesImported > 1 {
             selectedTab = .navigate
             isFABMenuOpen = true
-        } else if activityCount > 0 {
-            sheets.active = .activityList
-        } else if routeCount > 0 {
-            sheets.active = .routeList
+        } else if activityCount > 0 || routeCount > 0 {
+            sheets.active = .tracks
         } else if waypointCount > 0 {
             sheets.active = .waypointList
         }

@@ -115,7 +115,7 @@ struct POIDetailSheet: View {
             } label: {
                 Image(systemName: copied ? "checkmark" : "doc.on.doc")
                     .font(Font.Trakke.bodyRegular)
-                    .foregroundStyle(Color.Trakke.brand)
+                    .foregroundStyle(Color.Trakke.brandLight)
                     .frame(minWidth: .Trakke.touchMin, minHeight: .Trakke.touchMin)
                     .contentShape(Rectangle())
             }

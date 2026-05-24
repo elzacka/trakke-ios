@@ -8,6 +8,7 @@ import SwiftUI
 struct InfoTabContent: View {
     @Bindable var weatherViewModel: WeatherViewModel
     @Bindable var knowledgeViewModel: KnowledgeViewModel
+    let connectivityMonitor: ConnectivityMonitor
     @State private var selectedSubTab: Int = 0
 
     private let subTabs = [
@@ -54,7 +55,7 @@ struct InfoTabContent: View {
         case 1:
             KnowledgeSheet(viewModel: knowledgeViewModel, inline: true)
         case 2:
-            InfoSheet(inline: true)
+            InfoSheet(inline: true, connectivityMonitor: connectivityMonitor)
         default:
             EmptyView()
         }

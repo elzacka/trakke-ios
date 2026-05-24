@@ -163,7 +163,7 @@ private struct UserGuideBodyView: View {
                     } label: {
                         Image(systemName: "arrow.up")
                             .font(Font.Trakke.bodyMedium)
-                            .foregroundStyle(Color.Trakke.brand)
+                            .foregroundStyle(Color.Trakke.brandLight)
                             .frame(width: .Trakke.touchMin, height: .Trakke.touchMin)
                             .background(.regularMaterial)
                             .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))

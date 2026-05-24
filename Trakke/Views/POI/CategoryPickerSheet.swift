@@ -90,7 +90,7 @@ struct CategoryPickerSheet: View {
                 if isEnabled {
                     Image(systemName: "checkmark")
                         .font(Font.Trakke.bodyMedium)
-                        .foregroundStyle(Color.Trakke.brand)
+                        .foregroundStyle(Color.Trakke.brandLight)
                 }
             }
             .frame(minHeight: .Trakke.touchMin)

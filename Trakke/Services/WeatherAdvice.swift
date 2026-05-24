@@ -416,66 +416,7 @@ extension WeatherService {
         return f
     }()
 
-    // MARK: - Outdoor Assessment
-
-    /// One-line combined outdoor assessment based on temperature, wind, gusts, and precipitation.
-    /// Answers the question: "Should I go outside, and what should I prepare for?"
-    nonisolated static func outdoorAssessment(
-        temperature: Double,
-        windSpeed: Double,
-        windGust: Double?,
-        precipitation: Double,
-        precipitationProbability: Double
-    ) -> String {
-        let wc = windChill(temperature: temperature, windSpeedMs: windSpeed)
-        let effectiveTemp = wc ?? temperature
-        let gustLevel = gustWarningLevel(windGust ?? windSpeed)
-        let windLevel = windWarningLevel(windSpeed)
-        let worstWind = max(gustLevel, windLevel)
-
-        // Life-threatening conditions first
-        if worstWind == .extreme {
-            return String(localized: "weather.assessment.extreme")
-        }
-        if effectiveTemp < -25 {
-            return String(localized: "weather.assessment.extremeCold")
-        }
-
-        // Dangerous conditions
-        if worstWind == .danger {
-            return String(localized: "weather.assessment.dangerousWind")
-        }
-        if effectiveTemp < -15 {
-            return String(localized: "weather.assessment.veryCold")
-        }
-
-        // Caution
-        if worstWind == .caution && precipitation > 1 {
-            return String(localized: "weather.assessment.windAndRain")
-        }
-        if worstWind == .caution {
-            return String(localized: "weather.assessment.windyCaution")
-        }
-        if precipitation > 4 || (precipitationProbability > 70 && precipitation > 1) {
-            return String(localized: "weather.assessment.heavyPrecip")
-        }
-        if effectiveTemp < 0 {
-            return String(localized: "weather.assessment.cold")
-        }
-
-        // Moderate
-        if precipitationProbability > 50 {
-            return String(localized: "weather.assessment.likelyRain")
-        }
-        if effectiveTemp < 10 {
-            return String(localized: "weather.assessment.cool")
-        }
-
-        // Good conditions
-        if precipitationProbability < 20 && windSpeed < 5.5 && effectiveTemp >= 10 {
-            return String(localized: "weather.assessment.great")
-        }
-
-        return String(localized: "weather.assessment.good")
-    }
+    // outdoorAssessment fjernet i mai 2026 — den tolket værdata for hardt
+    // ("Mye vind. Ta vindtette klær på eksponerte strekninger.") og bommet
+    // i tursammenheng. Brukerne ser de rå tallene + tooltipene istedet.
 }

@@ -100,7 +100,7 @@ private struct CategoryGroupSection: View {
             HStack(spacing: .Trakke.md) {
                 Image(systemName: group.iconName)
                     .font(.system(size: 18, weight: .regular))
-                    .foregroundStyle(Color.Trakke.brand)
+                    .foregroundStyle(Color.Trakke.brandLight)
                     .frame(width: 24)
 
                 Text(group.displayName)
@@ -113,7 +113,7 @@ private struct CategoryGroupSection: View {
                         .foregroundStyle(Color.Trakke.textInverse)
                         .padding(.horizontal, .Trakke.sm)
                         .padding(.vertical, 1)
-                        .background(Color.Trakke.brand)
+                        .background(Color.Trakke.brandLight)
                         .clipShape(Capsule())
                         .accessibilityLabel("\(enabledCountInGroup) aktive")
                 }
@@ -144,7 +144,7 @@ private struct CategoryGroupSection: View {
         return Button(action: { onToggleCategory(category) }) {
             HStack(spacing: .Trakke.md) {
                 POIIconImage(name: category.iconName, size: 22)
-                    .foregroundStyle(Color.Trakke.brand)
+                    .foregroundStyle(Color.Trakke.brandLight)
                     .frame(width: 24)
 
                 Text(category.displayName)
@@ -156,10 +156,15 @@ private struct CategoryGroupSection: View {
                 if isEnabled {
                     Image(systemName: "checkmark")
                         .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(Color.Trakke.brand)
+                        .foregroundStyle(Color.Trakke.brandLight)
                 }
             }
             .padding(.vertical, 12)
+            // Sub-kategorier indenteres litt forbi hovedgruppens
+            // ikon-spalte slik at det visuelt fremgår at de er
+            // underordnet. 16pt gir tydelig hierarki uten å skyve
+            // teksten for langt høyre.
+            .padding(.leading, .Trakke.lg)
             .frame(minHeight: .Trakke.touchMin, alignment: .leading)
             .contentShape(Rectangle())
         }

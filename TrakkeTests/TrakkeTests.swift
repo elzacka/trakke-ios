@@ -1116,8 +1116,8 @@ func kartverketStyleJSON(layer: BaseLayer) {
     await MainActor.run {
         sheets.present(.search)
         #expect(sheets.active == .search)
-        sheets.present(.routeList)
-        #expect(sheets.active == .routeList)
+        sheets.present(.tracks)
+        #expect(sheets.active == .tracks)
         sheets.dismissAll()
     }
     let active = await sheets.active

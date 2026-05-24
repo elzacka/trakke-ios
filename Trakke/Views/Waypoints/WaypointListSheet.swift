@@ -122,46 +122,41 @@ struct WaypointListSheet: View {
     // MARK: - Collapsible Category
 
     private func collapsibleCategory(title: String, category: String?, items: [Waypoint]) -> some View {
-        VStack(alignment: .leading, spacing: 0) {
-            categoryHeader(title: title, category: category, count: items.count)
+        VStack(spacing: 0) {
+            categoryHeader(title: title, count: items.count)
 
             if expandedCategories.contains(title) {
-                VStack(spacing: 0) {
-                    ForEach(items) { waypoint in
-                        if items.first?.id != waypoint.id {
-                            Divider()
-                        }
-                        HStack(spacing: 0) {
-                            NavigationLink(value: waypoint) {
-                                waypointRow(waypoint)
-                                    // Make the whole row hit-testable so long press
-                                    // works on padding / Spacer area, not just the
-                                    // label text.
-                                    .contentShape(Rectangle())
-                            }
-                            .buttonStyle(.plain)
-                            .contextMenu {
-                                contextMenuItems(for: waypoint)
-                            }
+                Divider().padding(.leading, .Trakke.dividerLeading)
 
-                            VisibilityToggleButton(
-                                isVisible: waypoint.isVisible,
-                                accessibilityLabel: waypoint.isVisible
-                                    ? String(localized: "waypoints.hideFromMap")
-                                    : String(localized: "waypoints.showOnMap")
-                            ) {
-                                viewModel.toggleVisibility(waypoint)
-                            }
+                ForEach(items) { waypoint in
+                    if items.first?.id != waypoint.id {
+                        Divider().padding(.leading, .Trakke.dividerLeading)
+                    }
+                    HStack(spacing: 0) {
+                        NavigationLink(value: waypoint) {
+                            waypointRow(waypoint)
+                                .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+                        .contextMenu {
+                            contextMenuItems(for: waypoint)
+                        }
+
+                        VisibilityToggleButton(
+                            isVisible: waypoint.isVisible,
+                            accessibilityLabel: waypoint.isVisible
+                                ? String(localized: "waypoints.hideFromMap")
+                                : String(localized: "waypoints.showOnMap")
+                        ) {
+                            viewModel.toggleVisibility(waypoint)
                         }
                     }
                 }
-                .padding(.horizontal, .Trakke.cardPadH)
-                .padding(.vertical, .Trakke.cardPadV)
-                .background(Color.Trakke.surface)
-                .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))
-                .padding(.top, .Trakke.sm)
             }
         }
+        .padding(.horizontal, .Trakke.cardPadH)
+        .background(Color.Trakke.surface)
+        .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))
     }
 
     // MARK: - Row
@@ -175,14 +170,15 @@ struct WaypointListSheet: View {
 
                 if let elevation = waypoint.elevation {
                     Text("\(Int(elevation)) moh.")
-                        .font(Font.Trakke.caption)
-                        .foregroundStyle(Color.Trakke.textTertiary)
+                        .font(Font.Trakke.captionSoft)
+                        .foregroundStyle(Color.Trakke.textSoft)
                 }
             }
 
             Spacer()
         }
-        .padding(.vertical, .Trakke.rowVertical)
+        .padding(.vertical, 12)
+        .frame(minHeight: .Trakke.touchMin)
         .opacity(waypoint.isVisible ? 1 : 0.45)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(waypointAccessibilityLabel(waypoint))
@@ -201,74 +197,48 @@ struct WaypointListSheet: View {
 
     // MARK: - Category Header
 
-    /// Header with three discrete tap targets: collapse on title, eye toggle
-    /// for the whole category, chevron also collapses (accessibility-hidden
-    /// since the title button already announces collapsed/expanded).
-    private func categoryHeader(title: String, category: String?, count: Int) -> some View {
-        let allVisible = viewModel.isCategoryAllVisible(category)
+    /// Kategori-header speiler ExpandableSection-stilen (Brukerveiledning,
+    /// Personvernerklæring): plain tittel-tekst, chevron-down til høyre
+    /// som roterer ved ekspandering, antall-tekst etter tittel. Per-
+    /// kategori-synlighet-bryteren er fjernet — brukerne kan toggle per
+    /// rad via VisibilityToggleButton.
+    private func categoryHeader(title: String, count: Int) -> some View {
         let isExpanded = expandedCategories.contains(title)
-        // Horisontal padding cardPadH gir hake-knappen samme x-posisjon som
-        // per-rad hake-knappen i kortet under — de flukter vertikalt.
-        return HStack(spacing: 0) {
-            // Tittel-knapp: chevron + tittel + telling som ett tap-areal.
-            // Chevron-rotasjon viser åpen/lukket tilstand.
-            Button {
-                withAnimation(reduceMotion ? .none : .easeInOut(duration: 0.25)) {
-                    if isExpanded {
-                        expandedCategories.remove(title)
-                    } else {
-                        expandedCategories.insert(title)
-                    }
+        return Button {
+            withAnimation(reduceMotion ? .none : .easeInOut(duration: 0.2)) {
+                if isExpanded {
+                    expandedCategories.remove(title)
+                } else {
+                    expandedCategories.insert(title)
                 }
-            } label: {
-                HStack(spacing: .Trakke.xs) {
-                    Image(systemName: "chevron.right")
-                        .font(Font.Trakke.captionSoft.weight(.semibold))
-                        .foregroundStyle(Color.Trakke.textTertiary)
-                        .rotationEffect(isExpanded ? .degrees(90) : .degrees(0))
-
-                    Text(title.uppercased())
-                        .font(Font.Trakke.sectionHeader)
-                        .foregroundStyle(Color.Trakke.textTertiary)
-
-                    Text(" (\(count))")
-                        .font(Font.Trakke.captionSoft)
-                        .foregroundStyle(Color.Trakke.textTertiary)
-
-                    Spacer()
-                }
-                .frame(minHeight: 44)
-                .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
-            .accessibilityLabel("\(title), \(count)")
-            .accessibilityAddTraits(isExpanded ? .isSelected : [])
+        } label: {
+            HStack(spacing: .Trakke.md) {
+                Text(title)
+                    .font(Font.Trakke.bodyRegular)
+                    .foregroundStyle(Color.Trakke.text)
 
-            // Hake helt til høyre — toggler synlighet for hele kategorien.
-            // Samme komponent og x-posisjon som per-rad VisibilityToggleButton.
-            Button {
-                viewModel.setCategoryVisibility(category, visible: !allVisible)
-            } label: {
-                Group {
-                    if allVisible {
-                        Image(systemName: "checkmark")
-                            .font(Font.Trakke.bodyMedium)
-                            .foregroundStyle(Color.Trakke.brand)
-                    } else {
-                        Color.clear
-                    }
-                }
-                .frame(width: .Trakke.touchMin, height: .Trakke.touchMin)
-                .contentShape(Rectangle())
+                Text("(\(count))")
+                    .font(Font.Trakke.captionSoft)
+                    .foregroundStyle(Color.Trakke.textSoft)
+
+                Spacer()
+
+                Image(systemName: "chevron.down")
+                    .font(Font.Trakke.captionSoft.weight(.semibold))
+                    .foregroundStyle(Color.Trakke.textSoft)
+                    .rotationEffect(.degrees(isExpanded ? 180 : 0))
             }
-            .buttonStyle(.plain)
-            .accessibilityLabel(
-                allVisible
-                    ? String(localized: "list.category.hideAll \(title)")
-                    : String(localized: "list.category.showAll \(title)")
-            )
+            .padding(.vertical, 12)
+            .frame(minHeight: .Trakke.touchMin)
+            .contentShape(Rectangle())
         }
-        .padding(.horizontal, .Trakke.cardPadH)
+        .buttonStyle(.plain)
+        .accessibilityLabel("\(title), \(count)")
+        .accessibilityAddTraits(.isHeader)
+        .accessibilityHint(isExpanded
+            ? String(localized: "accessibility.tapToCollapse")
+            : String(localized: "accessibility.tapToExpand"))
     }
 
     // MARK: - Action bar (importer / eksporter / slett)
