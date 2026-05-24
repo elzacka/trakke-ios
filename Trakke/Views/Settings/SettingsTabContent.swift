@@ -1,10 +1,10 @@
 import SwiftUI
 
 /// Innstillinger-fanen — bruker eksisterende PreferencesSheet i inline-modus
-/// for å gjenbruke all togglerne, koordinatformat og slett-alle-data-flyt.
-/// TrakkeSheetHeader på toppen erstatter iOS-default `.navigationTitle`,
-/// og NavigationStack rundt gjør at NavigationLink til DeleteAllDataView
-/// fortsatt fungerer.
+/// for å gjenbruke alle togglerne, koordinatformat og slett-alle-data-flyt.
+/// TrakkeSheetHeader på toppen erstatter iOS-default `.navigationTitle`.
+/// NavigationStack beholdes for fremtidige push-destinasjoner; selve
+/// slett-alle-data-bekreftelsen vises som dialog inne i PreferencesSheet.
 struct SettingsTabContent: View {
     @Bindable var mapViewModel: MapViewModel
     @Bindable var knowledgeViewModel: KnowledgeViewModel

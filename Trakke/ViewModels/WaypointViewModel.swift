@@ -203,6 +203,13 @@ final class WaypointViewModel {
         )
     }
 
+    /// Eksporter ett enkelt sted som GPX — brukes fra detaljvisningen.
+    func exportGPX(for waypoint: Waypoint) -> URL? {
+        let gpxString = GPXExportService.exportWaypoint(waypoint)
+        let filename = GPXExportService.sanitizeFilename(waypoint.name)
+        return GPXExportService.writeToTemporaryFile(gpxString: gpxString, filename: filename)
+    }
+
     func exportCategoryGPX(category: String) -> URL? {
         let filtered = waypoints(for: category)
         let gpxString = GPXExportService.exportWaypoints(filtered, name: category)
@@ -279,7 +286,9 @@ final class WaypointViewModel {
                 name: name,
                 coordinates: [item.longitude, item.latitude],
                 category: item.category,
-                elevation: item.elevation
+                elevation: item.elevation,
+                icon: item.icon,
+                color: item.color
             )
             // Imported waypoints start hidden so a freshly imported file doesn't
             // suddenly clutter the map with pins. User opts in via the list.

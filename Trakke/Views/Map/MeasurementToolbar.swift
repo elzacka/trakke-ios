@@ -62,7 +62,10 @@ struct MeasurementToolbar: View {
             .font(.system(size: 13))
             .foregroundStyle(Color.Trakke.textSoft)
             .lineLimit(1)
-            .minimumScaleFactor(0.6)
+            // Minst 0.85 så hint-tekstene ikke kan skrumpe så mye at den ene
+            // blir merkbart mindre enn den andre. Begge tekstene er korte nok
+            // til at scaling vanligvis ikke trigger.
+            .minimumScaleFactor(0.85)
         }
     }
 }

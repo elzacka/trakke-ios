@@ -18,9 +18,9 @@ struct RouteDetailSheet: View {
 
             ScrollView {
                 VStack(spacing: .Trakke.cardGap) {
+                    actionsCard
                     routeInfoCard
                     elevationCard
-                    actionsCard
 
                     Spacer(minLength: .Trakke.lg)
                 }
@@ -137,43 +137,45 @@ struct RouteDetailSheet: View {
     }
 
     // MARK: - Actions
+    //
+    // Høyrejustert ikon-bar — samme stil som Naviger-list-fanene. Posisjon
+    // i HStack indikerer hierarki: primær-handling (naviger) først,
+    // destruktiv (slett) sist.
 
     private var actionsCard: some View {
-        VStack(spacing: .Trakke.sm) {
+        HStack(spacing: .Trakke.sm) {
+            Spacer()
+
             if route.coordinates.count >= 2 {
-                Button {
-                    onNavigate?(route)
-                } label: {
-                    Label(String(localized: "navigation.start"), systemImage: "location.north.fill")
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                TrakkeIconButton(
+                    systemImage: "location.north.fill",
+                    accessibilityLabel: String(localized: "navigation.start"),
+                    action: { onNavigate?(route) }
+                )
+            }
+
+            TrakkeIconButton(
+                systemImage: "pencil",
+                accessibilityLabel: String(localized: "common.edit"),
+                action: { showEditDialog = true }
+            )
+
+            TrakkeIconButton(
+                systemImage: "square.and.arrow.down",
+                accessibilityLabel: String(localized: "export.share"),
+                action: {
+                    if let url = viewModel.exportGPX(for: route) {
+                        shareURL = ShareableURL(url: url)
+                    }
                 }
-                .buttonStyle(.trakkePrimary)
-            }
+            )
 
-            Button {
-                showEditDialog = true
-            } label: {
-                Label(String(localized: "common.edit"), systemImage: "pencil")
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .buttonStyle(.trakkeSecondary)
-
-            Button {
-                if let url = viewModel.exportGPX(for: route) {
-                    shareURL = ShareableURL(url: url)
-                }
-            } label: {
-                Label(String(localized: "export.share"), systemImage: "square.and.arrow.down")
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .buttonStyle(.trakkeSecondary)
-
-            Button {
-                showDeleteConfirmation = true
-            } label: {
-                Label(String(localized: "common.delete"), systemImage: "trash")
-            }
-            .buttonStyle(.trakkeDanger)
+            TrakkeIconButton(
+                systemImage: "trash",
+                role: .destructive,
+                accessibilityLabel: String(localized: "common.delete"),
+                action: { showDeleteConfirmation = true }
+            )
             .trakkeDialog(
                 isPresented: $showDeleteConfirmation,
                 title: String(localized: "routes.delete.title"),

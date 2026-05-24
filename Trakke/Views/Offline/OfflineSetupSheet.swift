@@ -50,15 +50,25 @@ struct OfflineSetupSheet: View {
     private var scrollableContent: some View {
         ScrollView {
             VStack(spacing: .Trakke.cardGap) {
-                // Tegn eget område på kartet
-                CardSection(String(localized: "offline.choice.custom")) {
-                    TrakkeMenuRow(
-                        label: String(localized: "offline.selectArea"),
-                        action: {
-                            dismiss()
-                            onCustom()
-                        }
-                    )
+                // Tegn eget område på kartet — handling, ikke hierarki.
+                VStack(alignment: .leading, spacing: .Trakke.sm) {
+                    Text(String(localized: "offline.choice.custom"))
+                        .font(Font.Trakke.sectionHeader)
+                        .foregroundStyle(Color.Trakke.textSoft)
+                        .textCase(.uppercase)
+                        .padding(.horizontal, .Trakke.xs)
+
+                    Button {
+                        dismiss()
+                        onCustom()
+                    } label: {
+                        Label(
+                            String(localized: "offline.selectArea"),
+                            systemImage: "rectangle.dashed"
+                        )
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .buttonStyle(.trakkeSecondary)
                 }
 
                 // Kommune-tre per fylke
@@ -82,52 +92,56 @@ struct OfflineSetupSheet: View {
                         .padding(.vertical, .Trakke.sm)
                 }
             } else {
-                ForEach(Array(viewModel.kommunerByFylke.enumerated()), id: \.element.fylke) { index, group in
-                    fylkeSection(
-                        group: group,
-                        sectionTitle: index == 0 ? String(localized: "kommune.section.header") : ""
-                    )
+                // Alle fylker samlet i ett kort — samme mønster som
+                // Datakilder + Åpen kildekode i Om-fanen.
+                // Fylker er separert med Divider, ikke cardGap.
+                CardSection(String(localized: "kommune.section.header")) {
+                    VStack(spacing: 0) {
+                        ForEach(Array(viewModel.kommunerByFylke.enumerated()), id: \.element.fylke) { index, group in
+                            if index > 0 {
+                                Divider().padding(.leading, .Trakke.dividerLeading)
+                            }
+                            fylkeSection(group: group)
+                        }
+                    }
                 }
             }
         }
     }
 
     private func fylkeSection(
-        group: (fylke: String, kommuner: [KommuneRegion]),
-        sectionTitle: String = ""
+        group: (fylke: String, kommuner: [KommuneRegion])
     ) -> some View {
         let isExpanded = !viewModel.kommuneSearchQuery.isEmpty || expandedFylker.contains(group.fylke)
 
-        return CardSection(sectionTitle) {
-            VStack(spacing: 0) {
-                TrakkeMenuRow(
-                    label: group.fylke,
-                    subtitle: nil,
-                    action: {
-                        withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.2)) {
-                            if expandedFylker.contains(group.fylke) {
-                                expandedFylker.remove(group.fylke)
-                            } else {
-                                expandedFylker.insert(group.fylke)
-                            }
+        return VStack(spacing: 0) {
+            TrakkeMenuRow(
+                label: group.fylke,
+                subtitle: nil,
+                action: {
+                    withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.2)) {
+                        if expandedFylker.contains(group.fylke) {
+                            expandedFylker.remove(group.fylke)
+                        } else {
+                            expandedFylker.insert(group.fylke)
                         }
-                    },
-                    trailing: {
-                        Image(systemName: "chevron.down")
-                            .font(Font.Trakke.captionSoft.weight(.semibold))
-                            .foregroundStyle(Color.Trakke.textSoft)
-                            .rotationEffect(.degrees(isExpanded ? 180 : 0))
                     }
-                )
+                },
+                trailing: {
+                    Image(systemName: "chevron.down")
+                        .font(Font.Trakke.captionSoft.weight(.semibold))
+                        .foregroundStyle(Color.Trakke.textSoft)
+                        .rotationEffect(.degrees(isExpanded ? 180 : 0))
+                }
+            )
 
-                if isExpanded {
-                    ForEach(Array(group.kommuner.enumerated()), id: \.element.id) { _, kommune in
-                        Divider().padding(.leading, .Trakke.dividerLeading)
-                        NavigationLink(value: kommune) {
-                            kommuneRow(kommune)
-                        }
-                        .buttonStyle(.plain)
+            if isExpanded {
+                ForEach(Array(group.kommuner.enumerated()), id: \.element.id) { _, kommune in
+                    Divider().padding(.leading, .Trakke.dividerLeading)
+                    NavigationLink(value: kommune) {
+                        kommuneRow(kommune)
                     }
+                    .buttonStyle(.plain)
                 }
             }
         }

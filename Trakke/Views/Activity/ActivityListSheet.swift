@@ -110,38 +110,32 @@ struct ActivityListSheet: View {
     private var activityList: some View {
         ScrollView {
             VStack(spacing: .Trakke.cardGap) {
-                // Primær handling
-                Button {
-                    dismissFully()
-                    onStartRecording()
-                } label: {
-                    Label(
-                        String(localized: "activity.log"),
-                        systemImage: "plus"
+                // Handlingsbar øverst — fire ikoner: starte opptak, importere,
+                // eksportere, slette alle. Høyrejustert som "verktøy"-rad.
+                actionBar
+
+                if viewModel.activities.isEmpty {
+                    EmptyStateView(
+                        title: String(localized: "activity.empty.title"),
+                        subtitle: String(localized: "activity.empty.subtitle"),
+                        alignment: .leading
                     )
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                .buttonStyle(.trakkeSecondary)
+                    .padding(.top, .Trakke.xxl)
+                } else {
+                    ForEach(viewModel.categories, id: \.self) { category in
+                        activityGroup(title: category, category: category, items: viewModel.activities(for: category))
+                    }
 
-                // Turhistorikk rett under primær handling
-                ForEach(viewModel.categories, id: \.self) { category in
-                    activityGroup(title: category, category: category, items: viewModel.activities(for: category))
+                    if !viewModel.uncategorizedActivities.isEmpty {
+                        activityGroup(
+                            title: viewModel.categories.isEmpty
+                                ? String(localized: "activity.history")
+                                : String(localized: "activity.uncategorized"),
+                            category: nil,
+                            items: viewModel.uncategorizedActivities
+                        )
+                    }
                 }
-
-                if !viewModel.uncategorizedActivities.isEmpty {
-                    activityGroup(
-                        title: viewModel.categories.isEmpty
-                            ? String(localized: "activity.history")
-                            : String(localized: "activity.uncategorized"),
-                        category: nil,
-                        items: viewModel.uncategorizedActivities
-                    )
-                }
-
-                // Sekundærhandlinger — importer, eksporter, slett.
-                // Ikon-bar høyrejustert: signaliserer at dette er
-                // utility-handlinger, ikke primær-flyten.
-                secondaryActionBar
 
                 Spacer(minLength: .Trakke.lg)
             }
@@ -254,17 +248,27 @@ struct ActivityListSheet: View {
     @ViewBuilder
     private func categoryHeader(title: String, category: String?, count: Int) -> some View {
         let allVisible = viewModel.isCategoryAllVisible(category)
+        let isExpanded = expandedCategories.contains(title)
+        // Horisontal padding cardPadH gir hake-knappen samme x-posisjon som
+        // per-rad hake-knappen i kortet under — de flukter vertikalt.
         HStack(spacing: 0) {
+            // Tittel-knapp: chevron + tittel + telling som ett tap-areal.
+            // Chevron-rotasjon viser åpen/lukket tilstand.
             Button {
                 withAnimation(reduceMotion ? .none : .easeInOut(duration: 0.25)) {
-                    if expandedCategories.contains(title) {
+                    if isExpanded {
                         expandedCategories.remove(title)
                     } else {
                         expandedCategories.insert(title)
                     }
                 }
             } label: {
-                HStack(spacing: 0) {
+                HStack(spacing: .Trakke.xs) {
+                    Image(systemName: "chevron.right")
+                        .font(Font.Trakke.captionSoft.weight(.semibold))
+                        .foregroundStyle(Color.Trakke.textTertiary)
+                        .rotationEffect(isExpanded ? .degrees(90) : .degrees(0))
+
                     Text(title.uppercased())
                         .font(Font.Trakke.sectionHeader)
                         .foregroundStyle(Color.Trakke.textTertiary)
@@ -275,14 +279,15 @@ struct ActivityListSheet: View {
 
                     Spacer()
                 }
-                .padding(.leading, .Trakke.xs)
                 .frame(minHeight: 44)
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
             .accessibilityLabel("\(title), \(count)")
-            .accessibilityAddTraits(expandedCategories.contains(title) ? .isSelected : [])
+            .accessibilityAddTraits(isExpanded ? .isSelected : [])
 
+            // Hake helt til høyre — toggler synlighet for hele kategorien.
+            // Samme komponent og x-posisjon som per-rad VisibilityToggleButton.
             Button {
                 viewModel.setCategoryVisibility(category, visible: !allVisible)
             } label: {
@@ -295,7 +300,7 @@ struct ActivityListSheet: View {
                         Color.clear
                     }
                 }
-                .frame(width: 44, height: 44)
+                .frame(width: .Trakke.touchMin, height: .Trakke.touchMin)
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
@@ -304,34 +309,24 @@ struct ActivityListSheet: View {
                     ? String(localized: "list.category.hideAll \(title)")
                     : String(localized: "list.category.showAll \(title)")
             )
-
-            Button {
-                withAnimation(reduceMotion ? .none : .easeInOut(duration: 0.25)) {
-                    if expandedCategories.contains(title) {
-                        expandedCategories.remove(title)
-                    } else {
-                        expandedCategories.insert(title)
-                    }
-                }
-            } label: {
-                Image(systemName: "chevron.right")
-                    .font(Font.Trakke.captionSoft.weight(.semibold))
-                    .foregroundStyle(Color.Trakke.textTertiary)
-                    .rotationEffect(expandedCategories.contains(title) ? .degrees(90) : .degrees(0))
-                    .padding(.trailing, .Trakke.xs)
-                    .frame(minHeight: 44)
-                    .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .accessibilityHidden(true)
         }
+        .padding(.horizontal, .Trakke.cardPadH)
     }
 
-    // MARK: - Secondary action bar (importer / eksporter / slett)
+    // MARK: - Action bar (logge / importer / eksporter / slett)
 
-    private var secondaryActionBar: some View {
+    private var actionBar: some View {
         HStack(spacing: .Trakke.sm) {
             Spacer()
+
+            TrakkeIconButton(
+                systemImage: "plus",
+                accessibilityLabel: String(localized: "activity.log"),
+                action: {
+                    dismissFully()
+                    onStartRecording()
+                }
+            )
 
             TrakkeIconButton(
                 systemImage: "square.and.arrow.up",

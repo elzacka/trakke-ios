@@ -2,30 +2,30 @@ import Foundation
 import OSLog
 
 enum GPXExportService {
+    /// XML-navnerom for Tråkke-spesifikke felt som ikke har plass i standard
+    /// GPX-skjemaet (color, difficulty, icon). Brukes som `<trakke:color>` osv.
+    /// inne i `<extensions>`-blokker.
+    private static let trakkeNamespace = "https://github.com/elzacka/trakke-ios/xmlns"
+
     static func exportRoute(_ route: Route, waypoints: [Waypoint] = []) -> String {
-        // Pre-size the parts buffer: ~6 lines per waypoint + 4 framing lines + 1 line per trackpoint.
+        // Pre-size the parts buffer: ~8 lines per waypoint + 8 framing lines + 1 line per trackpoint.
         var parts: [String] = []
-        parts.reserveCapacity(waypoints.count * 6 + 4 + route.coordinates.count)
+        parts.reserveCapacity(waypoints.count * 8 + 8 + route.coordinates.count)
 
         for wp in waypoints {
             guard wp.coordinates.count >= 2 else { continue }
             let lon = wp.coordinates[0]
             let lat = wp.coordinates[1]
             guard lon.isFinite, lat.isFinite else { continue }
-            parts.append("\n  <wpt lat=\"\(lat)\" lon=\"\(lon)\">")
-            if let elevation = wp.elevation {
-                parts.append("\n    <ele>\(elevation)</ele>")
-            }
-            parts.append("\n    <time>\(iso8601(wp.createdAt))</time>")
-            parts.append("\n    <name>\(escapeXML(wp.name))</name>")
-            if let category = wp.category {
-                parts.append("\n    <type>\(escapeXML(category))</type>")
-            }
-            parts.append("\n  </wpt>")
+            parts.append(waypointBlock(wp, lat: lat, lon: lon))
         }
 
         parts.append("\n  <trk>")
         parts.append("\n    <name>\(escapeXML(route.name))</name>")
+        if let category = route.category {
+            parts.append("\n    <type>\(escapeXML(category))</type>")
+        }
+        parts.append(routeExtensions(route, indent: "    "))
         parts.append("\n    <trkseg>")
 
         for coord in route.coordinates {
@@ -42,29 +42,38 @@ enum GPXExportService {
         return gpxDocument(name: route.name, createdAt: route.createdAt, body: parts.joined())
     }
 
+    /// Single-waypoint export — pakker ett enkelt sted som ett-element GPX
+    /// så detaljvisningen for Steder kan eksportere uten å gå via bulk-API.
+    static func exportWaypoint(_ waypoint: Waypoint) -> String {
+        guard waypoint.coordinates.count >= 2 else {
+            return gpxDocument(name: waypoint.name, createdAt: waypoint.createdAt, body: "")
+        }
+        let lon = waypoint.coordinates[0]
+        let lat = waypoint.coordinates[1]
+        guard lon.isFinite, lat.isFinite else {
+            return gpxDocument(name: waypoint.name, createdAt: waypoint.createdAt, body: "")
+        }
+        return gpxDocument(
+            name: waypoint.name,
+            createdAt: waypoint.createdAt,
+            body: waypointBlock(waypoint, lat: lat, lon: lon)
+        )
+    }
+
     static func exportWaypoints(_ waypoints: [Waypoint], name: String = "Mine steder") -> String {
         let sorted = waypoints.sorted {
             $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
         }
 
         var parts: [String] = []
-        parts.reserveCapacity(sorted.count * 6)
+        parts.reserveCapacity(sorted.count * 8)
 
         for wp in sorted {
             guard wp.coordinates.count >= 2 else { continue }
             let lon = wp.coordinates[0]
             let lat = wp.coordinates[1]
             guard lon.isFinite, lat.isFinite else { continue }
-            parts.append("\n  <wpt lat=\"\(lat)\" lon=\"\(lon)\">")
-            if let elevation = wp.elevation {
-                parts.append("\n    <ele>\(elevation)</ele>")
-            }
-            parts.append("\n    <time>\(iso8601(wp.createdAt))</time>")
-            parts.append("\n    <name>\(escapeXML(wp.name))</name>")
-            if let category = wp.category {
-                parts.append("\n    <type>\(escapeXML(category))</type>")
-            }
-            parts.append("\n  </wpt>")
+            parts.append(waypointBlock(wp, lat: lat, lon: lon))
         }
 
         return gpxDocument(name: name, createdAt: Date(), body: parts.joined())
@@ -74,7 +83,7 @@ enum GPXExportService {
     static func exportRoutes(_ routes: [Route], name: String = "Ruter") -> String {
         var parts: [String] = []
         let totalCoords = routes.reduce(0) { $0 + $1.coordinates.count }
-        parts.reserveCapacity(routes.count * 4 + totalCoords)
+        parts.reserveCapacity(routes.count * 6 + totalCoords)
 
         for route in routes {
             parts.append("\n  <trk>")
@@ -82,6 +91,7 @@ enum GPXExportService {
             if let category = route.category {
                 parts.append("\n    <type>\(escapeXML(category))</type>")
             }
+            parts.append(routeExtensions(route, indent: "    "))
             parts.append("\n    <trkseg>")
             for coord in route.coordinates {
                 guard coord.count >= 2 else { continue }
@@ -99,9 +109,12 @@ enum GPXExportService {
 
     static func exportActivity(_ activity: Activity) -> String {
         var parts: [String] = []
-        parts.reserveCapacity(activity.trackPoints.count * 4 + 4)
+        parts.reserveCapacity(activity.trackPoints.count * 4 + 6)
         parts.append("\n  <trk>")
         parts.append("\n    <name>\(escapeXML(activity.name))</name>")
+        if let category = activity.category {
+            parts.append("\n    <type>\(escapeXML(category))</type>")
+        }
         parts.append("\n    <trkseg>")
 
         for point in activity.trackPoints {
@@ -157,6 +170,47 @@ enum GPXExportService {
         }
 
         return gpxDocument(name: name, createdAt: Date(), body: parts.joined())
+    }
+
+    // MARK: - Block builders
+
+    private static func waypointBlock(_ wp: Waypoint, lat: Double, lon: Double) -> String {
+        var parts: [String] = []
+        parts.append("\n  <wpt lat=\"\(lat)\" lon=\"\(lon)\">")
+        if let elevation = wp.elevation {
+            parts.append("\n    <ele>\(elevation)</ele>")
+        }
+        parts.append("\n    <time>\(iso8601(wp.createdAt))</time>")
+        parts.append("\n    <name>\(escapeXML(wp.name))</name>")
+        if let category = wp.category {
+            parts.append("\n    <type>\(escapeXML(category))</type>")
+        }
+        var ext: [(String, String)] = []
+        if let color = wp.color, !color.isEmpty { ext.append(("color", color)) }
+        if let icon = wp.icon, !icon.isEmpty { ext.append(("icon", icon)) }
+        parts.append(extensionsBlock(indent: "    ", items: ext))
+        parts.append("\n  </wpt>")
+        return parts.joined()
+    }
+
+    private static func routeExtensions(_ route: Route, indent: String) -> String {
+        var ext: [(String, String)] = []
+        if let color = route.color, !color.isEmpty { ext.append(("color", color)) }
+        if let difficulty = route.difficulty, !difficulty.isEmpty { ext.append(("difficulty", difficulty)) }
+        return extensionsBlock(indent: indent, items: ext)
+    }
+
+    /// Builds an `<extensions>` block with `trakke:`-prefixed children, or
+    /// returns an empty string if there's nothing to write (avoids empty
+    /// `<extensions/>` tags in the output).
+    private static func extensionsBlock(indent: String, items: [(String, String)]) -> String {
+        guard !items.isEmpty else { return "" }
+        var parts = ["\n\(indent)<extensions>"]
+        for (key, value) in items {
+            parts.append("\n\(indent)  <trakke:\(key)>\(escapeXML(value))</trakke:\(key)>")
+        }
+        parts.append("\n\(indent)</extensions>")
+        return parts.joined()
     }
 
     static func sanitizeFilename(_ name: String) -> String {
@@ -241,6 +295,7 @@ enum GPXExportService {
         <?xml version="1.0" encoding="UTF-8"?>
         <gpx version="1.1" creator="Tråkke"
           xmlns="http://www.topografix.com/GPX/1/1"
+          xmlns:trakke="\(trakkeNamespace)"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
           <metadata>

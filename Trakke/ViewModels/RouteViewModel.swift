@@ -393,7 +393,12 @@ final class RouteViewModel {
             let route = Route(name: name)
             route.coordinates = importedRoute.coordinates
             route.distance = distance
-            route.color = Self.routeColors[(routes.count + i) % Self.routeColors.count]
+            // Tråkke-eksporterte filer har color/category/difficulty bevart.
+            // Faller tilbake til tilfeldig farge bare hvis fila ikke hadde en.
+            route.color = importedRoute.color
+                ?? Self.routeColors[(routes.count + i) % Self.routeColors.count]
+            route.category = importedRoute.category
+            route.difficulty = importedRoute.difficulty
             // If the imported file carried per-point elevation, compute gain/loss
             // from it so the route list immediately shows the +Xm badge without
             // a DEM round-trip (which loadElevationProfile would otherwise do).

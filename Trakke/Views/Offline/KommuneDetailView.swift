@@ -82,17 +82,34 @@ struct KommuneDetailView: View {
     }
 
     // MARK: - Layer
+    //
+    // Radio-rad-mønster identisk med PreferencesSheet.baseLayerRow — én
+    // TrakkeMenuRow per kartlag med checkmark-trailing for valgt. Samme
+    // komponent og visuelle uttrykk så brukeren møter samme velger uansett
+    // hvor i appen valget gjøres.
 
     private var layerCard: some View {
         CardSection(String(localized: "settings.baseLayer")) {
-            Picker(String(localized: "settings.baseLayer"), selection: $viewModel.kommuneDownloadLayer) {
-                ForEach(BaseLayer.allCases) { layer in
-                    Text(layer.displayName).tag(layer)
+            VStack(spacing: 0) {
+                ForEach(Array(BaseLayer.allCases.enumerated()), id: \.element) { index, layer in
+                    if index > 0 {
+                        Divider().padding(.leading, .Trakke.dividerLeading)
+                    }
+                    baseLayerRow(layer)
                 }
             }
-            .labelsHidden()
-            .pickerStyle(.segmented)
         }
+    }
+
+    private func baseLayerRow(_ layer: BaseLayer) -> some View {
+        let isSelected = viewModel.kommuneDownloadLayer == layer
+
+        return TrakkeMenuRow(
+            label: layer.displayName,
+            action: { viewModel.kommuneDownloadLayer = layer },
+            trailing: { TrakkeMenuRowCheckmark(isSelected: isSelected) }
+        )
+        .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : .isButton)
     }
 
     // MARK: - Download

@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 
 struct PreferencesSheet: View {
     @Bindable var mapViewModel: MapViewModel
@@ -21,7 +22,9 @@ struct PreferencesSheet: View {
     @AppStorage(AppStorageKeys.overlayUtmRunenett) private var overlayUtmRunenett = false
     @AppStorage(AppStorageKeys.overlayNaturskog) private var overlayNaturskog = false
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var showDeleteConfirmation = false
 
     var body: some View {
         if inline {
@@ -137,47 +140,35 @@ struct PreferencesSheet: View {
                     }
                     .id("coordinateFormatSection")
 
-                    // MARK: - Reset (ikke destruktiv — bare tilbakestiller togglerne)
-                    Button {
-                        withAnimation(reduceMotion ? .none : .default) {
-                            coordinateFormat = .dd
-                            showWeatherWidget = false
-                            showCompass = false
-                            showZoomControls = false
-                            showScaleBar = false
-                            enableRotation = true
-                            overlayTurrutebasen = false
-                            overlayHillshading = false
-                            overlayNaturvernomrader = false
-                            overlayBratthetskart = false
-                            overlayNaturskog = false
-                            mapViewModel.baseLayer = .topo
-                        }
-                    } label: {
-                        Text(String(localized: "settings.resetDefaults"))
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-                    .buttonStyle(.trakkeSecondary)
+                    // MARK: - Handlingsbar: tilbakestill og slett alle data
+                    //
+                    // Samme ikon-bar-mønster som Naviger-fanene. Slett-knappen
+                    // er destruktiv (rød) og krever bekreftelse via dialog —
+                    // ingen egen skjerm i mellomliggende steg.
+                    HStack(spacing: .Trakke.sm) {
+                        Spacer()
 
-                    // MARK: - Slett alle data — egen skjerm (GDPR Art. 17)
-                    // Skilt fra togglerne over slik at destruktive valg ikke
-                    // ligger ved siden av kosmetiske brytere.
-                    CardSection {
-                        NavigationLink {
-                            DeleteAllDataView(
-                                mapViewModel: mapViewModel,
-                                knowledgeViewModel: knowledgeViewModel,
-                                onDeleteAllData: onDeleteAllData
-                            )
-                        } label: {
-                            TrakkeMenuRow(
-                                icon: "trash",
-                                label: String(localized: "settings.deleteAllData"),
-                                iconColor: Color.Trakke.red,
-                                trailing: { TrakkeMenuRowChevron() }
-                            )
-                        }
-                        .buttonStyle(.plain)
+                        TrakkeIconButton(
+                            systemImage: "arrow.counterclockwise",
+                            accessibilityLabel: String(localized: "settings.resetDefaults"),
+                            action: resetDefaults
+                        )
+
+                        TrakkeIconButton(
+                            systemImage: "trash",
+                            role: .destructive,
+                            accessibilityLabel: String(localized: "settings.deleteAllData"),
+                            action: { showDeleteConfirmation = true }
+                        )
+                        .trakkeDialog(
+                            isPresented: $showDeleteConfirmation,
+                            title: String(localized: "settings.deleteAllData.title"),
+                            message: String(localized: "settings.deleteAllData.message"),
+                            primary: .destructive(String(localized: "common.yes")) {
+                                deleteAllData()
+                            },
+                            cancel: .cancel(String(localized: "common.no"))
+                        )
                     }
 
             Spacer(minLength: .Trakke.lg)
@@ -222,6 +213,73 @@ struct PreferencesSheet: View {
         }
         .toggleStyle(.trakke)
         .padding(.vertical, .Trakke.xs)
+    }
+
+    // MARK: - Actions
+
+    private func resetDefaults() {
+        withAnimation(reduceMotion ? .none : .default) {
+            coordinateFormat = .dd
+            showWeatherWidget = false
+            showCompass = false
+            showZoomControls = false
+            showScaleBar = false
+            enableRotation = true
+            overlayTurrutebasen = false
+            overlayHillshading = false
+            overlayNaturvernomrader = false
+            overlayBratthetskart = false
+            overlayNaturskog = false
+            mapViewModel.baseLayer = .topo
+        }
+    }
+
+    /// GDPR Art. 17 — sletter alle lokale data, cacher og innstillinger.
+    /// Flyttet fra DeleteAllDataView (egen skjerm) til en bekreftelses-dialog
+    /// for å redusere brukerstøy.
+    private func deleteAllData() {
+        try? modelContext.delete(model: Route.self)
+        try? modelContext.delete(model: Waypoint.self)
+        try? modelContext.delete(model: Activity.self)
+        try? modelContext.save()
+
+        // Fjern WAL/SHM-filer for å fysisk slette persistert tilstand
+        if let storeURL = modelContext.container.configurations.first?.url {
+            let walURL = storeURL.appendingPathExtension("wal")
+            let shmURL = storeURL.appendingPathExtension("shm")
+            try? FileManager.default.removeItem(at: walURL)
+            try? FileManager.default.removeItem(at: shmURL)
+        }
+
+        OfflineMapService.shared.deleteAllPacks()
+        OfflineMapService.shared.clearTileCache()
+
+        knowledgeViewModel?.deleteAllPacks()
+        if knowledgeViewModel == nil {
+            Task { await RemoteArticleService().clearCache() }
+        }
+
+        BundledPOIService.clearCache()
+        Task { await ArtsdatabankenImageService.default.clearCache() }
+
+        onDeleteAllData?()
+
+        if let bundleId = Bundle.main.bundleIdentifier {
+            UserDefaults.standard.removePersistentDomain(forName: bundleId)
+        }
+        mapViewModel.baseLayer = .topo
+
+        URLCache.shared.removeAllCachedResponses()
+
+        // Rydd eksporterte filer fra tmp
+        let tempDir = FileManager.default.temporaryDirectory
+        if let files = try? FileManager.default.contentsOfDirectory(
+            at: tempDir, includingPropertiesForKeys: nil
+        ) {
+            for file in files where file.pathExtension == "gpx" || file.pathExtension == "geojson" {
+                try? FileManager.default.removeItem(at: file)
+            }
+        }
     }
 }
 

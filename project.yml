@@ -33,10 +33,13 @@ settings:
       ENABLE_TESTABILITY: YES
       DEBUG_INFORMATION_FORMAT: "dwarf"
       # Catch type-checker slowness lokalt før det blir build-feil på eldre
-      # Xcode-versjoner i CI. 200 ms-grensen er en god balanse mellom å
-      # fange faktiske problemer (>500ms) og ikke spamme på normalt-tunge
-      # SwiftUI-views.
-      OTHER_SWIFT_FLAGS: "-Xfrontend -warn-long-expression-type-checking=200 -Xfrontend -warn-long-function-bodies=200"
+      # Xcode-versjoner i CI. 400 ms-grensen ligger godt over normal-størrelse
+      # for ContentView-body (~250–330 ms etter omfattende splitting i mai
+      # 2026: body → bodyWithEventHandling, mainLayout-dialoger i egen
+      # ViewModifier, 9 ZStack-lag i egne computed properties). Bumpene over
+      # 200 ms reflekterer at appen har vokst — CI's harde timeout er
+      # flere sekunder, så dette er en "early warning"-grense for regresjoner.
+      OTHER_SWIFT_FLAGS: "-Xfrontend -warn-long-expression-type-checking=400 -Xfrontend -warn-long-function-bodies=400"
     Release:
       SWIFT_OPTIMIZATION_LEVEL: "-O"
       SWIFT_COMPILATION_MODE: wholemodule

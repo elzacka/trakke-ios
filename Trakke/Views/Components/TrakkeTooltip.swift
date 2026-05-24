@@ -2,7 +2,10 @@ import SwiftUI
 
 // MARK: - Tooltip Content View
 
-/// Tooltip content view styled with Trakke design tokens.
+/// Tooltip content view styled like the rest of the app — CardSection på
+/// cream-bakgrunn, samme typografi (bodyMedium / bodyRegular) som InfoSheet
+/// og list-arkene. Sitter inni en TooltipSheet som gir presentation-detents,
+/// navigation-stack for artikkel-linker, og felles ark-styling.
 struct TrakkeTooltipContent: View {
     let title: String
     let text: String
@@ -10,42 +13,44 @@ struct TrakkeTooltipContent: View {
     var source: String? = nil
 
     var body: some View {
-        VStack(alignment: .leading, spacing: .Trakke.sm) {
-            if !title.isEmpty {
-                Text(title)
-                    .font(Font.Trakke.bodyMedium)
-                    .foregroundStyle(Color.Trakke.text)
-            }
-
-            if !text.isEmpty {
-                Text(text)
-                    .font(Font.Trakke.tooltipBody)
-                    .foregroundStyle(Color.Trakke.textSecondary)
-            }
-
-            ForEach(Array(sections.enumerated()), id: \.offset) { _, section in
-                if !section.header.isEmpty {
-                    Text(section.header)
-                        .font(Font.Trakke.tooltipBody)
+        CardSection {
+            VStack(alignment: .leading, spacing: .Trakke.sm) {
+                if !title.isEmpty {
+                    Text(title)
+                        .font(Font.Trakke.bodyMedium)
                         .foregroundStyle(Color.Trakke.text)
-                        .padding(.top, .Trakke.md)
                 }
-                Text(section.text)
-                    .font(Font.Trakke.tooltipBody)
-                    .foregroundStyle(Color.Trakke.textSecondary)
-            }
 
-            if let source {
-                Divider()
-                    .padding(.top, .Trakke.xs)
-                Text(source)
-                    .font(Font.Trakke.captionSoft)
-                    .foregroundStyle(Color.Trakke.textTertiary)
+                if !text.isEmpty {
+                    Text(text)
+                        .font(Font.Trakke.bodyRegular)
+                        .foregroundStyle(Color.Trakke.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                ForEach(Array(sections.enumerated()), id: \.offset) { _, section in
+                    if !section.header.isEmpty {
+                        Text(section.header)
+                            .font(Font.Trakke.bodyMedium)
+                            .foregroundStyle(Color.Trakke.text)
+                            .padding(.top, .Trakke.sm)
+                    }
+                    Text(section.text)
+                        .font(Font.Trakke.bodyRegular)
+                        .foregroundStyle(Color.Trakke.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                if let source {
+                    Divider().padding(.vertical, .Trakke.xs)
+                    Text(source)
+                        .font(Font.Trakke.captionSoft)
+                        .foregroundStyle(Color.Trakke.textTertiary)
+                }
             }
+            .padding(.vertical, .Trakke.sm)
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding(.horizontal, .Trakke.lg)
-        .padding(.top, .Trakke.lg)
-        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -67,20 +72,25 @@ struct TrakkeTooltipModifier<TooltipContent: View>: ViewModifier {
     }
 }
 
-/// Internal sheet view that provides NavigationStack for article linking.
+/// Internal sheet view that provides NavigationStack for article linking and
+/// felles ark-bakgrunn/-padding på linje med InfoSheet og list-arkene.
 private struct TooltipSheet<TooltipContent: View>: View {
     @ViewBuilder let tooltipContent: () -> TooltipContent
 
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 0) {
+                VStack(alignment: .leading, spacing: .Trakke.cardGap) {
                     tooltipContent()
-                        .fixedSize(horizontal: false, vertical: true)
-                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
+                .padding(.horizontal, .Trakke.sheetHorizontal)
+                .padding(.top, .Trakke.sheetTop)
+                .padding(.bottom, .Trakke.lg)
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
             .scrollBounceBehavior(.basedOnSize)
+            .background(Color.Trakke.background)
+            .tint(Color.Trakke.brand)
             .toolbar(.hidden, for: .navigationBar)
             .navigationDestination(for: KnowledgeArticle.self) { article in
                 ArticleDetailView(article: article)
@@ -88,14 +98,15 @@ private struct TooltipSheet<TooltipContent: View>: View {
         }
         .presentationDetents([.medium, .large])
         .presentationDragIndicator(.visible)
-        .presentationBackground(Color.Trakke.brandTint)
+        .presentationBackground(Color.Trakke.background)
         .presentationCornerRadius(.TrakkeRadius.sheet)
     }
 }
 
 // MARK: - Article Link View
 
-/// Tappable link shown at the bottom of a tooltip to navigate to a Knowledge article.
+/// Tappable link shown below a tooltip to navigate to a Knowledge article.
+/// Eget kort med TrakkeMenuRow — samme stil som menyrader ellers i appen.
 /// Must be used inside a NavigationStack (provided by TrakkeTooltipModifier).
 struct TooltipArticleLink: View {
     let articleId: Int64
@@ -114,53 +125,38 @@ struct TooltipArticleLink: View {
 
     var body: some View {
         if let article {
-            VStack(alignment: .leading, spacing: .Trakke.sm) {
-                Divider()
-                    .padding(.top, .Trakke.md)
-
+            CardSection {
                 NavigationLink(value: article) {
-                    HStack(spacing: .Trakke.xs) {
-                        Image(systemName: "book")
-                            .font(Font.Trakke.captionSoft)
-                        Text("Les om \(article.title.lowercased()) i Kunnskap")
-                            .font(Font.Trakke.tooltipBody)
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .font(Font.Trakke.captionSoft)
-                    }
-                    .foregroundStyle(Color.Trakke.brand)
+                    TrakkeMenuRow(
+                        icon: "book",
+                        label: String(localized: "tooltip.readMore \(article.title.lowercased())"),
+                        trailing: { TrakkeMenuRowChevron() }
+                    )
                 }
+                .buttonStyle(.plain)
             }
-            .padding(.horizontal, .Trakke.lg)
-            .padding(.bottom, .Trakke.lg)
         }
     }
 }
 
 // MARK: - Source Link View
 
-/// Tappable external link shown at the bottom of a tooltip.
-/// Use for linking to external sources like varsom.no.
+/// Tappable external link below a tooltip — eget kort, samme stil som
+/// menyrader. Use for linking to external sources like varsom.no.
 struct TooltipSourceLink: View {
     let label: String
     let url: URL
 
     var body: some View {
-        VStack(alignment: .leading, spacing: .Trakke.sm) {
-            Divider()
-                .padding(.top, .Trakke.xs)
+        CardSection {
             Link(destination: url) {
-                HStack(spacing: .Trakke.xs) {
-                    Text(label)
-                    Image(systemName: "arrow.up.right")
-                        .imageScale(.small)
-                }
-                .font(Font.Trakke.captionSoft)
-                .foregroundStyle(Color.Trakke.brand)
+                TrakkeMenuRow(
+                    label: label,
+                    trailing: { TrakkeMenuRowExternal() }
+                )
             }
+            .accessibilityHint(String(localized: "accessibility.opensExternalLink"))
         }
-        .padding(.horizontal, .Trakke.lg)
-        .padding(.bottom, .Trakke.lg)
     }
 }
 

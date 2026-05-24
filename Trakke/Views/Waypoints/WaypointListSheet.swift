@@ -31,19 +31,7 @@ struct WaypointListSheet: View {
     }
 
     private var waypointContent: some View {
-        Group {
-                if viewModel.waypoints.isEmpty {
-                    EmptyStateView(
-                        title: String(localized: "waypoints.empty.title"),
-                        subtitle: String(localized: "waypoints.empty.subtitle"),
-                        actionLabel: String(localized: "import.file"),
-                        actionIcon: "square.and.arrow.up",
-                        action: { showFileImporter = true }
-                    )
-                } else {
-                    waypointList
-                }
-            }
+        waypointList
             .tint(Color.Trakke.brand)
             .background(Color.Trakke.background)
             .navigationTitle(String(localized: "waypoints.title"))
@@ -90,33 +78,37 @@ struct WaypointListSheet: View {
     private var waypointList: some View {
         ScrollView {
             VStack(spacing: .Trakke.cardGap) {
-                ForEach(viewModel.categories, id: \.self) { category in
-                    collapsibleCategory(
-                        title: category,
-                        category: category,
-                        items: viewModel.waypoints(for: category)
+                // Handlingsbar øverst — tre ikoner: importere, eksportere,
+                // slette alle. Tilpasset versjon uten pluss-knapp siden
+                // "legge til sted" gjøres med langt trykk på kartet.
+                // Alltid synlig — også i tom tilstand — for konsistens med
+                // Ruter og Turer.
+                actionBar
+
+                if viewModel.waypoints.isEmpty {
+                    EmptyStateView(
+                        title: String(localized: "waypoints.empty.title"),
+                        subtitle: String(localized: "waypoints.empty.subtitle"),
+                        alignment: .leading
                     )
-                }
+                    .padding(.top, .Trakke.xxl)
+                } else {
+                    ForEach(viewModel.categories, id: \.self) { category in
+                        collapsibleCategory(
+                            title: category,
+                            category: category,
+                            items: viewModel.waypoints(for: category)
+                        )
+                    }
 
-                if !viewModel.uncategorizedWaypoints.isEmpty {
-                    collapsibleCategory(
-                        title: String(localized: "waypoints.uncategorized"),
-                        category: nil,
-                        items: viewModel.uncategorizedWaypoints
-                    )
+                    if !viewModel.uncategorizedWaypoints.isEmpty {
+                        collapsibleCategory(
+                            title: String(localized: "waypoints.uncategorized"),
+                            category: nil,
+                            items: viewModel.uncategorizedWaypoints
+                        )
+                    }
                 }
-
-                // Bulk-synlighet beholdes for Steder: punktene kan vises på
-                // kartet uten å overstyre topo-lesningen slik mange ruter/turer
-                // ville gjort.
-                if viewModel.waypoints.count >= 2 {
-                    bulkVisibilityButton
-                }
-
-                // Sekundærhandlinger — importer, eksporter, slett.
-                // Ikon-bar høyrejustert: signaliserer at dette er
-                // utility-handlinger, ikke primær-flyten.
-                secondaryActionBar
 
                 Spacer(minLength: .Trakke.lg)
             }
@@ -212,20 +204,29 @@ struct WaypointListSheet: View {
     /// Header with three discrete tap targets: collapse on title, eye toggle
     /// for the whole category, chevron also collapses (accessibility-hidden
     /// since the title button already announces collapsed/expanded).
-    @ViewBuilder
     private func categoryHeader(title: String, category: String?, count: Int) -> some View {
         let allVisible = viewModel.isCategoryAllVisible(category)
-        HStack(spacing: 0) {
+        let isExpanded = expandedCategories.contains(title)
+        // Horisontal padding cardPadH gir hake-knappen samme x-posisjon som
+        // per-rad hake-knappen i kortet under — de flukter vertikalt.
+        return HStack(spacing: 0) {
+            // Tittel-knapp: chevron + tittel + telling som ett tap-areal.
+            // Chevron-rotasjon viser åpen/lukket tilstand.
             Button {
                 withAnimation(reduceMotion ? .none : .easeInOut(duration: 0.25)) {
-                    if expandedCategories.contains(title) {
+                    if isExpanded {
                         expandedCategories.remove(title)
                     } else {
                         expandedCategories.insert(title)
                     }
                 }
             } label: {
-                HStack(spacing: 0) {
+                HStack(spacing: .Trakke.xs) {
+                    Image(systemName: "chevron.right")
+                        .font(Font.Trakke.captionSoft.weight(.semibold))
+                        .foregroundStyle(Color.Trakke.textTertiary)
+                        .rotationEffect(isExpanded ? .degrees(90) : .degrees(0))
+
                     Text(title.uppercased())
                         .font(Font.Trakke.sectionHeader)
                         .foregroundStyle(Color.Trakke.textTertiary)
@@ -236,14 +237,15 @@ struct WaypointListSheet: View {
 
                     Spacer()
                 }
-                .padding(.leading, .Trakke.xs)
                 .frame(minHeight: 44)
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
             .accessibilityLabel("\(title), \(count)")
-            .accessibilityAddTraits(expandedCategories.contains(title) ? .isSelected : [])
+            .accessibilityAddTraits(isExpanded ? .isSelected : [])
 
+            // Hake helt til høyre — toggler synlighet for hele kategorien.
+            // Samme komponent og x-posisjon som per-rad VisibilityToggleButton.
             Button {
                 viewModel.setCategoryVisibility(category, visible: !allVisible)
             } label: {
@@ -256,7 +258,7 @@ struct WaypointListSheet: View {
                         Color.clear
                     }
                 }
-                .frame(width: 44, height: 44)
+                .frame(width: .Trakke.touchMin, height: .Trakke.touchMin)
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
@@ -265,32 +267,17 @@ struct WaypointListSheet: View {
                     ? String(localized: "list.category.hideAll \(title)")
                     : String(localized: "list.category.showAll \(title)")
             )
-
-            Button {
-                withAnimation(reduceMotion ? .none : .easeInOut(duration: 0.25)) {
-                    if expandedCategories.contains(title) {
-                        expandedCategories.remove(title)
-                    } else {
-                        expandedCategories.insert(title)
-                    }
-                }
-            } label: {
-                Image(systemName: "chevron.right")
-                    .font(Font.Trakke.captionSoft.weight(.semibold))
-                    .foregroundStyle(Color.Trakke.textTertiary)
-                    .rotationEffect(expandedCategories.contains(title) ? .degrees(90) : .degrees(0))
-                    .padding(.trailing, .Trakke.xs)
-                    .frame(minHeight: 44)
-                    .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .accessibilityHidden(true)
         }
+        .padding(.horizontal, .Trakke.cardPadH)
     }
 
-    // MARK: - Secondary action bar (importer / eksporter / slett)
+    // MARK: - Action bar (importer / eksporter / slett)
+    //
+    // Tilpasset versjon — har ingen pluss-knapp som Ruter og Turer fordi
+    // "legge til sted" gjøres med langt trykk på kartet, ikke fra denne
+    // visningen.
 
-    private var secondaryActionBar: some View {
+    private var actionBar: some View {
         HStack(spacing: .Trakke.sm) {
             Spacer()
 
@@ -331,26 +318,6 @@ struct WaypointListSheet: View {
                 cancel: .cancel(String(localized: "common.no"))
             )
         }
-    }
-
-    // MARK: - Bulk Visibility (footer)
-
-    private var bulkVisibilityButton: some View {
-        let anyVisible = viewModel.isAnyVisible
-        return Button {
-            viewModel.setAllVisible(!anyVisible)
-        } label: {
-            HStack(spacing: .Trakke.sm) {
-                Image(systemName: anyVisible ? "eye.slash" : "eye")
-                Text(
-                    anyVisible
-                        ? String(localized: "waypoints.hideAllOnMap")
-                        : String(localized: "waypoints.showAllOnMap")
-                )
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-        }
-        .buttonStyle(.trakkeSecondary)
     }
 
     // MARK: - Context Menu

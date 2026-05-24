@@ -11,6 +11,7 @@ struct WaypointDetailSheet: View {
     @AppStorage(AppStorageKeys.coordinateFormat) private var coordinateFormat: CoordinateFormat = .dd
     @State private var showDeleteConfirmation = false
     @State private var copied = false
+    @State private var shareURL: ShareableURL?
 
     var body: some View {
         VStack(spacing: 0) {
@@ -20,9 +21,9 @@ struct WaypointDetailSheet: View {
 
             ScrollView {
                 VStack(spacing: .Trakke.cardGap) {
+                    actionsCard
                     infoCard
                     coordinatesCard
-                    actionsCard
 
                     Spacer(minLength: .Trakke.lg)
                 }
@@ -33,6 +34,9 @@ struct WaypointDetailSheet: View {
         }
         .background(Color.Trakke.background)
         .tint(Color.Trakke.brand)
+        .sheet(item: $shareURL) { item in
+            ShareSheet(activityItems: [item.url])
+        }
         .modifier(WaypointEmbeddedNavTitleModifier(isEmbedded: isEmbedded, title: waypoint.name))
     }
 
@@ -127,37 +131,49 @@ struct WaypointDetailSheet: View {
 
     // MARK: - Actions Card
 
+    // Høyrejustert ikon-bar — samme stil som Naviger-list-fanene og de
+    // andre detail-arkene. Posisjon i HStack indikerer hierarki:
+    // primær-handling (naviger) først, destruktiv (slett) sist.
     private var actionsCard: some View {
-        VStack(spacing: .Trakke.sm) {
+        HStack(spacing: .Trakke.sm) {
+            Spacer()
+
             if waypoint.coordinates.count >= 2 {
-                Button {
-                    let coord = CLLocationCoordinate2D(
-                        latitude: waypoint.coordinates[1],
-                        longitude: waypoint.coordinates[0]
-                    )
-                    onNavigate?(coord)
-                } label: {
-                    Label(String(localized: "navigation.navigateHere"), systemImage: "location.north.fill")
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                TrakkeIconButton(
+                    systemImage: "location.north.fill",
+                    accessibilityLabel: String(localized: "navigation.navigateHere"),
+                    action: {
+                        let coord = CLLocationCoordinate2D(
+                            latitude: waypoint.coordinates[1],
+                            longitude: waypoint.coordinates[0]
+                        )
+                        onNavigate?(coord)
+                    }
+                )
+            }
+
+            TrakkeIconButton(
+                systemImage: "pencil",
+                accessibilityLabel: String(localized: "common.edit"),
+                action: { onEdit?(waypoint) }
+            )
+
+            TrakkeIconButton(
+                systemImage: "square.and.arrow.down",
+                accessibilityLabel: String(localized: "export.share"),
+                action: {
+                    if let url = viewModel.exportGPX(for: waypoint) {
+                        shareURL = ShareableURL(url: url)
+                    }
                 }
-                .buttonStyle(.trakkePrimary)
-            }
+            )
 
-            Button {
-                onEdit?(waypoint)
-            } label: {
-                Label(String(localized: "common.edit"), systemImage: "pencil")
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .buttonStyle(.trakkeSecondary)
-
-            Button {
-                showDeleteConfirmation = true
-            } label: {
-                Label(String(localized: "common.delete"), systemImage: "trash")
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .buttonStyle(.trakkeDanger)
+            TrakkeIconButton(
+                systemImage: "trash",
+                role: .destructive,
+                accessibilityLabel: String(localized: "common.delete"),
+                action: { showDeleteConfirmation = true }
+            )
             .trakkeDialog(
                 isPresented: $showDeleteConfirmation,
                 title: String(localized: "waypoints.deleteConfirmTitle"),

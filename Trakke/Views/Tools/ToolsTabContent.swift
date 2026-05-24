@@ -46,29 +46,37 @@ struct ToolsTabContent: View {
     }
 
     // MARK: - Måleverktøy
+    //
+    // Avstand og Areal er handlinger (start måle-modus + lukk menyen), ikke
+    // hierarki — derfor trakkeSecondary-knapper i stedet for chevron-rader.
+    // Samme mønster som "Tegn rute"/"Logg tur" på Naviger-fanen.
 
     private var measurementContent: some View {
         ScrollView {
-            VStack(spacing: .Trakke.cardGap) {
-                CardSection {
-                    VStack(spacing: 0) {
-                        TrakkeMenuRow(
-                            label: String(localized: "measurement.distance"),
-                            action: {
-                                measurementViewModel.startMeasuring(mode: .distance)
-                                dismiss()
-                            }
-                        )
-                        Divider().padding(.leading, .Trakke.dividerLeading)
-                        TrakkeMenuRow(
-                            label: String(localized: "measurement.area"),
-                            action: {
-                                measurementViewModel.startMeasuring(mode: .area)
-                                dismiss()
-                            }
-                        )
-                    }
+            VStack(spacing: .Trakke.sm) {
+                Button {
+                    measurementViewModel.startMeasuring(mode: .distance)
+                    dismiss()
+                } label: {
+                    Label(
+                        String(localized: "measurement.distance"),
+                        systemImage: "ruler"
+                    )
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
+                .buttonStyle(.trakkeSecondary)
+
+                Button {
+                    measurementViewModel.startMeasuring(mode: .area)
+                    dismiss()
+                } label: {
+                    Label(
+                        String(localized: "measurement.area"),
+                        systemImage: "square.dashed"
+                    )
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .buttonStyle(.trakkeSecondary)
             }
             .padding(.horizontal, .Trakke.sheetHorizontal)
             .padding(.top, .Trakke.lg)

@@ -4,7 +4,7 @@
 
 ## Kort sagt
 
-Tråkke lagrer all data lokalt på enheten din. Vi samler ikke inn personopplysninger og sporer ikke bruken din. Ingenting sendes til appens egne systemer eller til tredjeparter for analyse eller markedsføring.
+Tråkke lagrer all data lokalt på enheten din. Ingen personopplysninger samles inn - heller ingen sporing når du bruker appen. Ingenting sendes til appens egne systemer eller til tredjeparter for analyse eller markedsføring.
 
 ---
 

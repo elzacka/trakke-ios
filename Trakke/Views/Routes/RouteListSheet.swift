@@ -84,38 +84,32 @@ struct RouteListSheet: View {
     private var routeList: some View {
         ScrollView {
             VStack(spacing: .Trakke.cardGap) {
-                // Primær handling
-                Button {
-                    onNewRoute?()
-                    dismissFully()
-                } label: {
-                    Label(
-                        String(localized: "routes.draw"),
-                        systemImage: "plus"
+                // Handlingsbar øverst — fire ikoner: tegne ny rute, importere,
+                // eksportere, slette alle. Høyrejustert som "verktøy"-rad.
+                actionBar
+
+                if viewModel.routes.isEmpty {
+                    EmptyStateView(
+                        title: String(localized: "routes.empty.title"),
+                        subtitle: String(localized: "routes.empty.subtitle"),
+                        alignment: .leading
                     )
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                .buttonStyle(.trakkeSecondary)
+                    .padding(.top, .Trakke.xxl)
+                } else {
+                    ForEach(viewModel.categories, id: \.self) { category in
+                        routeGroup(title: category, category: category, items: viewModel.routes(for: category))
+                    }
 
-                // Lagrede ruter rett under primær handling
-                ForEach(viewModel.categories, id: \.self) { category in
-                    routeGroup(title: category, category: category, items: viewModel.routes(for: category))
+                    if !viewModel.uncategorizedRoutes.isEmpty {
+                        routeGroup(
+                            title: viewModel.categories.isEmpty
+                                ? String(localized: "routes.saved")
+                                : String(localized: "routes.uncategorized"),
+                            category: nil,
+                            items: viewModel.uncategorizedRoutes
+                        )
+                    }
                 }
-
-                if !viewModel.uncategorizedRoutes.isEmpty {
-                    routeGroup(
-                        title: viewModel.categories.isEmpty
-                            ? String(localized: "routes.saved")
-                            : String(localized: "routes.uncategorized"),
-                        category: nil,
-                        items: viewModel.uncategorizedRoutes
-                    )
-                }
-
-                // Sekundærhandlinger — importer, eksporter, slett.
-                // Ikon-bar høyrejustert: signaliserer at dette er
-                // utility-handlinger, ikke primær-flyten.
-                secondaryActionBar
 
                 Spacer(minLength: .Trakke.lg)
             }
@@ -238,17 +232,27 @@ struct RouteListSheet: View {
     @ViewBuilder
     private func categoryHeader(title: String, category: String?, count: Int) -> some View {
         let allVisible = viewModel.isCategoryAllVisible(category)
+        let isExpanded = expandedCategories.contains(title)
+        // Horisontal padding cardPadH gir hake-knappen samme x-posisjon som
+        // per-rad hake-knappen i kortet under — de flukter vertikalt.
         HStack(spacing: 0) {
+            // Tittel-knapp: chevron + tittel + telling som ett tap-areal.
+            // Chevron-rotasjon viser åpen/lukket tilstand.
             Button {
                 withAnimation(reduceMotion ? .none : .easeInOut(duration: 0.25)) {
-                    if expandedCategories.contains(title) {
+                    if isExpanded {
                         expandedCategories.remove(title)
                     } else {
                         expandedCategories.insert(title)
                     }
                 }
             } label: {
-                HStack(spacing: 0) {
+                HStack(spacing: .Trakke.xs) {
+                    Image(systemName: "chevron.right")
+                        .font(Font.Trakke.captionSoft.weight(.semibold))
+                        .foregroundStyle(Color.Trakke.textTertiary)
+                        .rotationEffect(isExpanded ? .degrees(90) : .degrees(0))
+
                     Text(title.uppercased())
                         .font(Font.Trakke.sectionHeader)
                         .foregroundStyle(Color.Trakke.textTertiary)
@@ -259,14 +263,15 @@ struct RouteListSheet: View {
 
                     Spacer()
                 }
-                .padding(.leading, .Trakke.xs)
                 .frame(minHeight: 44)
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
             .accessibilityLabel("\(title), \(count)")
-            .accessibilityAddTraits(expandedCategories.contains(title) ? .isSelected : [])
+            .accessibilityAddTraits(isExpanded ? .isSelected : [])
 
+            // Hake helt til høyre — toggler synlighet for hele kategorien.
+            // Samme komponent og x-posisjon som per-rad VisibilityToggleButton.
             Button {
                 viewModel.setCategoryVisibility(category, visible: !allVisible)
             } label: {
@@ -279,7 +284,7 @@ struct RouteListSheet: View {
                         Color.clear
                     }
                 }
-                .frame(width: 44, height: 44)
+                .frame(width: .Trakke.touchMin, height: .Trakke.touchMin)
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
@@ -288,34 +293,24 @@ struct RouteListSheet: View {
                     ? String(localized: "list.category.hideAll \(title)")
                     : String(localized: "list.category.showAll \(title)")
             )
-
-            Button {
-                withAnimation(reduceMotion ? .none : .easeInOut(duration: 0.25)) {
-                    if expandedCategories.contains(title) {
-                        expandedCategories.remove(title)
-                    } else {
-                        expandedCategories.insert(title)
-                    }
-                }
-            } label: {
-                Image(systemName: "chevron.right")
-                    .font(Font.Trakke.captionSoft.weight(.semibold))
-                    .foregroundStyle(Color.Trakke.textTertiary)
-                    .rotationEffect(expandedCategories.contains(title) ? .degrees(90) : .degrees(0))
-                    .padding(.trailing, .Trakke.xs)
-                    .frame(minHeight: 44)
-                    .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .accessibilityHidden(true)
         }
+        .padding(.horizontal, .Trakke.cardPadH)
     }
 
-    // MARK: - Secondary action bar (importer / eksporter / slett)
+    // MARK: - Action bar (tegne / importer / eksporter / slett)
 
-    private var secondaryActionBar: some View {
+    private var actionBar: some View {
         HStack(spacing: .Trakke.sm) {
             Spacer()
+
+            TrakkeIconButton(
+                systemImage: "plus",
+                accessibilityLabel: String(localized: "routes.draw"),
+                action: {
+                    onNewRoute?()
+                    dismissFully()
+                }
+            )
 
             TrakkeIconButton(
                 systemImage: "square.and.arrow.up",

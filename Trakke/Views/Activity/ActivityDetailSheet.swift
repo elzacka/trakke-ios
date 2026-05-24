@@ -26,10 +26,10 @@ struct ActivityDetailSheet: View {
     private var content: some View {
         ScrollView {
             VStack(spacing: .Trakke.cardGap) {
+                actionsCard
                 statsCard
                 elevationCard
                 detailsCard
-                actionsCard
 
                 Spacer(minLength: .Trakke.lg)
             }
@@ -40,15 +40,6 @@ struct ActivityDetailSheet: View {
         .tint(Color.Trakke.brand)
         .navigationTitle(activity.name)
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    showEditDialog = true
-                } label: {
-                    Label(String(localized: "common.edit"), systemImage: "pencil")
-                }
-            }
-        }
         .sheet(isPresented: $showEditDialog) {
             EditNameCategorySheet(
                 title: String(localized: "common.edit"),
@@ -68,51 +59,60 @@ struct ActivityDetailSheet: View {
     }
 
     // MARK: - Actions Card
-    // Felles mønster med RouteDetailSheet og WaypointDetailSheet:
-    // primær handling først, sekundære i midten, danger sist.
+    //
+    // Høyrejustert ikon-bar — samme stil som Naviger-list-fanene og de
+    // andre detail-arkene. Posisjon i HStack indikerer hierarki:
+    // primær-handling (følg igjen) først, destruktiv (slett) sist.
 
     @ViewBuilder
     private var actionsCard: some View {
-        VStack(spacing: .Trakke.sm) {
+        HStack(spacing: .Trakke.sm) {
+            Spacer()
+
             if activity.trackPoints.count >= 2 {
-                Button {
-                    dismiss()
-                    onFollowAgain?(activity)
-                } label: {
-                    Label(String(localized: "activity.followAgain"), systemImage: "location.north.fill")
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                .buttonStyle(.trakkePrimary)
+                TrakkeIconButton(
+                    systemImage: "location.north.fill",
+                    accessibilityLabel: String(localized: "activity.followAgain"),
+                    action: {
+                        dismiss()
+                        onFollowAgain?(activity)
+                    }
+                )
             }
+
+            TrakkeIconButton(
+                systemImage: "pencil",
+                accessibilityLabel: String(localized: "common.edit"),
+                action: { showEditDialog = true }
+            )
 
             if let startPoint = retraceDestination {
-                Button {
-                    dismiss()
-                    onRetrace?(startPoint)
-                } label: {
-                    Label(String(localized: "activity.retrace"), systemImage: "arrow.uturn.backward")
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                .buttonStyle(.trakkeSecondary)
+                TrakkeIconButton(
+                    systemImage: "arrow.uturn.backward",
+                    accessibilityLabel: String(localized: "activity.retrace"),
+                    action: {
+                        dismiss()
+                        onRetrace?(startPoint)
+                    }
+                )
             }
 
-            Button {
-                if let url = viewModel.exportGPX(for: activity) {
-                    shareURL = ShareableURL(url: url)
+            TrakkeIconButton(
+                systemImage: "square.and.arrow.down",
+                accessibilityLabel: String(localized: "export.share"),
+                action: {
+                    if let url = viewModel.exportGPX(for: activity) {
+                        shareURL = ShareableURL(url: url)
+                    }
                 }
-            } label: {
-                Label(String(localized: "export.share"), systemImage: "square.and.arrow.down")
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .buttonStyle(.trakkeSecondary)
+            )
 
-            Button {
-                showDeleteConfirmation = true
-            } label: {
-                Label(String(localized: "activity.delete"), systemImage: "trash")
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .buttonStyle(.trakkeDanger)
+            TrakkeIconButton(
+                systemImage: "trash",
+                role: .destructive,
+                accessibilityLabel: String(localized: "activity.delete"),
+                action: { showDeleteConfirmation = true }
+            )
             .accessibilityHint(String(localized: "accessibility.deleteHint"))
             .trakkeDialog(
                 isPresented: $showDeleteConfirmation,

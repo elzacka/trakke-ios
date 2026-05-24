@@ -33,7 +33,11 @@ struct WeatherForecast: Sendable {
 // MARK: - Weather Service
 
 actor WeatherService {
-    private static let baseURL = URL(string: "https://api.met.no/weatherapi/locationforecast/2.0/compact")!
+    // Bruker `complete`-endepunktet (ikke `compact`) fordi `compact`-responsen
+    // mangler `ultraviolet_index_clear_sky` og andre detaljer vi viser i UI-et
+    // (UV-varsel, tooltip-data). Same struktur, bare flere felter — eksisterende
+    // optional-feltene i MetApiResponse håndterer fraværet av disse i compact.
+    private static let baseURL = URL(string: "https://api.met.no/weatherapi/locationforecast/2.0/complete")!
     private static let fallbackTTL: TimeInterval = 7200 // 2 hours, used when Expires header is missing
     private static let timeout: TimeInterval = 15
 

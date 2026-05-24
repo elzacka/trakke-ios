@@ -63,6 +63,10 @@ enum GPXImportService {
         let longitude: Double
         let elevation: Double?
         let category: String?
+        /// Tråkke-spesifikke felt fra `<trakke:color>` og `<trakke:icon>` i
+        /// `<extensions>`. Bevares ved round-trip eksport/import.
+        var color: String? = nil
+        var icon: String? = nil
     }
 
     struct ImportedRoute: Sendable {
@@ -73,6 +77,11 @@ enum GPXImportService {
         /// without a DEM round-trip — which is essential offline and avoids
         /// throwing away data the user already imported.
         let coordinates: [[Double]]
+        /// Kategori fra `<type>` på `<trk>`-nivå. Bevares ved import.
+        var category: String? = nil
+        /// Tråkke-spesifikke felt fra `<extensions>` på trk-nivå.
+        var color: String? = nil
+        var difficulty: String? = nil
     }
 
     /// Activity tracks include per-point elevation and timestamps when present.
@@ -83,6 +92,8 @@ enum GPXImportService {
         let name: String
         let trackPoints: [[Double]]
         let startedAt: Date
+        /// Kategori fra `<type>` på `<trk>`-nivå. Bevares ved import.
+        var category: String? = nil
     }
 
     static func parseWaypoints(from url: URL) throws -> [ImportedWaypoint] {
@@ -139,8 +150,11 @@ private class GPXWaypointParser: NSObject, XMLParserDelegate {
     private var currentName: String?
     private var currentElevation: Double?
     private var currentType: String?
+    private var currentColor: String?
+    private var currentIcon: String?
     private var currentText = ""
     private var insideWpt = false
+    private var insideExtensions = false
 
     func parse(data: Data) -> [GPXImportService.ImportedWaypoint] {
         let parser = XMLParser(data: data)
@@ -165,6 +179,10 @@ private class GPXWaypointParser: NSObject, XMLParserDelegate {
             currentName = nil
             currentElevation = nil
             currentType = nil
+            currentColor = nil
+            currentIcon = nil
+        } else if name == "extensions", insideWpt {
+            insideExtensions = true
         }
         currentText = ""
     }
@@ -184,12 +202,18 @@ private class GPXWaypointParser: NSObject, XMLParserDelegate {
         let trimmed = currentText.trimmingCharacters(in: .whitespacesAndNewlines)
 
         switch name {
-        case "name":
+        case "name" where !insideExtensions:
             currentName = trimmed
-        case "ele":
+        case "ele" where !insideExtensions:
             currentElevation = Double(trimmed)
-        case "type":
+        case "type" where !insideExtensions:
             currentType = trimmed.isEmpty ? nil : trimmed
+        case "trakke:color":
+            if insideExtensions, !trimmed.isEmpty { currentColor = trimmed }
+        case "trakke:icon":
+            if insideExtensions, !trimmed.isEmpty { currentIcon = trimmed }
+        case "extensions":
+            insideExtensions = false
         case "wpt":
             if let lat = currentLat, let lon = currentLon,
                lat.isFinite, lon.isFinite,
@@ -199,11 +223,14 @@ private class GPXWaypointParser: NSObject, XMLParserDelegate {
                     latitude: lat,
                     longitude: lon,
                     elevation: currentElevation,
-                    category: currentType
+                    category: currentType,
+                    color: currentColor,
+                    icon: currentIcon
                 )
                 waypoints.append(wp)
             }
             insideWpt = false
+            insideExtensions = false
         default:
             break
         }
@@ -216,10 +243,14 @@ private class GPXRouteParser: NSObject, XMLParserDelegate {
     private var routes: [GPXImportService.ImportedRoute] = []
     private var currentName: String?
     private var currentCoords: [[Double]] = []
+    private var currentCategory: String?
+    private var currentColor: String?
+    private var currentDifficulty: String?
     private var currentText = ""
     private var insideTrk = false
     private var insideTrkSeg = false
     private var insideRte = false
+    private var insideExtensions = false
     /// Track which point in `currentCoords` we last touched, so a trailing
     /// `<ele>` element can attach to it. Set when a trkpt/rtept is appended.
     private var pendingPointIndex: Int?
@@ -251,6 +282,9 @@ private class GPXRouteParser: NSObject, XMLParserDelegate {
             insideTrk = true
             currentName = nil
             currentCoords = []
+            currentCategory = nil
+            currentColor = nil
+            currentDifficulty = nil
             currentHasElevation = false
             pendingPointIndex = nil
         case "trkseg":
@@ -269,6 +303,9 @@ private class GPXRouteParser: NSObject, XMLParserDelegate {
             insideRte = true
             currentName = nil
             currentCoords = []
+            currentCategory = nil
+            currentColor = nil
+            currentDifficulty = nil
             currentHasElevation = false
             pendingPointIndex = nil
         case "rtept":
@@ -280,6 +317,11 @@ private class GPXRouteParser: NSObject, XMLParserDelegate {
                (-90...90).contains(lat), (-180...180).contains(lon) {
                 currentCoords.append([lon, lat])
                 pendingPointIndex = currentCoords.count - 1
+            }
+        case "extensions":
+            // Only treat as trk-level extensions when not inside a trkpt/seg.
+            if (insideTrk && !insideTrkSeg) || insideRte {
+                insideExtensions = true
             }
         default:
             break
@@ -304,6 +346,15 @@ private class GPXRouteParser: NSObject, XMLParserDelegate {
             if (insideTrk && !insideTrkSeg) || insideRte {
                 currentName = trimmed
             }
+        case "type":
+            // Kategori på trk-/rte-nivå (ikke inni trkpt eller extensions).
+            if ((insideTrk && !insideTrkSeg) || insideRte), !insideExtensions {
+                currentCategory = trimmed.isEmpty ? nil : trimmed
+            }
+        case "trakke:color":
+            if insideExtensions, !trimmed.isEmpty { currentColor = trimmed }
+        case "trakke:difficulty":
+            if insideExtensions, !trimmed.isEmpty { currentDifficulty = trimmed }
         case "ele":
             if let idx = pendingPointIndex,
                idx < currentCoords.count,
@@ -317,6 +368,8 @@ private class GPXRouteParser: NSObject, XMLParserDelegate {
                     currentHasElevation = true
                 }
             }
+        case "extensions":
+            insideExtensions = false
         case "trkpt", "rtept":
             // Done with this point — no further <ele> belongs to it.
             pendingPointIndex = nil
@@ -325,9 +378,11 @@ private class GPXRouteParser: NSObject, XMLParserDelegate {
         case "trk":
             emitCurrentRoute()
             insideTrk = false
+            insideExtensions = false
         case "rte":
             emitCurrentRoute()
             insideRte = false
+            insideExtensions = false
         default:
             break
         }
@@ -360,7 +415,10 @@ private class GPXRouteParser: NSObject, XMLParserDelegate {
         }
         routes.append(GPXImportService.ImportedRoute(
             name: currentName ?? String(localized: "routes.imported"),
-            coordinates: coords
+            coordinates: coords,
+            category: currentCategory,
+            color: currentColor,
+            difficulty: currentDifficulty
         ))
     }
 }
@@ -374,12 +432,14 @@ private class GPXRouteParser: NSObject, XMLParserDelegate {
 private class GPXActivityParser: NSObject, XMLParserDelegate {
     private var activities: [GPXImportService.ImportedActivity] = []
     private var currentName: String?
+    private var currentCategory: String?
     private var currentPoints: [[Double]] = []
     private var currentStartedAt: Date?
     private var currentText = ""
     private var insideTrk = false
     private var insideTrkSeg = false
     private var insideTrkPt = false
+    private var insideExtensions = false
     private var pendingLat: Double?
     private var pendingLon: Double?
     private var pendingEle: Double?
@@ -416,6 +476,7 @@ private class GPXActivityParser: NSObject, XMLParserDelegate {
         case "trk":
             insideTrk = true
             currentName = nil
+            currentCategory = nil
             currentPoints = []
             currentStartedAt = nil
         case "trkseg":
@@ -432,6 +493,11 @@ private class GPXActivityParser: NSObject, XMLParserDelegate {
                 pendingLon = lon
                 pendingEle = nil
                 pendingTime = nil
+            }
+        case "extensions":
+            // Only treat as trk-level extensions when not inside a trkpt/seg.
+            if insideTrk && !insideTrkSeg && !insideTrkPt {
+                insideExtensions = true
             }
         default:
             break
@@ -457,6 +523,11 @@ private class GPXActivityParser: NSObject, XMLParserDelegate {
             if insideTrk && !insideTrkSeg {
                 currentName = trimmed
             }
+        case "type":
+            // Kategori på trk-nivå (ikke inni trkpt eller extensions).
+            if insideTrk && !insideTrkSeg && !insideTrkPt && !insideExtensions {
+                currentCategory = trimmed.isEmpty ? nil : trimmed
+            }
         case "ele":
             if insideTrkPt, let ele = Double(trimmed), ele.isFinite {
                 pendingEle = ele
@@ -466,6 +537,8 @@ private class GPXActivityParser: NSObject, XMLParserDelegate {
                 pendingTime = iso8601Formatter.date(from: trimmed)
                     ?? iso8601FormatterNoFraction.date(from: trimmed)
             }
+        case "extensions":
+            insideExtensions = false
         case "trkpt":
             if let lat = pendingLat, let lon = pendingLon {
                 if currentStartedAt == nil, let t = pendingTime {
@@ -493,10 +566,12 @@ private class GPXActivityParser: NSObject, XMLParserDelegate {
                 activities.append(GPXImportService.ImportedActivity(
                     name: currentName ?? String(localized: "activity.imported"),
                     trackPoints: currentPoints,
-                    startedAt: currentStartedAt ?? Date.now
+                    startedAt: currentStartedAt ?? Date.now,
+                    category: currentCategory
                 ))
             }
             insideTrk = false
+            insideExtensions = false
         default:
             break
         }

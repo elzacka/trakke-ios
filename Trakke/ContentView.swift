@@ -65,6 +65,19 @@ struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
 
     var body: some View {
+        bodyWithEventHandling
+            .onOpenURL(perform: handleOpenedFile)
+            .task(id: navigationViewModel.isComputingRoute) {
+                await handleComputingIndicatorChange()
+            }
+    }
+
+    /// Mellomledd som splitter modifier-kjeden i body i to lag. Uten denne
+    /// splittingen blir den fulle kjeden på 10 modifikatorer for kompleks
+    /// for SwiftUI-type-checkeren (>300 ms — over 200 ms-grensen lokalt,
+    /// timeout på CI's eldre Xcode-versjon).
+    @ViewBuilder
+    private var bodyWithEventHandling: some View {
         mainLayout
             .onAppear(perform: handleOnAppear)
             .onDisappear(perform: handleOnDisappear)
@@ -83,10 +96,6 @@ struct ContentView: View {
             }
             .onChange(of: mapViewModel.userLocation) { _, _ in
                 handleUserLocationChange()
-            }
-            .onOpenURL(perform: handleOpenedFile)
-            .task(id: navigationViewModel.isComputingRoute) {
-                await handleComputingIndicatorChange()
             }
     }
 
@@ -604,28 +613,15 @@ struct ContentView: View {
         .onChange(of: measurementViewModel.isActive) { _, isActive in
             handleMeasurementActiveChange(isActive)
         }
-        .trakkeDialog(
-            isPresented: $showRouteError,
-            title: String(localized: "navigation.routeErrorTitle"),
-            message: navigationViewModel.routeError ?? String(localized: "navigation.routeErrorGeneric"),
-            buttons: [.primary(String(localized: "common.ok")) {}]
-        )
-        .trakkeDialog(
-            isPresented: $showDbRecoveryAlert,
-            title: String(localized: "settings.dbRecovery.title"),
-            message: String(localized: "settings.dbRecovery.message"),
-            buttons: [.primary(String(localized: "common.ok")) {}]
-        )
-        .trakkeDialog(
-            isPresented: saveErrorBinding,
-            title: String(localized: "error.saveFailed"),
-            message: saveErrorMessage,
-            buttons: [.primary(String(localized: "common.ok")) {}]
-        )
-        .trakkeDialog(
-            isPresented: longPressBinding,
-            buttons: longPressDialogButtons
-        )
+        .modifier(MainLayoutDialogsModifier(
+            showRouteError: $showRouteError,
+            showDbRecoveryAlert: $showDbRecoveryAlert,
+            saveErrorBinding: saveErrorBinding,
+            longPressBinding: longPressBinding,
+            routeErrorMessage: navigationViewModel.routeError ?? String(localized: "navigation.routeErrorGeneric"),
+            saveErrorMessage: saveErrorMessage,
+            longPressButtons: longPressDialogButtons
+        ))
     }
 
     // MARK: - Dialog Bindings & Buttons
@@ -721,6 +717,48 @@ struct ContentView: View {
 
     // OfflineWarningToast and DownloadCompleteToast moved to
     // Views/Components/OfflineToasts.swift.
+}
+
+// MARK: - Dialog Chain Modifier
+//
+// Samler de fire mainLayout-dialogene i en egen ViewModifier slik at
+// modifier-kjeden type-sjekkes isolert. Uten denne innpakkingen ble
+// `ContentView()`-konstruksjonen for tung for SwiftUI-type-checkeren
+// (>250 ms lokalt, timeout på eldre Xcode-versjoner).
+private struct MainLayoutDialogsModifier: ViewModifier {
+    @Binding var showRouteError: Bool
+    @Binding var showDbRecoveryAlert: Bool
+    let saveErrorBinding: Binding<Bool>
+    let longPressBinding: Binding<Bool>
+    let routeErrorMessage: String
+    let saveErrorMessage: String
+    let longPressButtons: [TrakkeDialogButton]
+
+    func body(content: Content) -> some View {
+        content
+            .trakkeDialog(
+                isPresented: $showRouteError,
+                title: String(localized: "navigation.routeErrorTitle"),
+                message: routeErrorMessage,
+                buttons: [.primary(String(localized: "common.ok")) {}]
+            )
+            .trakkeDialog(
+                isPresented: $showDbRecoveryAlert,
+                title: String(localized: "settings.dbRecovery.title"),
+                message: String(localized: "settings.dbRecovery.message"),
+                buttons: [.primary(String(localized: "common.ok")) {}]
+            )
+            .trakkeDialog(
+                isPresented: saveErrorBinding,
+                title: String(localized: "error.saveFailed"),
+                message: saveErrorMessage,
+                buttons: [.primary(String(localized: "common.ok")) {}]
+            )
+            .trakkeDialog(
+                isPresented: longPressBinding,
+                buttons: longPressButtons
+            )
+    }
 }
 
 #Preview {

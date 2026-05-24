@@ -2,7 +2,7 @@ import SwiftUI
 
 // MARK: - Current Conditions Card
 //
-// Rams-stil: ett kort svar over folden («er det greit nå?») + nøkkeltall
+// Ett kort svar over folden («er det greit nå?») + nøkkeltall
 // + valgfri akkordeon for sekundære detaljer. Ingen popovers.
 
 struct CurrentConditionsCard: View {
@@ -13,10 +13,26 @@ struct CurrentConditionsCard: View {
     var daylight: SolarCalculator.DaylightInfo? = nil
 
     @State private var showMore = false
+    @State private var showTemperatureTooltip = false
+    @State private var showWindTooltip = false
+    @State private var showPrecipitationTooltip = false
+    @State private var showPressureTooltip = false
+    @State private var showHumidityTooltip = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
-        let wc = WeatherService.windChill(temperature: data.temperature, windSpeedMs: data.windSpeed)
+        // Apparent Temperature (Australian Bureau of Meteorology) dekker
+        // hele temperatur-spennet. Vises bare når den avviker med ≥1° fra
+        // målt temperatur — ingen redundant linje når vind og fuktighet
+        // ikke gir merkbar forskjell.
+        let apparentTemp = WeatherService.apparentTemperature(
+            temperature: data.temperature,
+            windSpeedMs: data.windSpeed,
+            humidity: data.humidity
+        )
+        let tempRounded = Int(data.temperature.rounded())
+        let apparentRounded = Int(apparentTemp.rounded())
+        let showFeelsLike = tempRounded != apparentRounded
 
         VStack(alignment: .leading, spacing: .Trakke.md) {
             assessmentText
@@ -29,14 +45,14 @@ struct CurrentConditionsCard: View {
                     .accessibilityHidden(true)
 
                 VStack(alignment: .leading, spacing: .Trakke.labelGap) {
-                    Text("\(Int(data.temperature.rounded()))\u{00B0}")
+                    Text("\(tempRounded)\u{00B0}")
                         .font(Font.Trakke.temperature)
                         .foregroundStyle(Color.Trakke.text)
 
-                    if let wc {
-                        Text(String(localized: "weather.feelsLike \(Int(wc.rounded()))"))
+                    if showFeelsLike {
+                        Text(String(localized: "weather.feelsLike \(apparentRounded)"))
                             .font(Font.Trakke.caption)
-                            .foregroundStyle(wc < -10 ? Color.Trakke.red : Color.Trakke.textTertiary)
+                            .foregroundStyle(apparentTemp < -10 ? Color.Trakke.red : Color.Trakke.textTertiary)
                     }
 
                     Text(WeatherViewModel.conditionText(for: data.symbol))
@@ -47,6 +63,17 @@ struct CurrentConditionsCard: View {
 
                 Spacer()
             }
+            .contentShape(Rectangle())
+            .onTapGesture { showTemperatureTooltip = true }
+            .accessibilityAddTraits(.isButton)
+            .accessibilityHint(String(localized: "accessibility.tapForExplanation"))
+            .trakkeTooltip(isPresented: $showTemperatureTooltip) {
+                TrakkeTooltipContent(
+                    title: String(localized: "weather.temperature"),
+                    text: String(localized: "weather.temperature.tooltip")
+                )
+                TooltipArticleLink(articleId: 38)
+            }
 
             Divider()
 
@@ -55,11 +82,34 @@ struct CurrentConditionsCard: View {
                     label: String(localized: "weather.wind"),
                     value: windValue
                 )
+                .contentShape(Rectangle())
+                .onTapGesture { showWindTooltip = true }
+                .accessibilityAddTraits(.isButton)
+                .accessibilityHint(String(localized: "accessibility.tapForExplanation"))
+                .trakkeTooltip(isPresented: $showWindTooltip) {
+                    TrakkeTooltipContent(
+                        title: String(localized: "weather.wind"),
+                        text: String(localized: "weather.wind.tooltip")
+                    )
+                    TooltipArticleLink(articleId: 37)
+                }
+
                 Divider().padding(.leading, .Trakke.dividerLeading)
                 statRow(
                     label: String(localized: "weather.precipitation"),
                     value: precipValue
                 )
+                .contentShape(Rectangle())
+                .onTapGesture { showPrecipitationTooltip = true }
+                .accessibilityAddTraits(.isButton)
+                .accessibilityHint(String(localized: "accessibility.tapForExplanation"))
+                .trakkeTooltip(isPresented: $showPrecipitationTooltip) {
+                    TrakkeTooltipContent(
+                        title: String(localized: "weather.precipitation"),
+                        text: String(localized: "weather.precipitation.tooltip")
+                    )
+                    TooltipArticleLink(articleId: 35)
+                }
 
                 if let water, !water.bathingSpots.isEmpty || water.oceanTemperature != nil {
                     Divider().padding(.leading, .Trakke.dividerLeading)
@@ -207,6 +257,17 @@ struct CurrentConditionsCard: View {
                     label: String(localized: "weather.pressure"),
                     value: String(format: "%.0f hPa", pressure)
                 )
+                .contentShape(Rectangle())
+                .onTapGesture { showPressureTooltip = true }
+                .accessibilityAddTraits(.isButton)
+                .accessibilityHint(String(localized: "accessibility.tapForExplanation"))
+                .trakkeTooltip(isPresented: $showPressureTooltip) {
+                    TrakkeTooltipContent(
+                        title: String(localized: "weather.pressure"),
+                        text: String(localized: "weather.pressure.tooltip")
+                    )
+                    TooltipArticleLink(articleId: 34)
+                }
                 Divider().padding(.leading, .Trakke.dividerLeading)
             }
 
@@ -214,6 +275,17 @@ struct CurrentConditionsCard: View {
                 label: String(localized: "weather.humidity"),
                 value: String(format: "%.0f %%", data.humidity)
             )
+            .contentShape(Rectangle())
+            .onTapGesture { showHumidityTooltip = true }
+            .accessibilityAddTraits(.isButton)
+            .accessibilityHint(String(localized: "accessibility.tapForExplanation"))
+            .trakkeTooltip(isPresented: $showHumidityTooltip) {
+                TrakkeTooltipContent(
+                    title: String(localized: "weather.humidity"),
+                    text: String(localized: "weather.humidity.tooltip")
+                )
+                TooltipArticleLink(articleId: 39)
+            }
 
             if let daylight {
                 Divider().padding(.leading, .Trakke.dividerLeading)

@@ -11,6 +11,8 @@ extension WeatherService {
 
     /// Environment Canada wind chill formula. Returns nil when wind chill is not
     /// meaningful (temperature > 10°C or wind < 4.8 km/h).
+    /// Brukes av intern logikk (vurdering, varsler). For display av "Føles som"
+    /// bruk `apparentTemperature(...)` som dekker hele temperatur-spennet.
     nonisolated static func windChill(temperature: Double, windSpeedMs: Double) -> Double? {
         let windKmh = windSpeedMs * 3.6
         guard temperature <= 10, windKmh >= 4.8 else { return nil }
@@ -18,6 +20,23 @@ extension WeatherService {
             - 11.37 * pow(windKmh, 0.16)
             + 0.3965 * temperature * pow(windKmh, 0.16)
         return wc
+    }
+
+    /// Apparent Temperature — Australian Bureau of Meteorology-formelen.
+    /// Tar hensyn til både vind og luftfuktighet, og fungerer på alle
+    /// temperaturer (ikke bare kulde slik windChill gjør). Brukes til "Føles
+    /// som"-display i værkortet så brukeren ser en relevant verdi også i
+    /// mildere vær.
+    ///
+    /// Formel: AT = T + 0.33·E − 0.70·WS − 4.00
+    /// hvor E = (RH/100) · 6.105 · exp(17.27·T / (237.7 + T))
+    nonisolated static func apparentTemperature(
+        temperature: Double,
+        windSpeedMs: Double,
+        humidity: Double
+    ) -> Double {
+        let e = (humidity / 100.0) * 6.105 * exp((17.27 * temperature) / (237.7 + temperature))
+        return temperature + 0.33 * e - 0.70 * windSpeedMs - 4.00
     }
 
     // MARK: - Precipitation Intensity

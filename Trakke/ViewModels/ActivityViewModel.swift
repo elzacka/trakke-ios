@@ -209,6 +209,8 @@ final class ActivityViewModel {
                 distance: Self.totalDistance(for: item.trackPoints),
                 startedAt: item.startedAt
             )
+            // Activity-init mangler category-parameter, så sett etter init.
+            activity.category = item.category
             // Derive duration from first and last timestamps if available.
             if let first = item.trackPoints.first, first.count >= 4,
                let last = item.trackPoints.last, last.count >= 4 {

@@ -38,28 +38,6 @@
     "•" : {
 
     },
-    "myPlaces.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mine steder"
-          }
-        }
-      }
-    },
-    "myPlaces.empty" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Du har ingen lagrede steder ennå. Langt trykk på kartet for å legge til."
-          }
-        }
-      }
-    },
     "about.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -78,6 +56,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Åpner ekstern lenke"
+          }
+        }
+      }
+    },
+    "accessibility.tapForExplanation" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dobbelttrykk for forklaring"
           }
         }
       }
@@ -330,7 +319,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trykk for å starte opptak."
+            "value" : "Trykk pluss-knapp (logge tur) eller importer-knapp (importer fra fil)."
           }
         }
       }
@@ -341,7 +330,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ingen turer ennå"
+            "value" : "Ingen turer"
           }
         }
       }
@@ -431,6 +420,17 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "activity.log" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Logg tur"
           }
         }
       }
@@ -713,28 +713,6 @@
         }
       }
     },
-    "common.no" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nei"
-          }
-        }
-      }
-    },
-    "common.yes" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ja"
-          }
-        }
-      }
-    },
     "common.category" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -823,6 +801,17 @@
         }
       }
     },
+    "common.no" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nei"
+          }
+        }
+      }
+    },
     "common.ok" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -874,6 +863,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vis mer"
+          }
+        }
+      }
+    },
+    "common.yes" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ja"
           }
         }
       }
@@ -2033,17 +2033,6 @@
         }
       }
     },
-    "knowledge.articles.empty" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ingen artikler tilgjengelig"
-          }
-        }
-      }
-    },
     "knowledge.articles" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2051,6 +2040,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Artikler"
+          }
+        }
+      }
+    },
+    "knowledge.articles.empty" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingen artikler tilgjengelig"
           }
         }
       }
@@ -2363,9 +2363,6 @@
         }
       }
     },
-    "Les om %@ i Kunnskap" : {
-
-    },
     "list.category.hideAll" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2614,7 +2611,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trykk på kartet for å markere området (min. 3 punkter)"
+            "value" : "Trykk på kartet"
           }
         }
       }
@@ -2647,7 +2644,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trykk på kartet for å legge til punkter"
+            "value" : "Trykk på kartet"
           }
         }
       }
@@ -2692,6 +2689,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mer"
+          }
+        }
+      }
+    },
+    "myPlaces.empty" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du har ingen lagrede steder ennå. Langt trykk på kartet for å legge til."
+          }
+        }
+      }
+    },
+    "myPlaces.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mine steder"
           }
         }
       }
@@ -2919,6 +2938,17 @@
         }
       }
     },
+    "navigation.more" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mer"
+          }
+        }
+      }
+    },
     "navigation.navigateHere" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2948,17 +2978,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Du er %lld m fra ruten"
-          }
-        }
-      }
-    },
-    "navigation.more" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mer"
           }
         }
       }
@@ -3453,7 +3472,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Marker område"
+            "value" : "Velg område"
           }
         }
       }
@@ -4113,7 +4132,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trykk på kartet for å legge til punkter"
+            "value" : "Trykk på kartet"
           }
         }
       }
@@ -4228,13 +4247,24 @@
         }
       }
     },
+    "routes.draw" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tegn rute"
+          }
+        }
+      }
+    },
     "routes.empty.subtitle" : {
       "extractionState" : "manual",
       "localizations" : {
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tegn en rute på kartet."
+            "value" : "Trykk plussknapp (lage) eller importer-knapp (importer fra fil)."
           }
         }
       }
@@ -4328,28 +4358,6 @@
         }
       }
     },
-    "routes.draw" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tegn rute"
-          }
-        }
-      }
-    },
-    "activity.log" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Logg tur"
-          }
-        }
-      }
-    },
     "routes.new" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4422,7 +4430,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Synlig på kart"
+            "value" : "Vis på kart"
           }
         }
       }
@@ -4955,6 +4963,17 @@
         }
       }
     },
+    "tooltip.readMore %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les om %@ i Kunnskap"
+          }
+        }
+      }
+    },
     "userguide.backToTop" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5120,28 +5139,6 @@
         }
       }
     },
-    "waypoints.deleteConfirmMessage %@" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "«%@» kan ikke gjenopprettes."
-          }
-        }
-      }
-    },
-    "waypoints.deleteConfirmTitle" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Slette stedet?"
-          }
-        }
-      }
-    },
     "waypoints.deleteAll" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5175,6 +5172,28 @@
         }
       }
     },
+    "waypoints.deleteConfirmMessage %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "«%@» kan ikke gjenopprettes."
+          }
+        }
+      }
+    },
+    "waypoints.deleteConfirmTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slette stedet?"
+          }
+        }
+      }
+    },
     "waypoints.elevation" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5192,7 +5211,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hold inne på kartet for å legge til et sted."
+            "value" : "Langt trykk på kartet for å legge til et sted."
           }
         }
       }
@@ -5203,18 +5222,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ingen steder ennå"
-          }
-        }
-      }
-    },
-    "waypoints.hideAllOnMap" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Skjul alle stedene på kartet"
+            "value" : "Ingen steder"
           }
         }
       }
@@ -5308,17 +5316,6 @@
         }
       }
     },
-    "waypoints.showAllOnMap" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vis alle stedene på kartet"
-          }
-        }
-      }
-    },
     "waypoints.showOnlyThis" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5336,7 +5333,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vis på kartet"
+            "value" : "Vis på kart"
           }
         }
       }
@@ -6034,6 +6031,17 @@
         }
       }
     },
+    "weather.humidity.tooltip" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Måles i prosent og sier hvor mye vanndamp luften kan inneholde. Høy fuktighet (over 80 %) gjør at kald luft kjennes kaldere fordi klær isolerer dårligere. Tørr luft (under 30 %) gjør at du blir raskere dehydrert uten å merke det.\n\nI varmt vær svekker høy fuktighet kroppens evne til å kjøle seg ned — svette fordamper dårligere, og du kan oppleve klam tung luft, slapphet, hodepine og økt belastning på hjertet. Over 75–80 % fuktighet kombinert med varme øker risikoen for overoppheting betydelig."
+          }
+        }
+      }
+    },
     "weather.lightrain" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -6419,6 +6427,17 @@
         }
       }
     },
+    "weather.precipitation.tooltip" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Måles i millimeter — 1 mm = 1 liter vann per kvadratmeter. Sannsynligheten sier hvor sikkert det er at det kommer noe, ikke hvor mye. Fra 5 mm/t bør du ha regnklær på.\n\nVåte klær gir mye raskere varmetap enn tørre — kombinert med vind og lav temperatur er dette en hovedårsak til hypotermi (nedkjøling, kroppstemperatur under 35 °C). Barn og eldre er mest utsatt, men også friske voksne kan bli kraftig påvirket etter lengre eksponering."
+          }
+        }
+      }
+    },
     "weather.pressure" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6547,6 +6566,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Stabilt"
+          }
+        }
+      }
+    },
+    "weather.pressure.tooltip" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Måles i hektopascal (hPa). Normalt havnivåtrykk er 1013 hPa. Trykket faller cirka 1 hPa per 8 meter du går opp i høyden — på 1000 moh. er trykket rundt 900 hPa. Fallende trykk varsler dårligere vær, stigende trykk betyr bedring.\n\nNår trykket faller raskt — i lavtrykk eller når du går raskt opp i fjellet — oppstår en ubalanse mellom luft i bihuler og mellomøre og omgivelsene. Det kan kjennes som press over panne og bihuler, tette ører, hodepine eller svimmelhet. Forskning viser at over en tredel av migrenepasienter merker værendringer som utløser. Personer med kroniske bihulebetennelser eller indre-øre-tilstander som gir svimmelhet, er også mer utsatt."
           }
         }
       }
@@ -6910,6 +6940,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vindkjøling"
+          }
+        }
+      }
+    },
+    "weather.temperature" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temperatur"
+          }
+        }
+      }
+    },
+    "weather.temperature.tooltip" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lufttemperaturen sier hvor varmt eller kaldt det er, men ikke hvor varmt det føles. «Føles som» under graden viser opplevd temperatur og tar høyde for både vind og luftfuktighet — vises kun når den avviker fra målt temperatur.\n\nI kulde trekker blodårene seg sammen, blodtrykket stiger og hjertet jobber hardere. Personer med koronarsykdom kan få brystsmerter, og personer med hjertesvikt fryser raskt fordi blodsirkulasjonen er svekket. Varme gir motsatt risiko: dehydrering og overoppheting. Meteorologisk institutt regner en hetebølge i Norge som fem dager eller mer med maksimumstemperatur over 27 °C — da øker risikoen særlig for eldre og kronisk syke."
           }
         }
       }
@@ -7889,6 +7941,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Trykk for beskrivelse"
+          }
+        }
+      }
+    },
+    "weather.wind.tooltip" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vedvarende vind oppgis i meter per sekund (m/s). Vindkast er høyeste 3-sekunders middelverdi og kan være vesentlig sterkere. Fra stiv kuling (14 m/s) blir det tungt å gå mot vinden. Over tregrensen og i fjorder og trange daler blir vinden ofte vesentlig sterkere enn i flatere terreng.\n\nVind blåser bort det varme luftlaget klærne dine fanger inntil huden, og du mister kroppsvarme mye raskere — selv ved milde temperaturer kan du bli raskt nedkjølt. Direkte vind tørker også ut slimhinner og gir øye-irritasjon, særlig på snø og is som reflekterer kald, tørr luft."
           }
         }
       }

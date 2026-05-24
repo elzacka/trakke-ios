@@ -41,13 +41,16 @@ struct POIDetailSheet: View {
                     }
 
                     // MARK: - Navigate
-                    Button {
-                        onNavigate?(poi.coordinate)
-                    } label: {
-                        Label(String(localized: "navigation.navigateHere"), systemImage: "location.north.fill")
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                    // Ikon-knapp høyrejustert — samme stil som detail-arkene
+                    // for ruter, turer og steder.
+                    HStack(spacing: .Trakke.sm) {
+                        Spacer()
+                        TrakkeIconButton(
+                            systemImage: "location.north.fill",
+                            accessibilityLabel: String(localized: "navigation.navigateHere"),
+                            action: { onNavigate?(poi.coordinate) }
+                        )
                     }
-                    .buttonStyle(.trakkePrimary)
 
                     // MARK: - Data Source Attribution
                     HStack(spacing: .Trakke.xs) {

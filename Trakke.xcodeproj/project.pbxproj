@@ -192,7 +192,6 @@
 		B1DDE220A7F17C253D9C08AC /* KnowledgeEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB54AF153094CE54757BE82D /* KnowledgeEntry.swift */; };
 		B219DB3CA8FA3407DD884828 /* MarkdownParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5884501A1D0CECCB5B236BC /* MarkdownParser.swift */; };
 		B2FE2723F6FC71535E972310 /* Haversine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FC502C1D744A263083D1FFA /* Haversine.swift */; };
-		B504F3974DF265838508C5DE /* DeleteAllDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 191B441CD8FD97525380FCC4 /* DeleteAllDataView.swift */; };
 		B5120AB1AADC62F791FBA21F /* ComputedRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F0081BB146FD6AF77D276FE /* ComputedRoute.swift */; };
 		B54875EA38FCC257004694D6 /* heavysleetshowers_night.svg in Resources */ = {isa = PBXBuildFile; fileRef = AB70E489646C57BDC8AE5259 /* heavysleetshowers_night.svg */; };
 		B6361478941BC5938039890B /* lightsnow.svg in Resources */ = {isa = PBXBuildFile; fileRef = F6FF01E250D74D9D8AE7F97D /* lightsnow.svg */; };
@@ -324,7 +323,6 @@
 		141766496BBFD7A301341B62 /* HapticFeedbackService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticFeedbackService.swift; sourceTree = "<group>"; };
 		14BF64BF4F13693F38DFCEF3 /* SearchResultRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultRow.swift; sourceTree = "<group>"; };
 		180F47608E16EF81D49963BA /* lightsnowshowers_polartwilight.svg */ = {isa = PBXFileReference; path = lightsnowshowers_polartwilight.svg; sourceTree = "<group>"; };
-		191B441CD8FD97525380FCC4 /* DeleteAllDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteAllDataView.swift; sourceTree = "<group>"; };
 		1B26B00165D1496C9D5529B5 /* RouteDetailSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteDetailSheet.swift; sourceTree = "<group>"; };
 		1B359D627BE06494B8B332DA /* heavysnowshowers_night.svg */ = {isa = PBXFileReference; path = heavysnowshowers_night.svg; sourceTree = "<group>"; };
 		1C155D37467B27C3734355C9 /* SchemaV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchemaV2.swift; sourceTree = "<group>"; };
@@ -819,7 +817,6 @@
 		701FF454B8A86FB3DD14099E /* Settings */ = {
 			isa = PBXGroup;
 			children = (
-				191B441CD8FD97525380FCC4 /* DeleteAllDataView.swift */,
 				410D3AEE72E9675202D9132B /* InfoSheet.swift */,
 				4B8F3AC8A627B4366EF12E29 /* PreferencesSheet.swift */,
 				AE47AEB2F925E616D203E595 /* PrivacySheet.swift */,
@@ -1388,7 +1385,6 @@
 				82AB66960A754A939F84BB4B /* ContentView.swift in Sources */,
 				23C4ABC8368D581B7E310078 /* CoordinateService.swift in Sources */,
 				1B36496B029EF9F494B6FB96 /* CurrentConditionsCard.swift in Sources */,
-				B504F3974DF265838508C5DE /* DeleteAllDataView.swift in Sources */,
 				DB58AD496DAD0EACF1A2B2DA /* DeviationChipView.swift in Sources */,
 				A011A16CC8B1E4F180CC290F /* DownloadAreaSheet.swift in Sources */,
 				21DEF037F3A9BBD30A3FBFBC /* DownloadManagerSheet.swift in Sources */,
@@ -1721,7 +1717,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_SWIFT_FLAGS = "-Xfrontend -warn-long-expression-type-checking=200 -Xfrontend -warn-long-function-bodies=200";
+				OTHER_SWIFT_FLAGS = "-Xfrontend -warn-long-expression-type-checking=400 -Xfrontend -warn-long-function-bodies=400";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;

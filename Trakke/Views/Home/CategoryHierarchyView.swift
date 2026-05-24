@@ -1,8 +1,14 @@
 import SwiftUI
 
-/// Kategori-hierarki for Hjem-fanen. Viser de fire hovedgruppene
-/// (Friluftsliv, Landskap, Kulturarv, Beredskap) som ekspanderbare seksjoner.
-/// Hver gruppe åpner en liste over POI-kategorier som kan slås av/på.
+/// Kategori-hierarki for Hjem-fanen. Viser hovedgruppene som ekspanderbare
+/// rader inni én delt CardSection — samme mønster som Info-fanens akkordeon-
+/// grupperinger (Datakilder + Åpen kildekode i Om). Hver gruppe åpner en
+/// liste over POI-kategorier som kan slås av/på.
+///
+/// Stylingen (typografi, vertikal padding, chevron-stil) matcher
+/// ExpandableSection. Den eneste forskjellen er at radene har et ledende
+/// SF Symbol-ikon for hver hovedgruppe, og en pille med antall aktive
+/// kategorier i gruppen.
 struct CategoryHierarchyView: View {
     @Bindable var poiViewModel: POIViewModel
     @State private var expandedGroups: Set<ContentGroup> = []
@@ -16,17 +22,22 @@ struct CategoryHierarchyView: View {
     ]
 
     var body: some View {
-        VStack(spacing: .Trakke.sm) {
-            ForEach(displayedGroups) { group in
-                CategoryGroupSection(
-                    group: group,
-                    isExpanded: expandedGroups.contains(group),
-                    enabledCategories: poiViewModel.enabledCategories,
-                    onToggleExpanded: { toggleExpanded(group) },
-                    onToggleCategory: { category in
-                        poiViewModel.toggleCategory(category)
+        CardSection {
+            VStack(spacing: 0) {
+                ForEach(Array(displayedGroups.enumerated()), id: \.element) { index, group in
+                    if index > 0 {
+                        Divider().padding(.leading, .Trakke.dividerLeading)
                     }
-                )
+                    CategoryGroupSection(
+                        group: group,
+                        isExpanded: expandedGroups.contains(group),
+                        enabledCategories: poiViewModel.enabledCategories,
+                        onToggleExpanded: { toggleExpanded(group) },
+                        onToggleCategory: { category in
+                            poiViewModel.toggleCategory(category)
+                        }
+                    )
+                }
             }
         }
     }
@@ -65,22 +76,21 @@ private struct CategoryGroupSection: View {
             headerButton
 
             if isExpanded {
-                Divider()
-                    .padding(.leading, .Trakke.cardPadH)
+                Divider().padding(.leading, .Trakke.dividerLeading)
 
                 ForEach(Array(categoriesInGroup.enumerated()), id: \.element) { index, category in
                     if index > 0 {
-                        Divider()
-                            .padding(.leading, .Trakke.cardPadH + 24 + .Trakke.md)
+                        Divider().padding(.leading, .Trakke.dividerLeading)
                     }
                     categoryRow(category)
                 }
             }
         }
-        .background(Color.Trakke.surface)
-        .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))
     }
 
+    /// Header — matcher ExpandableSection's typografi og spacing. Forskjell:
+    /// ledende ikon (hovedgruppens SF Symbol) og en valgfri pille med antall
+    /// aktive POI-kategorier i gruppen.
     private var headerButton: some View {
         Button(action: {
             withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.2)) {
@@ -94,7 +104,7 @@ private struct CategoryGroupSection: View {
                     .frame(width: 24)
 
                 Text(group.displayName)
-                    .font(Font.Trakke.bodyMedium)
+                    .font(Font.Trakke.bodyRegular)
                     .foregroundStyle(Color.Trakke.text)
 
                 if enabledCountInGroup > 0 {
@@ -111,18 +121,21 @@ private struct CategoryGroupSection: View {
                 Spacer()
 
                 Image(systemName: "chevron.down")
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundStyle(Color.Trakke.textTertiary)
+                    .font(Font.Trakke.captionSoft.weight(.semibold))
+                    .foregroundStyle(Color.Trakke.textSoft)
                     .rotationEffect(.degrees(isExpanded ? 180 : 0))
                     .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: isExpanded)
             }
-            .padding(.horizontal, .Trakke.cardPadH)
-            .padding(.vertical, 14)
+            .padding(.vertical, 12)
+            .frame(minHeight: .Trakke.touchMin)
             .contentShape(Rectangle())
         }
+        .buttonStyle(.plain)
         .accessibilityLabel(group.displayName)
-        .accessibilityHint(isExpanded ? "Vis mindre" : "Vis kategorier")
-        .accessibilityAddTraits(isExpanded ? [.isButton, .isSelected] : .isButton)
+        .accessibilityHint(isExpanded
+            ? String(localized: "accessibility.tapToCollapse")
+            : String(localized: "accessibility.tapToExpand"))
+        .accessibilityAddTraits(isExpanded ? [.isHeader, .isSelected] : .isHeader)
     }
 
     private func categoryRow(_ category: POICategory) -> some View {
@@ -146,11 +159,11 @@ private struct CategoryGroupSection: View {
                         .foregroundStyle(Color.Trakke.brand)
                 }
             }
-            .padding(.horizontal, .Trakke.cardPadH)
             .padding(.vertical, 12)
             .frame(minHeight: .Trakke.touchMin, alignment: .leading)
             .contentShape(Rectangle())
         }
+        .buttonStyle(.plain)
         .accessibilityLabel(category.displayName)
         .accessibilityAddTraits(isEnabled ? [.isButton, .isSelected] : .isButton)
     }
