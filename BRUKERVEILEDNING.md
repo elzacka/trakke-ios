@@ -1,11 +1,24 @@
 ## Handlinger på kartet {#kartet}
 
+### Bevegelser
+
 - **Dra med én finger**: Panorere
 - **Knip med to fingre**: Zoome
 - **Roter med to fingre**: Rotere kartet (trykk kompasset for å snu nord opp)
 - **To fingre opp eller ned**: Tilte kartet for 3D
 - **Trykk**: Legge til punkt i tegne- eller målemodus. Ellers lukker et trykk åpne ark og menyer.
 - **Langt trykk**: Meny med «Legg til sted» og «Naviger hit»
+
+### Kontrollere: Knapper på kartet
+
+Knappene som vises langs høyre kant av kartet. Hvilke som vises styres i [Innstillinger → Visning](#innstillinger), bortsett fra menyknappen som alltid er der.
+
+- **Grønn menyknapp**: Trykk for å åpne menyen. Langt trykk skjuler alle kontroller, kartlag og POI-ikoner (se [Rens kartet hurtig](#renskartet)).
+- **Kompassknapp**: Ett trykk gjør to ting i én bevegelse — sentrerer kartet på din posisjon **og** snur kartet nord opp. Pilen peker mot nord og roterer med kartet, så du ser hvor mye kartet er dreid. Under navigasjon bytter trykket i stedet mellom **nord opp** og **kursretning**.
+- **Værwidget**: Viser temperatur og symbol for kartsenteret. Trykk for å åpne fullt vær med varsel, snøskred og luftkvalitet (se [Vær](#vaer)).
+- **Zoom-knapper (+/−)**: Zoom inn og ut ett trinn av gangen. Alternativ til knip-bevegelsen — nyttig med tykke hansker eller én hånd.
+
+Nederst til venstre vises **målestokk** og **kartdataattribusjon**. Disse er informasjon, ikke knapper.
 
 ## Rens kartet hurtig {#renskartet}
 
@@ -52,7 +65,7 @@ Nederst i hver liste ligger tre ikoner:
 
 - **Opp-pil**: Importer fra `.gpx`- eller `.geojson`-fil. Filer som deles til Tråkke fra andre apper (AirDrop, e-post, Filer) åpnes også automatisk.
 - **Ned-pil**: Eksporter alt som GPX
-- **Papirkurv** (rød): Slett alle
+- **Papirkurv**: Slett alle
 
 Importerte elementer er skjult på kartet som standard så de ikke roter til. Trykk for å vise/skjule på kartet.
 
@@ -72,7 +85,7 @@ Langt trykk på kartet og velg «Legg til sted».
 
 ### Logge en tur {#turlogging}
 
-Åpne **Naviger → Turer og ruter** og trykk opptaksknappen. Verktøylinjen viser varighet, avstand og høydemeter underveis.
+Åpne **Naviger → Turer og ruter** og trykk pluss-knappen. Verktøylinjen viser varighet, avstand og høydemeter underveis.
 
 Opptak og navigasjon mottar GPS uavhengig av hverandre — du kan starte navigasjon mens turen tas opp uten å bryte sporet.
 
