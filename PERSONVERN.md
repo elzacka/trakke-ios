@@ -31,7 +31,7 @@ Posisjonen brukes til å vise deg på kartet, hente lokal værmelding, beregne r
 
 Appen viser om enheten er online eller offline, og hvilken tilkoblingstype som er i bruk (Wi-Fi, mobildata, kablet, annet eller ingen). Dette leses lokalt fra iOS via NWPathMonitor. Ingen nettverksdata sendes ut av enheten og ingenting lagres.
 
-### 1.4 Data vi ikke samler inn
+### 1.4 Data som ikke samles inn
 
 Ingen brukerkontoer. Ingen informasjonskapsler. Ingen enhetsidentifikatorer (IDFA). Ingen bruksstatistikk. Ingen biometriske data.
 
