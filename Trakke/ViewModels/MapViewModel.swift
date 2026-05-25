@@ -13,6 +13,11 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
     var currentZoom: Double = MapConstants.defaultZoom
     var currentHeading: Double = 0
     var shouldResetHeading = false
+    /// Eksplisitt zoom-mål satt av zoom-knappene. Leses og nulles av
+    /// `TrakkeMapView.updateUIView` slik at kommandoen alltid når
+    /// MapLibre, også når en annen kamera-animasjon (kompass-reset,
+    /// centerOnUser, lokasjon-tracking) holder `isUserInteracting=true`.
+    var pendingZoom: Double?
     /// Markør for siste valgte søkeresultat. Settes når brukeren trykker på
     /// et treff i søkefeltet, beholdes mens brukeren utforsker området (pan,
     /// zoom, åpning av POI/sted-detalj, navigasjon mot punktet). Overskrives
@@ -173,11 +178,15 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
     }
 
     func zoomIn() {
-        currentZoom = min((currentZoom + 1).rounded(), MapConstants.maxZoom)
+        let next = min((currentZoom + 1).rounded(), MapConstants.maxZoom)
+        currentZoom = next
+        pendingZoom = next
     }
 
     func zoomOut() {
-        currentZoom = max((currentZoom - 1).rounded(), MapConstants.minZoom)
+        let next = max((currentZoom - 1).rounded(), MapConstants.minZoom)
+        currentZoom = next
+        pendingZoom = next
     }
 
     // MARK: - Navigation

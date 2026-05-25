@@ -120,6 +120,15 @@ struct TrakkeMapView: UIViewRepresentable {
             viewModel.shouldResetHeading = false
         }
 
+        // Eksplisitt zoom-kommando fra zoom-knappene. Må fyres før
+        // isUserInteracting-vakten under, ellers svelges trykket når en
+        // annen kamera-animasjon (kompass-reset, centerOnUser, lokasjon-
+        // tracking) holder flagget oppe.
+        if let target = viewModel.pendingZoom {
+            mapView.setZoomLevel(target, animated: true)
+            viewModel.pendingZoom = nil
+        }
+
         // Update base layer only when actually changed
         if viewModel.baseLayer != context.coordinator.appliedBaseLayer {
             context.coordinator.appliedBaseLayer = viewModel.baseLayer
