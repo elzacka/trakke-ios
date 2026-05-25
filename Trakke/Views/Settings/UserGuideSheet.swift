@@ -15,7 +15,7 @@ struct UserGuideSheet: View {
     @State private var isLoading = true
 
     private static let remoteURL = URL(
-        string: "https://raw.githubusercontent.com/elzacka/trakke-ios/main/Brukerveiledning.md"
+        string: "https://raw.githubusercontent.com/elzacka/trakke-ios/main/BRUKERVEILEDNING.md"
     )!
 
     var body: some View {
