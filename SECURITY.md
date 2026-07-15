@@ -24,7 +24,7 @@ For what data is processed and the legal basis under GDPR, see [PERSONVERN.md](P
 
 ### Data residency
 
-Primary APIs are Norwegian or EU/EEA. Two non-EU services are used for non-personal data only: AWS (terrain tiles) and GitHub (knowledge articles). No user identity or tracking data is sent to any service. See [PERSONVERN.md](PERSONVERN.md) for the full list.
+Primary APIs are Norwegian or EU/EEA. One non-EU service is used for non-personal data only: GitHub (knowledge articles). No user identity or tracking data is sent to any service. See [PERSONVERN.md](PERSONVERN.md) for the full list.
 
 ### Data protection
 
