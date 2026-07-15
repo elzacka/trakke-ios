@@ -49,8 +49,8 @@ extension TrakkeMapView.Coordinator {
             view.backgroundColor = .clear
             view.isUserInteractionEnabled = false
 
-            let imageView = UIImageView(image: UIImage(systemName: "flag.fill"))
-            imageView.tintColor = UIColor(Color.Trakke.brand)
+            let imageView = UIImageView(image: UIImage(systemName: "flag.checkered"))
+            imageView.tintColor = UIColor.Trakke.mapNavLine
             imageView.contentMode = .scaleAspectFit
             imageView.frame = view.bounds
             // White outline so the pin reads on busy topo backgrounds.

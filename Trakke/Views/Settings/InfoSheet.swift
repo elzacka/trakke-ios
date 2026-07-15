@@ -114,22 +114,9 @@ struct InfoSheet: View {
                         )
                         Divider()
                         dataSourceRow(
-                            name: "Mapzen Terrain Tiles",
-                            detail: String(localized: "info.mapzen.detail"),
-                            license: "CC BY 4.0"
-                        )
-                        Divider()
-                        dataSourceRow(
                             name: "Milj\u{00F8}direktoratet",
                             detail: String(localized: "info.miljodir.detail"),
                             license: "NLOD 2.0"
-                        )
-                        Divider()
-                        dataSourceRow(
-                            name: "Stadia Maps / Valhalla",
-                            detail: String(localized: "info.valhalla.detail"),
-                            license: "MIT / ODbL",
-                            attributionURL: URL(string: "https://stadiamaps.com/attribution/")
                         )
                         Divider()
                         dataSourceRow(

@@ -56,6 +56,15 @@ struct WaypointDetailSheet: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.vertical, .Trakke.rowVertical)
 
+            if let det = waypoint.details, !det.isEmpty {
+                Divider().padding(.leading, .Trakke.dividerLeading)
+                Text(det)
+                    .font(Font.Trakke.bodyRegular)
+                    .foregroundStyle(Color.Trakke.textSoft)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.vertical, .Trakke.rowVertical)
+            }
+
             if let elevation = waypoint.elevation {
                 Divider().padding(.leading, .Trakke.dividerLeading)
                 HStack {

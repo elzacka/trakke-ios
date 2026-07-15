@@ -147,7 +147,23 @@ struct DownloadManagerSheet: View {
                     .foregroundStyle(Color.Trakke.textTertiary)
             }
 
-            if !pack.progress.isComplete {
+            if viewModel.isErrored(pack) {
+                HStack(spacing: .Trakke.sm) {
+                    Image(systemName: "exclamationmark.circle.fill")
+                        .font(Font.Trakke.caption)
+                        .foregroundStyle(Color.Trakke.red)
+                    Text(String(localized: "offline.downloadError"))
+                        .font(Font.Trakke.caption)
+                        .foregroundStyle(Color.Trakke.red)
+                    Spacer()
+                    Button(String(localized: "offline.retry")) {
+                        viewModel.retryPack(pack)
+                    }
+                    .font(Font.Trakke.caption)
+                    .foregroundStyle(Color.Trakke.brand)
+                    .buttonStyle(.plain)
+                }
+            } else if !pack.progress.isComplete {
                 ProgressView(value: pack.progress.percentage, total: 100)
                     .tint(Color.Trakke.brand)
 

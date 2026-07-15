@@ -13,7 +13,11 @@ struct MapControlsOverlay<WeatherContent: View>: View {
     var isCleanMapActive = false
     var onCleanMapToggle: (() -> Void)?
     var isInsideOfflineArea = false
+    var isNavigating = false
+    var navigationCameraMode: NavigationCameraMode = .northUp
+    var onToggleCameraMode: (() -> Void)?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var showCleanMapHint = false
 
     var body: some View {
         ZStack {
@@ -61,6 +65,35 @@ struct MapControlsOverlay<WeatherContent: View>: View {
                 .padding(.horizontal, .Trakke.xxl)
                 .padding(.bottom, .Trakke.sm)
             }
+
+            // Kort hint når rent-kart slås på — langt trykk kan trigges utilsiktet
+            // (f.eks. med hansker), og eneste andre signal er at ikonet endres.
+            if showCleanMapHint {
+                VStack {
+                    Spacer()
+                    Text(String(localized: "map.cleanMap.hint"))
+                        .font(Font.Trakke.caption)
+                        .foregroundStyle(Color.Trakke.text)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                        .background(.regularMaterial)
+                        .clipShape(.capsule)
+                    Spacer()
+                    Spacer()
+                }
+                .transition(.opacity)
+                .allowsHitTesting(false)
+            }
+        }
+        .task(id: isCleanMapActive) {
+            guard isCleanMapActive else { return }
+            withAnimation(reduceMotion ? .none : .easeInOut(duration: 0.2)) {
+                showCleanMapHint = true
+            }
+            try? await Task.sleep(for: .seconds(2))
+            withAnimation(reduceMotion ? .none : .easeInOut(duration: 0.2)) {
+                showCleanMapHint = false
+            }
         }
     }
 
@@ -77,6 +110,7 @@ struct MapControlsOverlay<WeatherContent: View>: View {
                     isMenuOpen.toggle()
                 }
             }
+            .accessibilityAddTraits(.isButton)
             .accessibilityLabel(isCleanMapActive
                 ? String(localized: "fab.cleanMap.active")
                 : String(localized: "fab.menu"))
@@ -213,24 +247,39 @@ struct MapControlsOverlay<WeatherContent: View>: View {
 
     // MARK: - Compass
 
-    /// Kombinert kompass + min posisjon: ett trykk sentrerer kartet på brukeren
-    /// og resetter rotasjonen til nord-opp. Erstatter den separate
-    /// lokasjon-knappen — én knapp gjør begge.
+    private var isHeadingUpActive: Bool {
+        isNavigating ? navigationCameraMode == .courseUp : viewModel.isHeadingUp
+    }
+
+    /// Kompass + retnings-veksler. Tapper:
+    /// - Under navigasjon: veksler mellom nord-opp og retning-opp via kamera-modus.
+    /// - Ellers: slår heading-up av/på og sentrerer på brukeren.
+    /// Ikon-fargen signalerer aktiv tilstand (grønn = retning-opp, rød = nord-opp).
     private var compassButton: some View {
         Button {
-            viewModel.shouldResetHeading = true
-            viewModel.centerOnUser()
+            if isNavigating {
+                onToggleCameraMode?()
+            } else if viewModel.isHeadingUp {
+                viewModel.isHeadingUp = false
+                viewModel.shouldResetHeading = true
+                viewModel.centerOnUser()
+            } else {
+                viewModel.isHeadingUp = true
+                viewModel.centerOnUser()
+            }
         } label: {
             Image(systemName: "location.north.fill")
                 .font(Font.Trakke.bodyMedium)
-                .foregroundStyle(Color.Trakke.red)
+                .foregroundStyle(isHeadingUpActive ? Color.Trakke.brand : Color.Trakke.red)
                 .rotationEffect(.degrees(-viewModel.currentHeading))
                 .frame(width: 56, height: 56)
                 .background(Color.Trakke.surface)
                 .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.xl))
                 .trakkeControlShadow()
         }
-        .accessibilityLabel(String(localized: "map.controls.compass"))
+        .accessibilityLabel(isHeadingUpActive
+            ? String(localized: "map.controls.compass.courseUp")
+            : String(localized: "map.controls.compass"))
         .accessibilityHint(String(localized: "map.controls.myPosition"))
     }
 

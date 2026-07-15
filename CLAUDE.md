@@ -1,5 +1,8 @@
 # Tråkke iOS
 
+@~/.claude/rules/ios-shared.md
+@dev_only/CLAUDE.md
+
 Norwegian outdoor map app for iPhone. Built on Kartverket maps (not Apple Maps). All UI in Norwegian Bokmål.
 
 ## Naming
@@ -11,7 +14,7 @@ Norwegian outdoor map app for iPhone. Built on Kartverket maps (not Apple Maps).
 ## Project
 
 - **Repo**: https://github.com/elzacka/trakke-ios
-- **Version**: 1.5.0 (build 1) — set in `project.yml`
+- **Version**: 1.6.0 (build 2) — set in `project.yml`
 - **Target**: iOS 26.0+, Swift 6.3, Xcode 26.5
 - **PWA reference**: `/Users/lene/dev/trakke_pwa` — reference ONLY when explicitly instructed
 
@@ -38,8 +41,8 @@ xcodebuild -project Trakke.xcodeproj -scheme Trakke \
 - **Light mode only** — `.preferredColorScheme(.light)` enforced
 - **No blue text** — use `Color.Trakke.brand` (#3e4533) and `.tint(Color.Trakke.brand)`
 - **No tracking, no IDFA, no analytics** — Location When In Use only
-- **EU/EEA data residency** for API calls (exceptions: AWS terrain tiles, GitHub knowledge packs — no user data)
-- **WCAG 2.1 AA** mandatory (Norwegian law + EAA from June 2025)
+- **EU/EEA data residency** for API calls (exception: GitHub knowledge packs — no user data sent)
+- **WCAG 2.2 AA** mandatory (Norwegian law + EAA from June 2025)
 - **Coordinate formats**: DD, DMS, UTM (EUREF89 sone 33). MGRS was removed — the NGA `mgrs-ios` dependency is gone
 
 ## Hard rules
@@ -48,7 +51,6 @@ xcodebuild -project Trakke.xcodeproj -scheme Trakke \
 - Do NOT delete databases, files, or directories without confirmation
 - Do NOT change deployed `SwiftData VersionedSchema.versionIdentifier` values — breaks user data on update
 - Do NOT reference or base decisions on the PWA codebase unless explicitly instructed
-- Do NOT include time estimates in any output. Use P1/P2/P3 or liten/middels/stor for prioritization
 
 ## iOS specialist agents
 

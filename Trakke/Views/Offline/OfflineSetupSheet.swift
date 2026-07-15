@@ -62,11 +62,8 @@ struct OfflineSetupSheet: View {
                         dismiss()
                         onCustom()
                     } label: {
-                        Label(
-                            String(localized: "offline.selectArea"),
-                            systemImage: "rectangle.dashed"
-                        )
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                        Text(String(localized: "offline.selectArea"))
+                            .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.trakkeSecondary)
                 }

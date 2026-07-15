@@ -59,11 +59,8 @@ struct ToolsTabContent: View {
                     measurementViewModel.startMeasuring(mode: .distance)
                     dismiss()
                 } label: {
-                    Label(
-                        String(localized: "measurement.distance"),
-                        systemImage: "ruler"
-                    )
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    Text(String(localized: "measurement.startDistance"))
+                        .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.trakkeSecondary)
 
@@ -72,11 +69,8 @@ struct ToolsTabContent: View {
                     measurementViewModel.startMeasuring(mode: .area)
                     dismiss()
                 } label: {
-                    Label(
-                        String(localized: "measurement.area"),
-                        systemImage: "square.dashed"
-                    )
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    Text(String(localized: "measurement.startArea"))
+                        .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.trakkeSecondary)
             }

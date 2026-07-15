@@ -67,6 +67,7 @@ enum GPXImportService {
         /// `<extensions>`. Bevares ved round-trip eksport/import.
         var color: String? = nil
         var icon: String? = nil
+        var details: String? = nil
     }
 
     struct ImportedRoute: Sendable {
@@ -148,6 +149,7 @@ private class GPXWaypointParser: NSObject, XMLParserDelegate {
     private var currentLat: Double?
     private var currentLon: Double?
     private var currentName: String?
+    private var currentDesc: String?
     private var currentElevation: Double?
     private var currentType: String?
     private var currentColor: String?
@@ -177,6 +179,7 @@ private class GPXWaypointParser: NSObject, XMLParserDelegate {
             currentLat = Double(attributes["lat"] ?? "")
             currentLon = Double(attributes["lon"] ?? "")
             currentName = nil
+            currentDesc = nil
             currentElevation = nil
             currentType = nil
             currentColor = nil
@@ -204,6 +207,8 @@ private class GPXWaypointParser: NSObject, XMLParserDelegate {
         switch name {
         case "name" where !insideExtensions:
             currentName = trimmed
+        case "desc" where !insideExtensions:
+            currentDesc = trimmed.isEmpty ? nil : trimmed
         case "ele" where !insideExtensions:
             currentElevation = Double(trimmed)
         case "type" where !insideExtensions:
@@ -218,7 +223,7 @@ private class GPXWaypointParser: NSObject, XMLParserDelegate {
             if let lat = currentLat, let lon = currentLon,
                lat.isFinite, lon.isFinite,
                (-90...90).contains(lat), (-180...180).contains(lon) {
-                let wp = GPXImportService.ImportedWaypoint(
+                var wp = GPXImportService.ImportedWaypoint(
                     name: currentName ?? String(localized: "waypoints.new"),
                     latitude: lat,
                     longitude: lon,
@@ -227,6 +232,7 @@ private class GPXWaypointParser: NSObject, XMLParserDelegate {
                     color: currentColor,
                     icon: currentIcon
                 )
+                wp.details = currentDesc
                 waypoints.append(wp)
             }
             insideWpt = false

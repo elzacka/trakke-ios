@@ -18,7 +18,6 @@ enum ActiveSheet: Identifiable, Hashable {
     case offlineSetup
     case weather
     case measurement
-    case navigationStart
     case emergency
     case activitySave
 

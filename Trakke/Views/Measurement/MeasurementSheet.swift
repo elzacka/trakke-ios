@@ -15,13 +15,11 @@ struct MeasurementSheet: View {
                 HStack(spacing: .Trakke.md) {
                     modeButton(
                         mode: .distance,
-                        icon: "point.topleft.down.to.point.bottomright.curvepath",
                         label: String(localized: "measurement.distance")
                     )
 
                     modeButton(
                         mode: .area,
-                        icon: "skew",
                         label: String(localized: "measurement.area")
                     )
                 }
@@ -39,15 +37,13 @@ struct MeasurementSheet: View {
 
     // MARK: - Mode Button
 
-    private func modeButton(mode: MeasurementMode, icon: String, label: String) -> some View {
+    private func modeButton(mode: MeasurementMode, label: String) -> some View {
         Button {
             viewModel.startMeasuring(mode: mode)
             dismiss()
         } label: {
-            VStack(spacing: .Trakke.rowVertical) {
-                Image(systemName: icon)
-                Text(label)
-            }
+            Text(label)
+                .frame(maxWidth: .infinity)
         }
         .buttonStyle(.trakkeSecondary)
     }

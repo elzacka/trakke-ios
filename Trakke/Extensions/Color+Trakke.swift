@@ -21,9 +21,10 @@ extension Color {
         static let brand = Color(hex: "3e4533")
         static let brandDark = Color(hex: "2e3326")
         /// Mellom-grønn for handlingsknapper (action-bar-ikoner og
-        /// fullbredde-knapper). Gir ~4.4:1 kontrast med hvit symbol/tekst
-        /// (passer WCAG 1.4.11 for UI-komponenter).
-        static let brandLight = Color(hex: "757d68")
+        /// fullbredde-knapper) med hvit tekst-etikett. Mørknet til ≥4.5:1
+        /// kontrast med hvit tekst (WCAG 1.4.3 for normal tekst — strengere
+        /// enn 1.4.11, siden tokenet brukes som knapp-bakgrunn bak tekst).
+        static let brandLight = Color(hex: "6b7360")
         static let brandTint = Color(hex: "e9ece6")
 
         // MARK: Neutrals
@@ -34,7 +35,7 @@ extension Color {
         static let text = Color(hex: "1a1d1b")
         static let textSecondary = Color(hex: "4a4f47")
         static let textTertiary = Color(hex: "4e534a")
-        static let textSoft = Color(hex: "7c8278")
+        static let textSoft = Color(hex: "6b7167")
         static let textInverse = Color(hex: "ffffff")
 
         // MARK: Borders (PWA-trofast)
@@ -79,6 +80,8 @@ extension Color {
         static let mapActivity = Color(hex: "2255AA")
         static let mapWaypoint = Color(hex: "0F766E")
         static let mapHalo = Color(hex: "FFFFFF")
+        // Bright teal for compass-navigation line and arrival chip — higher contrast than mapRoute.
+        static let mapNavLine = Color(hex: "14B8A6")
 
         // MARK: Route Palette (user-overridable per route)
         // Default route colour is mapRoute (#E07000) so first-time users always
@@ -110,6 +113,8 @@ extension UIColor {
         static let mapActivity = UIColor(hex: "2255AA")
         static let mapWaypoint = UIColor(hex: "0F766E")
         static let mapHalo = UIColor.white
+        // Bright teal for the compass-navigation direction line — higher contrast than mapRoute.
+        static let mapNavLine = UIColor(hex: "14B8A6")
 
         // POI Categories
         static let poiShelter = UIColor(hex: "b58900")

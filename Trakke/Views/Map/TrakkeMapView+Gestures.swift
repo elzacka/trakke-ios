@@ -57,7 +57,7 @@ extension TrakkeMapView.Coordinator {
         if gestureRecognizer === cornerPanGesture {
             guard let mapView = gestureRecognizer.view as? MLNMapView else { return false }
             let touchPoint = gestureRecognizer.location(in: mapView)
-            let hitRadius: CGFloat = 30
+            let hitRadius: CGFloat = 44
 
             // Check selection corners
             for annotation in selectionAnnotations {

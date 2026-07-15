@@ -17,7 +17,6 @@ struct MapScreen: View {
     @Binding var isFABMenuOpen: Bool
     @Binding var isCleanMapActive: Bool
     @Binding var longPressCoordinate: CLLocationCoordinate2D?
-    @Binding var navigationDestination: CLLocationCoordinate2D?
 
     @AppStorage(AppStorageKeys.showWeatherWidget) private var showWeatherWidget = false
     @AppStorage(AppStorageKeys.showCompass) private var showCompass = false
@@ -43,18 +42,21 @@ struct MapScreen: View {
             mapLayer
             mapControlsLayer
             navigationOverlayLayer
-            routeComputingIndicator
             modeToolbarLayer
             activityRecordingLayer
             locationPrimerLayer
             offlineWarningLayer
+            downloadBackgroundWarningLayer
             downloadCompleteLayer
         }
     }
 
     // MARK: - Clean Map
 
-    private var effectiveShowCompass: Bool { isCleanMapActive ? false : showCompass }
+    private var effectiveShowCompass: Bool {
+        guard !isCleanMapActive else { return false }
+        return showCompass || navigationViewModel.isActive
+    }
     private var effectiveShowZoomControls: Bool { isCleanMapActive ? false : showZoomControls }
     private var effectiveShowScaleBar: Bool { isCleanMapActive ? false : showScaleBar }
     private var effectiveShowWeatherWidget: Bool { isCleanMapActive ? false : showWeatherWidget }
@@ -108,6 +110,11 @@ struct MapScreen: View {
     private func handleViewportChanged(bounds: ViewportBounds, zoom: Double) {
         poiViewModel.viewportChanged(bounds: bounds, zoom: zoom)
 
+        // Weather defaults to off. Only fetch when the widget is visible or
+        // the weather sheet is open -- otherwise every map pan wakes the radio
+        // for data nobody is looking at, draining battery in marginal coverage.
+        guard showWeatherWidget || sheets.active == .weather else { return }
+
         // Fetch weather for map center
         let center = CLLocationCoordinate2D(
             latitude: (bounds.north + bounds.south) / 2,
@@ -149,7 +156,7 @@ struct MapScreen: View {
         TrakkeMapView(
             viewModel: mapViewModel,
             pois: poiViewModel.pois,
-            routes: routeViewModel.visibleRoutes.filter { $0.id != coordinator.navigatingRouteId },
+            routes: routeViewModel.visibleRoutes,
             activities: activityViewModel.visibleActivities,
             waypoints: waypointViewModel.visibleWaypoints,
             drawingCoordinates: routeViewModel.drawingCoordinates,
@@ -171,13 +178,10 @@ struct MapScreen: View {
             onMeasurementPointDragged: handleMeasurementPointDragged,
             onSelectionCornerDragged: handleSelectionCornerDragged,
             offlinePackBounds: offlinePackBounds,
-            navigationRouteCoordinates: navigationViewModel.routeCoordinates,
-            navigationSegmentIndex: navigationViewModel.snapResult?.segmentIndex ?? 0,
             isNavigating: navigationViewModel.isActive,
             navigationCameraMode: navigationViewModel.cameraMode,
             userHeading: mapViewModel.userHeading,
-            compassDestination: navigationViewModel.destination,
-            navigationMode: navigationViewModel.mode
+            compassDestination: navigationViewModel.destination
         )
         .ignoresSafeArea()
     }
@@ -202,7 +206,10 @@ struct MapScreen: View {
             isConnected: connectivityMonitor.isConnected,
             isCleanMapActive: isCleanMapActive,
             onCleanMapToggle: toggleCleanMap,
-            isInsideOfflineArea: isInsideOfflineArea
+            isInsideOfflineArea: isInsideOfflineArea,
+            isNavigating: navigationViewModel.isActive,
+            navigationCameraMode: navigationViewModel.cameraMode,
+            onToggleCameraMode: coordinator.toggleNavigationCamera
         )
     }
 
@@ -229,16 +236,7 @@ struct MapScreen: View {
             NavigationOverlayView(
                 navigationVM: navigationViewModel,
                 userHeading: mapViewModel.userHeading,
-                isConnected: connectivityMonitor.isConnected,
-                onStop: { coordinator.showStopConfirmation = true },
-                onSwitchToCompass: coordinator.switchToCompassNavigation,
-                onSwitchToRoute: coordinator.switchToRouteNavigation,
-                onToggleCamera: coordinator.toggleNavigationCamera,
-                onReroute: coordinator.requestNavigationReroute,
-                onSearchTapped: { sheets.active = .search },
-                onCategoryTapped: { sheets.active = .categoryPicker },
-                onEmergencyTapped: { sheets.active = .emergency },
-                onWeatherTapped: { sheets.active = .weather }
+                onStop: { coordinator.showStopConfirmation = true }
             )
             .trakkeDialog(
                 isPresented: stopConfirmationBinding,
@@ -256,32 +254,6 @@ struct MapScreen: View {
             get: { coordinator.showStopConfirmation },
             set: { coordinator.showStopConfirmation = $0 }
         )
-    }
-
-    @ViewBuilder
-    private var routeComputingIndicator: some View {
-        if coordinator.showRouteComputingIndicator {
-            VStack {
-                Spacer()
-                HStack(spacing: .Trakke.sm) {
-                    ProgressView()
-                        .tint(Color.Trakke.brand)
-                    Text(String(localized: "navigation.computingRoute"))
-                        .font(Font.Trakke.bodyRegular)
-                        .foregroundStyle(Color.Trakke.text)
-                }
-                .padding(.horizontal, .Trakke.lg)
-                .padding(.vertical, .Trakke.sm)
-                .background(.regularMaterial)
-                .clipShape(Capsule())
-                .padding(.bottom, .Trakke.lg)
-                .accessibilityElement(children: .combine)
-                .accessibilityLabel(String(localized: "navigation.computingRoute"))
-                .accessibilityAddTraits(.updatesFrequently)
-            }
-            .safeAreaPadding(.bottom)
-            .transition(.opacity.combined(with: .scale(scale: 0.96)))
-        }
     }
 
     @ViewBuilder
@@ -331,6 +303,13 @@ struct MapScreen: View {
     private var offlineWarningLayer: some View {
         if offlineViewModel.showLeftAreaWarning {
             OfflineWarningToast(viewModel: offlineViewModel)
+        }
+    }
+
+    @ViewBuilder
+    private var downloadBackgroundWarningLayer: some View {
+        if offlineViewModel.showDownloadBackgroundWarning {
+            DownloadBackgroundWarningToast(viewModel: offlineViewModel)
         }
     }
 

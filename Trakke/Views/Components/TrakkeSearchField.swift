@@ -53,6 +53,8 @@ struct TrakkeSearchField: View {
                     Image(systemName: "xmark.circle.fill")
                         .font(.system(size: 16))
                         .foregroundStyle(Color.Trakke.textSoft)
+                        .frame(minWidth: .Trakke.touchMin, minHeight: .Trakke.touchMin)
+                        .contentShape(Rectangle())
                 }
                 .accessibilityLabel(String(localized: "common.clear"))
             }

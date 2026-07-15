@@ -40,13 +40,15 @@ final class WaypointViewModel {
         waypoints = (try? context.fetch(descriptor)) ?? []
     }
 
-    func addWaypoint(name: String, coordinate: CLLocationCoordinate2D, category: String?) {
+    func addWaypoint(name: String, coordinate: CLLocationCoordinate2D, category: String?, details: String? = nil) {
         guard let context = modelContext else { return }
         let trimmedCategory = category?.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedDetails = details?.trimmingCharacters(in: .whitespacesAndNewlines)
         let wp = Waypoint(
             name: name,
             coordinates: [coordinate.longitude, coordinate.latitude],
-            category: trimmedCategory?.isEmpty == true ? nil : trimmedCategory
+            category: trimmedCategory?.isEmpty == true ? nil : trimmedCategory,
+            details: trimmedDetails?.isEmpty == true ? nil : trimmedDetails
         )
         context.insert(wp)
         save("waypoint")
@@ -57,13 +59,43 @@ final class WaypointViewModel {
         }
     }
 
-    func updateWaypoint(_ waypoint: Waypoint, name: String, category: String?) {
+    func updateWaypoint(_ waypoint: Waypoint, name: String, category: String?, details: String? = nil) {
         let trimmedCategory = category?.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedDetails = details?.trimmingCharacters(in: .whitespacesAndNewlines)
         waypoint.name = name
         waypoint.category = trimmedCategory?.isEmpty == true ? nil : trimmedCategory
+        waypoint.details = trimmedDetails?.isEmpty == true ? nil : trimmedDetails
         waypoint.updatedAt = Date()
         save("waypoint")
         loadWaypoints()
+    }
+
+    /// Renames a category on all its waypoints.
+    /// Returns `false` when the new name is empty or already exists (case-
+    /// insensitive) as a different category, so the caller can surface an error
+    /// instead of silently merging two categories into one.
+    @discardableResult
+    func renameCategory(from oldName: String, to newName: String) -> Bool {
+        let trimmed = newName.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return false }
+        // Unchanged (including a pure case-preserving no-op) — nothing to do.
+        guard trimmed != oldName else { return true }
+        // Reject when another existing category matches case-insensitively.
+        // A pure case change of the same category (e.g. "fjell" -> "Fjell") is
+        // still allowed because that category is excluded from the check.
+        let clashesWithOther = categories.contains { existing in
+            existing != oldName
+                && existing.localizedCaseInsensitiveCompare(trimmed) == .orderedSame
+        }
+        guard !clashesWithOther else { return false }
+        let now = Date()
+        for wp in waypoints where wp.category == oldName {
+            wp.category = trimmed
+            wp.updatedAt = now
+        }
+        save("renameCategory")
+        loadWaypoints()
+        return true
     }
 
     func deleteWaypoint(_ waypoint: Waypoint) {
@@ -275,17 +307,12 @@ final class WaypointViewModel {
             return 0
         }
         var count = 0
-        for (i, item) in imported.enumerated() {
-            let name = ImportedName.resolve(
-                embedded: item.name,
-                filename: filename,
-                index: i,
-                total: imported.count
-            )
+        for (_, item) in imported.enumerated() {
             let wp = Waypoint(
-                name: name,
+                name: item.name,
                 coordinates: [item.longitude, item.latitude],
                 category: item.category,
+                details: item.details,
                 elevation: item.elevation,
                 icon: item.icon,
                 color: item.color

@@ -133,6 +133,21 @@ final class OfflineViewModel {
     }
 
     var completionMessage: String?
+    /// IDs of packs that have encountered a download error and are now stalled.
+    var erroredPackIDs: Set<String> = []
+    /// Set to true when the user backgrounds the app while a download is in progress;
+    /// cleared automatically after the warning toast auto-dismisses.
+    var showDownloadBackgroundWarning = false
+
+    func isErrored(_ pack: OfflinePackInfo) -> Bool {
+        erroredPackIDs.contains(pack.id)
+    }
+
+    func retryPack(_ pack: OfflinePackInfo) {
+        erroredPackIDs.remove(pack.id)
+        service.resumePack(pack)
+        loadPacks()
+    }
 
     // MARK: - Lifecycle
 
@@ -163,8 +178,15 @@ final class OfflineViewModel {
             if let error = notification.userInfo?[MLNOfflinePackUserInfoKey.error] as? Error {
                 Logger.offline.error("Offline pack error: \(error, privacy: .private)")
             }
+            // Extract Sendable Data before crossing actor boundary
+            let contextData: Data? = (notification.object as? MLNOfflinePack).map { $0.context }
             Task { @MainActor in
-                self?.loadPacks()
+                guard let self else { return }
+                if let data = contextData,
+                   let ctx = try? JSONDecoder().decode(OfflinePackContext.self, from: data) {
+                    self.erroredPackIDs.insert(ctx.id)
+                }
+                self.loadPacks()
             }
         }
     }

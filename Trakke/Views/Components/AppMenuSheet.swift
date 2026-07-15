@@ -79,7 +79,8 @@ struct AppMenuSheet: View {
             InfoTabContent(
                 weatherViewModel: weatherViewModel,
                 knowledgeViewModel: knowledgeViewModel,
-                connectivityMonitor: connectivityMonitor
+                connectivityMonitor: connectivityMonitor,
+                mapCenter: mapViewModel.userLocation?.coordinate ?? mapViewModel.currentCenter
             )
         case .settings:
             SettingsTabContent(

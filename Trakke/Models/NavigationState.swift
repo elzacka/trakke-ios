@@ -1,13 +1,6 @@
 import Foundation
 import CoreLocation
 
-// MARK: - Navigation Mode
-
-enum NavigationMode: Sendable {
-    case route      // Following a computed or saved route
-    case compass    // Bearing/distance to destination
-}
-
 // MARK: - Camera Mode
 
 enum NavigationCameraMode: String, Sendable {
@@ -34,52 +27,4 @@ enum GPSQuality: Sendable {
             self = .lost
         }
     }
-}
-
-// MARK: - Snap Result
-
-struct SnapResult: Sendable {
-    let segmentIndex: Int
-    let snappedCoordinate: CLLocationCoordinate2D
-    let crossTrackDistance: Double   // meters off-track
-    let alongTrackDistance: Double   // meters from route start to snapped point
-    let routeBearing: Double        // bearing of route at snap point (degrees 0-360)
-}
-
-// MARK: - Navigation Progress
-
-struct NavigationProgress: Sendable {
-    let distanceRemaining: Double
-    let distanceTraveled: Double
-    let totalDistance: Double
-    let elevationGainRemaining: Double
-    let elevationLossRemaining: Double
-    let estimatedTimeRemaining: TimeInterval
-    let currentSegmentIndex: Int
-    let fractionCompleted: Double
-}
-
-// MARK: - Turn Instruction
-
-struct TurnInstruction: Sendable, Identifiable {
-    let id = UUID()
-    let text: String            // Norwegian instruction text from Valhalla
-    let distance: Double        // distance from route start to this instruction
-    let coordinate: CLLocationCoordinate2D
-    let type: TurnType
-}
-
-enum TurnType: String, Sendable {
-    case straight
-    case slightRight
-    case right
-    case sharpRight
-    case slightLeft
-    case left
-    case sharpLeft
-    case uTurn
-    case destination
-    case depart
-    case ferry
-    case other
 }

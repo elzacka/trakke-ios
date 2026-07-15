@@ -9,13 +9,25 @@ final class SearchViewModel {
     var isSearching = false
     var error: String?
     var selectedResult: SearchResult?
-    var coordinateFormat: CoordinateFormat = .dd
+    private var coordinateFormat: CoordinateFormat {
+        let raw = UserDefaults.standard.string(forKey: AppStorageKeys.coordinateFormat) ?? ""
+        return CoordinateFormat(rawValue: raw) ?? .dd
+    }
 
     private let searchService: SearchService
     private var searchTask: Task<Void, Never>?
 
+    /// Set once at app launch (see `AppLifecycleModifier`). Weak because the
+    /// monitor is owned by `ContentView` for the whole app lifetime; if it is
+    /// somehow nil we fall back to the network path's own timeout handling.
+    private weak var connectivityMonitor: ConnectivityMonitor?
+
     init(searchService: SearchService = SearchService()) {
         self.searchService = searchService
+    }
+
+    func setConnectivityMonitor(_ monitor: ConnectivityMonitor) {
+        connectivityMonitor = monitor
     }
     private static let debounceInterval: Duration = .milliseconds(300)
 
@@ -37,9 +49,19 @@ final class SearchViewModel {
             try? await Task.sleep(for: Self.debounceInterval)
             guard !Task.isCancelled, let self else { return }
 
-            // Check for coordinate input first
-            if let coordResult = CoordinateService.parse(trimmed) {
+            // Check for coordinate input first -- this works fully offline.
+            if let coordResult = CoordinateService.parse(trimmed, preferredFormat: coordinateFormat) {
                 results = [coordResult]
+                isSearching = false
+                return
+            }
+
+            // A place/address search hits the network. If we already know we
+            // are offline, fail fast instead of waiting out APIClient's
+            // waitsForConnectivity timeout (up to 60 s of spinner).
+            if connectivityMonitor?.isConnected == false {
+                results = []
+                error = String(localized: "search.offline")
                 isSearching = false
                 return
             }
@@ -75,7 +97,5 @@ final class SearchViewModel {
         await searchService.clearCache()
     }
 
-    func formattedCoordinate(for coordinate: CLLocationCoordinate2D) -> String {
-        CoordinateService.format(coordinate: coordinate, format: coordinateFormat).display
-    }
+
 }

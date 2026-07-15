@@ -74,29 +74,34 @@ struct RouteSaveSheet: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: .Trakke.sm) {
                         ForEach(Array(RouteViewModel.routeColors.enumerated()), id: \.element) { index, color in
-                            Button {
-                                selectedColor = color
-                            } label: {
-                                Circle()
-                                    .fill(Color(hex: color))
-                                    .frame(width: 32, height: 32)
-                                    .overlay(
-                                        Circle()
-                                            .strokeBorder(Color.Trakke.text, lineWidth: selectedColor == color ? 2 : 0)
-                                    )
-                            }
-                            .buttonStyle(.plain)
-                            .frame(width: .Trakke.touchMin, height: .Trakke.touchMin)
-                            .contentShape(Circle())
-                            .accessibilityLabel(index < Color.Trakke.routeColorNames.count
-                                ? Color.Trakke.routeColorNames[index]
-                                : String(localized: "route.color") + " \(index + 1)")
-                            .accessibilityAddTraits(selectedColor == color ? .isSelected : [])
+                            colorButton(color: color, index: index)
                         }
                     }
                 }
             }
             .padding(.vertical, .Trakke.rowVertical)
         }
+    }
+
+    @ViewBuilder
+    private func colorButton(color: String, index: Int) -> some View {
+        Button {
+            selectedColor = color
+        } label: {
+            Circle()
+                .fill(Color(hex: color))
+                .frame(width: 32, height: 32)
+                .overlay(
+                    Circle()
+                        .strokeBorder(Color.Trakke.text, lineWidth: selectedColor == color ? 2 : 0)
+                )
+        }
+        .buttonStyle(.plain)
+        .frame(width: .Trakke.touchMin, height: .Trakke.touchMin)
+        .contentShape(Circle())
+        .accessibilityLabel(index < Color.Trakke.routeColorNames.count
+            ? Color.Trakke.routeColorNames[index]
+            : String(localized: "route.color") + " \(index + 1)")
+        .accessibilityAddTraits(selectedColor == color ? .isSelected : [])
     }
 }

@@ -9,7 +9,6 @@ struct EmptyStateView: View {
     /// list-fanene under Naviger for et mer rolig, vestre-justert uttrykk.
     var alignment: HorizontalAlignment = .center
     var actionLabel: String?
-    var actionIcon: String?
     var action: (() -> Void)?
 
     var body: some View {
@@ -40,8 +39,8 @@ struct EmptyStateView: View {
             // Action button: clear separation from text group
             if let actionLabel, let action {
                 Button(action: action) {
-                    Label(actionLabel, systemImage: actionIcon ?? "square.and.arrow.down")
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Text(actionLabel)
+                        .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.trakkeSecondary)
                 .padding(.top, .Trakke.cardGap)

@@ -84,6 +84,14 @@ struct TrakkeApp: App {
         // share-sheet flow LaunchServices-friendly without unbounded disk growth.
         GPXExportService.pruneOldExports()
 
+        // One-time cleanup of a stale preference. The 3D terrain hillshading
+        // overlay was removed in v1.6.0 and its key dropped from
+        // AppStorageKeys, but users upgrading from earlier versions still
+        // carry the value in UserDefaults. Removing it honours the app's
+        // data-minimization principle. Idempotent -- removing a non-existent
+        // key is a no-op, so no version guard is needed.
+        UserDefaults.standard.removeObject(forKey: "overlayHillshading")
+
         let storeURL = appSupportURL.appendingPathComponent("Trakke.store")
 
         // Create ModelContainer with versioned schema and migration plan

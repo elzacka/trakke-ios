@@ -14,10 +14,41 @@ struct WaypointListSheet: View {
     @State private var shareURL: ShareableURL?
     @State private var expandedCategories: Set<String> = []
     @State private var showDeleteAllConfirmation = false
+    @State private var waypointToDelete: Waypoint?
+    @State private var renamingCategory: String?
+    @State private var renameNewName: String = ""
+    @State private var renameErrorMessage: String?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private func dismissFully() {
         if let dismissSheet { dismissSheet() } else { dismiss() }
+    }
+
+    /// Renames the category currently held in `renamingCategory`, validating the
+    /// new name before touching the store. Empty names and duplicates surface an
+    /// error alert; a successful rename also moves the expanded-state key so the
+    /// section does not collapse.
+    private func commitRename() {
+        guard let old = renamingCategory else { return }
+        let trimmed = renameNewName.trimmingCharacters(in: .whitespacesAndNewlines)
+        renamingCategory = nil
+        renameNewName = ""
+
+        guard !trimmed.isEmpty else {
+            renameErrorMessage = String(localized: "waypoints.renameCategoryEmpty")
+            return
+        }
+        guard trimmed != old else { return }
+
+        if viewModel.renameCategory(from: old, to: trimmed) {
+            // Keep the section expanded across the rename — the key is the
+            // category title, which just changed.
+            if expandedCategories.remove(old) != nil {
+                expandedCategories.insert(trimmed)
+            }
+        } else {
+            renameErrorMessage = String(localized: "waypoints.renameCategoryDuplicate")
+        }
     }
 
     var body: some View {
@@ -30,7 +61,76 @@ struct WaypointListSheet: View {
         }
     }
 
+    // Split across three properties so each stays within the 200 ms
+    // type-checker budget. A single chain of 12 modifiers with complex
+    // Binding closures exceeded the limit at ~394 ms.
     private var waypointContent: some View {
+        waypointListWithModals
+            .overlay(alignment: .bottom) {
+                if viewModel.importMessage != nil {
+                    importBanner
+                }
+            }
+            .navigationDestination(for: Waypoint.self) { waypoint in
+                WaypointDetailSheet(
+                    viewModel: viewModel,
+                    waypoint: waypoint,
+                    // Ikke dismiss her — onEdit/onNavigate setter
+                    // sheets.active til en ny verdi, og SwiftUIs
+                    // .sheet(item:) tar seg av overgangen automatisk.
+                    // Manuell dismiss ville sette sheets.active = nil og
+                    // kansellere den nye sheeten.
+                    onEdit: { wp in onWaypointEdit?(wp) },
+                    onNavigate: { coordinate in onWaypointNavigate?(coordinate) },
+                    isEmbedded: true
+                )
+            }
+    }
+
+    private var waypointListWithModals: some View {
+        waypointListStyled
+            .alert(String(localized: "waypoints.renameCategoryTitle"), isPresented: Binding(
+                get: { renamingCategory != nil },
+                set: { if !$0 { renamingCategory = nil; renameNewName = "" } }
+            )) {
+                TextField(String(localized: "waypoints.categoryNamePlaceholder"), text: $renameNewName)
+                Button(String(localized: "common.save")) { commitRename() }
+                Button(String(localized: "common.cancel"), role: .cancel) {
+                    renamingCategory = nil
+                    renameNewName = ""
+                }
+            } message: {
+                Text(String(localized: "waypoints.renameCategoryMessage"))
+            }
+            .alert(
+                String(localized: "waypoints.renameCategoryErrorTitle"),
+                isPresented: Binding(
+                    get: { renameErrorMessage != nil },
+                    set: { if !$0 { renameErrorMessage = nil } }
+                )
+            ) {
+                Button(String(localized: "common.ok"), role: .cancel) { renameErrorMessage = nil }
+            } message: {
+                Text(renameErrorMessage ?? "")
+            }
+            .trakkeDialog(
+                isPresented: Binding(
+                    get: { waypointToDelete != nil },
+                    set: { if !$0 { waypointToDelete = nil } }
+                ),
+                title: String(localized: "waypoints.deleteConfirmTitle"),
+                message: waypointToDelete.map {
+                    String(localized: "waypoints.deleteConfirmMessage \($0.name)")
+                } ?? "",
+                primary: .destructive(String(localized: "common.yes")) {
+                    if let wp = waypointToDelete { viewModel.deleteWaypoint(wp) }
+                    waypointToDelete = nil
+                },
+                cancel: .cancel(String(localized: "common.no"))
+            )
+    }
+
+    private var waypointListStyled: some View {
         waypointList
             .tint(Color.Trakke.brand)
             .background(Color.Trakke.background)
@@ -47,29 +147,6 @@ struct WaypointListSheet: View {
             }
             .sheet(item: $shareURL) { item in
                 ShareSheet(activityItems: [item.url])
-            }
-            .overlay(alignment: .bottom) {
-                if viewModel.importMessage != nil {
-                    importBanner
-                }
-            }
-            .navigationDestination(for: Waypoint.self) { waypoint in
-                WaypointDetailSheet(
-                    viewModel: viewModel,
-                    waypoint: waypoint,
-                    // Ikke dismiss her — onEdit/onNavigate setter
-                    // sheets.active til en ny verdi, og SwiftUIs
-                    // .sheet(item:) tar seg av overgangen automatisk.
-                    // Manuell dismiss ville sette sheets.active = nil og
-                    // kansellere den nye sheeten.
-                    onEdit: { wp in
-                        onWaypointEdit?(wp)
-                    },
-                    onNavigate: { coordinate in
-                        onWaypointNavigate?(coordinate)
-                    },
-                    isEmbedded: true
-                )
             }
     }
 
@@ -123,7 +200,7 @@ struct WaypointListSheet: View {
 
     private func collapsibleCategory(title: String, category: String?, items: [Waypoint]) -> some View {
         VStack(spacing: 0) {
-            categoryHeader(title: title, count: items.count)
+            categoryHeader(title: title, category: category, count: items.count)
 
             if expandedCategories.contains(title) {
                 Divider().padding(.leading, .Trakke.dividerLeading)
@@ -162,7 +239,7 @@ struct WaypointListSheet: View {
     // MARK: - Row
 
     private func waypointRow(_ waypoint: Waypoint) -> some View {
-        HStack {
+        HStack(spacing: .Trakke.sm) {
             VStack(alignment: .leading, spacing: .Trakke.labelGap) {
                 Text(waypoint.name)
                     .font(Font.Trakke.bodyMedium)
@@ -175,11 +252,19 @@ struct WaypointListSheet: View {
                 }
             }
 
+            // Hidden state is signalled by a subtle icon, not by dimming the
+            // whole row — dimmed body text fails WCAG 1.4.3 contrast.
+            if !waypoint.isVisible {
+                Image(systemName: "eye.slash")
+                    .font(Font.Trakke.captionSoft)
+                    .foregroundStyle(Color.Trakke.textSoft)
+                    .accessibilityHidden(true)
+            }
+
             Spacer()
         }
         .padding(.vertical, 12)
         .frame(minHeight: .Trakke.touchMin)
-        .opacity(waypoint.isVisible ? 1 : 0.45)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(waypointAccessibilityLabel(waypoint))
     }
@@ -202,7 +287,7 @@ struct WaypointListSheet: View {
     /// som roterer ved ekspandering, antall-tekst etter tittel. Per-
     /// kategori-synlighet-bryteren er fjernet — brukerne kan toggle per
     /// rad via VisibilityToggleButton.
-    private func categoryHeader(title: String, count: Int) -> some View {
+    private func categoryHeader(title: String, category: String?, count: Int) -> some View {
         let isExpanded = expandedCategories.contains(title)
         return Button {
             withAnimation(reduceMotion ? .none : .easeInOut(duration: 0.2)) {
@@ -239,6 +324,16 @@ struct WaypointListSheet: View {
         .accessibilityHint(isExpanded
             ? String(localized: "accessibility.tapToCollapse")
             : String(localized: "accessibility.tapToExpand"))
+        .contextMenu {
+            if let category {
+                Button {
+                    renamingCategory = category
+                    renameNewName = category
+                } label: {
+                    Label(String(localized: "common.rename"), systemImage: "pencil")
+                }
+            }
+        }
     }
 
     // MARK: - Action bar (importer / eksporter / slett)
@@ -308,7 +403,7 @@ struct WaypointListSheet: View {
         }
 
         Button(role: .destructive) {
-            viewModel.deleteWaypoint(waypoint)
+            waypointToDelete = waypoint
         } label: {
             Label(String(localized: "common.delete"), systemImage: "trash")
         }

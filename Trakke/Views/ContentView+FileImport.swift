@@ -38,9 +38,10 @@ extension ContentView {
 
         // Multiple types in one file: open the Naviger tab so the user sees
         // the combined overview. Otherwise jump directly to the matching list.
-        let typesImported = (activityCount > 0 ? 1 : 0)
-            + (routeCount > 0 ? 1 : 0)
-            + (waypointCount > 0 ? 1 : 0)
+        let hasActivity: Int = activityCount > 0 ? 1 : 0
+        let hasRoute: Int = routeCount > 0 ? 1 : 0
+        let hasWaypoint: Int = waypointCount > 0 ? 1 : 0
+        let typesImported = hasActivity + hasRoute + hasWaypoint
         if typesImported > 1 {
             selectedTab = .navigate
             isFABMenuOpen = true

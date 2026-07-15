@@ -7,6 +7,7 @@ final class Waypoint {
     var name: String
     var coordinates: [Double]
     var category: String?
+    var details: String?
     var elevation: Double?
     var icon: String?
     var color: String?
@@ -18,6 +19,7 @@ final class Waypoint {
         name: String,
         coordinates: [Double],
         category: String? = nil,
+        details: String? = nil,
         elevation: Double? = nil,
         icon: String? = nil,
         color: String? = nil
@@ -26,10 +28,11 @@ final class Waypoint {
         self.name = name
         self.coordinates = coordinates
         self.category = category
+        self.details = details
         self.elevation = elevation
         self.icon = icon
         self.color = color
-        self.isVisible = true
+        self.isVisible = false
         self.createdAt = Date()
         self.updatedAt = Date()
     }

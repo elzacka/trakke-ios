@@ -34,6 +34,7 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
     // MARK: - Navigation State
 
     var isNavigating = false
+    var isHeadingUp = false
     var userHeading: Double?
 
     // Keyed observers so navigation and recording can co-exist without one
@@ -105,8 +106,7 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
         let defaults = UserDefaults.standard
         var overlays: Set<OverlayLayer> = []
         if defaults.bool(forKey: AppStorageKeys.overlayTurrutebasen) { overlays.insert(.turrutebasen) }
-        if defaults.bool(forKey: AppStorageKeys.overlayHillshading) { overlays.insert(.hillshading) }
-        if defaults.bool(forKey: AppStorageKeys.overlayNaturvernomrader) { overlays.insert(.naturvernomrader) }
+if defaults.bool(forKey: AppStorageKeys.overlayNaturvernomrader) { overlays.insert(.naturvernomrader) }
         if defaults.bool(forKey: AppStorageKeys.overlayBratthetskart) { overlays.insert(.bratthetskart) }
         if defaults.bool(forKey: AppStorageKeys.overlayUtmRunenett) { overlays.insert(.utmRunenett) }
         if defaults.bool(forKey: AppStorageKeys.overlayNaturskog) { overlays.insert(.naturskog) }
@@ -200,12 +200,15 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
         isNavigating = true
         isTrackingUser = true
 
-        // Configure for navigation: more frequent updates while in the foreground.
-        // No CLBackgroundActivitySession — Tråkke honours the "When in Use"
-        // permission strictly. Location pauses when the user backgrounds the
-        // app and resumes when they return. Avoids Dynamic Island indicator
-        // persistence after force-quit and unnecessary battery drain.
-        locationManager.distanceFilter = 5.0
+        // Allow location updates to continue when the screen locks so the
+        // Live Activity on the lock screen stays current. The blue status-bar
+        // indicator (showsBackgroundLocationIndicator) makes this visible to
+        // the user. No CLBackgroundActivitySession needed — this is a
+        // continuation of the foreground session, not a persistent background
+        // process, so it stops naturally if the app is force-quit.
+        locationManager.allowsBackgroundLocationUpdates = true
+        locationManager.showsBackgroundLocationIndicator = true
+        locationManager.distanceFilter = 1.0
         locationManager.activityType = .fitness
 
         locationManager.startUpdatingLocation()
@@ -222,6 +225,8 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
         // Fully stop all location services first to ensure a clean break.
         locationManager.stopUpdatingLocation()
         locationManager.stopUpdatingHeading()
+        locationManager.allowsBackgroundLocationUpdates = false
+        locationManager.showsBackgroundLocationIndicator = false
         locationManager.distanceFilter = kCLDistanceFilterNone
         locationManager.activityType = .other
 

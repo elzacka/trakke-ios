@@ -5,6 +5,7 @@ struct KnowledgeDetailSheet: View {
     let entry: KnowledgeEntry
     var onNavigate: ((CLLocationCoordinate2D) -> Void)?
     @State private var copied = false
+    @AppStorage(AppStorageKeys.coordinateFormat) private var coordinateFormat: CoordinateFormat = .dd
 
     var body: some View {
         NavigationStack {
@@ -96,7 +97,7 @@ struct KnowledgeDetailSheet: View {
         CardSection(String(localized: "poi.coordinates")) {
             let formatted = CoordinateService.format(
                 coordinate: entry.coordinate,
-                format: .dd
+                format: coordinateFormat
             )
             HStack {
                 Text(formatted.display)

@@ -34,13 +34,10 @@ struct TrakkeMapView: UIViewRepresentable {
     var offlinePackBounds: [(south: Double, west: Double, north: Double, east: Double)] = []
 
     // Navigation
-    var navigationRouteCoordinates: [CLLocationCoordinate2D] = []
-    var navigationSegmentIndex: Int = 0
     var isNavigating = false
     var navigationCameraMode: NavigationCameraMode = .northUp
     var userHeading: Double?
     var compassDestination: CLLocationCoordinate2D?
-    var navigationMode: NavigationMode = .route
 
     func makeUIView(context: Context) -> MLNMapView {
         let styleURL = KartverketTileService.styleURL(for: viewModel.baseLayer)
@@ -120,6 +117,18 @@ struct TrakkeMapView: UIViewRepresentable {
             viewModel.shouldResetHeading = false
         }
 
+        // Non-navigation heading mode: re-engage followWithHeading after user pans,
+        // or disengage when toggled off. Navigation overrides this with its own logic.
+        if !isNavigating {
+            if viewModel.isHeadingUp {
+                if !context.coordinator.isUserInteracting && mapView.userTrackingMode != .followWithHeading {
+                    mapView.userTrackingMode = .followWithHeading
+                }
+            } else if mapView.userTrackingMode == .followWithHeading {
+                mapView.userTrackingMode = .follow
+            }
+        }
+
         // Eksplisitt zoom-kommando fra zoom-knappene. Må fyres før
         // isUserInteracting-vakten under, ellers svelges trykket når en
         // annen kamera-animasjon (kompass-reset, centerOnUser, lokasjon-
@@ -141,7 +150,8 @@ struct TrakkeMapView: UIViewRepresentable {
 
         // Center map on viewModel's current center/zoom — but only when
         // the user is NOT actively panning/zooming (prevents snap-back)
-        if !context.coordinator.isUserInteracting {
+        // and MapLibre tracking is off (tracking handles centering itself).
+        if !context.coordinator.isUserInteracting && mapView.userTrackingMode == .none {
             let vmCenter = viewModel.currentCenter
             let currentCenter = mapView.centerCoordinate
             let distance = Haversine.distance(from: currentCenter, to: vmCenter)
@@ -190,13 +200,10 @@ struct TrakkeMapView: UIViewRepresentable {
         // Update offline pack boundaries
         context.coordinator.updateOfflineBounds(on: mapView, packBounds: offlinePackBounds)
 
-        // Update navigation route/compass rendering
+        // Update navigation compass rendering
         context.coordinator.updateNavigation(
             on: mapView,
-            coordinates: navigationRouteCoordinates,
-            segmentIndex: navigationSegmentIndex,
             isNavigating: isNavigating,
-            mode: navigationMode,
             compassDestination: compassDestination,
             cameraMode: navigationCameraMode,
             heading: userHeading
@@ -276,12 +283,8 @@ struct TrakkeMapView: UIViewRepresentable {
         var lastMeasurementMode: MeasurementMode?
         var searchPinAnnotation: SearchPinAnnotation?
         var navLayersActive = false
-        var lastNavSegmentIndex = -1
-        var lastNavCoordCount = 0
-        var lastNavMode: NavigationMode?
         var lastCompassUserLat: Double = 0
         var lastCompassUserLon: Double = 0
-        var lastCameraHeading: Double = -1
         var lastAppliedNavCameraMode: NavigationCameraMode?
         var compassDestinationAnnotation: NavigationDestinationAnnotation?
 
@@ -367,7 +370,7 @@ struct TrakkeMapView: UIViewRepresentable {
             }
         }
 
-        // Overlay layer + hillshade management lives in TrakkeMapView+Overlays.swift.
+        // Overlay layer management lives in TrakkeMapView+Overlays.swift.
 
         // Note: MapLibre's built-in annotation drag (didChange dragState) is not used.
         // All point dragging is handled by our custom pan gesture (handleCornerPan)

@@ -1,7 +1,7 @@
 import SwiftUI
 import CoreLocation
 
-/// Samler app-nivå dialoger (rute-feil, DB-recovery, lagrings-feil,
+/// Samler app-nivå dialoger (DB-recovery, lagrings-feil,
 /// langt-trykk-meny) i én ViewModifier. Erstatter den tidligere private
 /// `MainLayoutDialogsModifier` i `ContentView`.
 struct DialogHost: ViewModifier {
@@ -9,17 +9,10 @@ struct DialogHost: ViewModifier {
     let sheets: SheetCoordinator
 
     @Binding var longPressCoordinate: CLLocationCoordinate2D?
-    @Binding var navigationDestination: CLLocationCoordinate2D?
     @Binding var showDbRecoveryAlert: Bool
 
     func body(content: Content) -> some View {
         content
-            .trakkeDialog(
-                isPresented: routeErrorBinding,
-                title: String(localized: "navigation.routeErrorTitle"),
-                message: routeErrorMessage,
-                buttons: [.primary(String(localized: "common.ok")) {}]
-            )
             .trakkeDialog(
                 isPresented: $showDbRecoveryAlert,
                 title: String(localized: "settings.dbRecovery.title"),
@@ -36,20 +29,6 @@ struct DialogHost: ViewModifier {
                 isPresented: longPressBinding,
                 buttons: longPressDialogButtons
             )
-    }
-
-    // MARK: - Route Error
-
-    private var routeErrorBinding: Binding<Bool> {
-        Binding(
-            get: { coordinator.showRouteError },
-            set: { coordinator.showRouteError = $0 }
-        )
-    }
-
-    private var routeErrorMessage: String {
-        coordinator.navigationViewModel.routeError
-            ?? String(localized: "navigation.routeErrorGeneric")
     }
 
     // MARK: - Save Error
@@ -92,8 +71,7 @@ struct DialogHost: ViewModifier {
     private var longPressDialogButtons: [TrakkeDialogButton] {
         [
             .primary(String(localized: "waypoints.addWaypoint"), action: addWaypointAtLongPress),
-            .primary(String(localized: "navigation.navigateHere"), action: navigateToLongPress),
-            .cancel()
+            .primary(String(localized: "navigation.navigateHere"), action: navigateToLongPress)
         ]
     }
 
@@ -102,9 +80,6 @@ struct DialogHost: ViewModifier {
         coordinator.mapViewModel.searchPinCoordinate = nil
         coordinator.waypointViewModel.startPlacing(at: coord)
         sheets.editingWaypoint = nil
-        // Utsett sheet-presentasjon én runloop-tick så fullScreenCover-
-        // dialog rekker å dismisses før ny sheet prøver å presentere
-        // (unngår presentasjons-race).
         DispatchQueue.main.async {
             sheets.active = .waypointEdit
         }
@@ -113,9 +88,6 @@ struct DialogHost: ViewModifier {
     private func navigateToLongPress() {
         guard let coord = longPressCoordinate else { return }
         coordinator.mapViewModel.searchPinCoordinate = nil
-        navigationDestination = coord
-        DispatchQueue.main.async {
-            sheets.active = .navigationStart
-        }
+        coordinator.startCompassNavigation(to: coord)
     }
 }

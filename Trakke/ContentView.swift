@@ -42,7 +42,6 @@ struct ContentView: View {
     @State var sheets = SheetCoordinator()
     @State var connectivityMonitor = ConnectivityMonitor()
 
-    @State var navigationDestination: CLLocationCoordinate2D?
     @State var isFABMenuOpen = false
     @State var selectedTab: AppTab = .home
     @State var sheetDetent: PresentationDetent = .large
@@ -59,8 +58,7 @@ struct ContentView: View {
             connectivityMonitor: connectivityMonitor,
             isFABMenuOpen: $isFABMenuOpen,
             isCleanMapActive: $isCleanMapActive,
-            longPressCoordinate: $longPressCoordinate,
-            navigationDestination: $navigationDestination
+            longPressCoordinate: $longPressCoordinate
         )
         .tint(Color.Trakke.brand)
         .modifier(SheetHost(
@@ -69,14 +67,12 @@ struct ContentView: View {
             connectivityMonitor: connectivityMonitor,
             isFABMenuOpen: $isFABMenuOpen,
             selectedTab: $selectedTab,
-            sheetDetent: $sheetDetent,
-            navigationDestination: $navigationDestination
+            sheetDetent: $sheetDetent
         ))
         .modifier(DialogHost(
             coordinator: coordinator,
             sheets: sheets,
             longPressCoordinate: $longPressCoordinate,
-            navigationDestination: $navigationDestination,
             showDbRecoveryAlert: $showDbRecoveryAlert
         ))
         .modifier(AppLifecycleModifier(

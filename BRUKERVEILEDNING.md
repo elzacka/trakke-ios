@@ -1,32 +1,30 @@
-## Handlinger på kartet {#kartet}
+## Handlinger på kartet
 
 ### Bevegelser
 
-- **Dra med én finger**: Panorere
-- **Knip med to fingre**: Zoome
-- **Roter med to fingre**: Rotere kartet (trykk kompasset for å snu nord opp)
-- **To fingre opp eller ned**: Tilte kartet for 3D
-- **Trykk**: Legge til punkt i tegne- eller målemodus. Ellers lukker et trykk åpne ark og menyer.
+- **Dra med én finger**: Panorer
+- **Knip med to fingre**: Zoom
+- **Roter med to fingre**: Roter kartet
+- **To fingre opp eller ned**: Tilt kartet for 3D
+- **Trykk**: Legg til punkt i tegne- eller målemodus. Ellers lukker et trykk åpne ark og menyer.
 - **Langt trykk**: Meny med «Legg til sted» og «Naviger hit»
 
-### Kontrollere: Knapper på kartet
+### Knapper på kartet
 
-Knappene som vises langs høyre kant av kartet. Hvilke som vises styres i [Innstillinger → Visning](#innstillinger), bortsett fra menyknappen som alltid er der.
+Knappene ligger langs høyre kant. Hvilke som vises styrer du i Innstillinger → Visning. Menyknappen er alltid der.
 
-- **Grønn menyknapp**: Trykk for å åpne menyen. Langt trykk skjuler alle kontroller, kartlag og POI-ikoner (se [Rens kartet hurtig](#renskartet)).
-- **Kompassknapp**: Ett trykk gjør to ting i én bevegelse — sentrerer kartet på din posisjon **og** snur kartet nord opp. Pilen peker mot nord og roterer med kartet, så du ser hvor mye kartet er dreid. Under navigasjon bytter trykket i stedet mellom **nord opp** og **kursretning**.
-- **Værwidget**: Viser temperatur og symbol for kartsenteret. Trykk for å åpne fullt vær med varsel, snøskred og luftkvalitet (se [Vær](#vaer)).
-- **Zoom-knapper (+/−)**: Zoom inn og ut ett trinn av gangen. Alternativ til knip-bevegelsen — nyttig med tykke hansker eller én hånd.
+- **Grønn menyknapp**: Trykk for å åpne menyen. Langt trykk skjuler alle kontroller, kartlag og POI-ikoner. Nyttig for å se topografien uten støy eller ta et rent skjermbilde. Et nytt langt trykk på knappen viser dem igjen.
+- **Kompassknapp**: Trykk for å veksle mellom to modi. Pilen viser hvor nord er.
+  - **Nord opp** (rødt ikon): Kartet ligger fast med nord øverst.
+  - **Retning opp** (grønt ikon): Kartet snur seg etter retningen telefonen peker, og sentreres på deg.
+- **Værwidget**: Viser temperatur og symbol for kartsenteret. Trykk for fullt vær med varsel, snøskred og luftkvalitet.
+- **Zoom-knapper (+/−)**: Zoom inn og ut ett trinn. Nyttig med hansker eller én hånd.
 
-Nederst til venstre vises **målestokk** og **kartdataattribusjon**. Disse er informasjon, ikke knapper.
+Nederst til venstre står målestokk og kartdataattribusjon. Det er informasjon, ikke knapper. Målestokk endrer seg ettersom du zoomer inn eller ut på kartet.
 
-## Rens kartet hurtig {#renskartet}
+## Menyen
 
-**Langt trykk på den grønne menyknappen** skjuler alle kontroller, kartlag og POI-ikoner. Gjenta for å vise dem igjen. Nyttig når du vil se topografien uten visuell støy, eller ta et rent skjermbilde.
-
-## Menyen {#mer}
-
-Trykk den grønne menyknappen for å åpne menyen. Nederst i menyen ligger fem faner:
+Trykk den grønne menyknappen for å åpne menyen. Nederst ligger fem faner:
 
 - **Hjem**: Søk på sted, adresse eller koordinat
 - **Naviger**: Turer og ruter, og Steder
@@ -34,169 +32,134 @@ Trykk den grønne menyknappen for å åpne menyen. Nederst i menyen ligger fem f
 - **Info**: Vær, Kunnskap og Om
 - **Innstillinger**: Kartlag, visning, koordinatformat og «Slett alle data»
 
-## Søk {#sok}
+## Søk
 
 Søk på sted, adresse eller koordinat via **Hjem**-fanen. Trykk på et treff for å sentrere kartet.
 
-## POI-kategorier {#kategorier}
+## POI-kategorier
 
-Kategoriene er gruppert etter tema.
+Kategoriene er gruppert etter tema. Zoom litt inn hvis du ikke ser ikonene på kartet. De fleste kategoriene er lagret i appen og fungerer offline. Unntaket er kulturminner. De hentes fra internett.
 
-Zoom litt inn hvis du ikke ser ikonene på kartet. De fleste kategoriene er lagret i appen og fungerer offline. Unntaket er kulturminner - de hentes fra internett.
-
-## Turer og ruter, og Steder (Naviger-fanen) {#steder}
+## Turer og ruter, og Steder (Naviger-fanen)
 
 To samlinger under én fane:
 
-- **Turer og ruter**: Planlagte og importerte ruter, og egne opptak. Du kan filtrere og redigere som før — kategoriene er nå delt mellom turer og ruter.
-- **Steder**: Punkter du har markert eller importert
+- **Turer og ruter**: Planlagte og importerte ruter, og egne loggede turer. Rediger etter behov.
+- **Steder**: Steder du har lagt til selv eller importert.
 
 ### Skjule og vise på kartet
 
-Hver rad har en hake-knapp helt til høyre. Trykk for å vise/skjule på kartet. Skjulte elementer er nedtonet i listen. Trykk på  kategori-overskriften for å vise alle på kartet.
+Hver rad har en hake-knapp helt til høyre. Trykk for å vise eller skjule på kartet. Skjulte elementer er nedtonet i listen. Trykk kategori-overskriften for å vise alle.
 
 ### Redigere og slette én rad
 
-Trykk og hold på en rad for å åpne kontekstmenyen: «Rediger», «Vis kun denne» og «Slett».
+Trykk og hold på en rad: «Rediger», «Vis kun denne» og «Slett».
 
-### Importere, eksportere og slette alle {#gpx}
+### Importere, eksportere og slette alle
 
 Nederst i hver liste ligger tre ikoner:
 
-- **Opp-pil**: Importer fra `.gpx`- eller `.geojson`-fil. Filer som deles til Tråkke fra andre apper (AirDrop, e-post, Filer) åpnes også automatisk.
-- **Ned-pil**: Eksporter alt som GPX
-- **Papirkurv**: Slett alle
+- **Opp-pil**: Importer fra `.gpx`- eller `.geojson`-fil. Filer som du har eksportert fra Tråkke eller andre apper. F. eks via Airdrop, e-post eller Filer på iPhone.
+- **Ned-pil**: Eksporter alt som `.gpx`-fil. 
+- **Papirkurv**: Slett alle.
 
-Importerte elementer er skjult på kartet som standard så de ikke roter til. Trykk for å vise/skjule på kartet.
+Importerte elementer er skjult på kartet som standard. Trykk for å vise. For å eksportere én rute eller tur: Åpne den og trykk «Eksporter som GPX».
 
-For å eksportere en enkelt rute eller tur: åpne den i detaljvisning og trykk «Eksporter som GPX».
-
-### Tegne en rute {#ruter}
+### Tegne en rute
 
 1. Åpne **Naviger → Turer og ruter**
 2. Trykk «Tegn rute»
 3. Trykk på kartet for å legge til punkter
-4. Dra et punkt for å flytte det. Angre-knappen fjerner siste punkt
+4. Dra et punkt for å flytte det. Angre-knappen fjerner siste punkt.
 5. Trykk «Ferdig» og gi ruten et navn
 
 ### Legge til et sted
 
-Langt trykk på kartet og velg «Legg til sted».
+Langt trykk på kartet og velg «Legg til sted». Dialogen har tre felter:
 
-### Logge en tur {#turlogging}
+- **Navn**: Navnet på stedet.
+- **Kategori**: Velg blant kategoriene du har fra før, eller trykk «Lag ny kategori». «Ingen kategori» er standard.
+- **Detaljer**: En beskrivelse av stedet. Valgfritt.
 
-Åpne **Naviger → Turer og ruter** og trykk pluss-knappen. Verktøylinjen viser varighet, avstand og høydemeter underveis.
+Har stedet detaljer, vises de i informasjonskortet under navn og kategori.
 
-Opptak og navigasjon mottar GPS uavhengig av hverandre — du kan starte navigasjon mens turen tas opp uten å bryte sporet.
+### Endre navn på en kategori
 
-**Etter turen** får du statistikk (avstand, varighet, høydemeter, gjennomsnittsfart), høydeprofil, eksport som GPX, og «Gå tilbake til start» som starter navigasjon tilbake til startpunktet.
+Langt trykk på en kategori-overskrift i Steder-listen og velg «Endre navn». Alle steder i kategorien flyttes med. For å flytte ett sted: åpne det, trykk blyant-ikonet og velg en annen kategori.
 
-### Navigasjon {#navigasjon}
+### Logge en tur
+
+Åpne **Naviger → Turer og ruter** og trykk pluss-knappen. Verktøylinjen viser varighet, avstand og høydemeter underveis. Du kan starte navigasjon mens turen tas opp uten å bryte sporet.
+
+Etter turen får du statistikk, høydeprofil, eksport som GPX, og «Gå tilbake til start» som navigerer tilbake til startpunktet.
+
+### Navigasjon
 
 Langt trykk på kartet og velg «Naviger hit», eller åpne et sted og trykk «Naviger».
 
-- **Beregnet rute**: Sving-for-sving langs sti, med høydeprofil. Krever dekning.
-- **Kompassretning**: Rett linje til målet. Fungerer uten dekning.
+Navigasjonen viser en pil mot målet og avstanden dit — en rett linje, ikke langs sti. Den fungerer uten dekning. Du varsles når du er framme (30 m fra målet).
 
-Appen velger kompassretning automatisk når du er uten dekning.
+Kompassknappen er alltid synlig under navigasjon. Trykk den for å veksle mellom nord opp og retning opp.
 
-Under navigasjon: trykk kompasset for å bytte mellom nord opp og kursretning. Du varsles ved avvik fra rute (50 m) og ved ankomst (30 m).
+Mens du navigerer vises avstand og retning til målet på låseskjermen og i Dynamic Island.
 
-## Vær (Info-fanen → Vær) {#vaer}
+## Vær (Info-fanen → Vær)
 
-### Trykk for forklaring
+Trykk på et værtall for en forklaring tilpasset friluftsliv: Hva tallet betyr for turen din. Finnes det en kunnskapsartikkel om temaet, lenker forklaringen videre.
 
-Trykk på de ulike værdataene for en forklaring tilpasset friluftsliv. Forklaringen beskriver hva tallene betyr for turen din — ikke bare hva de er. Vind har Beaufort-skala (0 til 25+ m/s), nedbør har mm/h og snø-omregning, og lufttrykk forklarer forskjellen på lavtrykk og høytrykk. UV-tooltip nevner også høydegradienten (UV øker rundt 10 % per 1000 høydemeter). Der det finnes utdypende kunnskapsartikkel om temaet, lenker forklaringen videre til den.
+- **Føles som**: Vises under graden når vinden gjør det kaldere enn lufttemperaturen.
+- **UV-indeks**: Vises alltid, med kategori, for eksempel «6 — Sterk». Er indeksen 3 eller høyere, får du et eget varsel med beskyttelsesråd.
+- **Endring i været**: Endrer været seg vesentlig de nærmeste timene, vises et varsel. For eksempel «Snø fra kl. 14».
+- **Luftkvalitet**: Vises når data finnes, med nivå og helseråd. Lenke til NAAF Pollenvarsel er alltid synlig.
+- **Snøskred og flom**: Aktive varsler fra NVE. Snøskredvarselet gjelder posisjonen din. Trykk for å lese hele varselet.
+- **7-dagers varsel**: Trykk på en dag for å se timevarsel. Beste turdag er markert. Info-knappen forklarer fargene: Oransje = vær oppmerksom, rødt = farlig nivå.
 
-### Følt temperatur
+## Kunnskap (Info-fanen → Kunnskap)
 
-Når vinden gjør det kaldere enn lufttemperaturen, vises «Føles som» under graden.
+Artikler om friluftsliv og overlevelse. Noen artikler har bilder. Trykk på bildet for å se det i full størrelse.
 
-### UV-indeks
+## Om (Info-fanen → Om)
 
-UV-indeksen vises alltid, også når den er 0. Tallet er ledsaget av kategori, for eksempel «0 — Lav» eller «6 — Sterk». Når indeksen er 3 eller høyere, vises et eget varsel med beskyttelsesråd.
+Øverst vises om appen er **Online** eller **Offline**, og hvilken tilkobling som er i bruk. Visningen bruker bare lokal nettverksinformasjon — ingenting sendes ut.
 
-### Endring i været
+Nederst finner du denne brukerveiledningen, personvernerklæring og lenke til Tråkkes kildekode.
 
-Endrer været seg vesentlig de neste timene, vises et eget varsel — for eksempel «Snø fra kl. 14» eller «Mer vind fra kl. 03».
+## SOS og nød (Verktøy-fanen → SOS)
 
-### Luftkvalitet
+- **Koordinater**: Posisjonen din i to formater. Trykk kopier-knappen. Koordinaten slettes fra utklippstavlen etter fem minutter.
+- **SOS-signal**: Sender SOS i morsekode med lommelykten, med lydsignal på 2800 Hz. Gjentas til du trykker «Stopp». Skjermen kan ikke lukkes mens SOS er aktiv.
+- **Nødnumre**: Trykk for å ringe: 113 (ambulanse), 112 (politi), 110 (brann), 116 117 (legevakt).
 
-Vises når data er tilgjengelig, med nivå fra lite til svært høy forurensning og helseråd. Lenke til NAAF Pollenvarsel er alltid synlig.
-
-### Snøskred- og flomvarsler
-
-Aktive varsler fra NVE/Varsom vises i værmeldingen. Snøskredvarsel er basert på posisjonen din. Trykk for å lese hele varselet.
-
-### 7-dagers varsel
-
-Trykk på en dag for å se timevarsel med temperatur, vind og nedbør. Den beste turdagen er markert. Info-knappen forklarer fargeleggingen: oransje for vind og UV markerer nivå der du bør være oppmerksom, rødt markerer farlig nivå.
-
-## Kunnskap (Info-fanen → Kunnskap) {#kunnskap}
-
-Artikler om friluftsliv og overlevelse. Trykk på et bilde i en artikkel for fullskjerm.
-
-## Om (Info-fanen → Om) {#om}
-
-### Nettverksstatus
-
-Øverst vises om appen er **Online** eller **Offline**, og hvilken tilkobling som er i bruk: Wi-Fi, mobildata, kablet, annet eller ingen. Visningen oppdateres automatisk og bruker bare lokal nettverksinformasjon på enheten — ingenting sendes ut.
-
-### Kom i gang
-
-Lenker til brukerveiledning, personvernerklæring og kildekode.
-
-## SOS og nød (Verktøy-fanen → SOS) {#sos}
-
-### Koordinater
-
-Posisjonen din vises i to formater. Trykk kopier-knappen for å kopiere. Koordinaten slettes automatisk fra utklippstavlen etter fem minutter.
-
-### SOS-signal
-
-Sender SOS i morsekode med lommelykten. Lydsignalet på 2800 Hz følger blinkene. Signalet gjentas til du trykker «Stopp». Skjermen kan ikke lukkes mens SOS er aktiv.
-
-### Nødnumre
-
-Trykk for å ringe: 113 (ambulanse), 112 (politi), 110 (brann), 116 117 (legevakt).
-
-## Måleverktøy (Verktøy-fanen → Måleverktøy) {#maleverktoy}
+## Måleverktøy (Verktøy-fanen → Måleverktøy)
 
 - **Avstand**: Trykk på kartet for å legge til punkter. Viser samlet avstand.
 - **Areal**: Legg til minst tre punkter. Viser areal.
 
 Dra et punkt for å justere. «Angre» fjerner siste punkt, «Nullstill» starter på nytt.
 
-## Offlinekart (Verktøy-fanen → Offlinekart) {#offline}
+## Offlinekart (Verktøy-fanen → Offlinekart)
 
-Nedlastede kart brukes automatisk når du er uten mobildekning. Da vises en stiplet firkant på kartet som markerer grensene til de nedlastede områdene.
+Nedlastede kart brukes automatisk uten mobildekning. En stiplet firkant markerer grensene til de nedlastede områdene.
 
-### Egendefinert område
+**Egendefinert område**: Trykk «Velg område», dra i hjørnene, trykk «Ferdig», og velg navn, bakgrunnskart og zoomnivå før du starter nedlasting.
 
-1. Trykk «Velg område»
-2. Dra i hjørnene for å justere
-3. Trykk «Ferdig», velg navn, bakgrunnskart og zoomnivå, og start nedlasting
+**Per kommune**: Bla gjennom kommuner per fylke, eller søk på kommunenavn. Trykk en kommune for å starte nedlasting.
 
-### Last ned per kommune
-
-Bla gjennom kommuner per fylke, eller søk etter kommunenavn. Trykk på en kommune for å starte nedlasting.
-
-## Innstillinger {#innstillinger}
+## Innstillinger
 
 ### Bakgrunnskart
 
-- **Topografisk** (standard): Kart som viser terrengdetaljer.
-- **Gråtone**: Samme type kart som topografisk, men uten farger. Gir bedre kontrast til ting du velger å vise på kartet.
-- **Turkart**: Kalles også for «Rasterkart» og «Papirkart». Ligner på Kartverkets trykte papirkart.
+- **Topografisk** (standard): Kart med terrengdetaljer.
+- **Gråtone**: Samme kart uten farger. Gir bedre kontrast til det du viser på kartet.
+- **Turkart**: Ligner Kartverkets trykte papirkart.
 
 ### Kartlag
 
-- **3D-relieff**: Terrengskygge
-- **Bratthetskart**: Viser bratt terreng (over 27°) der det er potensiell fare for snøskred
-- **Naturskog**: Gammelskog, naturskogsannsynlighet eller nærhet til naturskog
-- **Naturvernområder**: Vernede områder
-- **Turruter**: Merkede stier
-- **UTM-rutenett**: Kartrutenett for kartreferanser
+- **Bratthetskart**: Bratt terreng (over 27°) med potensiell snøskredfare.
+- **Naturskog**: Gammelskog, naturskogsannsynlighet eller nærhet til naturskog.
+- **Naturvernområder**: Vernede områder.
+- **Turruter**: Merkede stier.
+- **UTM-rutenett**: Kartrutenett for kartreferanser.
 
 ### Visning
 
@@ -208,6 +171,4 @@ DD, DMS eller UTM (EUREF89 sone 33). Trykk info-knappen ved hvert format for for
 
 ### Slett alle data
 
-Sletter alle lokale ruter, steder, turer, offlinekart, kunnskapspakker og innstillinger. Krever bekreftelse. Kan ikke angres.
-
-Dette dekker også din rett til sletting under GDPR.
+Sletter alle lokale ruter, steder, turer, offlinekart, kunnskapspakker og innstillinger. Krever bekreftelse. Kan ikke angres. Dette dekker også retten din til sletting under GDPR.

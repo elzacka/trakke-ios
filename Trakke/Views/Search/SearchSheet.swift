@@ -82,13 +82,15 @@ struct SearchSheet: View {
                 }
             } else {
                 List(viewModel.results) { result in
-                    SearchResultRow(result: result)
-                        .listRowBackground(Color.Trakke.background)
-                        .onTapGesture {
-                            viewModel.selectResult(result)
-                            onResultSelected(result)
-                            dismiss()
-                        }
+                    Button {
+                        viewModel.selectResult(result)
+                        onResultSelected(result)
+                        dismiss()
+                    } label: {
+                        SearchResultRow(result: result)
+                    }
+                    .buttonStyle(.plain)
+                    .listRowBackground(Color.Trakke.background)
                 }
                 .listStyle(.plain)
                 .scrollContentBackground(.hidden)

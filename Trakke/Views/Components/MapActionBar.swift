@@ -72,12 +72,15 @@ struct MapActionStat: View {
 
     var body: some View {
         HStack(spacing: .Trakke.xs) {
+            // Text-style fonts (not @ScaledMetric) so the .dynamicTypeSize cap
+            // below actually bounds them — a same-view @ScaledMetric resolves
+            // from the parent environment before the cap applies.
             Image(systemName: icon)
-                .font(.system(size: 12, weight: .regular))
+                .font(.system(.caption, weight: .regular))
                 .foregroundStyle(Color.Trakke.textSoft)
                 .accessibilityHidden(true)
             Text(value)
-                .font(.system(size: 14, weight: .semibold).monospacedDigit())
+                .font(.system(.subheadline, weight: .semibold).monospacedDigit())
                 .foregroundStyle(color)
                 .contentTransition(.numericText())
                 .lineLimit(1)
@@ -85,6 +88,9 @@ struct MapActionStat: View {
         }
         .padding(.horizontal, .Trakke.sm)
         .frame(maxWidth: .infinity, minHeight: 44)
+        // HUD-pillen har begrenset bredde — cap veksten så distanse/fart-stats
+        // ikke sprenger kapselen ved de største tilgjengelighetsstørrelsene.
+        .dynamicTypeSize(...(.accessibility2))
         .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibilityLabel ?? value)
     }
@@ -94,9 +100,11 @@ struct MapActionStat: View {
 struct MapActionHint: View {
     let text: String
 
+    @ScaledMetric(relativeTo: .caption) private var textSize: CGFloat = 13
+
     var body: some View {
         Text(text)
-            .font(.system(size: 13, weight: .regular))
+            .font(.system(size: textSize, weight: .regular))
             .foregroundStyle(Color.Trakke.textSoft)
             .lineLimit(1)
             .minimumScaleFactor(0.75)

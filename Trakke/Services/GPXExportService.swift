@@ -182,6 +182,9 @@ enum GPXExportService {
         }
         parts.append("\n    <time>\(iso8601(wp.createdAt))</time>")
         parts.append("\n    <name>\(escapeXML(wp.name))</name>")
+        if let details = wp.details, !details.isEmpty {
+            parts.append("\n    <desc>\(escapeXML(details))</desc>")
+        }
         if let category = wp.category {
             parts.append("\n    <type>\(escapeXML(category))</type>")
         }

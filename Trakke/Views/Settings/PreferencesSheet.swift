@@ -16,7 +16,6 @@ struct PreferencesSheet: View {
     @AppStorage(AppStorageKeys.showScaleBar) private var showScaleBar = false
     @AppStorage(AppStorageKeys.enableRotation) private var enableRotation = true
     @AppStorage(AppStorageKeys.overlayTurrutebasen) private var overlayTurrutebasen = false
-    @AppStorage(AppStorageKeys.overlayHillshading) private var overlayHillshading = false
     @AppStorage(AppStorageKeys.overlayNaturvernomrader) private var overlayNaturvernomrader = false
     @AppStorage(AppStorageKeys.overlayBratthetskart) private var overlayBratthetskart = false
     @AppStorage(AppStorageKeys.overlayUtmRunenett) private var overlayUtmRunenett = false
@@ -65,11 +64,6 @@ struct PreferencesSheet: View {
                     // MARK: - Overlay Layers
                     CardSection(String(localized: "settings.overlays")) {
                         VStack(spacing: 0) {
-                            settingsToggle(
-                                label: OverlayLayer.hillshading.displayName,
-                                isOn: $overlayHillshading
-                            )
-                            Divider()
                             settingsToggle(
                                 label: OverlayLayer.bratthetskart.displayName,
                                 isOn: $overlayBratthetskart
@@ -226,7 +220,6 @@ struct PreferencesSheet: View {
             showScaleBar = false
             enableRotation = true
             overlayTurrutebasen = false
-            overlayHillshading = false
             overlayNaturvernomrader = false
             overlayBratthetskart = false
             overlayNaturskog = false

@@ -89,19 +89,19 @@ enum CoordinateService {
 
     // MARK: - Parsing
 
-    static func parse(_ input: String) -> SearchResult? {
+    static func parse(_ input: String, preferredFormat: CoordinateFormat = .dd) -> SearchResult? {
         let trimmed = input.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        if let result = parseUTM(trimmed) { return result }
-        if let result = parseDMS(trimmed) { return result }
-        if let result = parseDD(trimmed) { return result }
+        if let result = parseUTM(trimmed, preferredFormat: preferredFormat) { return result }
+        if let result = parseDMS(trimmed, preferredFormat: preferredFormat) { return result }
+        if let result = parseDD(trimmed, preferredFormat: preferredFormat) { return result }
 
         return nil
     }
 
     // MARK: DD Parsing
 
-    private static func parseDD(_ input: String) -> SearchResult? {
+    private static func parseDD(_ input: String, preferredFormat: CoordinateFormat = .dd) -> SearchResult? {
         // Pattern with direction letters: N59.9139 E10.7522
         let dirPattern = #"^([NS])?(-?\d+\.?\d*)[°]?([NS])?\s*[,\s]\s*([EWØ])?(-?\d+\.?\d*)[°]?([EWØ])?$"#
         if let regex = try? NSRegularExpression(pattern: dirPattern, options: .caseInsensitive),
@@ -127,7 +127,7 @@ enum CoordinateService {
             // Ø is Norwegian for East (no sign change)
 
             if let coordinate = resolveLatLon(lat: lat, lon: lon) {
-                return makeCoordinateResult(coordinate: coordinate, label: "DD")
+                return makeCoordinateResult(coordinate: coordinate, label: "DD", preferredFormat: preferredFormat)
             }
         }
 
@@ -140,7 +140,7 @@ enum CoordinateService {
             guard let lat = v1, let lon = v2 else { return nil }
 
             if let coordinate = resolveLatLon(lat: lat, lon: lon) {
-                return makeCoordinateResult(coordinate: coordinate, label: "DD")
+                return makeCoordinateResult(coordinate: coordinate, label: "DD", preferredFormat: preferredFormat)
             }
         }
 
@@ -149,7 +149,7 @@ enum CoordinateService {
 
     // MARK: DMS Parsing
 
-    private static func parseDMS(_ input: String) -> SearchResult? {
+    private static func parseDMS(_ input: String, preferredFormat: CoordinateFormat = .dd) -> SearchResult? {
         let pattern = "(\\d+)[\u{00B0}]\\s*(\\d+)['\u{2032}]\\s*(\\d+\\.?\\d*)[\"\u{2033}]?\\s*([NS])\\s*[,\\s]\\s*(\\d+)[\u{00B0}]\\s*(\\d+)['\u{2032}]\\s*(\\d+\\.?\\d*)[\"\u{2033}]?\\s*([EW\u{00D8}])"
         guard let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive),
               let match = regex.firstMatch(in: input, range: NSRange(input.startIndex..., in: input)) else {
@@ -176,12 +176,12 @@ enum CoordinateService {
         guard isValidCoordinate(lat: lat, lon: lon) else { return nil }
 
         let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: lon)
-        return makeCoordinateResult(coordinate: coordinate, label: "DMS")
+        return makeCoordinateResult(coordinate: coordinate, label: "DMS", preferredFormat: preferredFormat)
     }
 
     // MARK: UTM Parsing
 
-    private static func parseUTM(_ input: String) -> SearchResult? {
+    private static func parseUTM(_ input: String, preferredFormat: CoordinateFormat = .dd) -> SearchResult? {
         // Pattern with zone+band prefix: "32V 597982 6642924"
         let zonePattern = #"^(\d{1,2})\s*([C-HJ-NP-X])\s+(\d{5,7})\s*[EØ]?\s+(\d{6,8})\s*N?$"#
         if let regex = try? NSRegularExpression(pattern: zonePattern, options: .caseInsensitive),
@@ -197,7 +197,8 @@ enum CoordinateService {
             guard isValidCoordinate(lat: lat, lon: lon) else { return nil }
             return makeCoordinateResult(
                 coordinate: CLLocationCoordinate2D(latitude: lat, longitude: lon),
-                label: "UTM"
+                label: "UTM",
+                preferredFormat: preferredFormat
             )
         }
 
@@ -212,7 +213,8 @@ enum CoordinateService {
             guard isValidCoordinate(lat: lat, lon: lon), isInNorway(lat: lat, lon: lon) else { return nil }
             return makeCoordinateResult(
                 coordinate: CLLocationCoordinate2D(latitude: lat, longitude: lon),
-                label: "UTM"
+                label: "UTM",
+                preferredFormat: preferredFormat
             )
         }
 
@@ -269,14 +271,18 @@ enum CoordinateService {
         return CLLocationCoordinate2D(latitude: lat, longitude: lon)
     }
 
-    private static func makeCoordinateResult(coordinate: CLLocationCoordinate2D, label: String) -> SearchResult {
-        let dd = formatDD(lat: coordinate.latitude, lon: coordinate.longitude)
+    private static func makeCoordinateResult(
+        coordinate: CLLocationCoordinate2D,
+        label: String,
+        preferredFormat: CoordinateFormat = .dd
+    ) -> SearchResult {
+        let formatted = format(coordinate: coordinate, format: preferredFormat)
         return SearchResult(
             id: "coord-\(coordinate.latitude)-\(coordinate.longitude)",
-            name: dd.display,
+            name: formatted.display,
             type: .coordinates,
             coordinate: coordinate,
-            displayName: dd.display,
+            displayName: formatted.display,
             subtext: label
         )
     }

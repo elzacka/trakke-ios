@@ -254,10 +254,14 @@ struct WeatherSheet: View {
 
     private func varsomColor(_ level: Int) -> Color {
         switch level {
+        // Nivå 1 («lavt») bruker en mørkere grønn enn Color.Trakke.green
+        // slik at hvit badge-tekst når ≥4.5:1 kontrast (WCAG 1.4.3).
+        // Nivåene 2–5 passer allerede og er uendret.
+        case 1: return Color(hex: "217a45")
         case 2: return Color.Trakke.yellow
         case 3: return Color.Trakke.warning
         case 4, 5: return Color.Trakke.red
-        default: return Color.Trakke.green
+        default: return Color(hex: "217a45")
         }
     }
 

@@ -16,7 +16,6 @@ struct SheetHost: ViewModifier {
     @Binding var isFABMenuOpen: Bool
     @Binding var selectedTab: AppTab
     @Binding var sheetDetent: PresentationDetent
-    @Binding var navigationDestination: CLLocationCoordinate2D?
 
     // Aliaser så hver call-site type-sjekkes isolert.
     private var mapViewModel: MapViewModel { coordinator.mapViewModel }
@@ -123,16 +122,12 @@ struct SheetHost: ViewModifier {
 
     private func handleWaypointNavigate(_ coordinate: CLLocationCoordinate2D) {
         isFABMenuOpen = false
-        navigationDestination = coordinate
-        DispatchQueue.main.async {
-            sheets.active = .navigationStart
-        }
+        coordinator.startCompassNavigation(to: coordinate)
     }
 
     private func handleActivityRetrace(_ coordinate: CLLocationCoordinate2D) {
         isFABMenuOpen = false
-        navigationDestination = coordinate
-        sheets.active = .navigationStart
+        coordinator.startCompassNavigation(to: coordinate)
     }
 
     private func handleActivityFollow(_ activity: Activity) {
@@ -173,8 +168,8 @@ struct SheetHost: ViewModifier {
                 POIDetailSheet(
                     poi: poi,
                     onNavigate: { coordinate in
-                        navigationDestination = coordinate
-                        sheets.active = .navigationStart
+                        coordinator.startCompassNavigation(to: coordinate)
+                        sheets.active = nil
                     }
                 )
                 .presentationDetents([.medium, .large])
@@ -191,8 +186,8 @@ struct SheetHost: ViewModifier {
                     coordinator.startFollowingRoute(route)
                 },
                 onActivityRetrace: { coordinate in
-                    navigationDestination = coordinate
-                    sheets.active = .navigationStart
+                    coordinator.startCompassNavigation(to: coordinate)
+                    sheets.active = nil
                 },
                 onActivityFollow: { activity in
                     sheets.active = nil
@@ -225,8 +220,8 @@ struct SheetHost: ViewModifier {
                     sheets.active = .waypointEdit
                 },
                 onWaypointNavigate: { coordinate in
-                    navigationDestination = coordinate
-                    sheets.active = .navigationStart
+                    coordinator.startCompassNavigation(to: coordinate)
+                    sheets.active = nil
                 }
             )
             .presentationDetents([.medium, .large])
@@ -243,8 +238,8 @@ struct SheetHost: ViewModifier {
                         sheets.active = .waypointEdit
                     },
                     onNavigate: { coordinate in
-                        navigationDestination = coordinate
-                        sheets.active = .navigationStart
+                        coordinator.startCompassNavigation(to: coordinate)
+                        sheets.active = nil
                     }
                 )
                 .presentationDetents([.medium, .large])
@@ -257,7 +252,7 @@ struct SheetHost: ViewModifier {
                 viewModel: waypointViewModel,
                 editingWaypoint: sheets.editingWaypoint
             )
-            .presentationDetents([.medium])
+            .presentationDetents([.medium, .large])
             .presentationDragIndicator(.visible)
             .presentationBackgroundInteraction(.enabled(upThrough: .medium))
 
@@ -302,20 +297,6 @@ struct SheetHost: ViewModifier {
                 .presentationDetents([.height(200)])
                 .presentationDragIndicator(.visible)
                 .presentationBackgroundInteraction(.enabled(upThrough: .height(200)))
-
-        case .navigationStart:
-            if let dest = navigationDestination {
-                NavigationStartSheet(
-                    destination: dest,
-                    userLocation: mapViewModel.userLocation,
-                    isConnected: connectivityMonitor.isConnected,
-                    onRouteNavigation: { coordinator.startRouteNavigation(to: dest) },
-                    onCompassNavigation: { coordinator.startCompassNavigation(to: dest) }
-                )
-                .presentationDetents([.medium])
-                .presentationDragIndicator(.visible)
-                .presentationBackgroundInteraction(.enabled(upThrough: .medium))
-            }
 
         case .emergency:
             EmergencySheet(

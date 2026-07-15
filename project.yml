@@ -7,6 +7,25 @@ options:
   generateEmptyDirectories: true
   groupSortPosition: top
   developmentLanguage: nb
+  createDefaultSchemes: false
+
+schemes:
+  Trakke:
+    build:
+      targets:
+        Trakke: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - TrakkeTests
+    profile:
+      config: Release
+    analyze:
+      config: Debug
+    archive:
+      config: Release
 
 packages:
   MapLibreNative:
@@ -22,8 +41,8 @@ packages:
 settings:
   base:
     SWIFT_VERSION: "6.3"
-    MARKETING_VERSION: "1.6.0"
-    CURRENT_PROJECT_VERSION: 2
+    MARKETING_VERSION: "1.7.0"
+    CURRENT_PROJECT_VERSION: 3
     SWIFT_STRICT_CONCURRENCY: complete
   configs:
     Debug:
@@ -77,9 +96,36 @@ targets:
       - package: MapLibreSwiftUI
       - package: GRDB
         product: GRDB
+      - target: TrakkeNavigationWidget
+        embed: true
     entitlements:
       path: Trakke/Trakke.entitlements
       properties: {}
+
+  TrakkeNavigationWidget:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "26.0"
+    sources:
+      - path: TrakkeNavigationWidget
+      - path: Trakke/Models/NavigationActivityAttributes.swift
+    settings:
+      base:
+        INFOPLIST_FILE: TrakkeNavigationWidget/Info.plist
+        PRODUCT_BUNDLE_IDENTIFIER: no.tazk.trakke.NavigationWidget
+        PRODUCT_NAME: TrakkeNavigationWidget
+        SWIFT_VERSION: "6.3"
+        SWIFT_STRICT_CONCURRENCY: complete
+        DEVELOPMENT_TEAM: 8NW62A7PRA
+        CODE_SIGN_STYLE: Automatic
+        TARGETED_DEVICE_FAMILY: "1,2"
+        SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: false
+        SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: false
+        LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks"
+    dependencies:
+      - sdk: WidgetKit.framework
+      - sdk: SwiftUI.framework
+      - sdk: ActivityKit.framework
 
   TrakkeTests:
     type: bundle.unit-test

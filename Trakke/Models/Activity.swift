@@ -14,10 +14,7 @@ final class Activity {
     var startedAt: Date
     var endedAt: Date?
     var createdAt: Date
-    /// Whether the activity polyline shows on the map. Defaults to true so
-    /// recorded activities show up immediately. Importers set this to false
-    /// so a bulk import doesn't suddenly clutter the map.
-    var isVisible: Bool = true
+    var isVisible: Bool = false
     /// Optional user-defined category for grouping in the activity list (mirrors
     /// the Waypoint.category pattern). nil → "Ukategorisert" group.
     var category: String?
@@ -40,7 +37,7 @@ final class Activity {
         self.duration = duration
         self.startedAt = startedAt
         self.createdAt = Date()
-        self.isVisible = true
+        self.isVisible = false
         self.category = nil
     }
 

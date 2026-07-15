@@ -57,7 +57,7 @@ struct EmergencySheet: View {
 
     private var inactiveContent: some View {
         ScrollView {
-            VStack(spacing: .Trakke.cardGap) {
+            VStack(spacing: .Trakke.lg) {
                 CoordinatesCard(userLocation: userLocation)
 
                 emergencyNumbersSection
@@ -150,14 +150,8 @@ struct EmergencySheet: View {
             Button {
                 sosViewModel.activate()
             } label: {
-                Label(
-                    String(localized: "sos.activate"),
-                    systemImage: "light.beacon.max.fill"
-                )
-                // minHeight 48 + buttonPadV 10×2 = 68pt total, matcher
-                // Lydsignal-kortets høyde (cardPadV 12 + toggle-rad 44 +
-                // cardPadV 12). Sikrer visuell jevnhet med kortet over.
-                .frame(maxWidth: .infinity, minHeight: 48, alignment: .leading)
+                Text(String(localized: "sos.activate"))
+                    .frame(maxWidth: .infinity, minHeight: 48)
             }
             .buttonStyle(.trakkeSecondary)
             .accessibilityLabel(String(localized: "sos.activate"))
@@ -170,9 +164,10 @@ struct EmergencySheet: View {
 private struct CoordinatesCard: View {
     let userLocation: CLLocation?
     @State private var copiedId: String?
+    @State private var snapshotLocation: CLLocation?
 
     private var coordinate: CLLocationCoordinate2D? {
-        guard let loc = userLocation,
+        guard let loc = snapshotLocation,
               loc.coordinate.latitude.isFinite,
               loc.coordinate.longitude.isFinite else { return nil }
         return loc.coordinate
@@ -203,6 +198,23 @@ private struct CoordinatesCard: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.vertical, .Trakke.md)
+            }
+        }
+        .onAppear {
+            if let loc = userLocation, loc.coordinate.latitude.isFinite {
+                snapshotLocation = loc
+            }
+        }
+        .onChange(of: userLocation) { _, newLoc in
+            guard let newLoc, newLoc.coordinate.latitude.isFinite else { return }
+            guard let current = snapshotLocation else {
+                snapshotLocation = newLoc
+                return
+            }
+            let accuracyImproved = newLoc.horizontalAccuracy < current.horizontalAccuracy - 10
+            let movedSignificantly = newLoc.distance(from: current) > 15
+            if accuracyImproved || movedSignificantly {
+                snapshotLocation = newLoc
             }
         }
     }

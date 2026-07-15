@@ -344,9 +344,12 @@ struct TracksListSheet: View {
 
     private func routeRowContent(_ route: Route) -> some View {
         HStack(spacing: .Trakke.md) {
+            // Skjult tilstand dempes kun på farge-prikken, ikke på teksten —
+            // teksten må holde full kontrast (WCAG 1.4.3).
             Circle()
                 .fill(Color(hex: route.color ?? "#E07000"))
                 .frame(width: 12, height: 12)
+                .opacity(route.isVisible ? 1 : 0.45)
 
             VStack(alignment: .leading, spacing: .Trakke.labelGap) {
                 Text(route.name)
@@ -359,10 +362,15 @@ struct TracksListSheet: View {
             }
 
             Spacer()
+
+            if !route.isVisible {
+                Image(systemName: "eye.slash")
+                    .font(Font.Trakke.captionSoft)
+                    .foregroundStyle(.secondary)
+            }
         }
         .padding(.vertical, 12)
         .frame(minHeight: .Trakke.touchMin)
-        .opacity(route.isVisible ? 1 : 0.45)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(routeAccessibilityLabel(route))
     }
@@ -426,9 +434,12 @@ struct TracksListSheet: View {
         // som rute-prikken) slik at rad-strukturen er den samme. Dato til
         // høyre er det som visuelt skiller en tur fra en rute.
         HStack(spacing: .Trakke.md) {
+            // Skjult tilstand dempes kun på farge-prikken, ikke på teksten —
+            // teksten må holde full kontrast (WCAG 1.4.3).
             Circle()
                 .fill(Color.Trakke.brand)
                 .frame(width: 12, height: 12)
+                .opacity(activity.isVisible ? 1 : 0.45)
 
             VStack(alignment: .leading, spacing: .Trakke.labelGap) {
                 HStack {
@@ -445,10 +456,15 @@ struct TracksListSheet: View {
                     .font(Font.Trakke.captionSoft)
                     .foregroundStyle(Color.Trakke.textSoft)
             }
+
+            if !activity.isVisible {
+                Image(systemName: "eye.slash")
+                    .font(Font.Trakke.captionSoft)
+                    .foregroundStyle(.secondary)
+            }
         }
         .padding(.vertical, 12)
         .frame(minHeight: .Trakke.touchMin)
-        .opacity(activity.isVisible ? 1 : 0.45)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(activityAccessibilityLabel(activity))
     }

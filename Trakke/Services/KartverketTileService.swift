@@ -38,7 +38,6 @@ enum BaseLayer: String, CaseIterable, Identifiable, Sendable {
 
 enum OverlayLayer: String, CaseIterable, Identifiable, Sendable {
     case turrutebasen
-    case hillshading
     case naturvernomrader
     case naturskog
     case bratthetskart
@@ -49,7 +48,6 @@ enum OverlayLayer: String, CaseIterable, Identifiable, Sendable {
     var displayName: String {
         switch self {
         case .turrutebasen: return String(localized: "map.overlay.turrutebasen")
-        case .hillshading: return String(localized: "map.overlay.hillshading")
         case .naturvernomrader: return String(localized: "map.overlay.naturvernomrader")
         case .naturskog: return String(localized: "map.overlay.naturskog")
         case .bratthetskart: return String(localized: "map.overlay.bratthetskart")
@@ -59,27 +57,14 @@ enum OverlayLayer: String, CaseIterable, Identifiable, Sendable {
 
     var attribution: String {
         switch self {
-        case .turrutebasen: return "\u{00A9} Kartverket"
-        case .hillshading: return "\u{00A9} Kartverket / Mapzen"
-        case .naturvernomrader, .naturskog:
-            return "\u{00A9} Milj\u{00F8}direktoratet"
-        case .bratthetskart:
-            return "\u{00A9} NVE"
-        case .utmRunenett:
-            return "\u{00A9} Kartverket"
+        case .turrutebasen, .utmRunenett: return "\u{00A9} Kartverket"
+        case .naturvernomrader, .naturskog: return "\u{00A9} Milj\u{00F8}direktoratet"
+        case .bratthetskart: return "\u{00A9} NVE"
         }
     }
 
-    // MARK: - WMS/REST overlay properties (not used by .hillshading)
-
-    var sourceID: String {
-        if case .hillshading = self { return TerrainConstants.demSourceID }
-        return "overlay-\(rawValue)"
-    }
-    var layerID: String {
-        if case .hillshading = self { return TerrainConstants.hillshadeLayerID }
-        return "overlay-\(rawValue)-layer"
-    }
+    var sourceID: String { "overlay-\(rawValue)" }
+    var layerID: String { "overlay-\(rawValue)-layer" }
 
     /// ArcGIS REST MapServer for "Skog etablert før 1940, ikke flatehogd"
     /// (layer ID 1 i naturskog_v1/MapServer).
@@ -92,7 +77,6 @@ enum OverlayLayer: String, CaseIterable, Identifiable, Sendable {
         case .turrutebasen: return 5
         case .naturvernomrader: return 6
         case .naturskog: return 8
-        case .hillshading: return 3
         case .bratthetskart: return 9
         case .utmRunenett: return 7
         }
@@ -145,8 +129,6 @@ enum OverlayLayer: String, CaseIterable, Identifiable, Sendable {
                 + "&LAYERS=10km_rutelinje,1km_rutelinje&STYLES=&SRS=EPSG:3857"
                 + "&BBOX={bbox-epsg-3857}&WIDTH=256&HEIGHT=256"
                 + "&FORMAT=image/png&TRANSPARENT=TRUE"
-        case .hillshading:
-            return nil
         }
     }
 }
@@ -162,14 +144,6 @@ enum MapConstants {
     static let attribution = "\u{00A9} Kartverket"
 }
 
-enum TerrainConstants {
-    static let demSourceID = "terrain-dem-source"
-    static let hillshadeLayerID = "terrain-hillshade-layer"
-    static let demTileURL = "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"
-    static let maxDEMZoom: Int = 15
-    static let defaultExaggeration: Float = 0.5
-    static let defaultIlluminationDirection: Float = 335
-}
 
 enum KartverketTileService {
     static func styleJSON(for layer: BaseLayer) -> Data {

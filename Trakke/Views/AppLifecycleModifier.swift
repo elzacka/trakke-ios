@@ -38,9 +38,6 @@ struct AppLifecycleModifier: ViewModifier {
             .onChange(of: coordinator.measurementViewModel.isActive) { _, isActive in
                 handleMeasurementActiveChange(isActive)
             }
-            .task(id: coordinator.navigationViewModel.isComputingRoute) {
-                await handleComputingIndicatorChange()
-            }
     }
 
     // MARK: - Handlers
@@ -53,6 +50,7 @@ struct AppLifecycleModifier: ViewModifier {
         coordinator.activityViewModel.setModelContext(modelContext)
         coordinator.activityViewModel.loadActivities()
         coordinator.offlineViewModel.startObserving()
+        coordinator.searchViewModel.setConnectivityMonitor(connectivityMonitor)
         connectivityMonitor.start()
         BundledPOIService.preloadAll()
         if UserDefaults.standard.bool(forKey: AppStorageKeys.dbRecoveryOccurred) {
@@ -82,12 +80,21 @@ struct AppLifecycleModifier: ViewModifier {
     }
 
     private func handleScenePhaseChange() {
-        if scenePhase == .background,
-           coordinator.navigationViewModel.isActive,
-           !coordinator.sosViewModel.isActive {
-            // Ensure idle timer is restored if system terminates, but keep
-            // it disabled when SOS signal is active.
-            UIApplication.shared.isIdleTimerDisabled = false
+        if scenePhase == .background {
+            if coordinator.navigationViewModel.isActive,
+               !coordinator.sosViewModel.isActive {
+                UIApplication.shared.isIdleTimerDisabled = false
+            }
+            let hasActiveDownload = coordinator.offlineViewModel.packs.contains {
+                !$0.progress.isComplete && !coordinator.offlineViewModel.isErrored($0)
+            }
+            if hasActiveDownload {
+                coordinator.offlineViewModel.showDownloadBackgroundWarning = true
+            }
+        } else if scenePhase == .active,
+                  coordinator.navigationViewModel.isActive
+                    || coordinator.activityViewModel.isRecording {
+            UIApplication.shared.isIdleTimerDisabled = true
         }
     }
 
@@ -105,20 +112,4 @@ struct AppLifecycleModifier: ViewModifier {
         }
     }
 
-    private func handleComputingIndicatorChange() async {
-        // Debounce indikatoren: vis først hvis beregningen tar mer enn 250 ms.
-        // Stadia svarer typisk på ~120 ms; uten debounce flimrer kapselen.
-        if coordinator.navigationViewModel.isComputingRoute {
-            try? await Task.sleep(for: .milliseconds(250))
-            guard !Task.isCancelled,
-                  coordinator.navigationViewModel.isComputingRoute else { return }
-            withAnimation(.easeOut(duration: 0.15)) {
-                coordinator.showRouteComputingIndicator = true
-            }
-        } else {
-            withAnimation(.easeOut(duration: 0.15)) {
-                coordinator.showRouteComputingIndicator = false
-            }
-        }
-    }
 }

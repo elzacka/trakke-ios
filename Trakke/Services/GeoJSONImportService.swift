@@ -212,16 +212,20 @@ enum GeoJSONImportService {
         }()
         let category = (properties["category"] as? String)?
             .trimmingCharacters(in: .whitespacesAndNewlines)
+        let description = ((properties["description"] as? String) ?? (properties["details"] as? String))?
+            .trimmingCharacters(in: .whitespacesAndNewlines)
         let resolvedName = (name?.isEmpty == false)
             ? name!
             : String(localized: "waypoints.new")
-        return GPXImportService.ImportedWaypoint(
+        var wp = GPXImportService.ImportedWaypoint(
             name: resolvedName,
             latitude: lat,
             longitude: lon,
             elevation: elevation,
             category: (category?.isEmpty == false) ? category : nil
         )
+        wp.details = (description?.isEmpty == false) ? description : nil
+        return wp
     }
 
     private static func route(

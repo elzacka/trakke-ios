@@ -9,6 +9,10 @@ struct MeasurementToolbar: View {
     var onClear: () -> Void
     var onSelectMode: (MeasurementMode) -> Void
 
+    // Fixed point sizes scaled with Dynamic Type via @ScaledMetric.
+    @ScaledMetric(relativeTo: .subheadline) private var resultSize: CGFloat = 14
+    @ScaledMetric(relativeTo: .caption) private var hintSize: CGFloat = 13
+
     var body: some View {
         MapActionBar(position: .top) {
             ModeSegmentedToggle(selectedMode: mode, onSelect: onSelectMode)
@@ -47,7 +51,7 @@ struct MeasurementToolbar: View {
     private var valueOrHint: some View {
         if let result = formattedResult {
             Text(result)
-                .font(.system(size: 14, weight: .semibold).monospacedDigit())
+                .font(.system(size: resultSize, weight: .semibold).monospacedDigit())
                 .foregroundStyle(Color.Trakke.text)
                 .contentTransition(.numericText())
                 .lineLimit(1)
@@ -59,7 +63,7 @@ struct MeasurementToolbar: View {
                     ? String(localized: "measurement.distanceHint")
                     : String(localized: "measurement.areaHint")
             )
-            .font(.system(size: 13))
+            .font(.system(size: hintSize))
             .foregroundStyle(Color.Trakke.textSoft)
             .lineLimit(1)
             // Minst 0.85 så hint-tekstene ikke kan skrumpe så mye at den ene
@@ -73,6 +77,8 @@ struct MeasurementToolbar: View {
 private struct ModeSegmentedToggle: View {
     let selectedMode: MeasurementMode
     let onSelect: (MeasurementMode) -> Void
+
+    @ScaledMetric(relativeTo: .subheadline) private var iconSize: CGFloat = 14
 
     var body: some View {
         HStack(spacing: 2) {
@@ -103,7 +109,7 @@ private struct ModeSegmentedToggle: View {
             onSelect(mode)
         } label: {
             Image(systemName: systemImage)
-                .font(.system(size: 14, weight: .semibold))
+                .font(.system(size: iconSize, weight: .semibold))
                 .foregroundStyle(isActive ? Color.Trakke.brand : Color.Trakke.textTertiary)
                 .frame(width: 36, height: 32)
                 .background {
@@ -111,9 +117,11 @@ private struct ModeSegmentedToggle: View {
                         Capsule().fill(Color.Trakke.brandTint)
                     }
                 }
+                // Hele 44×44-flaten er trykkbar, ikke bare den 36×32 visuelle
+                // kapselen — contentShape ligger utenpå 44pt-rammen.
+                .frame(width: 44, height: 44)
                 .contentShape(Rectangle())
         }
-        .frame(height: 44)
         .accessibilityLabel(label)
         .accessibilityAddTraits(isActive ? .isSelected : [])
     }

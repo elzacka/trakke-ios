@@ -26,16 +26,17 @@ struct TrakkeToggleStyle: ToggleStyle {
                     .padding(.horizontal, 2)
                     .shadow(color: .black.opacity(0.12), radius: 1.5, x: 0, y: 1)
             }
-            .contentShape(Rectangle())
-            .onTapGesture {
-                withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.18)) {
-                    configuration.isOn.toggle()
-                }
+        }
+        // Hele raden (etikett + spacer + kapsel) er trykkbar, ikke bare kapselen.
+        .contentShape(Rectangle())
+        .onTapGesture {
+            withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.18)) {
+                configuration.isOn.toggle()
             }
-            .accessibilityRepresentation {
-                Toggle(isOn: configuration.$isOn) {
-                    configuration.label
-                }
+        }
+        .accessibilityRepresentation {
+            Toggle(isOn: configuration.$isOn) {
+                configuration.label
             }
         }
     }

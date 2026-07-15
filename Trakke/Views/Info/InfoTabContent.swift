@@ -1,3 +1,4 @@
+import CoreLocation
 import SwiftUI
 
 /// Info-fanen — Vær, Kunnskap, Om i tre underfaner.
@@ -9,6 +10,7 @@ struct InfoTabContent: View {
     @Bindable var weatherViewModel: WeatherViewModel
     @Bindable var knowledgeViewModel: KnowledgeViewModel
     let connectivityMonitor: ConnectivityMonitor
+    let mapCenter: CLLocationCoordinate2D
     @State private var selectedSubTab: Int = 0
 
     private let subTabs = [
@@ -36,6 +38,12 @@ struct InfoTabContent: View {
             }
             .background(Color.Trakke.background)
             .toolbar(.hidden, for: .navigationBar)
+            .onAppear {
+                weatherViewModel.fetchForecast(for: mapCenter)
+            }
+            .onChange(of: selectedSubTab) { _, new in
+                if new == 0 { weatherViewModel.fetchForecast(for: mapCenter) }
+            }
             .navigationDestination(for: KnowledgeDestination.self) { destination in
                 switch destination {
                 case .category(let category):

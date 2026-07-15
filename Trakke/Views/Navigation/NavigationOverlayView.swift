@@ -1,50 +1,19 @@
 import SwiftUI
 
-/// Nav-HUD — én sammenhengende horisontal pille på toppen av skjermen,
-/// inspirert av HiiKER men i Tråkkes egne tokens. Ingen tekstlabels, bare
-/// ikoner og verdier. Ingen knapper i bunnen — pause og avslutt er
-/// integrert som ikon-knapper i samme pille.
+/// Nav-HUD — én sammenhengende horisontal pille på toppen av skjermen.
+/// Viser kompasspeiling, avstand til destinasjon, pause/stopp-kontroller
+/// og kamera-veksler.
 struct NavigationOverlayView: View {
     let navigationVM: NavigationViewModel
     let userHeading: Double?
-    let isConnected: Bool
     var onStop: () -> Void
-    var onSwitchToCompass: () -> Void
-    var onSwitchToRoute: () -> Void
-    var onToggleCamera: () -> Void
-    var onReroute: () -> Void
-    var onSearchTapped: () -> Void
-    var onCategoryTapped: () -> Void
-    var onEmergencyTapped: () -> Void
-    var onWeatherTapped: () -> Void
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var showMoreMenu = false
 
     var body: some View {
         VStack(spacing: .Trakke.sm) {
-            // MARK: - Topp: sving-instruks-pille (når aktiv)
-            if case .route = navigationVM.mode,
-               let instruction = navigationVM.nextInstruction,
-               !navigationVM.isPaused {
-                turnInstructionPill(instruction)
-                    .padding(.horizontal, .Trakke.lg)
-            }
-
-            // MARK: - Topp: HiiKER-stil sammenhengende bar
-            topNavBar
+            compassNavBar
                 .padding(.horizontal, .Trakke.lg)
                 .padding(.top, .Trakke.sm)
-
-            // MARK: - Sentralt: off-track + GPS + ankomst
-            if navigationVM.isOffTrack {
-                DeviationChipView(
-                    distance: navigationVM.offTrackDistance,
-                    canReroute: navigationVM.canReroute && isConnected,
-                    onReroute: onReroute,
-                    onDismiss: { navigationVM.dismissDeviation() }
-                )
-                .padding(.horizontal, .Trakke.lg)
-            }
 
             gpsIndicator
                 .padding(.horizontal, .Trakke.lg)
@@ -62,61 +31,11 @@ struct NavigationOverlayView: View {
             }
         }
         .safeAreaPadding(.bottom)
+        // Hindrer at HUD-en vokser seg over kartet ved svært store tekststørrelser.
+        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
     }
 
-    // MARK: - Nav-bar (sammenhengende pille)
-
-    @ViewBuilder
-    private var topNavBar: some View {
-        switch navigationVM.mode {
-        case .route:
-            routeNavBar
-        case .compass:
-            compassNavBar
-        }
-    }
-
-    private var routeNavBar: some View {
-        // Distanse vises alltid — bruker progress.distanceRemaining etter
-        // første GPS-oppdatering, totalDistance som fallback like etter
-        // start (eller for fulgte ruter som ennå ikke har snap-resultat).
-        // Tid og høydemeter krever progress-data, så de vises bare når
-        // tilgjengelig.
-        let distanceValue = navigationVM.progress?.distanceRemaining ?? navigationVM.totalDistance
-
-        return HStack(spacing: 0) {
-            pauseResumeButton
-
-            if let eta = navigationVM.progress?.estimatedTimeRemaining {
-                navBarDivider
-                navBarStat(icon: "clock", value: formatTime(eta))
-            }
-
-            if let gain = navigationVM.progress?.elevationGainRemaining, gain > 0 {
-                navBarDivider
-                navBarStat(icon: "arrow.up", value: "+\(Int(gain)) m")
-            }
-
-            navBarDivider
-            navBarStat(
-                icon: "point.topleft.down.to.point.bottomright.curvepath",
-                value: formatDistance(distanceValue)
-            )
-
-            navBarDivider
-            moreButton
-            navBarDivider
-            stopButton
-        }
-        .background(Color.Trakke.surface.opacity(0.92))
-        .clipShape(Capsule())
-        .trakkeControlShadow()
-        .accessibilityElement(children: .contain)
-        .trakkeDialog(
-            isPresented: $showMoreMenu,
-            buttons: moreMenuButtons
-        )
-    }
+    // MARK: - Kompass-bar
 
     private var compassNavBar: some View {
         HStack(spacing: 0) {
@@ -132,43 +51,12 @@ struct NavigationOverlayView: View {
             )
 
             navBarDivider
-            moreButton
-            navBarDivider
             stopButton
         }
         .background(Color.Trakke.surface.opacity(0.92))
         .clipShape(Capsule())
         .trakkeControlShadow()
         .accessibilityElement(children: .contain)
-        .trakkeDialog(
-            isPresented: $showMoreMenu,
-            buttons: moreMenuButtons
-        )
-    }
-
-    private var moreMenuButtons: [TrakkeDialogButton] {
-        var buttons: [TrakkeDialogButton] = []
-
-        switch navigationVM.mode {
-        case .route:
-            buttons.append(.primary(String(localized: "navigation.switchToCompass")) {
-                onSwitchToCompass()
-            })
-        case .compass:
-            buttons.append(.primary(String(localized: "navigation.switchToRoute")) {
-                onSwitchToRoute()
-            })
-        }
-
-        let cameraLabel: String = navigationVM.cameraMode == .northUp
-            ? String(localized: "navigation.cameraMode.courseUp")
-            : String(localized: "navigation.cameraMode.northUp")
-        buttons.append(.primary(cameraLabel) {
-            onToggleCamera()
-        })
-
-        buttons.append(.cancel())
-        return buttons
     }
 
     // MARK: - Bar-celler
@@ -182,7 +70,7 @@ struct NavigationOverlayView: View {
             }
         } label: {
             Image(systemName: navigationVM.isPaused ? "play.fill" : "pause.fill")
-                .font(.system(size: 15, weight: .semibold))
+                .font(.system(.subheadline, weight: .semibold))
                 .foregroundStyle(Color.Trakke.brand)
                 .frame(width: 48, height: 44)
                 .contentShape(Rectangle())
@@ -197,7 +85,7 @@ struct NavigationOverlayView: View {
     private var stopButton: some View {
         Button(action: onStop) {
             Image(systemName: "stop.fill")
-                .font(.system(size: 15, weight: .semibold))
+                .font(.system(.subheadline, weight: .semibold))
                 .foregroundStyle(Color.Trakke.red)
                 .frame(width: 48, height: 44)
                 .contentShape(Rectangle())
@@ -205,24 +93,11 @@ struct NavigationOverlayView: View {
         .accessibilityLabel(String(localized: "navigation.stopNavigation"))
     }
 
-    private var moreButton: some View {
-        Button {
-            showMoreMenu = true
-        } label: {
-            Image(systemName: "ellipsis")
-                .font(.system(size: 15, weight: .semibold))
-                .foregroundStyle(Color.Trakke.textSoft)
-                .frame(width: 44, height: 44)
-                .contentShape(Rectangle())
-        }
-        .accessibilityLabel(String(localized: "navigation.more"))
-    }
-
     private var compassDirectionCell: some View {
         let relativeBearing = computeRelativeBearing()
         return HStack(spacing: .Trakke.xs) {
             Image(systemName: "location.north.fill")
-                .font(.system(size: 13, weight: .semibold))
+                .font(.system(.footnote, weight: .semibold))
                 .foregroundStyle(Color.Trakke.brand)
                 .rotationEffect(.degrees(relativeBearing))
                 .animation(
@@ -230,7 +105,7 @@ struct NavigationOverlayView: View {
                     value: relativeBearing
                 )
             Text(bearingText(navigationVM.compassBearing))
-                .font(.system(size: 14, weight: .semibold).monospacedDigit())
+                .font(.system(.subheadline, weight: .semibold).monospacedDigit())
                 .foregroundStyle(Color.Trakke.text)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
@@ -247,10 +122,10 @@ struct NavigationOverlayView: View {
     private func navBarStat(icon: String, value: String) -> some View {
         HStack(spacing: .Trakke.xs) {
             Image(systemName: icon)
-                .font(.system(size: 12, weight: .regular))
+                .font(.system(.caption, weight: .regular))
                 .foregroundStyle(Color.Trakke.textSoft)
             Text(value)
-                .font(.system(size: 14, weight: .semibold).monospacedDigit())
+                .font(.system(.subheadline, weight: .semibold).monospacedDigit())
                 .foregroundStyle(Color.Trakke.text)
                 .contentTransition(.numericText())
                 .lineLimit(1)
@@ -266,56 +141,6 @@ struct NavigationOverlayView: View {
         Rectangle()
             .fill(Color.Trakke.border)
             .frame(width: 1, height: 24)
-    }
-
-    // MARK: - Sving-instruks-pille
-
-    private func turnInstructionPill(_ instruction: TurnInstruction) -> some View {
-        let distToTurn: Double? = {
-            guard let progress = navigationVM.progress else { return nil }
-            let d = instruction.distance - (progress.totalDistance - progress.distanceRemaining)
-            return d > 0 ? d : nil
-        }()
-        let isImminent = (distToTurn ?? .infinity) < 100
-
-        return HStack(spacing: .Trakke.md) {
-            Image(systemName: turnIcon(instruction.type))
-                .font(isImminent ? .title3.weight(.semibold) : .body.weight(.semibold))
-                .foregroundStyle(isImminent ? Color.Trakke.textInverse : Color.Trakke.brand)
-                .frame(width: 32)
-                .accessibilityHidden(true)
-
-            VStack(alignment: .leading, spacing: .Trakke.labelGap) {
-                Text(instruction.text)
-                    .font(Font.Trakke.bodyMedium)
-                    .foregroundStyle(isImminent ? Color.Trakke.textInverse : Color.Trakke.text)
-                    .lineLimit(2)
-                if let distToTurn {
-                    Text(formatDistance(distToTurn))
-                        .font(
-                            isImminent
-                                ? Font.Trakke.bodyMedium.monospacedDigit()
-                                : Font.Trakke.caption.monospacedDigit()
-                        )
-                        .foregroundStyle(
-                            isImminent ? Color.Trakke.textInverse.opacity(0.9) : Color.Trakke.textSoft
-                        )
-                        .contentTransition(.numericText(countsDown: true))
-                        .animation(
-                            reduceMotion ? nil : .easeInOut(duration: 0.3),
-                            value: Int(distToTurn / 5) * 5
-                        )
-                }
-            }
-
-            Spacer()
-        }
-        .padding(.horizontal, .Trakke.cardPadH)
-        .padding(.vertical, .Trakke.sm)
-        .frame(minHeight: 56)
-        .background(isImminent ? Color.Trakke.brand : Color.Trakke.surface.opacity(0.92))
-        .clipShape(Capsule())
-        .trakkeControlShadow()
     }
 
     // MARK: - GPS-indikator
@@ -334,7 +159,7 @@ struct NavigationOverlayView: View {
 
     private func gpsPill(icon: String, color: Color) -> some View {
         Image(systemName: icon)
-            .font(.system(size: 14, weight: .semibold))
+            .font(.system(.subheadline, weight: .semibold))
             .foregroundStyle(color)
             .padding(.horizontal, .Trakke.md)
             .padding(.vertical, .Trakke.xs)
@@ -348,19 +173,19 @@ struct NavigationOverlayView: View {
             )
     }
 
-    // MARK: - Arrival-banner
+    // MARK: - Ankomst-banner
 
     private var arrivalBanner: some View {
         HStack(spacing: .Trakke.sm) {
             Image(systemName: "flag.checkered")
-                .font(.system(size: 16, weight: .semibold))
+                .font(.system(.callout, weight: .semibold))
             Text(String(localized: "navigation.arrived"))
                 .font(Font.Trakke.bodyMedium)
         }
         .foregroundStyle(Color.Trakke.textInverse)
         .padding(.horizontal, .Trakke.lg)
         .padding(.vertical, .Trakke.sm)
-        .background(Color.Trakke.brand)
+        .background(Color.Trakke.mapNavLine)
         .clipShape(Capsule())
         .padding(.bottom, .Trakke.sm)
     }
@@ -369,15 +194,6 @@ struct NavigationOverlayView: View {
 
     private func formatDistance(_ meters: Double) -> String {
         MeasurementService.formatDistance(meters)
-    }
-
-    private func formatTime(_ seconds: TimeInterval) -> String {
-        let hours = Int(seconds) / 3600
-        let minutes = (Int(seconds) % 3600) / 60
-        if hours > 0 {
-            return "\(hours)t \(minutes)m"
-        }
-        return "\(minutes)m"
     }
 
     private func computeRelativeBearing() -> Double {
@@ -404,22 +220,5 @@ struct NavigationOverlayView: View {
         default: direction = ""
         }
         return "\(Int(n))\u{00B0} \(direction)"
-    }
-
-    private func turnIcon(_ type: TurnType) -> String {
-        switch type {
-        case .straight: return "arrow.up"
-        case .slightRight: return "arrow.up.right"
-        case .right: return "arrow.turn.up.right"
-        case .sharpRight: return "arrow.turn.down.right"
-        case .slightLeft: return "arrow.up.left"
-        case .left: return "arrow.turn.up.left"
-        case .sharpLeft: return "arrow.turn.down.left"
-        case .uTurn: return "arrow.uturn.down"
-        case .destination: return "flag.fill"
-        case .depart: return "figure.walk"
-        case .ferry: return "ferry.fill"
-        case .other: return "arrow.up"
-        }
     }
 }

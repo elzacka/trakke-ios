@@ -4,11 +4,11 @@ En kartapp for iPhone, laget for tur i norsk natur. Bygget på Kartverkets kart.
 
 ## Hva du får
 
-**Kart fra Kartverket.** Topografisk, gråtone og turkart. 3D-relieff, bratthet, naturskog, naturvern og turruter som kartlag. Stedsnavn- og adressesøk. Last ned hele kommuner eller egne områder for offline bruk.
+**Kart fra Kartverket.** Topografisk, gråtone og turkart. Bratthet, naturskog, naturvern og turruter som kartlag. Stedsnavn- og adressesøk. Kompasset veksler kartet mellom nord opp og retning opp. Last ned hele kommuner eller egne områder for offline bruk.
 
 **Steder på kartet.** Tilfluktsrom, gapahuker, hytter, badeplasser, bålplasser, hengekøyeplasser, teltplasser, rasteplasser, fosser, huler, utsiktspunkter, kulturminner og krigsminner — slå av og på etter behov. Det meste fungerer offline.
 
-**Tur og navigasjon.** Tegn ruter, lagre steder, registrer turer med GPS. Turer og ruter står i samme samling, med felles kategorier og filter. Sving-for-sving navigasjon eller kompassretning når dekningen svikter. Import og eksport av GPX og GeoJSON.
+**Tur og navigasjon.** Tegn ruter, lagre steder, registrer turer med GPS. Turer og ruter står i samme samling, med felles kategorier og filter. Kompassretning til et valgt mål, også uten dekning. Import og eksport av GPX og GeoJSON.
 
 **Vær og varsler.** Værmelding, luftkvalitet og vanntemperatur fra Meteorologisk institutt. Snøskred og flom fra NVE/Varsom. Soloppgang og solnedgang.
 
@@ -60,9 +60,7 @@ MIT.
 ## Kildedata
 
 - Kartverket — kart, terreng og tjenester (NLOD 2.0)
-- Mapzen Terrain Tiles — terrengmodell for 3D-relieff (CC BY 4.0)
 - Miljødirektoratet — naturvern og naturskog (NLOD 2.0)
-- FOSSGIS / Valhalla — ruteberegning (MIT / ODbL)
 - Meteorologisk institutt — vær, havtemperatur og luftkvalitet (CC BY 4.0)
 - Havvarsel-Frost — badevannsdata (CC BY 4.0)
 - NVE / Varsom — snøskred- og flomvarsler (NLOD)

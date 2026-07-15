@@ -46,6 +46,39 @@
         }
       }
     },
+    "accessibility.deleteHint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sletter permanent"
+          }
+        }
+      }
+    },
+    "accessibility.disabled" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Av"
+          }
+        }
+      }
+    },
+    "accessibility.enabled" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "På"
+          }
+        }
+      }
+    },
     "accessibility.opensExternalLink" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -53,6 +86,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Åpner ekstern lenke"
+          }
+        }
+      }
+    },
+    "accessibility.route.distance %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rute-avstand: %@"
           }
         }
       }
@@ -743,6 +787,17 @@
         }
       }
     },
+    "common.copied" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopiert"
+          }
+        }
+      }
+    },
     "common.copy" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -908,6 +963,28 @@
         }
       }
     },
+    "elevation.altitude" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Høyde"
+          }
+        }
+      }
+    },
+    "elevation.distance" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avstand"
+          }
+        }
+      }
+    },
     "elevation.distanceKm" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -970,6 +1047,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Min"
+          }
+        }
+      }
+    },
+    "elevation.position" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posisjon"
           }
         }
       }
@@ -1057,7 +1145,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ingen GPS-posisjon tilgjengelig. Sørg for at posisjonstjenester er aktivert."
+            "value" : "Ingen GPS-posisjon. Slå på Stedstjenester i Innstillinger."
           }
         }
       }
@@ -1728,7 +1816,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Offline"
+            "value" : "Frakoblet"
           }
         }
       }
@@ -1739,7 +1827,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Online"
+            "value" : "Tilkoblet"
           }
         }
       }
@@ -2547,6 +2635,17 @@
         }
       }
     },
+    "map.cleanMap.hint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Knapper skjult. Langt trykk på knappen viser dem igjen."
+          }
+        }
+      }
+    },
     "map.controls.compass" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2554,6 +2653,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kompass"
+          }
+        }
+      }
+    },
+    "map.controls.compass.courseUp" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kompass, retning opp"
           }
         }
       }
@@ -2587,6 +2697,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zoom ut"
+          }
+        }
+      }
+    },
+    "map.fab.label" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meny"
           }
         }
       }
@@ -2712,6 +2833,17 @@
         }
       }
     },
+    "measurement.startArea" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mål areal"
+          }
+        }
+      }
+    },
     "measurement.areaHint" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2741,6 +2873,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Avstand"
+          }
+        }
+      }
+    },
+    "measurement.startDistance" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mål avstand"
           }
         }
       }
@@ -2806,7 +2949,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Du har ingen lagrede steder ennå. Langt trykk på kartet for å legge til."
+            "value" : "Hold inne på kartet for å legge til et sted."
           }
         }
       }
@@ -2919,7 +3062,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Beregn tursti-rute"
+            "value" : "Beregn rute langs sti"
           }
         }
       }
@@ -2930,7 +3073,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Beregner beste tursti fra posisjon din. Krever dekning."
+            "value" : "Beregner beste rute langs stier fra posisjonen din. Krever dekning."
           }
         }
       }
@@ -2996,7 +3139,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stigning/Fall"
+            "value" : "Stigning/fall"
           }
         }
       }
@@ -3260,7 +3403,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rettlinjet avstand"
+            "value" : "Avstand i luftlinje"
           }
         }
       }
@@ -3338,6 +3481,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nedlastede kart brukes automatisk når du er uten dekning."
+          }
+        }
+      }
+    },
+    "offline.backgroundWarning" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nedlastingen stopper når appen ikke er aktiv."
           }
         }
       }
@@ -3485,6 +3639,17 @@
         }
       }
     },
+    "offline.downloadError" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nedlasting feilet"
+          }
+        }
+      }
+    },
     "offline.empty.short" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3573,6 +3738,17 @@
         }
       }
     },
+    "offline.retry" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prøv igjen"
+          }
+        }
+      }
+    },
     "offline.selectArea" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3656,7 +3832,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Offlinekart"
+            "value" : "Nedlastede kart"
           }
         }
       }
@@ -4387,6 +4563,17 @@
         }
       }
     },
+    "routes.hiddenFromMap" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skjult fra kart"
+          }
+        }
+      }
+    },
     "routes.hideFromMap" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4625,7 +4812,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kunne ikke søke"
+            "value" : "Kunne ikke søke. Sjekk tilkoblingen og prøv igjen."
           }
         }
       }
@@ -4637,6 +4824,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ingen treff"
+          }
+        }
+      }
+    },
+    "search.offline" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingen tilkobling. Koble til internett for å søke."
           }
         }
       }
@@ -5265,7 +5463,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ukategorisert"
+            "value" : "Uten kategori"
           }
         }
       }
@@ -5391,6 +5589,17 @@
         }
       }
     },
+    "waypoints.addNewCategory" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lag ny kategori"
+          }
+        }
+      }
+    },
     "waypoints.addWaypoint" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5409,6 +5618,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kategori"
+          }
+        }
+      }
+    },
+    "waypoints.categoryNamePlaceholder" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kategorinavn"
           }
         }
       }
@@ -5490,6 +5710,28 @@
         }
       }
     },
+    "waypoints.details" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detaljer"
+          }
+        }
+      }
+    },
+    "waypoints.detailsPlaceholder" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beskriv stedet…"
+          }
+        }
+      }
+    },
     "waypoints.elevation" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5507,7 +5749,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Langt trykk på kartet for å legge til et sted."
+            "value" : "Hold inne på kartet for å legge til et sted."
           }
         }
       }
@@ -5523,13 +5765,24 @@
         }
       }
     },
+    "waypoints.hiddenFromMap" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skjult fra kart"
+          }
+        }
+      }
+    },
     "waypoints.hideFromMap" : {
       "extractionState" : "manual",
       "localizations" : {
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Skjul fra kartet"
+            "value" : "Skjul fra kart"
           }
         }
       }
@@ -5608,6 +5861,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nytt sted"
+          }
+        }
+      }
+    },
+    "waypoints.noCategory" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingen kategori"
+          }
+        }
+      }
+    },
+    "waypoints.renameCategoryDuplicate" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du har allerede en kategori med dette navnet. Velg et annet navn."
+          }
+        }
+      }
+    },
+    "waypoints.renameCategoryEmpty" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skriv inn et navn på kategorien."
+          }
+        }
+      }
+    },
+    "waypoints.renameCategoryErrorTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kunne ikke endre navn"
+          }
+        }
+      }
+    },
+    "waypoints.renameCategoryMessage" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skriv inn nytt navn."
+          }
+        }
+      }
+    },
+    "waypoints.renameCategoryTitle" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Endre navn på kategori"
           }
         }
       }
@@ -5904,7 +6223,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "7-dagers varsel"
+            "value" : "7-dagersvarsel"
           }
         }
       }
@@ -6311,7 +6630,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Været kan være utdatert"
+            "value" : "Værvarselet kan være utdatert"
           }
         }
       }
@@ -6322,7 +6641,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "MET Norway"
+            "value" : "Meteorologisk institutt"
           }
         }
       }
@@ -6641,7 +6960,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vær på vei"
+            "value" : "Dårligere vær på vei"
           }
         }
       }
@@ -7048,7 +7367,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Varmt. Solkrem og rikelig drikke. Unngå midt-på-dagen i direkte sol."
+            "value" : "Unngå direkte sol midt på dagen."
           }
         }
       }
@@ -7499,7 +7818,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nesten stille"
+            "value" : "Flau vind"
           }
         }
       }

@@ -1,6 +1,6 @@
 # Personvernerklæring for Tråkke
 
-**Sist oppdatert:** 25. mai 2026
+**Sist oppdatert:** 15. juli 2026
 
 ## Kort fortalt
 
@@ -25,7 +25,7 @@ Disse dataene forlater aldri enheten.
 
 Appen ber om posisjon kun når du aktivt velger å vise den på kartet. Du får en kort forklaring i appen før iOS-dialogen vises, og du kan avvise uten å se iOS-dialogen.
 
-Posisjonen brukes til å vise deg på kartet, hente lokal værmelding, beregne ruter og registrere GPS-spor. Posisjonsdata lagres kun lokalt.
+Posisjonen brukes til å vise deg på kartet, hente lokal værmelding og registrere GPS-spor. Posisjonsdata lagres kun lokalt.
 
 ### 1.3 Nettverksstatus
 
@@ -37,7 +37,7 @@ Ingen brukerkontoer. Ingen informasjonskapsler. Ingen enhetsidentifikatorer (IDF
 
 ## 2. Eksterne tjenester
 
-Appen henter data fra følgende tjenester. Alle er norske eller europeiske, med to unntak: terrengdata (AWS) og kunnskapspakker (GitHub) — disse inneholder ingen brukerdata.
+Appen henter data fra følgende tjenester. Alle er norske eller europeiske, med ett unntak: kunnskapspakker (GitHub) — disse inneholder ingen brukerdata.
 
 | Tjeneste | Formål | Data som sendes | Land |
 |----------|--------|-----------------|------|
@@ -50,12 +50,10 @@ Appen henter data fra følgende tjenester. Alle er norske eller europeiske, med 
 | Riksantikvaren (api.ra.no) | Kulturminner | Kartområde | Norge |
 | Miljødirektoratet | Naturvernområder og naturskog | Kartområde | Norge |
 | NVE / Varsom (api01.nve.no, gis3.nve.no) | Snøskred, flom, bratthet | Omtrentlig posisjon eller kartområde | Norge |
-| FOSSGIS Valhalla (valhalla1.openstreetmap.de) | Ruteberegning | Start- og målkoordinater | Tyskland (EU) |
 | Artsdatabanken (artsdatabanken.no) | Artsbilder | Vitenskapelige artsnavn | Norge |
-| Mapzen Terrain Tiles (s3.amazonaws.com) | Terrengmodell for 3D-relieff | Kartkoordinater | USA¹ |
 | GitHub (github.com, raw.githubusercontent.com) | Kunnskapspakker og artikler | Ingen brukerdata | USA¹ |
 
-¹ Hentes anonymt, uten brukeridentifikasjon. Kun kartkoordinater eller filnavn sendes.
+¹ Hentes anonymt, uten brukeridentifikasjon. Kun filnavn sendes.
 
 Appen sender en User-Agent-header med appens navn, versjon og utviklerens e-postadresse — som påkrevd av flere tjenester. Headeren inneholder ingen brukerdata.
 
@@ -98,4 +96,4 @@ Spørsmål om personvern:
 - **E-post**: hei@tazk.no
 - **Kildekode**: https://github.com/elzacka/trakke-ios
 
-Du kan klage til Datatilsynet (datatilsynet.no) hvis du mener behandlingen ikke er i samsvar med regelverket.
+Du kan klage til Datatilsynet hvis du mener behandlingen ikke er i samsvar med regelverket.

@@ -29,14 +29,6 @@ final class AppCoordinator {
 
     // MARK: - Navigation state
 
-    /// Route-ID som blir fulgt akkurat nå (tegnes ikke som vanlig overlay,
-    /// men som aktiv navigasjons-trasé).
-    var navigatingRouteId: String?
-    /// Trigger for rute-feil-dialog (server-feil, ingen rute funnet osv.).
-    var showRouteError = false
-    /// Vises etter ~250 ms debounce mens Valhalla beregner rute, så den
-    /// ikke flimrer for raske svar (~120 ms).
-    var showRouteComputingIndicator = false
     /// Trigger for "Stopp navigasjon?"-dialog.
     var showStopConfirmation = false
 
@@ -69,28 +61,6 @@ final class AppCoordinator {
 
     // MARK: - Navigation
 
-    func startRouteNavigation(to destination: CLLocationCoordinate2D) {
-        guard let userLocation = mapViewModel.userLocation else { return }
-        mapViewModel.startNavigation()
-        mapViewModel.setLocationObserver("navigation") { [weak navigationViewModel] location in
-            Task { @MainActor in
-                await navigationViewModel?.processLocationUpdate(location)
-            }
-        }
-        Task { @MainActor [weak self] in
-            guard let self else { return }
-            let success = await self.navigationViewModel.startRouteNavigation(
-                from: userLocation.coordinate, to: destination
-            )
-            if success {
-                UIApplication.shared.isIdleTimerDisabled = true
-            } else {
-                self.mapViewModel.stopNavigation()
-                self.showRouteError = true
-            }
-        }
-    }
-
     func startCompassNavigation(to destination: CLLocationCoordinate2D) {
         mapViewModel.startNavigation()
         mapViewModel.setLocationObserver("navigation") { [weak navigationViewModel] location in
@@ -102,85 +72,35 @@ final class AppCoordinator {
         UIApplication.shared.isIdleTimerDisabled = true
     }
 
+    /// Navigér kompass til siste punkt på ruten.
     func startFollowingRoute(_ route: Route) {
-        navigatingRouteId = route.id
-        mapViewModel.startNavigation()
-        mapViewModel.setLocationObserver("navigation") { [weak navigationViewModel] location in
-            Task { @MainActor in
-                await navigationViewModel?.processLocationUpdate(location)
-            }
-        }
-        navigationViewModel.startFollowingRoute(
-            route: route,
-            elevationProfile: routeViewModel.elevationProfile
-        )
-        UIApplication.shared.isIdleTimerDisabled = true
+        guard let last = route.coordinates.last, last.count >= 2 else { return }
+        let destination = CLLocationCoordinate2D(latitude: last[1], longitude: last[0])
+        startCompassNavigation(to: destination)
     }
 
-    /// "Følg igjen": Navigate along a previously recorded activity by treating
-    /// its coordinates as a transient route. The transient Route is in-memory
-    /// only and not persisted to SwiftData; navigation logic doesn't distinguish.
+    /// Navigér kompass til siste GPS-punkt i aktiviteten.
     func followActivity(_ activity: Activity) {
-        let coords = activity.trackPoints.compactMap { point -> [Double]? in
-            guard point.count >= 2 else { return nil }
-            let lon = point[0]
-            let lat = point[1]
-            guard lon.isFinite, lat.isFinite else { return nil }
-            return [lon, lat]
-        }
-        guard coords.count >= 2 else { return }
-        let transient = Route(name: activity.name)
-        transient.coordinates = coords
-        transient.distance = activity.distance
-        transient.elevationGain = activity.elevationGain
-        transient.elevationLoss = activity.elevationLoss
-        startFollowingRoute(transient)
+        guard let last = activity.trackPoints.last, last.count >= 2,
+              last[0].isFinite, last[1].isFinite else { return }
+        let destination = CLLocationCoordinate2D(latitude: last[1], longitude: last[0])
+        startCompassNavigation(to: destination)
     }
 
     func stopNavigation() {
         navigationViewModel.stopNavigation()
         mapViewModel.stopNavigation()
-        navigatingRouteId = nil
         UIApplication.shared.isIdleTimerDisabled = false
-        // The recording observer (if any) is registered under a separate key,
-        // so stopping navigation no longer wipes it. No re-install needed.
-    }
-
-    func switchToCompassNavigation() {
-        navigationViewModel.switchToCompass()
-    }
-
-    func switchToRouteNavigation() {
-        guard !navigationViewModel.isComputingRoute,
-              let userLoc = mapViewModel.userLocation,
-              let dest = navigationViewModel.destination else { return }
-        Task { @MainActor [weak self] in
-            guard let self else { return }
-            let success = await self.navigationViewModel.startRouteNavigation(
-                from: userLoc.coordinate, to: dest
-            )
-            if !success {
-                self.stopNavigation()
-                self.showRouteError = true
-            }
-        }
     }
 
     func toggleNavigationCamera() {
         navigationViewModel.toggleCameraMode()
     }
 
-    func requestNavigationReroute() {
-        Task { @MainActor [weak self] in
-            guard let self else { return }
-            let success = await self.navigationViewModel.requestReroute()
-            if !success { self.showRouteError = true }
-        }
-    }
-
     // MARK: - Activity recording
 
     func startActivityRecording() {
+        mapViewModel.startTrackingLocation()
         activityViewModel.startRecording()
         mapViewModel.setLocationObserver("recording") { [weak activityViewModel] location in
             Task { @MainActor in
@@ -195,8 +115,6 @@ final class AppCoordinator {
     /// Tøm alle cacher som kan inneholde brukerdata. Kalles fra
     /// «Slett alle data»-flyten i innstillinger.
     func clearAllServiceCaches() {
-        // GDPR: clear exported files synchronously since they may contain
-        // user-visible route/activity data (GPX).
         GPXExportService.clearAllExports()
         Task { [weak self] in
             guard let self else { return }

@@ -15,7 +15,7 @@ final class Route {
     /// Optional user-defined category for grouping in the route list (mirrors
     /// the Waypoint.category pattern). nil → "Ukategorisert" group.
     var category: String?
-    var isVisible: Bool = true
+    var isVisible: Bool = false
     var createdAt: Date
     var updatedAt: Date
 

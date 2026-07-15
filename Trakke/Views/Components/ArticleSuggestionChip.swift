@@ -37,7 +37,12 @@ struct ArticleSuggestionChip: View {
         .padding(.horizontal, .Trakke.sheetHorizontal)
         .padding(.bottom, .Trakke.xs)
         .onTapGesture { onTap() }
-        .accessibilityElement(children: .contain)
+        // Chipen er primært en knapp som åpner artikkelen; lukk er en
+        // sekundær rotor-handling. Uten dette leste VoiceOver bare lukk-knappen.
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(text)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityAction { onTap() }
         .accessibilityAction(named: String(localized: "common.close")) { onDismiss() }
     }
 }

@@ -8,6 +8,7 @@ struct POIDetailSheet: View {
     let poi: POI
     var onNavigate: ((CLLocationCoordinate2D) -> Void)?
     @State private var copied = false
+    @AppStorage(AppStorageKeys.coordinateFormat) private var coordinateFormat: CoordinateFormat = .dd
 
     var body: some View {
         VStack(spacing: 0) {
@@ -91,7 +92,7 @@ struct POIDetailSheet: View {
 
     /// Koordinat-rad: label "Koordinater" øverst + monospace-verdi med kopier-knapp.
     private var coordinatesFieldRow: some View {
-        let formatted = CoordinateService.format(coordinate: poi.coordinate, format: .dd)
+        let formatted = CoordinateService.format(coordinate: poi.coordinate, format: coordinateFormat)
         return HStack(alignment: .top) {
             VStack(alignment: .leading, spacing: .Trakke.labelGap) {
                 Text(String(localized: "poi.coordinates"))
