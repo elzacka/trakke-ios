@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Innstillinger-fanen — bruker eksisterende PreferencesSheet i inline-modus
+/// Innstillinger-fanen – bruker eksisterende PreferencesSheet i inline-modus
 /// for å gjenbruke alle togglerne, koordinatformat og slett-alle-data-flyt.
 /// TrakkeSheetHeader på toppen erstatter iOS-default `.navigationTitle`.
 /// NavigationStack beholdes for fremtidige push-destinasjoner; selve

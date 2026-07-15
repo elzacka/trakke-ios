@@ -26,7 +26,8 @@ final class SOSViewModel {
     func deactivate() {
         guard isActive else { return }
         isActive = false
-        UIApplication.shared.isIdleTimerDisabled = false
+        // Do not reset isIdleTimerDisabled here; AppLifecycleModifier observes
+        // isActive and reconciles the keep-awake state across nav/recording/SOS.
         signalTask?.cancel()
         signalTask = nil
         Task { [weak self] in await self?.service.stop() }

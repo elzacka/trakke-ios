@@ -75,7 +75,7 @@ enum GPXImportService {
         /// `[longitude, latitude]` when the source file has no per-point
         /// elevation, or `[longitude, latitude, elevation]` when it does.
         /// We persist the 3rd element so the elevation profile can render
-        /// without a DEM round-trip — which is essential offline and avoids
+        /// without a DEM round-trip – which is essential offline and avoids
         /// throwing away data the user already imported.
         let coordinates: [[Double]]
         /// Kategori fra `<type>` på `<trk>`-nivå. Bevares ved import.
@@ -108,7 +108,7 @@ enum GPXImportService {
             throw ImportError.fileTooLarge(data.count)
         }
         let parser = GPXWaypointParser()
-        return parser.parse(data: data)
+        return try parser.parse(data: data)
     }
 
     static func parseRoutes(from url: URL) throws -> [ImportedRoute] {
@@ -122,7 +122,7 @@ enum GPXImportService {
             throw ImportError.fileTooLarge(data.count)
         }
         let parser = GPXRouteParser()
-        return parser.parse(data: data)
+        return try parser.parse(data: data)
     }
 
     static func parseActivities(from url: URL) throws -> [ImportedActivity] {
@@ -136,7 +136,7 @@ enum GPXImportService {
             throw ImportError.fileTooLarge(data.count)
         }
         let parser = GPXActivityParser()
-        return parser.parse(data: data)
+        return try parser.parse(data: data)
     }
 }
 
@@ -158,11 +158,11 @@ private class GPXWaypointParser: NSObject, XMLParserDelegate {
     private var insideWpt = false
     private var insideExtensions = false
 
-    func parse(data: Data) -> [GPXImportService.ImportedWaypoint] {
+    func parse(data: Data) throws -> [GPXImportService.ImportedWaypoint] {
         let parser = XMLParser(data: data)
         parser.shouldResolveExternalEntities = false
         parser.delegate = self
-        parser.parse()
+        if !parser.parse(), let error = parser.parserError { throw error }
         return waypoints
     }
 
@@ -267,11 +267,11 @@ private class GPXRouteParser: NSObject, XMLParserDelegate {
     /// false drops in the profile.
     private var currentHasElevation = false
 
-    func parse(data: Data) -> [GPXImportService.ImportedRoute] {
+    func parse(data: Data) throws -> [GPXImportService.ImportedRoute] {
         let parser = XMLParser(data: data)
         parser.shouldResolveExternalEntities = false
         parser.delegate = self
-        parser.parse()
+        if !parser.parse(), let error = parser.parserError { throw error }
         return routes
     }
 
@@ -377,7 +377,7 @@ private class GPXRouteParser: NSObject, XMLParserDelegate {
         case "extensions":
             insideExtensions = false
         case "trkpt", "rtept":
-            // Done with this point — no further <ele> belongs to it.
+            // Done with this point – no further <ele> belongs to it.
             pendingPointIndex = nil
         case "trkseg":
             insideTrkSeg = false
@@ -462,11 +462,11 @@ private class GPXActivityParser: NSObject, XMLParserDelegate {
         return f
     }()
 
-    func parse(data: Data) -> [GPXImportService.ImportedActivity] {
+    func parse(data: Data) throws -> [GPXImportService.ImportedActivity] {
         let parser = XMLParser(data: data)
         parser.shouldResolveExternalEntities = false
         parser.delegate = self
-        parser.parse()
+        if !parser.parse(), let error = parser.parserError { throw error }
         return activities
     }
 
@@ -564,7 +564,7 @@ private class GPXActivityParser: NSObject, XMLParserDelegate {
             insideTrkSeg = false
         case "trk":
             // Only treat this <trk> as an activity if the timestamps are actually
-            // varied — i.e. someone recorded GPS points over time. UT.no, Komoot
+            // varied – i.e. someone recorded GPS points over time. UT.no, Komoot
             // and similar planning tools export planned routes with placeholder
             // timestamps where every <trkpt> has the same time. Those are routes,
             // not activities, and `parseRoutes` will pick them up instead.

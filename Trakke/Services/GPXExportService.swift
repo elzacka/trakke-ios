@@ -42,7 +42,7 @@ enum GPXExportService {
         return gpxDocument(name: route.name, createdAt: route.createdAt, body: parts.joined())
     }
 
-    /// Single-waypoint export — pakker ett enkelt sted som ett-element GPX
+    /// Single-waypoint export – pakker ett enkelt sted som ett-element GPX
     /// så detaljvisningen for Steder kan eksportere uten å gå via bulk-API.
     static func exportWaypoint(_ waypoint: Waypoint) -> String {
         guard waypoint.coordinates.count >= 2 else {
@@ -79,7 +79,7 @@ enum GPXExportService {
         return gpxDocument(name: name, createdAt: Date(), body: parts.joined())
     }
 
-    /// Bulk export — flere ruter samles i ett GPX-dokument med ett `<trk>` per rute.
+    /// Bulk export – flere ruter samles i ett GPX-dokument med ett `<trk>` per rute.
     static func exportRoutes(_ routes: [Route], name: String = "Ruter") -> String {
         var parts: [String] = []
         let totalCoords = routes.reduce(0) { $0 + $1.coordinates.count }
@@ -138,7 +138,7 @@ enum GPXExportService {
         return gpxDocument(name: activity.name, createdAt: activity.startedAt, body: parts.joined())
     }
 
-    /// Bulk export — flere turer samles i ett GPX-dokument med ett `<trk>` per tur.
+    /// Bulk export – flere turer samles i ett GPX-dokument med ett `<trk>` per tur.
     static func exportActivities(_ activities: [Activity], name: String = "Turer") -> String {
         var parts: [String] = []
         let totalPoints = activities.reduce(0) { $0 + $1.trackPoints.count }

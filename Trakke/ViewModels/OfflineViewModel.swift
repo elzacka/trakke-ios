@@ -6,7 +6,7 @@ import OSLog
 @Observable
 final class OfflineViewModel {
     var packs: [OfflinePackInfo] = []
-    /// Bounds for completed packs only — derived in `loadPacks()` so views can
+    /// Bounds for completed packs only – derived in `loadPacks()` so views can
     /// read it cheaply on every body without re-filtering.
     private(set) var completedPackBounds: [(south: Double, west: Double, north: Double, east: Double)] = []
     var isSelectingArea = false
@@ -152,6 +152,7 @@ final class OfflineViewModel {
     // MARK: - Lifecycle
 
     func startObserving() {
+        stopObserving()
         loadPacks()
 
         progressObserver = NotificationCenter.default.addObserver(

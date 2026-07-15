@@ -137,6 +137,8 @@ actor SearchService {
         combined.sort { $0.score > $1.score }
 
         let results = Array(combined.prefix(10))
+        // Prune expired entries on insert to keep the cache from growing unbounded.
+        queryCache = queryCache.filter { Date().timeIntervalSince($0.value.cachedAt) < Self.cacheTTL }
         queryCache[cacheKey] = (results: results, cachedAt: Date())
         return results
     }

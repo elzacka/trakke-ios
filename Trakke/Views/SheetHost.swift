@@ -75,7 +75,7 @@ struct SheetHost: ViewModifier {
         )
         .presentationDetents([.medium, .large], selection: $sheetDetent)
         .presentationDragIndicator(.hidden)
-        .presentationBackgroundInteraction(.enabled(upThrough: .medium))
+        .presentationBackgroundInteraction(.enabled(upThrough: .large))
         .interactiveDismissDisabled(false)
     }
 
@@ -155,13 +155,13 @@ struct SheetHost: ViewModifier {
             )
             .presentationDetents([.medium, .large])
             .presentationDragIndicator(.visible)
-            .presentationBackgroundInteraction(.enabled(upThrough: .medium))
+            .presentationBackgroundInteraction(.enabled(upThrough: .large))
 
         case .categoryPicker:
-            // Bare .large — kartet er ikke synlig, tap-to-dismiss er irrelevant.
             CategoryPickerSheet(viewModel: poiViewModel)
                 .presentationDetents([.large])
                 .presentationDragIndicator(.visible)
+                .presentationBackgroundInteraction(.enabled(upThrough: .large))
 
         case .poiDetail:
             if let poi = poiViewModel.selectedPOI {
@@ -174,7 +174,7 @@ struct SheetHost: ViewModifier {
                 )
                 .presentationDetents([.medium, .large])
                 .presentationDragIndicator(.hidden)
-                .presentationBackgroundInteraction(.enabled(upThrough: .medium))
+                .presentationBackgroundInteraction(.enabled(upThrough: .large))
             }
 
         case .tracks:
@@ -203,13 +203,13 @@ struct SheetHost: ViewModifier {
             )
             .presentationDetents([.medium, .large])
             .presentationDragIndicator(.visible)
-            .presentationBackgroundInteraction(.enabled(upThrough: .medium))
+            .presentationBackgroundInteraction(.enabled(upThrough: .large))
 
         case .routeSave:
             RouteSaveSheet(viewModel: routeViewModel)
                 .presentationDetents([.medium])
                 .presentationDragIndicator(.visible)
-                .presentationBackgroundInteraction(.enabled(upThrough: .medium))
+                .presentationBackgroundInteraction(.enabled(upThrough: .large))
 
         case .waypointList:
             WaypointListSheet(
@@ -226,7 +226,7 @@ struct SheetHost: ViewModifier {
             )
             .presentationDetents([.medium, .large])
             .presentationDragIndicator(.visible)
-            .presentationBackgroundInteraction(.enabled(upThrough: .medium))
+            .presentationBackgroundInteraction(.enabled(upThrough: .large))
 
         case .waypointDetail:
             if let wp = waypointViewModel.selectedWaypoint {
@@ -244,7 +244,7 @@ struct SheetHost: ViewModifier {
                 )
                 .presentationDetents([.medium, .large])
                 .presentationDragIndicator(.hidden)
-                .presentationBackgroundInteraction(.enabled(upThrough: .medium))
+                .presentationBackgroundInteraction(.enabled(upThrough: .large))
             }
 
         case .waypointEdit:
@@ -254,7 +254,7 @@ struct SheetHost: ViewModifier {
             )
             .presentationDetents([.medium, .large])
             .presentationDragIndicator(.visible)
-            .presentationBackgroundInteraction(.enabled(upThrough: .medium))
+            .presentationBackgroundInteraction(.enabled(upThrough: .large))
 
         case .offlineManager:
             DownloadManagerSheet(
@@ -265,13 +265,13 @@ struct SheetHost: ViewModifier {
             )
             .presentationDetents([.medium, .large])
             .presentationDragIndicator(.visible)
-            .presentationBackgroundInteraction(.enabled(upThrough: .medium))
+            .presentationBackgroundInteraction(.enabled(upThrough: .large))
 
         case .downloadArea:
             DownloadAreaSheet(viewModel: offlineViewModel)
                 .presentationDetents([.medium, .large])
                 .presentationDragIndicator(.visible)
-                .presentationBackgroundInteraction(.enabled(upThrough: .medium))
+                .presentationBackgroundInteraction(.enabled(upThrough: .large))
 
         case .offlineSetup:
             OfflineSetupSheet(
@@ -284,13 +284,13 @@ struct SheetHost: ViewModifier {
                     )
                 }
             )
-            .presentationBackgroundInteraction(.enabled(upThrough: .medium))
+            .presentationBackgroundInteraction(.enabled(upThrough: .large))
 
         case .weather:
             WeatherSheet(viewModel: weatherViewModel)
                 .presentationDetents([.medium, .large])
                 .presentationDragIndicator(.visible)
-                .presentationBackgroundInteraction(.enabled(upThrough: .medium))
+                .presentationBackgroundInteraction(.enabled(upThrough: .large))
 
         case .measurement:
             MeasurementSheet(viewModel: measurementViewModel)
@@ -305,14 +305,14 @@ struct SheetHost: ViewModifier {
             )
             .presentationDetents([.medium, .large])
             .presentationDragIndicator(.visible)
-            .presentationBackgroundInteraction(.enabled(upThrough: .medium))
+            .presentationBackgroundInteraction(.enabled(upThrough: .large))
             .onDisappear { sosViewModel.deactivate() }
 
         case .activitySave:
             ActivitySaveSheet(viewModel: activityViewModel)
                 .presentationDetents([.medium])
                 .presentationDragIndicator(.visible)
-                .presentationBackgroundInteraction(.enabled(upThrough: .medium))
+                .presentationBackgroundInteraction(.enabled(upThrough: .large))
         }
     }
 }

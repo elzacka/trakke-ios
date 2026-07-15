@@ -4,7 +4,7 @@ import OSLog
 /// Displays the user guide fetched from GitHub.
 /// Content updates automatically when Brukerveiledning.md is updated in the repo.
 struct UserGuideSheet: View {
-    /// Inline-modus: ingen egen NavigationStack — kalleren har allerede en
+    /// Inline-modus: ingen egen NavigationStack – kalleren har allerede en
     /// NavigationStack og bruker visningen som push-destinasjon.
     var inline = false
     /// Embedded-modus: rendrer kun markdown-blokkene uten egen ScrollView,
@@ -100,7 +100,7 @@ struct UserGuideSheet: View {
 /// Renders the user guide as a single continuous scroll with section headings as landmarks.
 private struct UserGuideBodyView: View {
     let markdown: String
-    /// Embedded: render kun blokkene i en VStack — parent håndterer scroll,
+    /// Embedded: render kun blokkene i en VStack – parent håndterer scroll,
     /// og back-to-top er ikke relevant (akkordeonen kollapser i stedet).
     var embedded: Bool = false
     @State private var parsedBlocks: [MarkdownBlock]?

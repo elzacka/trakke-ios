@@ -74,7 +74,7 @@ enum GeoJSONImportService {
         case "Feature":
             extract(from: json, into: &waypoints, and: &routes, and: &activities)
         case "Point", "LineString", "Polygon", "MultiPoint", "MultiLineString", "MultiPolygon":
-            // Bare geometry without Feature wrapper — accept it.
+            // Bare geometry without Feature wrapper – accept it.
             let synthesizedFeature: [String: Any] = [
                 "type": "Feature",
                 "geometry": json,
@@ -185,7 +185,7 @@ enum GeoJSONImportService {
             }
 
         default:
-            // Unknown geometry — skip silently.
+            // Unknown geometry – skip silently.
             break
         }
     }
@@ -258,7 +258,7 @@ enum GeoJSONImportService {
 
     /// Returns an `ImportedActivity` when the LineString carries per-point timestamps
     /// via the de-facto GeoJSON-Track convention (`properties.coordinateProperties.times`).
-    /// Returns nil otherwise — caller should fall back to importing as a Route.
+    /// Returns nil otherwise – caller should fall back to importing as a Route.
     private static func activity(
         from coordinates: [[Double]],
         name: String?,

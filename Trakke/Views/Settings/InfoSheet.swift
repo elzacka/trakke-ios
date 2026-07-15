@@ -2,7 +2,7 @@ import SwiftUI
 
 struct InfoSheet: View {
     var isEmbedded = false
-    /// Inline-modus: ingen ScrollView/NavigationStack/title — kalleren
+    /// Inline-modus: ingen ScrollView/NavigationStack/title – kalleren
     /// (f.eks. Info-fanen) håndterer scroll og NavigationStack.
     var inline = false
     /// Brukt til Nettverksstatus-seksjonen. Optional siden Privacy- og
@@ -48,7 +48,7 @@ struct InfoSheet: View {
             //
             // To akkordeoner deler samme kort under én tittel. Bruker
             // bare-modus av ExpandableSection slik at de ikke får hvert
-            // sitt kort. Markdown rendres inline i parent-scrollen —
+            // sitt kort. Markdown rendres inline i parent-scrollen –
             // ingen push, ingen sheet-stack, ingen skjermoverganger.
             CardSection(String(localized: "info.section.gettingStarted")) {
                 ExpandableSection(
@@ -70,7 +70,7 @@ struct InfoSheet: View {
 
             // MARK: - 2. Om appen
             //
-            // Statisk identitet — plassert i midten slik at versjon synes
+            // Statisk identitet – plassert i midten slik at versjon synes
             // uten å scrolle, og gir et visuelt anker mellom de fire
             // akkordeonene over og under.
             CardSection(String(localized: "info.appInfo")) {

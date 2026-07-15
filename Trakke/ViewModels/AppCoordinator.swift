@@ -90,7 +90,7 @@ final class AppCoordinator {
     func stopNavigation() {
         navigationViewModel.stopNavigation()
         mapViewModel.stopNavigation()
-        UIApplication.shared.isIdleTimerDisabled = false
+        UIApplication.shared.isIdleTimerDisabled = activityViewModel.isRecording || sosViewModel.isActive
     }
 
     func toggleNavigationCamera() {
@@ -100,14 +100,28 @@ final class AppCoordinator {
     // MARK: - Activity recording
 
     func startActivityRecording() {
-        mapViewModel.startTrackingLocation()
-        activityViewModel.startRecording()
+        // Gate on location permission; primer is shown by startTrackingLocation.
+        let status = mapViewModel.locationAuthStatus
+        guard status == .authorizedWhenInUse || status == .authorizedAlways else {
+            mapViewModel.startTrackingLocation()
+            return
+        }
         mapViewModel.setLocationObserver("recording") { [weak activityViewModel] location in
             Task { @MainActor in
                 activityViewModel?.processLocation(location)
             }
         }
+        activityViewModel.startRecording()
+        activityViewModel.onRecordingStop = { [weak self] in
+            self?.handleRecordingStop()
+        }
         UIApplication.shared.isIdleTimerDisabled = true
+    }
+
+    private func handleRecordingStop() {
+        mapViewModel.removeLocationObserver("recording")
+        activityViewModel.onRecordingStop = nil
+        UIApplication.shared.isIdleTimerDisabled = navigationViewModel.isActive || sosViewModel.isActive
     }
 
     // MARK: - GDPR

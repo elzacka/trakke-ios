@@ -117,7 +117,8 @@ actor VarsomService {
         guard let endDate = calendar.date(byAdding: .day, value: 3, to: today) else { return [] }
         let endStr = urlDateFormatter.string(from: endDate)
 
-        let url = URL(string: "https://api01.nve.no/hydrology/forecast/flood/v1.0.6/api/Warning/County/nb/\(startDate)/\(endStr)")!
+        // langkey 1 = norsk bokmål; /All/ returns active warnings nationwide
+        let url = URL(string: "https://api01.nve.no/hydrology/forecast/flood/v1.0.6/api/Warning/All/1/\(startDate)/\(endStr)")!
 
         do {
             let data = try await APIClient.fetchData(url: url, timeout: 15)
@@ -126,10 +127,11 @@ actor VarsomService {
                 guard item.activityLevelInt > 1,
                       let fromStr = item.ValidFrom, let from = parseDate(fromStr),
                       let toStr = item.ValidTo, let to = parseDate(toStr) else { return nil }
+                let regionName = item.CountyList?.first?.Name ?? ""
                 return VarsomWarning(
-                    id: "flood-\(item.CountyName ?? "")-\(fromStr)",
+                    id: "flood-\(regionName)-\(fromStr)",
                     type: .flood,
-                    regionName: item.CountyName ?? "",
+                    regionName: regionName,
                     dangerLevel: item.activityLevelInt,
                     validFrom: from,
                     validTo: to,
@@ -223,8 +225,13 @@ private struct AvalancheResponse: Decodable {
     }
 }
 
+private struct FloodCounty: Decodable {
+    let Id: Int?
+    let Name: String?
+}
+
 private struct FloodResponse: Decodable {
-    let CountyName: String?
+    let CountyList: [FloodCounty]?
     let ActivityLevel: String?
     let ValidFrom: String?
     let ValidTo: String?

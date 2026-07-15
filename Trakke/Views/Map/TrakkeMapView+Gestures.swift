@@ -11,7 +11,7 @@ extension TrakkeMapView.Coordinator {
         guard let mapView = gesture.view as? MLNMapView else { return }
         let point = gesture.location(in: mapView)
 
-        // Hit-test mot tap-bare annotasjoner (POI, steder, søke-pin) —
+        // Hit-test mot tap-bare annotasjoner (POI, steder, søke-pin) –
         // MapLibre's didSelect:-mekanisme håndterer disse, og vi vil ikke
         // også fyre onMapTapped (som ville lukke et nyåpnet detalj-ark).
         let hitRadius: CGFloat = 22
@@ -30,7 +30,7 @@ extension TrakkeMapView.Coordinator {
         }
 
         let coordinate = mapView.convert(point, toCoordinateFrom: mapView)
-        // Haptisk feedback bare ved aktive tegne/måle-handlinger — tomme
+        // Haptisk feedback bare ved aktive tegne/måle-handlinger – tomme
         // tap i idle (for å lukke ark) skal være stille.
         if isDrawingMode || isMeasuringMode {
             lightHaptic.impactOccurred()

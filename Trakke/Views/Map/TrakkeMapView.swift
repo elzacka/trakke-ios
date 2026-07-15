@@ -148,7 +148,7 @@ struct TrakkeMapView: UIViewRepresentable {
         // Update overlay layers (stores desired state; reconciles if style is loaded)
         context.coordinator.updateOverlays(on: mapView, enabled: enabledOverlays)
 
-        // Center map on viewModel's current center/zoom — but only when
+        // Center map on viewModel's current center/zoom – but only when
         // the user is NOT actively panning/zooming (prevents snap-back)
         // and MapLibre tracking is off (tracking handles centering itself).
         if !context.coordinator.isUserInteracting && mapView.userTrackingMode == .none {

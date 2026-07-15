@@ -5,7 +5,7 @@ extension ContentView {
     /// appropriate view model and surfaces the matching list sheet.
     ///
     /// GeoJSON is parsed once and dispatched per type to avoid re-decoding. GPX
-    /// uses streaming XMLParser per element type — re-parsing is cheap. Activity
+    /// uses streaming XMLParser per element type – re-parsing is cheap. Activity
     /// takes precedence over Route when track points carry timestamps, since
     /// that's the strongest signal a file is a recording rather than a plan.
     func handleOpenedFile(_ url: URL) {

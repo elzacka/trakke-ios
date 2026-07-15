@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Verktøy-fanen — Måleverktøy, Offline kart, SOS.
+/// Verktøy-fanen – Måleverktøy, Offline kart, SOS.
 /// Måleverktøy rendres direkte med to store kort-knapper (Avstand / Areal).
 /// Offline og SOS bruker inline-modus av eksisterende sheets, så all
 /// flow-logikken (kommune-tre, custom-område-velging, koordinater, signal)
@@ -48,7 +48,7 @@ struct ToolsTabContent: View {
     // MARK: - Måleverktøy
     //
     // Avstand og Areal er handlinger (start måle-modus + lukk menyen), ikke
-    // hierarki — derfor trakkeSecondary-knapper i stedet for chevron-rader.
+    // hierarki – derfor trakkeSecondary-knapper i stedet for chevron-rader.
     // Samme mønster som "Tegn rute"/"Logg tur" på Naviger-fanen.
 
     private var measurementContent: some View {

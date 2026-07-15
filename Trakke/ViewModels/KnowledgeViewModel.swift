@@ -96,20 +96,24 @@ final class KnowledgeViewModel {
         downloadTasks[pack.id] = Task { [weak self] in
             guard let self else { return }
             let progressStream = await manager.download(pack: pack)
+            var didComplete = false
             for await progress in progressStream {
-                guard !Task.isCancelled else { return }
+                guard !Task.isCancelled else { break }
                 activeDownloads[pack.id] = progress
                 if progress.isComplete {
-                    activeDownloads.removeValue(forKey: pack.id)
-                    downloadTasks.removeValue(forKey: pack.id)
-                    refreshInstalledPacks()
-
-                    // If the theme is enabled, reload entries
-                    if let theme = KnowledgeTheme(rawValue: pack.theme),
-                       enabledThemes.contains(theme),
-                       let bounds = lastBounds {
-                        loadTheme(theme, bounds: bounds, zoom: lastZoom)
-                    }
+                    didComplete = true
+                }
+            }
+            // Always clean up tracking state when the stream ends, whether the
+            // download completed, failed, or was cancelled.
+            activeDownloads.removeValue(forKey: pack.id)
+            downloadTasks.removeValue(forKey: pack.id)
+            if didComplete {
+                refreshInstalledPacks()
+                if let theme = KnowledgeTheme(rawValue: pack.theme),
+                   enabledThemes.contains(theme),
+                   let bounds = lastBounds {
+                    loadTheme(theme, bounds: bounds, zoom: lastZoom)
                 }
             }
         }
@@ -253,7 +257,7 @@ final class KnowledgeViewModel {
         // Load bundled articles (always available, no download required)
         var result = Self.loadBundledArticles()
 
-        // Merge remote articles — remote overrides bundled by matching ID
+        // Merge remote articles – remote overrides bundled by matching ID
         let remote = await remoteArticleService.cachedArticles()
         var seenIDs = Set<Int64>(result.map { $0.id })
         if !remote.isEmpty {

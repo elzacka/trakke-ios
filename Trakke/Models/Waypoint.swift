@@ -11,7 +11,7 @@ final class Waypoint {
     var elevation: Double?
     var icon: String?
     var color: String?
-    var isVisible: Bool
+    var isVisible: Bool = false
     var createdAt: Date
     var updatedAt: Date
 

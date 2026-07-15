@@ -137,6 +137,7 @@ actor POIService {
                 additionalHeaders: ["Accept": "application/geo+json"]
             )
             let response = try JSONDecoder().decode(KulturminnerResponse.self, from: data)
+            let rawCount = response.features.count
             let pois = response.features.compactMap { feature -> POI? in
                 guard feature.geometry.type == "Point",
                       feature.geometry.coordinates.count >= 2 else { return nil }
@@ -165,8 +166,8 @@ actor POIService {
             allPOIs.append(contentsOf: pois)
             offset += Self.kulturminnerPageSize
 
-            // Stop if this page returned fewer items than requested (last page)
-            hasMore = pois.count >= Self.kulturminnerPageSize
+            // Use raw feature count (before geometry filtering) to detect the last page.
+            hasMore = rawCount >= Self.kulturminnerPageSize
         }
 
         return allPOIs

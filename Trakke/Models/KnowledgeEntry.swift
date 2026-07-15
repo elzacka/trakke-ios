@@ -46,15 +46,15 @@ struct KnowledgeEntry: Identifiable, Sendable, Equatable {
 
 extension KnowledgeEntry: FetchableRecord {
     init(row: Row) {
-        id = row["id"]
+        id = (row["id"] as Int64?) ?? 0
         externalId = row["external_id"]
-        theme = row["theme"]
-        name = row["name"]
+        theme = (row["theme"] as String?) ?? ""
+        name = (row["name"] as String?) ?? ""
         description = row["description"]
-        latitude = row["lat"]
-        longitude = row["lon"]
+        latitude = (row["lat"] as Double?) ?? 0
+        longitude = (row["lon"] as Double?) ?? 0
         geometry = row["geometry"]
-        source = row["source"]
+        source = (row["source"] as String?) ?? ""
         sourceURL = row["source_url"]
         attributes = row["attributes"]
     }

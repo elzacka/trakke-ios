@@ -3,19 +3,20 @@ import os
 import OSLog
 
 /// Manages the SOS Morse code signal using the device torch and optional audio.
-/// Morse SOS pattern: ··· — — — ··· (dot=1 unit, dash=3 units, inter-element gap=1 unit,
+/// Morse SOS pattern: ··· – – – ··· (dot=1 unit, dash=3 units, inter-element gap=1 unit,
 /// inter-letter gap=3 units, inter-word gap=7 units). Unit = 250 ms.
 actor SOSService {
     private let unitDuration: UInt64 = 250_000_000 // 250 ms in nanoseconds
     private let toneFrequency: Float = 2800 // Hz
     private var isRunning = false
+    private var loopTask: Task<Void, Never>?
     private var audioEngine: AVAudioEngine?
     private var sourceNode: AVAudioSourceNode?
     /// Thread-safe flag for the audio render block (called from audio thread)
     private let toneActive = OSAllocatedUnfairLock(initialState: false)
 
     /// The SOS pattern as durations: positive = on, negative = off (in units)
-    /// S = ·  ·  ·   O = —  —  —   S = ·  ·  ·
+    /// S = ·  ·  ·   O = –  –  –   S = ·  ·  ·
     static let sosPattern: [Int] = [
         // S: dot gap dot gap dot
         1, -1, 1, -1, 1,
@@ -32,20 +33,26 @@ actor SOSService {
     ]
 
     func start(withAudio: Bool) async {
-        guard !isRunning else { return }
+        // Cancel any existing loop so a rapid deactivate→activate doesn't leave
+        // a stale loop running alongside the new one.
+        loopTask?.cancel()
+        loopTask = nil
         isRunning = true
 
-        // Always start the audio engine to keep the process alive when the screen
-        // locks (UIBackgroundModes audio). When the user has disabled audible tones,
-        // the engine runs silently (toneActive stays false during "off" periods and
-        // the render block outputs silence).
-        startAudio()
+        if withAudio {
+            startAudio()
+        }
 
-        await runSignalLoop(withAudio: withAudio)
+        let task = Task { await self.runSignalLoop(withAudio: withAudio) }
+        loopTask = task
+        await task.value
+        loopTask = nil
     }
 
     func stop() {
         isRunning = false
+        loopTask?.cancel()
+        loopTask = nil
         setTorch(on: false)
         stopAudio()
     }

@@ -21,7 +21,7 @@ struct KommuneRegion: Codable, Identifiable, Hashable, Sendable {
     }
 
     /// Finds the highest maxZoom (capped at 15) where tile count stays under the limit.
-    /// 50,000 tiles ensures all kommuner reach at least z14 — the minimum for confident
+    /// 50,000 tiles ensures all kommuner reach at least z14 – the minimum for confident
     /// trail navigation (shelters, junctions, and all marked trails clearly visible).
     func optimalMaxZoom(minZoom: Int = 8, tileLimit: Int = 50_000, maxCap: Int = 15) -> Int {
         for zoom in stride(from: maxCap, through: minZoom, by: -1) {

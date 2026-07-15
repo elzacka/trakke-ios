@@ -24,7 +24,7 @@ struct CurrentConditionsCard: View {
     var body: some View {
         // Apparent Temperature (Australian Bureau of Meteorology) dekker
         // hele temperatur-spennet. Vises bare når den avviker med ≥1° fra
-        // målt temperatur — ingen redundant linje når vind og fuktighet
+        // målt temperatur – ingen redundant linje når vind og fuktighet
         // ikke gir merkbar forskjell.
         let apparentTemp = WeatherService.apparentTemperature(
             temperature: data.temperature,
@@ -158,10 +158,10 @@ struct CurrentConditionsCard: View {
         }
     }
 
-    /// Formaterer UV-indeksen som "{heltall} — {kategori}" basert på WHO/DSA-
+    /// Formaterer UV-indeksen som "{heltall} – {kategori}" basert på WHO/DSA-
     /// nivå-inndeling. F.eks. 0–2 = «Lav», 3–5 = «Moderat», 6–7 = «Sterk»,
     /// 8–10 = «Svært sterk», 11+ = «Ekstrem». Kategori-navnet gir mening til
-    /// tallet — særlig viktig på lave verdier der «0» alene ble misforstått
+    /// tallet, særlig viktig på lave verdier der «0» alene ble misforstått
     /// som «ingen data».
     private func uvValueText(_ uv: Double) -> String {
         let rounded = Int(uv.rounded())
@@ -172,7 +172,7 @@ struct CurrentConditionsCard: View {
         case 8...10: String(localized: "weather.uv.veryHigh")
         default: String(localized: "weather.uv.extreme")
         }
-        return "\(rounded) — \(category)"
+        return "\(rounded) – \(category)"
     }
 
     private func statRow(label: String, value: String) -> some View {
@@ -229,13 +229,13 @@ struct CurrentConditionsCard: View {
     @ViewBuilder
     private var detailsContent: some View {
         VStack(spacing: 0) {
-            // UV-indeks vises alltid (også på nivå 0) — tooltipet
+            // UV-indeks vises alltid (også på nivå 0) – tooltipet
             // forklarer hva nivåene betyr i praksis. Varsler-seksjonen
             // viser UV separat kun ved nivå >= 3 (anbefalt beskyttelse).
             //
-            // Format: "{tall} — {kategori}" (f.eks. "0 — Lav", "6 — Sterk").
+            // Format: "{tall} – {kategori}" (f.eks. "0 – Lav", "6 – Sterk").
             // Tallet alene ble misforstått som "ingen data" på lave nivåer
-            // (sen kveld i Norge gir typisk UV 0–1 — sola er for lavt på
+            // (sen kveld i Norge gir typisk UV 0–1 – sola er for lavt på
             // himmelen for at UV-B når bakken).
             if let uv = data.uvIndex {
                 statRow(
@@ -316,13 +316,13 @@ struct CurrentConditionsCard: View {
         }
     }
 
-    /// NAAF-pollen-rad: full bredde, hele raden klikkbar, samme padding
+    /// NAAF-pollen-rad: full bredde, hele raden trykkbar, samme padding
     /// som statRow over. Eneste forskjell mot data-rader er pil-ikonet
     /// til høyre som signaliserer at lenken åpner ekstern side.
     private var naafLinkRow: some View {
         Link(destination: URL(string: "https://www.naaf.no/pollenvarsel")!) {
             HStack(spacing: .Trakke.md) {
-                Text("NAAF — Pollenvarsel")
+                Text("NAAF – Pollenvarsel")
                     .font(Font.Trakke.bodyRegular)
                     .foregroundStyle(Color.Trakke.text)
                     .lineLimit(1)
@@ -337,7 +337,7 @@ struct CurrentConditionsCard: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .accessibilityLabel("NAAF — Pollenvarsel")
+        .accessibilityLabel("NAAF – Pollenvarsel")
         .accessibilityHint(String(localized: "accessibility.opensExternalLink"))
     }
 }

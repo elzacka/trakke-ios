@@ -16,6 +16,9 @@ final class ActivityViewModel {
     private let trackingService: any ActivityTracking
     private var statsTask: Task<Void, Never>?
     private var modelContext: ModelContext?
+    /// Called by AppCoordinator after recording stops to tear down the location
+    /// observer, GPS accuracy, and keep-awake state.
+    var onRecordingStop: (() -> Void)?
 
     init(trackingService: any ActivityTracking = ActivityTrackingService()) {
         self.trackingService = trackingService
@@ -65,10 +68,15 @@ final class ActivityViewModel {
         isRecording = false
         statsTask?.cancel()
         statsTask = nil
+        onRecordingStop?()
 
         let result = await trackingService.finish()
 
-        guard let modelContext, result.trackPoints.count >= 2 else { return }
+        guard let modelContext else { return }
+        guard result.trackPoints.count >= 2 else {
+            saveError = String(localized: "activity.tooFewPoints")
+            return
+        }
 
         let activity = Activity(
             name: name,
@@ -98,6 +106,7 @@ final class ActivityViewModel {
         currentDistance = 0
         currentElevationGain = 0
         currentDuration = 0
+        onRecordingStop?()
         Task { [weak self] in
             await self?.trackingService.finish()
         }
@@ -249,7 +258,7 @@ final class ActivityViewModel {
         }
     }
 
-    // MARK: - Bulk visibility (no `showOnly` — activities are historical, not
+    // MARK: - Bulk visibility (no `showOnly` – activities are historical, not
     // planning artefacts, so solo-isolating one trip has weak product meaning.)
 
     func setCategoryVisibility(_ category: String?, visible: Bool) {
@@ -347,7 +356,7 @@ final class ActivityViewModel {
         route.elevationGain = activity.elevationGain
         route.elevationLoss = activity.elevationLoss
         route.color = RouteViewModel.routeColors[routeViewModel.routes.count % RouteViewModel.routeColors.count]
-        // Converted route is visible by default — the user explicitly chose to
+        // Converted route is visible by default – the user explicitly chose to
         // promote this activity into a route, so they likely want to see it.
         route.isVisible = true
         modelContext.insert(route)

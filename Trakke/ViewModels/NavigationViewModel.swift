@@ -21,7 +21,7 @@ final class NavigationViewModel {
 
     // MARK: - Private State
 
-    /// Avstand til destinasjon ved oppstart — hindrer feilaktig "Fremme!"
+    /// Avstand til destinasjon ved oppstart – hindrer feilaktig "Fremme!"
     /// når brukeren starter nær destinasjonen (f.eks. retrace av rundtur).
     private var compassStartDistance: Double?
     private var lastProcessedTime: Date?
@@ -43,6 +43,7 @@ final class NavigationViewModel {
     // MARK: - Start Compass Navigation
 
     func startCompassNavigation(to dest: CLLocationCoordinate2D) {
+        endStaleLiveActivities()
         destination = dest
         isActive = true
         isPaused = false
@@ -59,14 +60,14 @@ final class NavigationViewModel {
         guard isActive else { return }
         isPaused = true
         cancelGPSWatchdog()
-        updateLiveActivity()
+        updateLiveActivity(force: true)
     }
 
     func resumeNavigation() {
         guard isActive else { return }
         isPaused = false
         restartGPSWatchdog()
-        updateLiveActivity()
+        updateLiveActivity(force: true)
     }
 
     // MARK: - Stop Navigation
@@ -156,7 +157,10 @@ final class NavigationViewModel {
 
     private func startLiveActivity() {
         guard ActivityKit.ActivityAuthorizationInfo().areActivitiesEnabled else { return }
-        let content = ActivityKit.ActivityContent(state: currentActivityState(), staleDate: nil)
+        let content = ActivityKit.ActivityContent(
+            state: currentActivityState(),
+            staleDate: Date().addingTimeInterval(60)
+        )
         do {
             let activity = try ActivityKit.Activity.request(
                 attributes: NavigationActivityAttributes(),
@@ -168,13 +172,16 @@ final class NavigationViewModel {
         }
     }
 
-    private func updateLiveActivity() {
+    private func updateLiveActivity(force: Bool = false) {
         guard let id = navigationActivityID else { return }
         let now = Date()
-        if let last = lastActivityUpdate,
+        if !force, let last = lastActivityUpdate,
            now.timeIntervalSince(last) < Self.activityUpdateInterval { return }
         lastActivityUpdate = now
-        let content = ActivityKit.ActivityContent(state: currentActivityState(), staleDate: nil)
+        let content = ActivityKit.ActivityContent(
+            state: currentActivityState(),
+            staleDate: Date().addingTimeInterval(60)
+        )
         Task {
             guard let activity = ActivityKit.Activity<NavigationActivityAttributes>.activities
                 .first(where: { $0.id == id }) else { return }
@@ -193,6 +200,14 @@ final class NavigationViewModel {
                 ActivityKit.ActivityContent(state: state, staleDate: nil),
                 dismissalPolicy: .immediate
             )
+        }
+    }
+
+    private func endStaleLiveActivities() {
+        Task {
+            for activity in ActivityKit.Activity<NavigationActivityAttributes>.activities {
+                await activity.end(dismissalPolicy: .immediate)
+            }
         }
     }
 

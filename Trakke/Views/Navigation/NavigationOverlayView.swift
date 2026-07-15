@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Nav-HUD — én sammenhengende horisontal pille på toppen av skjermen.
+/// Nav-HUD – én sammenhengende horisontal pille på toppen av skjermen.
 /// Viser kompasspeiling, avstand til destinasjon, pause/stopp-kontroller
 /// og kamera-veksler.
 struct NavigationOverlayView: View {
@@ -185,7 +185,7 @@ struct NavigationOverlayView: View {
         .foregroundStyle(Color.Trakke.textInverse)
         .padding(.horizontal, .Trakke.lg)
         .padding(.vertical, .Trakke.sm)
-        .background(Color.Trakke.mapNavLine)
+        .background(Color.Trakke.brand)
         .clipShape(Capsule())
         .padding(.bottom, .Trakke.sm)
     }

@@ -78,7 +78,7 @@ final class WaypointViewModel {
     func renameCategory(from oldName: String, to newName: String) -> Bool {
         let trimmed = newName.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return false }
-        // Unchanged (including a pure case-preserving no-op) — nothing to do.
+        // Unchanged (including a pure case-preserving no-op) – nothing to do.
         guard trimmed != oldName else { return true }
         // Reject when another existing category matches case-insensitively.
         // A pure case change of the same category (e.g. "fjell" -> "Fjell") is
@@ -147,7 +147,7 @@ final class WaypointViewModel {
         return !items.isEmpty && items.allSatisfy(\.isVisible)
     }
 
-    /// Show only this waypoint — hide everything else.
+    /// Show only this waypoint – hide everything else.
     /// One SwiftData transaction so the map redraws once.
     func showOnly(_ waypoint: Waypoint) {
         let now = Date()
@@ -235,7 +235,7 @@ final class WaypointViewModel {
         )
     }
 
-    /// Eksporter ett enkelt sted som GPX — brukes fra detaljvisningen.
+    /// Eksporter ett enkelt sted som GPX – brukes fra detaljvisningen.
     func exportGPX(for waypoint: Waypoint) -> URL? {
         let gpxString = GPXExportService.exportWaypoint(waypoint)
         let filename = GPXExportService.sanitizeFilename(waypoint.name)
@@ -252,7 +252,7 @@ final class WaypointViewModel {
     // MARK: - Import
 
     /// Detects file format from extension and routes to the appropriate parser.
-    /// Synchronous import — dispatches to the right parser by file extension.
+    /// Synchronous import – dispatches to the right parser by file extension.
     /// GPX and GeoJSON share the same `ImportedWaypoint` intermediate type.
     @discardableResult
     func importFile(from url: URL) -> Int {
@@ -323,7 +323,12 @@ final class WaypointViewModel {
             context.insert(wp)
             count += 1
         }
-        save("waypoint")
+        do {
+            try context.save()
+        } catch {
+            importMessage = String(localized: "waypoints.importError")
+            return 0
+        }
         loadWaypoints()
         importMessage = String(localized: "waypoints.importSuccess \(count)")
         return count

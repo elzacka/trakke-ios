@@ -7,7 +7,7 @@ import SwiftUI
 struct OfflineSetupSheet: View {
     @Bindable var viewModel: OfflineViewModel
     var onCustom: () -> Void
-    /// Inline-modus: ingen NavigationStack/title/presentationDetents — kalleren
+    /// Inline-modus: ingen NavigationStack/title/presentationDetents – kalleren
     /// (f.eks. Verktøy-fanen) gir sin egen NavigationStack og sheet-kontekst.
     var inline = false
 
@@ -50,7 +50,7 @@ struct OfflineSetupSheet: View {
     private var scrollableContent: some View {
         ScrollView {
             VStack(spacing: .Trakke.cardGap) {
-                // Tegn eget område på kartet — handling, ikke hierarki.
+                // Tegn eget område på kartet – handling, ikke hierarki.
                 VStack(alignment: .leading, spacing: .Trakke.sm) {
                     Text(String(localized: "offline.choice.custom"))
                         .font(Font.Trakke.sectionHeader)
@@ -89,7 +89,7 @@ struct OfflineSetupSheet: View {
                         .padding(.vertical, .Trakke.sm)
                 }
             } else {
-                // Alle fylker samlet i ett kort — samme mønster som
+                // Alle fylker samlet i ett kort – samme mønster som
                 // Datakilder + Åpen kildekode i Om-fanen.
                 // Fylker er separert med Divider, ikke cardGap.
                 CardSection(String(localized: "kommune.section.header")) {

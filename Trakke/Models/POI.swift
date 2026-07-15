@@ -12,7 +12,7 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
     case kulturminner
     /// Konsolidert badeplass-kategori. Tidligere separate POI-typer
     /// (jettegryter, kroksjøer, laguner, varme kilder) er nå slått sammen
-    /// — alle er i praksis steder folk bader.
+    /// – alle er i praksis steder folk bader.
     case swimmingSpot
     case firePit
     case waterfall
@@ -41,7 +41,7 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
         }
     }
 
-    /// Ikonenavn — POI* refererer asset-katalog, øvrige er SF Symbols
+    /// Ikonenavn – POI* refererer asset-katalog, øvrige er SF Symbols
     /// (resolveres via POIIconImage som faller tilbake til Image(systemName:)).
     var iconName: String {
         switch self {
@@ -91,7 +91,7 @@ enum POICategory: String, CaseIterable, Identifiable, Sendable {
         case .firePit: return 11
         case .waterfall: return 11
         case .hammock: return 10
-        case .restStop: return 12          // 8964 features — krever høyere zoom for å unngå rot
+        case .restStop: return 12          // 8964 features – krever høyere zoom for å unngå rot
         case .tentSite: return 11
         case .cabins: return 9
         }

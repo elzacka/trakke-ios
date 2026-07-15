@@ -4,7 +4,7 @@ import SwiftUI
 /// Brukes på rader i WaypointListSheet, RouteListSheet, ActivityListSheet
 /// for å gi 1-tap synlighet-toggle uten å åpne detail-sheet.
 ///
-/// Visuelt mønster — samme som POI-underkategorier:
+/// Visuelt mønster – samme som POI-underkategorier:
 /// - synlig: hake (brandLight-grønn)
 /// - skjult: ingen hake (tom)
 ///
@@ -23,7 +23,7 @@ struct VisibilityToggleButton: View {
                         .font(Font.Trakke.bodyMedium)
                         .foregroundStyle(Color.Trakke.brandLight)
                 } else {
-                    // Tom plassholder — bevarer 44pt tap-areal når haken er skjult.
+                    // Tom plassholder – bevarer 44pt tap-areal når haken er skjult.
                     Color.clear
                 }
             }

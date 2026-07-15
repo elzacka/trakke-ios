@@ -6,17 +6,17 @@ En kartapp for iPhone, laget for tur i norsk natur. Bygget på Kartverkets kart.
 
 **Kart fra Kartverket.** Topografisk, gråtone og turkart. Bratthet, naturskog, naturvern og turruter som kartlag. Stedsnavn- og adressesøk. Kompasset veksler kartet mellom nord opp og retning opp. Last ned hele kommuner eller egne områder for offline bruk.
 
-**Steder på kartet.** Tilfluktsrom, gapahuker, hytter, badeplasser, bålplasser, hengekøyeplasser, teltplasser, rasteplasser, fosser, huler, utsiktspunkter, kulturminner og krigsminner — slå av og på etter behov. Det meste fungerer offline.
+**Steder på kartet.** Tilfluktsrom, gapahuker, hytter, badeplasser, bålplasser, hengekøyeplasser, teltplasser, rasteplasser, fosser, huler, utsiktspunkter, kulturminner og krigsminner. Slå av og på etter behov. Det meste fungerer offline.
 
 **Tur og navigasjon.** Tegn ruter, lagre steder, registrer turer med GPS. Turer og ruter står i samme samling, med felles kategorier og filter. Kompassretning til et valgt mål, også uten dekning. Import og eksport av GPX og GeoJSON.
 
 **Vær og varsler.** Værmelding, luftkvalitet og vanntemperatur fra Meteorologisk institutt. Snøskred og flom fra NVE/Varsom. Soloppgang og solnedgang.
 
-**Trygghet på tur.** Nødnumre, koordinater i flere formater, SOS-signal med blink og lyd, måleverktøy og en kunnskapsbase med artikler om friluftsliv — alt tilgjengelig offline.
+**Trygghet på tur.** Nødnumre, koordinater i flere formater, SOS-signal med blink og lyd, måleverktøy og en kunnskapsbase med artikler om friluftsliv, alt tilgjengelig offline.
 
 ## Personvern
 
-All data ligger på enheten din. Ingen kontoer, ingen sporing, ingen analyse. Posisjonstilgang kun når du bruker appen — og kun hvis du sier ja. Se [PERSONVERN.md](PERSONVERN.md) for detaljer.
+All data ligger på enheten din. Ingen kontoer, ingen sporing, ingen analyse. Posisjonstilgang kun når du bruker appen, og kun hvis du sier ja. Se [PERSONVERN.md](PERSONVERN.md) for detaljer.
 
 ## Dokumentasjon
 
@@ -24,8 +24,8 @@ All data ligger på enheten din. Ingen kontoer, ingen sporing, ingen analyse. Po
 |----------|----------|
 | [BRUKERVEILEDNING.md](BRUKERVEILEDNING.md) | Brukere. Vises også i appen under «Informasjon». |
 | [PERSONVERN.md](PERSONVERN.md) | Personvernerklæring (GDPR). |
-| [SECURITY.md](SECURITY.md) | Sikkerhetsforskere — arkitektur og rapportering av sårbarheter. |
-| [dev_only/CLAUDE.md](dev_only/CLAUDE.md) | Utviklere — arkitektur og delsystemer. |
+| [SECURITY.md](SECURITY.md) | Sikkerhetsforskere: arkitektur og rapportering av sårbarheter. |
+| [dev_only/CLAUDE.md](dev_only/CLAUDE.md) | Utviklere: arkitektur og delsystemer. |
 
 ## Utvikling
 
@@ -45,11 +45,11 @@ Krever Xcode 26.5 og iOS 26-simulator.
 
 App-rota består av små, fokuserte enheter:
 
-- `AppCoordinator` — eier ViewModels og navigasjon-/opptaks-tilstand
-- `MapScreen` — kart med alle overlay-lag og gester
-- `SheetHost` — sheet-ruting og FAB-meny
-- `DialogHost` — dialoger
-- `AppLifecycleModifier` — `onAppear`, `onChange` og `task`-hekter
+- `AppCoordinator`: eier ViewModels og navigasjon-/opptaks-tilstand
+- `MapScreen`: kart med alle overlay-lag og gester
+- `SheetHost`: sheet-ruting og FAB-meny
+- `DialogHost`: dialoger
+- `AppLifecycleModifier`: `onAppear`, `onChange` og `task`-hekter
 
 `ContentView` setter disse sammen og holder seg under 100 linjer. Se [dev_only/CLAUDE.md](dev_only/CLAUDE.md) for utfyllende beskrivelse.
 
@@ -59,15 +59,15 @@ MIT.
 
 ## Kildedata
 
-- Kartverket — kart, terreng og tjenester (NLOD 2.0)
-- Miljødirektoratet — naturvern og naturskog (NLOD 2.0)
-- Meteorologisk institutt — vær, havtemperatur og luftkvalitet (CC BY 4.0)
-- Havvarsel-Frost — badevannsdata (CC BY 4.0)
-- NVE / Varsom — snøskred- og flomvarsler (NLOD)
-- Artsdatabanken — artsbilder (CC BY 4.0)
-- Riksantikvaren — kulturminner (NLOD)
-- DSB — tilfluktsrom (NLOD)
-- Wikidata — fosser (CC0)
-- UT.no/DNT, Statskog, fjellstyrer m.fl. — hytter
-- OpenStreetMap-bidragsytere — øvrige kategorier (ODbL)
+- Kartverket: kart, terreng og tjenester (NLOD 2.0)
+- Miljødirektoratet: naturvern og naturskog (NLOD 2.0)
+- Meteorologisk institutt: vær, havtemperatur og luftkvalitet (CC BY 4.0)
+- Havvarsel-Frost: badevannsdata (CC BY 4.0)
+- NVE / Varsom: snøskred- og flomvarsler (NLOD)
+- Artsdatabanken: artsbilder (CC BY 4.0)
+- Riksantikvaren: kulturminner (NLOD)
+- DSB: tilfluktsrom (NLOD)
+- Wikidata: fosser (CC0)
+- UT.no/DNT, Statskog, fjellstyrer m.fl.: hytter
+- OpenStreetMap-bidragsytere: øvrige kategorier (ODbL)
 

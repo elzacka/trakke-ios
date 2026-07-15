@@ -2,15 +2,15 @@ import SwiftUI
 
 /// Standardisert ikon-knapp for sekundære handlinger inline i list-ark
 /// (importer, eksporter, slett, +). 44×44 tap-areal med brand-light
-/// bakgrunn og hvit symbol — visuelt skille fra info-rader i samme kort.
+/// bakgrunn og hvit symbol – visuelt skille fra info-rader i samme kort.
 ///
 /// VoiceOver: `accessibilityLabel` må alltid settes siden visningen er
 /// rent ikonisk. Når `isLoading` er true vises en spinner i stedet for
-/// ikonet, og knappen er disabled. Tap-arealet er konstant — ingen
+/// ikonet, og knappen er disabled. Tap-arealet er konstant – ingen
 /// layout-skift når tilstand endres.
 ///
 /// `role: .destructive` gir samme visuelle stil som `.neutral` (brand-
-/// light bg, hvit symbol) — bevisst valg slik at alle action-bar-knapper
+/// light bg, hvit symbol) – bevisst valg slik at alle action-bar-knapper
 /// ser likt ut. Bekreftelses-dialog beskytter slette-handlinger;
 /// destructive-rollen beholdes for VoiceOver-semantikk.
 struct TrakkeIconButton: View {
@@ -47,7 +47,7 @@ struct TrakkeIconButton: View {
     }
 
     /// Disabled-state har lys grønntint som bakgrunn (brandTint) og
-    /// textSoft som ikon — ikonet forblir tydelig synlig (~3.7:1
+    /// textSoft som ikon – ikonet forblir tydelig synlig (~3.7:1
     /// kontrast på brandTint, passer WCAG 1.4.11 for UI-komponenter)
     /// slik at brukeren ser hvilke handlinger som finnes selv før det
     /// er innhold å handle på.

@@ -39,8 +39,8 @@ Primary APIs are Norwegian or EU/EEA. One non-EU service is used for non-persona
 - API responses decoded through Swift `Codable` with strict type checking
 - Coordinate inputs validated against geographic bounds (`.isFinite` guards)
 - GPX and GeoJSON imports enforce a 50 MB file cap and 50 000 points per feature
-- XML parsers disable external entity resolution (XXE prevention)
-- Knowledge pack downloads verified with SHA-256 checksums
+- XML parsers disable external entity resolution (XXE prevention); parse failures surface as thrown errors
+- Knowledge pack downloads verified with SHA-256 checksums before installation
 - File paths sanitized against path traversal
 
 ### Data deletion (GDPR Art. 17)

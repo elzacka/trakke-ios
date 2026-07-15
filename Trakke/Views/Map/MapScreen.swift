@@ -93,6 +93,9 @@ struct MapScreen: View {
             // Krever at sheetene har `.presentationBackgroundInteraction
             // (.enabled(upThrough: .medium))` slik at tap-en faktisk når
             // gjennom til kartet.
+            // Ikke lukk SOS-sheet ved kart-tap – en aktiv nødmelding
+            // må aldri avbrytes av et utilsiktet trykk.
+            guard !coordinator.sosViewModel.isActive else { return }
             if sheets.active != nil {
                 sheets.active = nil
             } else if isFABMenuOpen {

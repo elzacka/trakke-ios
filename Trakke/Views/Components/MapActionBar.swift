@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Felles pille-stil for karthandlinger — speiler Nav-HUD-pillen for at alle
+/// Felles pille-stil for karthandlinger – speiler Nav-HUD-pillen for at alle
 /// modus-toolbars (Logg tur, Tegn rute, Måleverktøy, Offline-utvalg) føles
 /// som varianter av samme komponent, ikke fire ulike paradigmer.
 ///
@@ -19,7 +19,7 @@ import SwiftUI
 struct MapActionBar<Content: View>: View {
     enum VerticalPosition { case top, bottom }
     let position: VerticalPosition
-    /// Ekstra forskyvning fra topp — brukes når flere pillerader skal stables
+    /// Ekstra forskyvning fra topp – brukes når flere pillerader skal stables
     /// (f.eks. opptak under nav-HUD). Ignoreres for `.bottom`.
     let topOffset: CGFloat
     @ViewBuilder let content: () -> Content
@@ -54,7 +54,7 @@ struct MapActionBar<Content: View>: View {
     }
 }
 
-/// Vertikal 1pt-deler — identisk med Nav-HUDs `navBarDivider`.
+/// Vertikal 1pt-deler – identisk med Nav-HUDs `navBarDivider`.
 struct MapActionDivider: View {
     var body: some View {
         Rectangle()
@@ -73,7 +73,7 @@ struct MapActionStat: View {
     var body: some View {
         HStack(spacing: .Trakke.xs) {
             // Text-style fonts (not @ScaledMetric) so the .dynamicTypeSize cap
-            // below actually bounds them — a same-view @ScaledMetric resolves
+            // below actually bounds them – a same-view @ScaledMetric resolves
             // from the parent environment before the cap applies.
             Image(systemName: icon)
                 .font(.system(.caption, weight: .regular))
@@ -88,7 +88,7 @@ struct MapActionStat: View {
         }
         .padding(.horizontal, .Trakke.sm)
         .frame(maxWidth: .infinity, minHeight: 44)
-        // HUD-pillen har begrenset bredde — cap veksten så distanse/fart-stats
+        // HUD-pillen har begrenset bredde – cap veksten så distanse/fart-stats
         // ikke sprenger kapselen ved de største tilgjengelighetsstørrelsene.
         .dynamicTypeSize(...(.accessibility2))
         .accessibilityElement(children: .combine)
@@ -136,7 +136,7 @@ struct MapActionButton: View {
     }
 
     /// Disabled-state bytter til textSoft i stedet for å redusere opasitet
-    /// — ikonet forblir tydelig lesbart mot den translucente kapselen,
+    /// – ikonet forblir tydelig lesbart mot den translucente kapselen,
     /// og fargen alene signaliserer at handlingen ikke er tilgjengelig.
     private var iconColor: Color {
         guard isEnabled else { return Color.Trakke.textSoft }

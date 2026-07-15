@@ -2,7 +2,7 @@ import ActivityKit
 import WidgetKit
 import SwiftUI
 
-// Brand green (#3e4533) — duplicated here since the widget extension
+// Brand green (#3e4533) – duplicated here since the widget extension
 // cannot import from the main app target.
 private let brandGreen = Color(red: 0.243, green: 0.271, blue: 0.200)
 

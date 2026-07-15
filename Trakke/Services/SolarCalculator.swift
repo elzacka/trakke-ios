@@ -2,7 +2,7 @@ import Foundation
 import CoreLocation
 
 /// Calculates sunrise, sunset, and remaining daylight using the NOAA solar equations.
-/// No external API needed — pure math based on date, latitude, and longitude.
+/// No external API needed – pure math based on date, latitude, and longitude.
 enum SolarCalculator {
 
     struct DaylightInfo: Sendable {
@@ -80,7 +80,7 @@ enum SolarCalculator {
         guard cosHA >= -1.0 && cosHA <= 1.0 else {
             // If cosHA < -1, midnight sun; if > 1, polar night
             if cosHA < -1.0 {
-                // Midnight sun — full 24h daylight
+                // Midnight sun – full 24h daylight
                 let startOfDay = calendar.startOfDay(for: date)
                 let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? date
                 let remaining = max(0, endOfDay.timeIntervalSince(date))
@@ -90,7 +90,7 @@ enum SolarCalculator {
                     remainingDaylight: remaining
                 )
             }
-            // Polar night — no daylight
+            // Polar night – no daylight
             let now = date
             return DaylightInfo(sunrise: now, sunset: now, remainingDaylight: 0)
         }

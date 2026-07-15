@@ -83,7 +83,7 @@ struct KommuneDetailView: View {
 
     // MARK: - Layer
     //
-    // Radio-rad-mønster identisk med PreferencesSheet.baseLayerRow — én
+    // Radio-rad-mønster identisk med PreferencesSheet.baseLayerRow – én
     // TrakkeMenuRow per kartlag med checkmark-trailing for valgt. Samme
     // komponent og visuelle uttrykk så brukeren møter samme velger uansett
     // hvor i appen valget gjøres.
@@ -127,7 +127,7 @@ struct KommuneDetailView: View {
             .frame(maxWidth: .infinity)
             .padding(.vertical, .Trakke.buttonPadV)
         } else {
-            // Bruker brandLight + hvit tekst — samme handlings-stil som
+            // Bruker brandLight + hvit tekst – samme handlings-stil som
             // .trakkeSecondary, Avstand/Areal/Velg område osv.
             Button {
                 viewModel.startKommuneDownload(kommune)

@@ -20,12 +20,12 @@ enum TrakkeMigrationPlan: SchemaMigrationPlan {
 
     // V2 -> V3: Add Activity model and the additive `isVisible` / optional
     // `category` columns on Route, Waypoint and Activity. All changes are
-    // additive — SwiftData's lightweight migration handles them implicitly
+    // additive – SwiftData's lightweight migration handles them implicitly
     // when reading older V3 stores that lack these columns.
     //
     // Earlier work split this into intermediate V4 (isVisible) and V5
     // (category) schemas, but those schemas referenced the same @Model
-    // types as V3 and therefore produced identical SwiftData checksums —
+    // types as V3 and therefore produced identical SwiftData checksums –
     // crashing at launch with "Duplicate version checksums detected".
     // Neither V4 nor V5 was ever distributed, so collapsing them into V3
     // is safe.

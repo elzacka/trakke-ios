@@ -6,7 +6,7 @@ struct PreferencesSheet: View {
     var knowledgeViewModel: KnowledgeViewModel?
     var onDeleteAllData: (() -> Void)?
     var isEmbedded = false
-    /// Når true rendres innholdet uten ScrollView/NavigationStack/title —
+    /// Når true rendres innholdet uten ScrollView/NavigationStack/title –
     /// kalleren har egen scroll (f.eks. en accordion-vert i Mer-fanen).
     var inline = false
     @AppStorage(AppStorageKeys.coordinateFormat) private var coordinateFormat: CoordinateFormat = .dd
@@ -137,7 +137,7 @@ struct PreferencesSheet: View {
                     // MARK: - Handlingsbar: tilbakestill og slett alle data
                     //
                     // Samme ikon-bar-mønster som Naviger-fanene. Slett-knappen
-                    // er destruktiv (rød) og krever bekreftelse via dialog —
+                    // er destruktiv (rød) og krever bekreftelse via dialog –
                     // ingen egen skjerm i mellomliggende steg.
                     HStack(spacing: .Trakke.sm) {
                         Spacer()
@@ -227,7 +227,7 @@ struct PreferencesSheet: View {
         }
     }
 
-    /// GDPR Art. 17 — sletter alle lokale data, cacher og innstillinger.
+    /// GDPR Art. 17 – sletter alle lokale data, cacher og innstillinger.
     /// Flyttet fra DeleteAllDataView (egen skjerm) til en bekreftelses-dialog
     /// for å redusere brukerstøy.
     private func deleteAllData() {
@@ -236,10 +236,11 @@ struct PreferencesSheet: View {
         try? modelContext.delete(model: Activity.self)
         try? modelContext.save()
 
-        // Fjern WAL/SHM-filer for å fysisk slette persistert tilstand
+        // Fjern WAL/SHM-filer for å fysisk slette persistert tilstand.
+        // SQLite skriver sidecar-filer med bindestrek, ikke punktum-extension.
         if let storeURL = modelContext.container.configurations.first?.url {
-            let walURL = storeURL.appendingPathExtension("wal")
-            let shmURL = storeURL.appendingPathExtension("shm")
+            let walURL = URL(fileURLWithPath: storeURL.path + "-wal")
+            let shmURL = URL(fileURLWithPath: storeURL.path + "-shm")
             try? FileManager.default.removeItem(at: walURL)
             try? FileManager.default.removeItem(at: shmURL)
         }
@@ -288,7 +289,7 @@ extension CoordinateFormat {
         }
     }
 
-    /// Komprimert tittel — én linje, uten "(standard)" og fulle navn.
+    /// Komprimert tittel – én linje, uten "(standard)" og fulle navn.
     /// Brukt i radio-rader der formatet vises sammen med eksempel-koordinat.
     var formatShortTitle: String {
         switch self {

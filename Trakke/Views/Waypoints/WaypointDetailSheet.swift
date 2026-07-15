@@ -140,7 +140,7 @@ struct WaypointDetailSheet: View {
 
     // MARK: - Actions Card
 
-    // Høyrejustert ikon-bar — samme stil som Naviger-list-fanene og de
+    // Høyrejustert ikon-bar – samme stil som Naviger-list-fanene og de
     // andre detail-arkene. Posisjon i HStack indikerer hierarki:
     // primær-handling (naviger) først, destruktiv (slett) sist.
     private var actionsCard: some View {

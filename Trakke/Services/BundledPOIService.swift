@@ -87,7 +87,7 @@ enum BundledPOIService {
 
     /// Konsoliderte kategorier (badeplasser, hytter) inneholder POI-er fra
     /// flere kildefiler. Filnavnet er det eneste signalet vi har på *hva
-    /// slags* underkategori det er — vi tagger derfor hver POI med en
+    /// slags* underkategori det er – vi tagger derfor hver POI med en
     /// klassifikasjon her, og normaliserer/luker ut tekst som ellers ville
     /// vist seg dårlig i popup.
     private nonisolated static func enrich(_ pois: [POI], fromFile filename: String) -> [POI] {
@@ -214,7 +214,7 @@ private struct BundledFeature: Decodable {
 
         // GeoJSON-feltverdier kan være String, Int, Double, Bool eller null
         // avhengig av datakilde. Vi koerserer alt til String for uniform
-        // POI.details — uten dette feilet hele feature-collection-decodingen
+        // POI.details – uten dette feilet hele feature-collection-decodingen
         // hvis bare ÉN feature hadde f.eks. `elevation: 235` (Int).
         let rawProps = try container.decode([String: JSONPropertyValue].self, forKey: .properties)
         self.properties = rawProps.mapValues(\.stringValue)

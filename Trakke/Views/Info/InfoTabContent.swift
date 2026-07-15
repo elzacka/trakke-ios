@@ -1,7 +1,7 @@
 import CoreLocation
 import SwiftUI
 
-/// Info-fanen — Vær, Kunnskap, Om i tre underfaner.
+/// Info-fanen – Vær, Kunnskap, Om i tre underfaner.
 /// Bruker inline-modus av WeatherSheet, KnowledgeSheet og InfoSheet for å
 /// gjenbruke alt eksisterende innhold uten dobbel header eller dobbel
 /// NavigationStack. Egen NavigationStack rundt håndterer push-navigasjon

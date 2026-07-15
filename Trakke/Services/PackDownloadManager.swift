@@ -6,12 +6,15 @@ import OSLog
 
 actor PackDownloadManager {
     private var activeDownloads: [String: Task<Void, Never>] = [:]
+    // Each download slot gets a generation number. The task's defer checks it before
+    // removing the entry so a superseded task never evicts a newer task's registration.
+    private var activeDownloadGenerations: [String: Int] = [:]
 
     // MARK: - Download
 
     func download(pack: KnowledgePack) -> AsyncStream<DownloadProgress> {
         // Cancel any existing download before creating the stream.
-        // Both lines run in the actor-isolated function body — safe.
+        // Both lines run in the actor-isolated function body – safe.
         activeDownloads[pack.id]?.cancel()
         activeDownloads.removeValue(forKey: pack.id)
 
@@ -20,8 +23,17 @@ actor PackDownloadManager {
         // activeDownloads without touching actor state from a nonisolated closure.
         let (stream, continuation) = AsyncStream<DownloadProgress>.makeStream()
 
+        let gen = (activeDownloadGenerations[pack.id] ?? 0) + 1
+        activeDownloadGenerations[pack.id] = gen
+        let capturedGen = gen
+
         let task = Task {
-            defer { self.removeActiveDownload(pack.id) }
+            defer {
+                if self.activeDownloadGenerations[pack.id] == capturedGen {
+                    self.activeDownloads.removeValue(forKey: pack.id)
+                    self.activeDownloadGenerations.removeValue(forKey: pack.id)
+                }
+            }
             do {
                 let request = Self.makeRequest(url: pack.downloadURL)
                 let (tempURL, response) = try await APIClient.session.download(for: request)
@@ -30,29 +42,29 @@ actor PackDownloadManager {
                       (200...299).contains(httpResponse.statusCode)
                 else {
                     continuation.yield(DownloadProgress(
-                        packId: pack.id, bytesWritten: 0, totalBytes: pack.fileSize, isComplete: false
+                        packId: pack.id, bytesWritten: 0, totalBytes: pack.fileSize,
+                        isComplete: false, error: "HTTP error"
                     ))
                     continuation.finish()
                     return
                 }
 
-                // Verify checksum
                 guard Self.verifyChecksum(fileURL: tempURL, expected: pack.checksum) else {
                     Logger.knowledge.error("Checksum verification failed for pack: \(pack.id, privacy: .public)")
                     try? FileManager.default.removeItem(at: tempURL)
+                    continuation.yield(DownloadProgress(
+                        packId: pack.id, bytesWritten: 0, totalBytes: pack.fileSize,
+                        isComplete: false, error: "Checksum mismatch"
+                    ))
                     continuation.finish()
                     return
                 }
 
-                // Atomic move to final location
                 let finalURL = PackStorageHelper.packFileURL(for: pack.id)
                 PackStorageHelper.ensureDirectoryExists()
-
-                // Remove existing file if any
                 try? FileManager.default.removeItem(at: finalURL)
                 try FileManager.default.moveItem(at: tempURL, to: finalURL)
 
-                // Save metadata
                 let info = InstalledPackInfo(
                     id: pack.id,
                     name: pack.name,
@@ -73,6 +85,10 @@ actor PackDownloadManager {
                 continuation.finish()
             } catch {
                 Logger.knowledge.error("Download failed for pack \(pack.id, privacy: .public): \(error, privacy: .private)")
+                continuation.yield(DownloadProgress(
+                    packId: pack.id, bytesWritten: 0, totalBytes: pack.fileSize,
+                    isComplete: false, error: error.localizedDescription
+                ))
                 continuation.finish()
             }
         }
@@ -126,10 +142,6 @@ actor PackDownloadManager {
     }
 
     // MARK: - Private
-
-    private func removeActiveDownload(_ packId: String) {
-        activeDownloads.removeValue(forKey: packId)
-    }
 
     private func saveInstalledPack(_ info: InstalledPackInfo) {
         var packs = Self.loadInstalledPacks()

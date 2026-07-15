@@ -70,7 +70,7 @@ struct WaypointEditSheet: View {
                     category = wp.category ?? ""
                     details = wp.details ?? ""
                 } else {
-                    // Autofocus the name field only when creating a new place —
+                    // Autofocus the name field only when creating a new place –
                     // editing an existing one should not pop the keyboard and
                     // hide the category list.
                     nameFieldFocused = true
@@ -189,7 +189,7 @@ struct WaypointEditSheet: View {
         let trimmed = newCategoryName.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
         // If a category with this name already exists (case-insensitive), select
-        // it instead of creating a pending duplicate — prevents "fjell" and
+        // it instead of creating a pending duplicate – prevents "fjell" and
         // "Fjell" coexisting.
         if let existing = viewModel.categories.first(where: {
             $0.localizedCaseInsensitiveCompare(trimmed) == .orderedSame

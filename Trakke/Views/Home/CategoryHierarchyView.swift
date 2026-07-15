@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Kategori-hierarki for Hjem-fanen. Viser hovedgruppene som ekspanderbare
-/// rader inni én delt CardSection — samme mønster som Info-fanens akkordeon-
+/// rader inni én delt CardSection – samme mønster som Info-fanens akkordeon-
 /// grupperinger (Datakilder + Åpen kildekode i Om). Hver gruppe åpner en
 /// liste over POI-kategorier som kan slås av/på.
 ///
@@ -13,7 +13,7 @@ struct CategoryHierarchyView: View {
     @Bindable var poiViewModel: POIViewModel
     @State private var expandedGroups: Set<ContentGroup> = []
 
-    /// Rekkefølgen på gruppene som vises — matcher brukerens skisse.
+    /// Rekkefølgen på gruppene som vises – matcher brukerens skisse.
     private let displayedGroups: [ContentGroup] = [
         .friluftsliv,
         .landskap,
@@ -88,7 +88,7 @@ private struct CategoryGroupSection: View {
         }
     }
 
-    /// Header — matcher ExpandableSection's typografi og spacing. Forskjell:
+    /// Header – matcher ExpandableSection's typografi og spacing. Forskjell:
     /// ledende ikon (hovedgruppens SF Symbol) og en valgfri pille med antall
     /// aktive POI-kategorier i gruppen.
     private var headerButton: some View {

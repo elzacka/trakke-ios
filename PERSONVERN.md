@@ -2,42 +2,40 @@
 
 **Sist oppdatert:** 15. juli 2026
 
-## Kort fortalt
+## 1. Kort fortalt
 
-Tråkke lagrer all data lokalt på enheten din. Ingen personopplysninger samles inn - heller ingen sporing når du bruker appen. Ingenting sendes til appens egne systemer eller til tredjeparter for analyse eller markedsføring.
+Tråkke lagrer all data lokalt på enheten din. Ingen personopplysninger samles inn, og ingen sporing skjer når du bruker appen. Ingenting sendes til appens egne systemer eller til tredjeparter for analyse eller markedsføring.
 
----
+## 2. Hva som behandles
 
-## 1. Hva som behandles
-
-### 1.1 Data som lagres lokalt
+### Data som lagres lokalt
 
 - **Ruter, steder og turer** du oppretter
-- **Turdata** — GPS-spor, avstand og høydemeter fra registrerte turer
-- **Innstillinger** — valgt kartlag, koordinatformat og preferanser
+- **Turdata:** GPS-spor, avstand og høydemeter fra registrerte turer
+- **Innstillinger:** valgt kartlag, koordinatformat og øvrige innstillinger
 - **Nedlastede kart** for offline bruk
 - **Kunnskapsartikler** for offline bruk
 - **Midlertidige vær- og luftkvalitetsdata** (i minnet, slettes når du lukker appen)
 
 Disse dataene forlater aldri enheten.
 
-### 1.2 Posisjon
+### Posisjon
 
 Appen ber om posisjon kun når du aktivt velger å vise den på kartet. Du får en kort forklaring i appen før iOS-dialogen vises, og du kan avvise uten å se iOS-dialogen.
 
-Posisjonen brukes til å vise deg på kartet, hente lokal værmelding og registrere GPS-spor. Posisjonsdata lagres kun lokalt.
+Posisjonen brukes til å vise deg på kartet, navigere til et mål, hente lokal værmelding og registrere GPS-spor. Posisjonsdata lagres kun lokalt.
 
-### 1.3 Nettverksstatus
+### Nettverksstatus
 
 Appen viser om enheten er online eller offline, og hvilken tilkoblingstype som er i bruk (Wi-Fi, mobildata, kablet, annet eller ingen). Dette leses lokalt fra iOS via NWPathMonitor. Ingen nettverksdata sendes ut av enheten og ingenting lagres.
 
-### 1.4 Data som ikke samles inn
+### Data som ikke samles inn
 
-Ingen brukerkontoer. Ingen informasjonskapsler. Ingen enhetsidentifikatorer (IDFA). Ingen bruksstatistikk. Ingen biometriske data.
+Appen bruker ingen kontoer, informasjonskapsler, enhetsidentifikatorer (IDFA), bruksstatistikk eller biometriske data.
 
-## 2. Eksterne tjenester
+## 3. Eksterne tjenester
 
-Appen henter data fra følgende tjenester. Alle er norske eller europeiske, med ett unntak: kunnskapspakker (GitHub) — disse inneholder ingen brukerdata.
+Appen henter data fra følgende tjenester. Alle er norske eller europeiske, med ett unntak: kunnskapspakker (GitHub). Disse inneholder ingen brukerdata.
 
 | Tjeneste | Formål | Data som sendes | Land |
 |----------|--------|-----------------|------|
@@ -55,18 +53,18 @@ Appen henter data fra følgende tjenester. Alle er norske eller europeiske, med 
 
 ¹ Hentes anonymt, uten brukeridentifikasjon. Kun filnavn sendes.
 
-Appen sender en User-Agent-header med appens navn, versjon og utviklerens e-postadresse — som påkrevd av flere tjenester. Headeren inneholder ingen brukerdata.
+Appen sender en User-Agent-header med appens navn, versjon og utviklerens e-postadresse, som påkrevd av flere tjenester. Headeren inneholder ingen brukerdata.
 
 ### IP-adresse
 
 Når appen henter data, vil IP-adressen din være synlig for tjenesten som en del av normal nettverkskommunikasjon. Alle norske og europeiske tjenester er underlagt GDPR.
 
-## 3. Rettslig grunnlag
+## 4. Rettslig grunnlag
 
 - **Berettiget interesse** (GDPR art. 6(1)(f)): Appen henter kart- og værdata for å levere kjernefunksjonen.
 - **Samtykke** (GDPR art. 6(1)(a)): Posisjonstilgang krever eksplisitt samtykke via iOS-dialogen.
 
-## 4. Dine rettigheter
+## 5. Rettighetene dine
 
 Siden Tråkke ikke samler inn personopplysninger, er de fleste rettighetene automatisk ivaretatt:
 
@@ -75,21 +73,21 @@ Siden Tråkke ikke samler inn personopplysninger, er de fleste rettighetene auto
 - **Dataportabilitet**: Ruter, steder og turer kan eksporteres som GPX-filer. Import støtter både GPX og GeoJSON.
 - **Begrenset behandling**: Appen kan brukes uten å gi posisjonstilgang.
 
-## 5. Datasikkerhet
+## 6. Datasikkerhet
 
 - All kommunikasjon over HTTPS
 - Lokal lagring beskyttet med iOS-filbeskyttelse (NSFileProtectionComplete)
 - Ingen data sendes til skytjenester
 
-## 6. Barn
+## 7. Barn
 
 Tråkke samler ikke inn personopplysninger og har ingen aldersgrense. Appen har ingen kjøp, annonser eller sosiale funksjoner.
 
-## 7. Endringer
+## 8. Endringer
 
 Ved vesentlige endringer publiseres oppdatert erklæring i appen og på GitHub.
 
-## 8. Kontakt
+## 9. Kontakt
 
 Spørsmål om personvern:
 

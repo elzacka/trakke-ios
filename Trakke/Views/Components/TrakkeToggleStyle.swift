@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Tråkkes egen toggle-stil. Bruker brandLight-grønt for på-tilstand og en
 /// varm, dempet salviegrønn (`Color.Trakke.toggleTrackOff`) for av-tilstand
-/// — erstatter iOS-default systemgrå som bryter med appens palett.
+/// – erstatter iOS-default systemgrå som bryter med appens palett.
 ///
 /// Bevarer iOS-konvensjoner for størrelse (51×31pt) og tap/drag-feedback,
 /// slik at brukere kjenner igjen mønsteret men opplever Tråkke-helhet.
@@ -19,6 +19,11 @@ struct TrakkeToggleStyle: ToggleStyle {
                 Capsule()
                     .fill(configuration.isOn ? Color.Trakke.brandLight : Color.Trakke.toggleTrackOff)
                     .frame(width: 51, height: 31)
+                    .overlay {
+                        if !configuration.isOn {
+                            Capsule().stroke(Color.Trakke.textSoft, lineWidth: 1.5)
+                        }
+                    }
 
                 Circle()
                     .fill(Color.white)

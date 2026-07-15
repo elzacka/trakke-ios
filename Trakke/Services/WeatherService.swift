@@ -35,7 +35,7 @@ struct WeatherForecast: Sendable {
 actor WeatherService {
     // Bruker `complete`-endepunktet (ikke `compact`) fordi `compact`-responsen
     // mangler `ultraviolet_index_clear_sky` og andre detaljer vi viser i UI-et
-    // (UV-varsel, tooltip-data). Same struktur, bare flere felter — eksisterende
+    // (UV-varsel, tooltip-data). Same struktur, bare flere felter – eksisterende
     // optional-feltene i MetApiResponse håndterer fraværet av disse i compact.
     private static let baseURL = URL(string: "https://api.met.no/weatherapi/locationforecast/2.0/complete")!
     private static let fallbackTTL: TimeInterval = 7200 // 2 hours, used when Expires header is missing
@@ -145,7 +145,7 @@ actor WeatherService {
 
             let symbol = next1h?.summary.symbol_code ?? next6h?.summary.symbol_code ?? "cloudy"
             let precip = next1h?.details?.precipitation_amount ?? next6h?.details?.precipitation_amount ?? 0
-            let precipProb = next1h?.details?.precipitation_probability ?? next6h?.details?.precipitation_probability ?? 0
+            let precipProb = next1h?.details?.probability_of_precipitation ?? next6h?.details?.probability_of_precipitation ?? 0
 
             let wd = WeatherData(
                 temperature: instant.air_temperature,
@@ -294,6 +294,6 @@ private struct MetApiResponse: Decodable {
 
     struct MetPeriodDetails: Decodable {
         let precipitation_amount: Double?
-        let precipitation_probability: Double?
+        let probability_of_precipitation: Double?
     }
 }

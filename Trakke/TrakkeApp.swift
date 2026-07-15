@@ -72,7 +72,7 @@ struct TrakkeApp: App {
         }
 
         // Clean up any orphaned GPX temp files from previous sessions (older tmp/
-        // location — still cleaned during a migration window).
+        // location – still cleaned during a migration window).
         let tempDir = fileManager.temporaryDirectory
         if let tempFiles = try? fileManager.contentsOfDirectory(at: tempDir, includingPropertiesForKeys: nil) {
             for file in tempFiles where file.pathExtension == "gpx" || file.pathExtension == "geojson" {
@@ -108,15 +108,17 @@ struct TrakkeApp: App {
         } catch {
             logger.error("SwiftData ModelContainer failed, attempting recovery: \(error, privacy: .private)")
 
-            // Recovery: delete corrupted store and create fresh
-            let storeFiles = [
-                storeURL,
-                storeURL.appendingPathExtension("wal"),
-                storeURL.appendingPathExtension("shm"),
-            ]
-            for file in storeFiles {
-                try? fileManager.removeItem(at: file)
-            }
+            // Rename the corrupt store aside (preserves data for manual recovery)
+            // rather than deleting outright. SQLite sidecars use hyphen, not dot extension.
+            let walURL = URL(fileURLWithPath: storeURL.path + "-wal")
+            let shmURL = URL(fileURLWithPath: storeURL.path + "-shm")
+            let isoTimestamp = ISO8601DateFormatter().string(from: Date())
+                .replacingOccurrences(of: ":", with: "-")
+            let backupURL = storeURL.deletingLastPathComponent()
+                .appendingPathComponent("Trakke.store.corrupt-\(isoTimestamp)")
+            try? fileManager.moveItem(at: storeURL, to: backupURL)
+            try? fileManager.removeItem(at: walURL)
+            try? fileManager.removeItem(at: shmURL)
 
             do {
                 let config = ModelConfiguration(
@@ -128,7 +130,7 @@ struct TrakkeApp: App {
                     migrationPlan: TrakkeMigrationPlan.self,
                     configurations: config
                 )
-                logger.info("SwiftData recovery successful -- created fresh store")
+                logger.info("SwiftData recovery successful -- store renamed aside, fresh store created")
                 UserDefaults.standard.set(true, forKey: AppStorageKeys.dbRecoveryOccurred)
             } catch {
                 fatalError("Failed to create SwiftData ModelContainer after recovery attempt")

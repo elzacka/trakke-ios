@@ -16,7 +16,7 @@ actor ArtsdatabankenImageService {
 
     private var catalog: [String: String]?
 
-    /// NSCache evicts on system memory pressure — actor-safe because NSCache
+    /// NSCache evicts on system memory pressure – actor-safe because NSCache
     /// performs its own internal locking and is documented thread-safe.
     private let imageCache: NSCache<NSString, UIImage> = {
         let cache = NSCache<NSString, UIImage>()
@@ -60,32 +60,39 @@ actor ArtsdatabankenImageService {
     func clearCache() {
         imageCache.removeAllObjects()
         catalog = nil
+        catalogTask = nil
     }
 
     // MARK: - Private
 
     private func mediaID(for scientificName: String) async -> String? {
-        if catalog == nil, !isLoadingCatalog {
+        if catalog == nil {
             await loadCatalog()
         }
         return catalog?[scientificName]
     }
 
-    private var isLoadingCatalog = false
+    private var catalogTask: Task<[String: String]?, Never>?
     private let decoder = JSONDecoder()
 
     private func loadCatalog() async {
-        isLoadingCatalog = true
-        defer { isLoadingCatalog = false }
-        guard catalog == nil else { return }
-
-        do {
-            let data = try await APIClient.fetchData(url: Self.catalogURL, optional: true)
-            catalog = try decoder.decode([String: String].self, from: data)
-            Logger.knowledge.info("Loaded Artsdatabanken image catalog: \(self.catalog?.count ?? 0) species")
-        } catch {
-            Logger.knowledge.error("Failed to load Artsdatabanken catalog: \(error.localizedDescription, privacy: .private)")
+        if let existing = catalogTask {
+            catalog = await existing.value
+            return
         }
+        let task = Task<[String: String]?, Never> {
+            do {
+                let data = try await APIClient.fetchData(url: Self.catalogURL, optional: true)
+                let result = try self.decoder.decode([String: String].self, from: data)
+                Logger.knowledge.info("Loaded Artsdatabanken image catalog: \(result.count) species")
+                return result
+            } catch {
+                Logger.knowledge.error("Failed to load Artsdatabanken catalog: \(error.localizedDescription, privacy: .private)")
+                return nil
+            }
+        }
+        catalogTask = task
+        catalog = await task.value
     }
 
 }

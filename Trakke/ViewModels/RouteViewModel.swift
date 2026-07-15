@@ -68,7 +68,7 @@ final class RouteViewModel {
 
     // MARK: - Bulk visibility
 
-    /// Show only this route — hide everything else of the same type.
+    /// Show only this route – hide everything else of the same type.
     /// One SwiftData transaction so the map redraws once.
     func showOnly(_ route: Route) {
         let now = Date()
@@ -253,7 +253,7 @@ final class RouteViewModel {
                 self.elevationProfile = profile
                 self.elevationStats = stats
 
-                // Update route with elevation data
+                guard !route.isDeleted else { return }
                 route.elevationGain = Double(stats.gain)
                 route.elevationLoss = Double(stats.loss)
                 route.updatedAt = Date()
@@ -267,7 +267,7 @@ final class RouteViewModel {
 
     /// Build an `ElevationPoint` profile directly from route coordinates when
     /// each point carries elevation (3-tuple `[lon, lat, ele]`). Returns nil
-    /// if any point lacks elevation — in which case the caller falls back to
+    /// if any point lacks elevation – in which case the caller falls back to
     /// the DEM service.
     private static func localElevationProfile(from coordinates: [[Double]]) -> [ElevationPoint]? {
         guard coordinates.count >= 2 else { return nil }
@@ -328,7 +328,7 @@ final class RouteViewModel {
     var importMessage: String?
     var isImporting = false
 
-    /// Synchronous import — dispatches to the right parser by file extension.
+    /// Synchronous import – dispatches to the right parser by file extension.
     /// GPX and GeoJSON share the same `ImportedRoute` intermediate type.
     @discardableResult
     func importFile(from url: URL) -> Int {

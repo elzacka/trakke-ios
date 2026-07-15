@@ -47,7 +47,7 @@ struct MapControlsOverlay<WeatherContent: View>: View {
                     Spacer()
 
                     // Bunn høyre: alle innstillings-styrte knapper + FAB nederst.
-                    // Dynamisk posisjonering — VStack skipper rader som ikke vises,
+                    // Dynamisk posisjonering – VStack skipper rader som ikke vises,
                     // så FAB ligger alltid på samme stable plassering uansett hvilke
                     // overlay-knapper som er aktive. Vises også under navigasjon
                     // og andre kart-modi.
@@ -66,7 +66,7 @@ struct MapControlsOverlay<WeatherContent: View>: View {
                 .padding(.bottom, .Trakke.sm)
             }
 
-            // Kort hint når rent-kart slås på — langt trykk kan trigges utilsiktet
+            // Kort hint når rent-kart slås på – trykk og hold kan trigges utilsiktet
             // (f.eks. med hansker), og eneste andre signal er at ikonet endres.
             if showCleanMapHint {
                 VStack {

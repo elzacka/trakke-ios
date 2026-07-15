@@ -94,7 +94,7 @@ import SwiftData
 }
 
 @Test func formatUTM() {
-    // UTM always uses zone 33 (EUREF89 UTM sone 33 — Norway's standard)
+    // UTM always uses zone 33 (EUREF89 UTM sone 33 – Norway's standard)
     let coord = CLLocationCoordinate2D(latitude: 59.9139, longitude: 10.7522)
     let formatted = CoordinateService.format(coordinate: coord, format: .utm)
     #expect(formatted.display.contains("33V"))
@@ -1213,7 +1213,7 @@ func kartverketStyleJSON(layer: BaseLayer) {
     // Stage 1: V2 -> V3 (add Activity)
     #expect(String(describing: schemas[1]) == String(describing: SchemaV2.self))
     #expect(String(describing: schemas[2]) == String(describing: SchemaV3.self))
-    // Both stages present — one per hop
+    // Both stages present – one per hop
     #expect(TrakkeMigrationPlan.stages.count == 2)
 }
 
@@ -1362,7 +1362,7 @@ func kartverketStyleJSON(layer: BaseLayer) {
 }
 
 @Test func weatherConditionTextPolartwilight() {
-    // Polartwilight suffix should be stripped — maps to base symbol
+    // Polartwilight suffix should be stripped – maps to base symbol
     #expect(WeatherViewModel.conditionText(for: "clearsky_polartwilight") == String(localized: "weather.clearsky"))
     #expect(WeatherViewModel.conditionText(for: "fair_polartwilight") == String(localized: "weather.fair"))
     #expect(WeatherViewModel.conditionText(for: "partlycloudy_polartwilight") == String(localized: "weather.partlycloudy"))

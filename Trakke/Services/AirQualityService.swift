@@ -72,11 +72,11 @@ actor AirQualityService {
 
     private let decoder = JSONDecoder()
 
-    // Actor-isolated formatter — safe without nonisolated(unsafe)
+    // Actor-isolated formatter – safe without nonisolated(unsafe)
     private let iso8601 = ISO8601DateFormatter()
 
     func getAirQuality(lat: Double, lon: Double) async throws -> AirQualityData? {
-        // 2dp precision for data minimization — air quality is per grunnkrets/kommune
+        // 2dp precision for data minimization – air quality is per grunnkrets/kommune
         let cacheKey = String(format: "%.2f,%.2f", lat, lon)
 
         // Return cached data if not expired

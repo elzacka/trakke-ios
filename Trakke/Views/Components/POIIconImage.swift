@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Rendrer et POI-ikon — bruker asset-katalogen først, faller tilbake
+/// Rendrer et POI-ikon – bruker asset-katalogen først, faller tilbake
 /// til SF Symbol når asset ikke finnes. Lar nye POI-kategorier bruke
 /// SF Symbol-navn uten å kreve en custom SVG i Assets.xcassets/.
 struct POIIconImage: View {

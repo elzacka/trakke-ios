@@ -2,7 +2,7 @@ import SwiftUI
 
 // MARK: - Tooltip Content View
 
-/// Tooltip content view styled like the rest of the app — CardSection på
+/// Tooltip content view styled like the rest of the app – CardSection på
 /// cream-bakgrunn, samme typografi (bodyMedium / bodyRegular) som InfoSheet
 /// og list-arkene. Sitter inni en TooltipSheet som gir presentation-detents,
 /// navigation-stack for artikkel-linker, og felles ark-styling.
@@ -106,7 +106,7 @@ private struct TooltipSheet<TooltipContent: View>: View {
 // MARK: - Article Link View
 
 /// Tappable link shown below a tooltip to navigate to a Knowledge article.
-/// Eget kort med TrakkeMenuRow — samme stil som menyrader ellers i appen.
+/// Eget kort med TrakkeMenuRow – samme stil som menyrader ellers i appen.
 /// Must be used inside a NavigationStack (provided by TrakkeTooltipModifier).
 struct TooltipArticleLink: View {
     let articleId: Int64
@@ -141,7 +141,7 @@ struct TooltipArticleLink: View {
 
 // MARK: - Source Link View
 
-/// Tappable external link below a tooltip — eget kort, samme stil som
+/// Tappable external link below a tooltip – eget kort, samme stil som
 /// menyrader. Use for linking to external sources like varsom.no.
 struct TooltipSourceLink: View {
     let label: String

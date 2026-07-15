@@ -1,7 +1,7 @@
 import SwiftUI
 import CoreLocation
 
-/// Detalj-sheet for et POI på kartet — bruker samme designspråk som resten
+/// Detalj-sheet for et POI på kartet – bruker samme designspråk som resten
 /// av appen: TrakkeSheetHeader øverst, off-white bakgrunn, flate CardSection-
 /// kort, brand-tekst og PWA-trofaste farger.
 struct POIDetailSheet: View {
@@ -42,7 +42,7 @@ struct POIDetailSheet: View {
                     }
 
                     // MARK: - Navigate
-                    // Ikon-knapp høyrejustert — samme stil som detail-arkene
+                    // Ikon-knapp høyrejustert – samme stil som detail-arkene
                     // for ruter, turer og steder.
                     HStack(spacing: .Trakke.sm) {
                         Spacer()
@@ -162,7 +162,7 @@ struct POIDetailSheet: View {
 
     /// Felter som skal vises først i detalj-arket, i denne rekkefølgen.
     /// Resten sorteres alfabetisk under. Provider/subtype/type/shelterType
-    /// beskriver *hva* dette er — viktigere enn beskrivelse, høyde osv.
+    /// beskriver *hva* dette er – viktigere enn beskrivelse, høyde osv.
     /// Owner/operator kommer rett etter siden «hvem driver dette» har høy
     /// nytteverdi for hytter og lignende.
     private static let priorityDetailKeys: [String] = [

@@ -1,4 +1,4 @@
-## Handlinger på kartet
+## 1. Handlinger på kartet
 
 ### Bevegelser
 
@@ -7,13 +7,13 @@
 - **Roter med to fingre**: Roter kartet
 - **To fingre opp eller ned**: Tilt kartet for 3D
 - **Trykk**: Legg til punkt i tegne- eller målemodus. Ellers lukker et trykk åpne ark og menyer.
-- **Langt trykk**: Meny med «Legg til sted» og «Naviger hit»
+- **Trykk og hold**: Meny med «Legg til sted» og «Naviger hit»
 
 ### Knapper på kartet
 
 Knappene ligger langs høyre kant. Hvilke som vises styrer du i Innstillinger → Visning. Menyknappen er alltid der.
 
-- **Grønn menyknapp**: Trykk for å åpne menyen. Langt trykk skjuler alle kontroller, kartlag og POI-ikoner. Nyttig for å se topografien uten støy eller ta et rent skjermbilde. Et nytt langt trykk på knappen viser dem igjen.
+- **Grønn menyknapp**: Trykk for å åpne menyen. Trykk og hold skjuler alle kontroller, kartlag og POI-ikoner. Nyttig for å se topografien uten støy eller ta et rent skjermbilde. Et nytt trykk og hold på knappen viser dem igjen.
 - **Kompassknapp**: Trykk for å veksle mellom to modi. Pilen viser hvor nord er.
   - **Nord opp** (rødt ikon): Kartet ligger fast med nord øverst.
   - **Retning opp** (grønt ikon): Kartet snur seg etter retningen telefonen peker, og sentreres på deg.
@@ -22,7 +22,7 @@ Knappene ligger langs høyre kant. Hvilke som vises styrer du i Innstillinger �
 
 Nederst til venstre står målestokk og kartdataattribusjon. Det er informasjon, ikke knapper. Målestokk endrer seg ettersom du zoomer inn eller ut på kartet.
 
-## Menyen
+## 2. Menyen
 
 Trykk den grønne menyknappen for å åpne menyen. Nederst ligger fem faner:
 
@@ -32,15 +32,15 @@ Trykk den grønne menyknappen for å åpne menyen. Nederst ligger fem faner:
 - **Info**: Vær, Kunnskap og Om
 - **Innstillinger**: Kartlag, visning, koordinatformat og «Slett alle data»
 
-## Søk
+## 3. Søk
 
 Søk på sted, adresse eller koordinat via **Hjem**-fanen. Trykk på et treff for å sentrere kartet.
 
-## POI-kategorier
+## 4. POI-kategorier
 
 Kategoriene er gruppert etter tema. Zoom litt inn hvis du ikke ser ikonene på kartet. De fleste kategoriene er lagret i appen og fungerer offline. Unntaket er kulturminner. De hentes fra internett.
 
-## Turer og ruter, og Steder (Naviger-fanen)
+## 5. Turer og ruter, og Steder (Naviger-fanen)
 
 To samlinger under én fane:
 
@@ -75,7 +75,7 @@ Importerte elementer er skjult på kartet som standard. Trykk for å vise. For �
 
 ### Legge til et sted
 
-Langt trykk på kartet og velg «Legg til sted». Dialogen har tre felter:
+Trykk og hold på kartet og velg «Legg til sted». Dialogen har tre felter:
 
 - **Navn**: Navnet på stedet.
 - **Kategori**: Velg blant kategoriene du har fra før, eller trykk «Lag ny kategori». «Ingen kategori» er standard.
@@ -85,7 +85,7 @@ Har stedet detaljer, vises de i informasjonskortet under navn og kategori.
 
 ### Endre navn på en kategori
 
-Langt trykk på en kategori-overskrift i Steder-listen og velg «Endre navn». Alle steder i kategorien flyttes med. For å flytte ett sted: åpne det, trykk blyant-ikonet og velg en annen kategori.
+Trykk og hold på en kategori-overskrift i Steder-listen og velg «Endre navn». Alle steder i kategorien flyttes med. For å flytte ett sted: Åpne det, trykk blyant-ikonet og velg en annen kategori.
 
 ### Logge en tur
 
@@ -95,49 +95,49 @@ Etter turen får du statistikk, høydeprofil, eksport som GPX, og «Gå tilbake 
 
 ### Navigasjon
 
-Langt trykk på kartet og velg «Naviger hit», eller åpne et sted og trykk «Naviger».
+Trykk og hold på kartet og velg «Naviger hit», eller åpne et sted og trykk «Naviger».
 
-Navigasjonen viser en pil mot målet og avstanden dit — en rett linje, ikke langs sti. Den fungerer uten dekning. Du varsles når du er framme (30 m fra målet).
+Navigasjonen viser en pil mot målet og avstanden dit. Det er en rett linje, ikke langs sti. Den fungerer uten dekning. Du varsles når du er framme (30 m fra målet).
 
 Kompassknappen er alltid synlig under navigasjon. Trykk den for å veksle mellom nord opp og retning opp.
 
 Mens du navigerer vises avstand og retning til målet på låseskjermen og i Dynamic Island.
 
-## Vær (Info-fanen → Vær)
+## 6. Vær (Info-fanen → Vær)
 
-Trykk på et værtall for en forklaring tilpasset friluftsliv: Hva tallet betyr for turen din. Finnes det en kunnskapsartikkel om temaet, lenker forklaringen videre.
+Trykk på et værtall for å se hva det betyr for turen din. Finnes det en kunnskapsartikkel om temaet, lenker forklaringen videre.
 
 - **Føles som**: Vises under graden når vinden gjør det kaldere enn lufttemperaturen.
-- **UV-indeks**: Vises alltid, med kategori, for eksempel «6 — Sterk». Er indeksen 3 eller høyere, får du et eget varsel med beskyttelsesråd.
+- **UV-indeks**: Vises alltid, med kategori, for eksempel «6 – Sterk». Er indeksen 3 eller høyere, får du et eget varsel med beskyttelsesråd.
 - **Endring i været**: Endrer været seg vesentlig de nærmeste timene, vises et varsel. For eksempel «Snø fra kl. 14».
 - **Luftkvalitet**: Vises når data finnes, med nivå og helseråd. Lenke til NAAF Pollenvarsel er alltid synlig.
 - **Snøskred og flom**: Aktive varsler fra NVE. Snøskredvarselet gjelder posisjonen din. Trykk for å lese hele varselet.
 - **7-dagers varsel**: Trykk på en dag for å se timevarsel. Beste turdag er markert. Info-knappen forklarer fargene: Oransje = vær oppmerksom, rødt = farlig nivå.
 
-## Kunnskap (Info-fanen → Kunnskap)
+## 7. Kunnskap (Info-fanen → Kunnskap)
 
 Artikler om friluftsliv og overlevelse. Noen artikler har bilder. Trykk på bildet for å se det i full størrelse.
 
-## Om (Info-fanen → Om)
+## 8. Om (Info-fanen → Om)
 
-Øverst vises om appen er **Online** eller **Offline**, og hvilken tilkobling som er i bruk. Visningen bruker bare lokal nettverksinformasjon — ingenting sendes ut.
+Øverst vises om appen er **Online** eller **Offline**, og hvilken tilkobling som er i bruk. Visningen bruker bare lokal nettverksinformasjon. Ingenting sendes ut.
 
 Nederst finner du denne brukerveiledningen, personvernerklæring og lenke til Tråkkes kildekode.
 
-## SOS og nød (Verktøy-fanen → SOS)
+## 9. SOS og nød (Verktøy-fanen → SOS)
 
 - **Koordinater**: Posisjonen din i to formater. Trykk kopier-knappen. Koordinaten slettes fra utklippstavlen etter fem minutter.
-- **SOS-signal**: Sender SOS i morsekode med lommelykten, med lydsignal på 2800 Hz. Gjentas til du trykker «Stopp». Skjermen kan ikke lukkes mens SOS er aktiv.
+- **SOS-signal**: Sender SOS i morsekode med lommelykten. Slå på **Lydsignal** for å legge til et 2800 Hz-lydsignal. Signalet gjentas til du trykker «Stopp». Skjermen kan ikke lukkes mens SOS er aktiv.
 - **Nødnumre**: Trykk for å ringe: 113 (ambulanse), 112 (politi), 110 (brann), 116 117 (legevakt).
 
-## Måleverktøy (Verktøy-fanen → Måleverktøy)
+## 10. Måleverktøy (Verktøy-fanen → Måleverktøy)
 
 - **Avstand**: Trykk på kartet for å legge til punkter. Viser samlet avstand.
 - **Areal**: Legg til minst tre punkter. Viser areal.
 
 Dra et punkt for å justere. «Angre» fjerner siste punkt, «Nullstill» starter på nytt.
 
-## Offlinekart (Verktøy-fanen → Offlinekart)
+## 11. Offlinekart (Verktøy-fanen → Offlinekart)
 
 Nedlastede kart brukes automatisk uten mobildekning. En stiplet firkant markerer grensene til de nedlastede områdene.
 
@@ -145,7 +145,7 @@ Nedlastede kart brukes automatisk uten mobildekning. En stiplet firkant markerer
 
 **Per kommune**: Bla gjennom kommuner per fylke, eller søk på kommunenavn. Trykk en kommune for å starte nedlasting.
 
-## Innstillinger
+## 12. Innstillinger
 
 ### Bakgrunnskart
 

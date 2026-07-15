@@ -1,13 +1,13 @@
 import SwiftUI
 import CoreLocation
 
-/// SOS-sheet — koordinater + nødnumre + signal-aktivering på samme flate.
+/// SOS-sheet – koordinater + nødnumre + signal-aktivering på samme flate.
 /// Følger Tråkke-standarden: innebygde overskrifter i hvert felt, ingen
 /// info-knapper eller tooltips (veiledning lever i Brukerveiledningen).
 struct EmergencySheet: View {
     let userLocation: CLLocation?
     @Bindable var sosViewModel: SOSViewModel
-    /// Inline-modus: ingen NavigationStack — kalleren (f.eks. Verktøy-fanen)
+    /// Inline-modus: ingen NavigationStack – kalleren (f.eks. Verktøy-fanen)
     /// gir sin egen navigasjons-kontekst.
     var inline = false
     @State private var numberToCall: String?
@@ -125,8 +125,8 @@ struct EmergencySheet: View {
     // MARK: - SOS-signal-kort
 
     /// «Lydsignal»-toggle står igjen i sitt eget kort. «Aktiver SOS»
-    /// flyttet ut som en frittstående brandLight-pille — samme stil som
-    /// Avstand/Areal/Velg område — slik at handlingen visuelt skiller seg
+    /// flyttet ut som en frittstående brandLight-pille – samme stil som
+    /// Avstand/Areal/Velg område – slik at handlingen visuelt skiller seg
     /// fra innstillings-toggle, men holdes nær med liten vertikal luft.
     private var signalCard: some View {
         VStack(spacing: .Trakke.sm) {

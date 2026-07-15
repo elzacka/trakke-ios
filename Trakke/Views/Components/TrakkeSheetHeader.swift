@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Custom topp for sheets — drag-handle (grabber) og stor brand-tittel.
+/// Custom topp for sheets – drag-handle (grabber) og stor brand-tittel.
 /// Valgfri back-knapp vises på pushed views så designspråket holdes
 /// konsistent også når NavigationStack pusher en ny visning.
 struct TrakkeSheetHeader: View {

@@ -65,7 +65,7 @@ final class WeatherViewModel {
                 guard !Task.isCancelled else { return }
                 forecast = weather
 
-                // Best-effort fields — never block weather display.
+                // Best-effort fields – never block weather display.
                 waterTemperature = try? await waterResult
                 varsomWarnings = await varsomResult
                 airQuality = try? await airResult

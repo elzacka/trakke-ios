@@ -60,7 +60,7 @@ struct ActivityDetailSheet: View {
 
     // MARK: - Actions Card
     //
-    // Høyrejustert ikon-bar — samme stil som Naviger-list-fanene og de
+    // Høyrejustert ikon-bar – samme stil som Naviger-list-fanene og de
     // andre detail-arkene. Posisjon i HStack indikerer hierarki:
     // primær-handling (følg igjen) først, destruktiv (slett) sist.
 
@@ -223,7 +223,7 @@ struct ActivityDetailSheet: View {
         }
     }
 
-    /// Startpunkt for tur — der bruker vil retrace-navigere tilbake til.
+    /// Startpunkt for tur – der bruker vil retrace-navigere tilbake til.
     private var retraceDestination: CLLocationCoordinate2D? {
         guard let first = activity.trackPoints.first, first.count >= 2 else { return nil }
         return CLLocationCoordinate2D(latitude: first[1], longitude: first[0])

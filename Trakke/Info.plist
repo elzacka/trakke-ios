@@ -28,8 +28,6 @@
 	<true/>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Tråkke bruker posisjonen din for å vise deg på kartet, navigere langs ruter og hente relevante værmeldinger. Under aktiv navigering fortsetter posisjonssporingen mens skjermen er låst.</string>
-	<key>TrakkeStadiaMapsAPIKey</key>
-	<string>87ff0c33-f067-46e2-8b04-2b2b00daf7f4</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>

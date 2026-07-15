@@ -4,13 +4,13 @@ import SwiftUI
 /// underflater (Innstillinger, Kunnskap, Informasjon) i samme visning
 /// uten å åpne en ny push-skjerm.
 ///
-/// Innholdet konstrueres bare når seksjonen er ekspandert — kollapset
+/// Innholdet konstrueres bare når seksjonen er ekspandert – kollapset
 /// tilstand tar minimalt med plass og kjører ingen onAppear-effekter
 /// for innholdet under.
 struct ExpandableSection<Content: View>: View {
     let title: String
     var initiallyExpanded: Bool = false
-    /// Bare-modus: dropp den ytre CardSection-innpakningen — brukes når
+    /// Bare-modus: dropp den ytre CardSection-innpakningen – brukes når
     /// flere akkordeoner skal dele samme kort under en felles tittel.
     var bare: Bool = false
     @ViewBuilder let content: () -> Content

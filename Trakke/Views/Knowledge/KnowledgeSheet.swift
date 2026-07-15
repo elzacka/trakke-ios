@@ -3,7 +3,7 @@ import SwiftUI
 struct KnowledgeSheet: View {
     @Bindable var viewModel: KnowledgeViewModel
     var isEmbedded = false
-    /// Inline-modus: ingen ScrollView/NavigationStack/title — kalleren
+    /// Inline-modus: ingen ScrollView/NavigationStack/title – kalleren
     /// (f.eks. accordion-vert) håndterer scroll og kontekst.
     var inline = false
 

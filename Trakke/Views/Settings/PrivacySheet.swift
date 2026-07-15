@@ -5,7 +5,7 @@ import OSLog
 /// UserGuideSheet: fetch the live `PERSONVERN.md` from the GitHub repo so users
 /// see updates between app releases, with the bundled copy as offline fallback.
 struct PrivacySheet: View {
-    /// Inline-modus: ingen egen NavigationStack — kalleren har allerede en
+    /// Inline-modus: ingen egen NavigationStack – kalleren har allerede en
     /// NavigationStack og bruker visningen som push-destinasjon.
     var inline = false
     /// Embedded-modus: rendrer kun markdown-blokkene uten egen ScrollView
@@ -102,7 +102,7 @@ struct PrivacySheet: View {
 /// pipeline as the user guide, plus table support for the data-sources section.
 private struct PrivacyBodyView: View {
     let markdown: String
-    /// Embedded: render kun blokkene i en VStack — parent håndterer scroll.
+    /// Embedded: render kun blokkene i en VStack – parent håndterer scroll.
     var embedded: Bool = false
     @State private var parsedBlocks: [MarkdownBlock]?
 

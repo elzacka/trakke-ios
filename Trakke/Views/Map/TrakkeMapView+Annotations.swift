@@ -194,7 +194,7 @@ extension TrakkeMapView.Coordinator {
 
     /// Renders activities as polylines on the map. Uses `ActivityPolyline` subclass
     /// so route refresh skips them and vice versa. Activities use cobalt blue to
-    /// stand apart from amber routes — "planned" vs "completed" at a glance.
+    /// stand apart from amber routes – "planned" vs "completed" at a glance.
     func updateActivityPolylines(on mapView: MLNMapView, activities: [Activity]) {
         let newIds = Set(activities.map(\.id))
         guard newIds != currentActivityIds else { return }
@@ -351,7 +351,7 @@ extension TrakkeMapView.Coordinator {
         coordinates: [CLLocationCoordinate2D],
         mode: MeasurementMode?
     ) {
-        // Hopp over rebuild når input ikke har endret seg — ellers fjernes og
+        // Hopp over rebuild når input ikke har endret seg – ellers fjernes og
         // legges polylinjen til igjen på hver SwiftUI-render, noe som gir et
         // pulserende/flimrende uttrykk på kartet.
         if mode == lastMeasurementMode && coordinatesEqual(coordinates, lastMeasurementCoordinates) {

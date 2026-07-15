@@ -41,7 +41,7 @@ struct WaypointListSheet: View {
         guard trimmed != old else { return }
 
         if viewModel.renameCategory(from: old, to: trimmed) {
-            // Keep the section expanded across the rename — the key is the
+            // Keep the section expanded across the rename – the key is the
             // category title, which just changed.
             if expandedCategories.remove(old) != nil {
                 expandedCategories.insert(trimmed)
@@ -75,7 +75,7 @@ struct WaypointListSheet: View {
                 WaypointDetailSheet(
                     viewModel: viewModel,
                     waypoint: waypoint,
-                    // Ikke dismiss her — onEdit/onNavigate setter
+                    // Ikke dismiss her – onEdit/onNavigate setter
                     // sheets.active til en ny verdi, og SwiftUIs
                     // .sheet(item:) tar seg av overgangen automatisk.
                     // Manuell dismiss ville sette sheets.active = nil og
@@ -155,10 +155,10 @@ struct WaypointListSheet: View {
     private var waypointList: some View {
         ScrollView {
             VStack(spacing: .Trakke.cardGap) {
-                // Handlingsbar øverst — tre ikoner: importere, eksportere,
+                // Handlingsbar øverst – tre ikoner: importere, eksportere,
                 // slette alle. Tilpasset versjon uten pluss-knapp siden
-                // "legge til sted" gjøres med langt trykk på kartet.
-                // Alltid synlig — også i tom tilstand — for konsistens med
+                // "legge til sted" gjøres med trykk og hold på kartet.
+                // Alltid synlig – også i tom tilstand – for konsistens med
                 // Ruter og Turer.
                 actionBar
 
@@ -253,7 +253,7 @@ struct WaypointListSheet: View {
             }
 
             // Hidden state is signalled by a subtle icon, not by dimming the
-            // whole row — dimmed body text fails WCAG 1.4.3 contrast.
+            // whole row – dimmed body text fails WCAG 1.4.3 contrast.
             if !waypoint.isVisible {
                 Image(systemName: "eye.slash")
                     .font(Font.Trakke.captionSoft)
@@ -285,7 +285,7 @@ struct WaypointListSheet: View {
     /// Kategori-header speiler ExpandableSection-stilen (Brukerveiledning,
     /// Personvernerklæring): plain tittel-tekst, chevron-down til høyre
     /// som roterer ved ekspandering, antall-tekst etter tittel. Per-
-    /// kategori-synlighet-bryteren er fjernet — brukerne kan toggle per
+    /// kategori-synlighet-bryteren er fjernet – brukerne kan toggle per
     /// rad via VisibilityToggleButton.
     private func categoryHeader(title: String, category: String?, count: Int) -> some View {
         let isExpanded = expandedCategories.contains(title)
@@ -338,8 +338,8 @@ struct WaypointListSheet: View {
 
     // MARK: - Action bar (importer / eksporter / slett)
     //
-    // Tilpasset versjon — har ingen pluss-knapp som Ruter og Turer fordi
-    // "legge til sted" gjøres med langt trykk på kartet, ikke fra denne
+    // Tilpasset versjon – har ingen pluss-knapp som Ruter og Turer fordi
+    // "legge til sted" gjøres med trykk og hold på kartet, ikke fra denne
     // visningen.
 
     private var actionBar: some View {

@@ -6,7 +6,7 @@ import CoreLocation
 // MARK: - SolarCalculator Tests
 
 @Test func solarCalculatorOsloSpringEquinox() {
-    // March 20, 2026 — roughly equal day/night
+    // March 20, 2026 – roughly equal day/night
     var calendar = Calendar(identifier: .gregorian)
     calendar.timeZone = TimeZone(identifier: "Europe/Oslo")!
     let date = calendar.date(from: DateComponents(year: 2026, month: 3, day: 20, hour: 12))!
@@ -31,7 +31,7 @@ import CoreLocation
 }
 
 @Test func solarCalculatorPolarNight() {
-    // December 21 at Hammerfest (70.6634 N) — polar night
+    // December 21 at Hammerfest (70.6634 N) – polar night
     var calendar = Calendar(identifier: .gregorian)
     calendar.timeZone = TimeZone(identifier: "Europe/Oslo")!
     let date = calendar.date(from: DateComponents(year: 2025, month: 12, day: 21, hour: 12))!
@@ -48,7 +48,7 @@ import CoreLocation
 }
 
 @Test func solarCalculatorMidnightSun() {
-    // June 21 at Hammerfest (70.6634 N) — midnight sun
+    // June 21 at Hammerfest (70.6634 N) – midnight sun
     var calendar = Calendar(identifier: .gregorian)
     calendar.timeZone = TimeZone(identifier: "Europe/Oslo")!
     let date = calendar.date(from: DateComponents(year: 2026, month: 6, day: 21, hour: 12))!

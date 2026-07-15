@@ -38,6 +38,9 @@ struct AppLifecycleModifier: ViewModifier {
             .onChange(of: coordinator.measurementViewModel.isActive) { _, isActive in
                 handleMeasurementActiveChange(isActive)
             }
+            .onChange(of: coordinator.sosViewModel.isActive) { _, isActive in
+                if !isActive { syncKeepAwake() }
+            }
     }
 
     // MARK: - Handlers
@@ -91,11 +94,16 @@ struct AppLifecycleModifier: ViewModifier {
             if hasActiveDownload {
                 coordinator.offlineViewModel.showDownloadBackgroundWarning = true
             }
-        } else if scenePhase == .active,
-                  coordinator.navigationViewModel.isActive
-                    || coordinator.activityViewModel.isRecording {
-            UIApplication.shared.isIdleTimerDisabled = true
+        } else if scenePhase == .active {
+            syncKeepAwake()
         }
+    }
+
+    private func syncKeepAwake() {
+        UIApplication.shared.isIdleTimerDisabled =
+            coordinator.navigationViewModel.isActive ||
+            coordinator.activityViewModel.isRecording ||
+            coordinator.sosViewModel.isActive
     }
 
     private func handleUserLocationChange() {

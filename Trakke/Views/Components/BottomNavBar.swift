@@ -40,7 +40,7 @@ enum AppTab: Hashable, CaseIterable {
     }
 }
 
-/// Flytende bunn-nav-bar inspirert av AllTrails — pille-formet container
+/// Flytende bunn-nav-bar inspirert av AllTrails – pille-formet container
 /// med fem ikon-knapper. Synlig kun når brukeren har åpnet appmenyen via FAB.
 struct BottomNavBar: View {
     @Binding var selectedTab: AppTab

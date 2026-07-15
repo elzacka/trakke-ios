@@ -79,7 +79,7 @@ enum CoordinateService {
     /// Always projects to zone 33 regardless of the coordinate's geographic UTM zone,
     /// matching Norgeskart.no and Kartverket's recommendation for nationwide use.
     private static func formatUTM(lat: Double, lon: Double) -> FormattedCoordinate {
-        let zone = 33  // EUREF89 UTM sone 33 — Norway's standard
+        let zone = 33  // EUREF89 UTM sone 33 – Norway's standard
         let band = utmBand(latitude: lat)
         let (easting, northing) = latLonToUTM(lat: lat, lon: lon, zone: zone)
 

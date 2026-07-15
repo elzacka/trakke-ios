@@ -23,7 +23,7 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
     /// zoom, åpning av POI/sted-detalj, navigasjon mot punktet). Overskrives
     /// av neste søkevalg. Nulles eksplisitt når brukeren skifter til en
     /// kart-modus som tar kartet i bruk for noe annet (tegning, måling,
-    /// offline-områdeutvalg) eller setter et nytt punkt via langt trykk.
+    /// offline-områdeutvalg) eller setter et nytt punkt via trykk og hold.
     var searchPinCoordinate: CLLocationCoordinate2D?
     var showLocationPrimer = false
     var currentCenter = CLLocationCoordinate2D(
@@ -67,7 +67,7 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
         locationAuthStatus = locationManager.authorizationStatus
 
         loadOverlaysFromDefaults()
-        // PreferencesSheet writes overlay flags via @AppStorage — observe
+        // PreferencesSheet writes overlay flags via @AppStorage – observe
         // UserDefaults so the map state stays in sync without ContentView
         // having to mediate between the two.
         defaultsObserver = NotificationCenter.default.addObserver(
@@ -83,7 +83,7 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
         // Defensive cleanup: prior builds created a CLBackgroundActivitySession
         // for "navigate with screen off" support. The session persisted across
         // force-quit, leaving a Dynamic Island indicator and consuming battery
-        // — incompatible with the "Mens appen er i bruk"-permission users grant.
+        // – incompatible with the "Mens appen er i bruk"-permission users grant.
         // Creating a fresh session invalidates any prior one, then we invalidate
         // immediately. Runs once for users upgrading from such a build.
         if UserDefaults.standard.bool(forKey: AppStorageKeys.navigationSessionActive) {
@@ -203,7 +203,7 @@ if defaults.bool(forKey: AppStorageKeys.overlayNaturvernomrader) { overlays.inse
         // Allow location updates to continue when the screen locks so the
         // Live Activity on the lock screen stays current. The blue status-bar
         // indicator (showsBackgroundLocationIndicator) makes this visible to
-        // the user. No CLBackgroundActivitySession needed — this is a
+        // the user. No CLBackgroundActivitySession needed – this is a
         // continuation of the foreground session, not a persistent background
         // process, so it stops naturally if the app is force-quit.
         locationManager.allowsBackgroundLocationUpdates = true

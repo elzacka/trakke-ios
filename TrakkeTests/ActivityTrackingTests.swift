@@ -70,7 +70,7 @@ import CoreLocation
     )
     await service.addLocation(loc1)
 
-    // Second point very close (< 10m) — should be rejected
+    // Second point very close (< 10m) – should be rejected
     let loc2 = CLLocation(
         coordinate: CLLocationCoordinate2D(latitude: 59.90001, longitude: 10.70001),
         altitude: 100,
@@ -128,7 +128,7 @@ import CoreLocation
     )
     await service.addLocation(loc1)
 
-    // Point 2: 102m altitude (only +2m, below 3m threshold — should NOT count)
+    // Point 2: 102m altitude (only +2m, below 3m threshold – should NOT count)
     let loc2 = CLLocation(
         coordinate: CLLocationCoordinate2D(latitude: 59.901, longitude: 10.7),
         altitude: 102,

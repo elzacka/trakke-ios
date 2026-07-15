@@ -174,9 +174,9 @@ final class OfflineMapService {
 
     /// Clear the MapLibre ambient tile cache (non-offline tiles the user has viewed).
     func clearTileCache() {
-        MLNOfflineStorage.shared.resetDatabase { error in
+        MLNOfflineStorage.shared.clearAmbientCache { error in
             if let error {
-                Logger.offline.error("Failed to reset tile cache: \(error, privacy: .private)")
+                Logger.offline.error("Failed to clear ambient tile cache: \(error, privacy: .private)")
             }
         }
     }

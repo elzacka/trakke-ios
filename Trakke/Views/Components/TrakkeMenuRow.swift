@@ -1,19 +1,19 @@
 import SwiftUI
 
-/// Standard menyvalg-rad brukt på tvers av alle sheets — én konsekvent stil
+/// Standard menyvalg-rad brukt på tvers av alle sheets – én konsekvent stil
 /// for handlinger, utvidelsesbokser, navigasjonslinjer og info-visninger.
 /// Sørger for enhetlig høyde, padding, fontstørrelse og fargebruk.
 struct TrakkeMenuRow<Trailing: View>: View {
     var icon: String? = nil
     let label: String
     var subtitle: String? = nil
-    /// Bruk når subtitle er numerisk og må linjeres opp vertikalt — f.eks.
+    /// Bruk når subtitle er numerisk og må linjeres opp vertikalt – f.eks.
     /// koordinat-eksempler. Standard `Font.Trakke.captionSoft` brukes ellers.
     var subtitleFont: Font? = nil
     var iconColor: Color = Color.Trakke.brandLight
     var labelColor: Color = Color.Trakke.text
     var action: (() -> Void)? = nil
-    /// Tilleggsverdi som VoiceOver skal lese — typisk innholdet i et trailing
+    /// Tilleggsverdi som VoiceOver skal lese – typisk innholdet i et trailing
     /// `TrakkeMenuRowValue`. Settes når trailing-visningen alene ikke er
     /// dekkende for accessibility.
     var accessibilityValue: String? = nil
@@ -109,7 +109,7 @@ extension TrakkeMenuRow where Trailing == EmptyView {
     }
 }
 
-/// Standard chevron til høyre i menyrader — samme stil overalt.
+/// Standard chevron til høyre i menyrader – samme stil overalt.
 struct TrakkeMenuRowChevron: View {
     var body: some View {
         Image(systemName: "chevron.right")
@@ -119,7 +119,7 @@ struct TrakkeMenuRowChevron: View {
     }
 }
 
-/// Ekstern-lenke-pil til høyre — markerer at trykket åpner Safari/eksternt.
+/// Ekstern-lenke-pil til høyre – markerer at trykket åpner Safari/eksternt.
 struct TrakkeMenuRowExternal: View {
     var body: some View {
         Image(systemName: "arrow.up.right")
@@ -129,7 +129,7 @@ struct TrakkeMenuRowExternal: View {
     }
 }
 
-/// Høyrejustert verdi til en menyrad — versjon, navn, statisk innstilling.
+/// Høyrejustert verdi til en menyrad – versjon, navn, statisk innstilling.
 /// Bruk sammen med `accessibilityValue` på TrakkeMenuRow for å sikre at
 /// VoiceOver leser verdien.
 struct TrakkeMenuRowValue: View {
@@ -144,7 +144,7 @@ struct TrakkeMenuRowValue: View {
 }
 
 /// Checkmark-affordans for radio-/valg-rader. Vises kun når valgt.
-/// Plassholdes ikke i ikke-valgt tilstand — Spacer i parent håndterer
+/// Plassholdes ikke i ikke-valgt tilstand – Spacer i parent håndterer
 /// høyrejustering uavhengig av om checkmark er der.
 struct TrakkeMenuRowCheckmark: View {
     let isSelected: Bool

@@ -22,7 +22,7 @@ extension Color {
         static let brandDark = Color(hex: "2e3326")
         /// Mellom-grønn for handlingsknapper (action-bar-ikoner og
         /// fullbredde-knapper) med hvit tekst-etikett. Mørknet til ≥4.5:1
-        /// kontrast med hvit tekst (WCAG 1.4.3 for normal tekst — strengere
+        /// kontrast med hvit tekst (WCAG 1.4.3 for normal tekst – strengere
         /// enn 1.4.11, siden tokenet brukes som knapp-bakgrunn bak tekst).
         static let brandLight = Color(hex: "6b7360")
         static let brandTint = Color(hex: "e9ece6")
@@ -42,7 +42,7 @@ extension Color {
         static let border = Color(hex: "e4e5e1")
         static let borderStrong = Color(hex: "c9ccc5")
 
-        // MARK: Toggle (custom — varm dempet salviegrønn for av-tilstand)
+        // MARK: Toggle (custom – varm dempet salviegrønn for av-tilstand)
         static let toggleTrackOff = Color(hex: "cdd2c7")
 
         // MARK: Functional
@@ -73,14 +73,14 @@ extension Color {
         // marker without competing with brand-green for UI authority, and
         // stays distinct from Kartverket's pastel water/building blues thanks
         // to high chroma + white casing.
-        // Activities: cobalt — kept distinct from routes so a recorded track
+        // Activities: cobalt – kept distinct from routes so a recorded track
         // and a planned route never blur together on the same map.
         // Casing: 1.5pt white each side under a 4pt coloured stroke.
         static let mapRoute = Color(hex: "0F766E")
         static let mapActivity = Color(hex: "2255AA")
         static let mapWaypoint = Color(hex: "0F766E")
         static let mapHalo = Color(hex: "FFFFFF")
-        // Bright teal for compass-navigation line and arrival chip — higher contrast than mapRoute.
+        // Bright teal for compass-navigation line and arrival chip – higher contrast than mapRoute.
         static let mapNavLine = Color(hex: "14B8A6")
 
         // MARK: Route Palette (user-overridable per route)
@@ -108,12 +108,12 @@ extension UIColor {
         static let warning = UIColor(hex: "b45309")
         static let measurement = UIColor(hex: "d97706")
 
-        // Map data palette — see Color.Trakke.* counterparts.
+        // Map data palette – see Color.Trakke.* counterparts.
         static let mapRoute = UIColor(hex: "0F766E")
         static let mapActivity = UIColor(hex: "2255AA")
         static let mapWaypoint = UIColor(hex: "0F766E")
         static let mapHalo = UIColor.white
-        // Bright teal for the compass-navigation direction line — higher contrast than mapRoute.
+        // Bright teal for the compass-navigation direction line – higher contrast than mapRoute.
         static let mapNavLine = UIColor(hex: "14B8A6")
 
         // POI Categories

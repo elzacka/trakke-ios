@@ -30,7 +30,7 @@ final class POIViewModel {
 
             // Sørg for at bundled-cache er populert før vi spør om POI-er.
             // Uten dette ville en kategori som er enablet før preloadAll når
-            // den i køen returnere tomt resultat — POI-er ville ikke vises
+            // den i køen returnere tomt resultat – POI-er ville ikke vises
             // før neste viewport-endring (race condition).
             if category.isBundled {
                 Task { [weak self] in

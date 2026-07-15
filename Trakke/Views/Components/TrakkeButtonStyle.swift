@@ -4,7 +4,7 @@ struct TrakkeButtonStyle: ButtonStyle {
     /// Knappehierarki:
     /// - `primary`: Hovedhandling i flyten (start, fortsett, naviger). Maks én per skjerm.
     /// - `secondary`: Sidestilt handling (eksporter, dupliser).
-    /// - `tertiary`: Lavprofil-handling. Som secondary, men uten bakgrunn — for
+    /// - `tertiary`: Lavprofil-handling. Som secondary, men uten bakgrunn – for
     ///   handlinger som ikke trenger visuell vekt (avbryt, hjelp, lenker).
     /// - `danger`: Destruktiv handling (slett). Maks én per skjerm, sist i listen.
     enum Variant { case primary, secondary, tertiary, danger }

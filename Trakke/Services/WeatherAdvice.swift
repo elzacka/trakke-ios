@@ -22,7 +22,7 @@ extension WeatherService {
         return wc
     }
 
-    /// Apparent Temperature — Australian Bureau of Meteorology-formelen.
+    /// Apparent Temperature – Australian Bureau of Meteorology-formelen.
     /// Tar hensyn til både vind og luftfuktighet, og fungerer på alle
     /// temperaturer (ikke bare kulde slik windChill gjør). Brukes til "Føles
     /// som"-display i værkortet så brukeren ser en relevant verdi også i
@@ -122,7 +122,7 @@ extension WeatherService {
     }
 
     /// Explains why the wind direction matters for weather and trip planning.
-    /// Wind direction determines what type of air masses arrive — wet oceanic air
+    /// Wind direction determines what type of air masses arrive – wet oceanic air
     /// from the west vs. cold continental air from the east, etc.
     /// Source: MET/Yr general meteorology, verified against SNL (vindretning).
     nonisolated static func windDirectionContext(_ degrees: Double) -> String {
@@ -416,7 +416,7 @@ extension WeatherService {
         return f
     }()
 
-    // outdoorAssessment fjernet i mai 2026 — den tolket værdata for hardt
+    // outdoorAssessment fjernet i mai 2026 – den tolket værdata for hardt
     // ("Mye vind. Ta vindtette klær på eksponerte strekninger.") og bommet
     // i tursammenheng. Brukerne ser de rå tallene + tooltipene istedet.
 }

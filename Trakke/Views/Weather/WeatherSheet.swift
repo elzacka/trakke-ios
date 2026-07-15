@@ -2,7 +2,7 @@ import SwiftUI
 
 struct WeatherSheet: View {
     @Bindable var viewModel: WeatherViewModel
-    /// Inline-modus: ingen NavigationStack/title — kalleren håndterer
+    /// Inline-modus: ingen NavigationStack/title – kalleren håndterer
     /// navigation-konteksten. Brukes når WeatherSheet embeddes som en
     /// underfane i Info-fanen.
     var inline = false
@@ -90,7 +90,7 @@ struct WeatherSheet: View {
     // MARK: - Warnings Section
     //
     // Slår sammen Varsom + UV ≥ 3 + endringsvarsel + dårlig luftkvalitet
-    // i én seksjon — der dukker bare opp hvis det FAKTISK er noe å varsle.
+    // i én seksjon – der dukker bare opp hvis det FAKTISK er noe å varsle.
 
     private func hasAnyWarning(forecast: WeatherForecast) -> Bool {
         if !viewModel.varsomWarnings.isEmpty { return true }

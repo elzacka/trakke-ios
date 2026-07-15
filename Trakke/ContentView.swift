@@ -27,16 +27,16 @@ enum MapMode: Equatable {
 
 /// Root-view. Komponerer hovedkartet (MapScreen) med fire modifiers som
 /// hver eier ett tydelig ansvar:
-/// - `SheetHost` — all sheet-presentasjon (hovedark + FAB-meny)
-/// - `DialogHost` — app-nivå dialoger (feilmeldinger, langt-trykk-meny)
-/// - `AppLifecycleModifier` — onAppear/onDisappear/onChange/task
+/// - `SheetHost` – all sheet-presentasjon (hovedark + FAB-meny)
+/// - `DialogHost` – app-nivå dialoger (feilmeldinger, trykk-og-hold-meny)
+/// - `AppLifecycleModifier` – onAppear/onDisappear/onChange/task
 ///
 /// State-eierskap er fordelt:
 /// - `AppCoordinator` eier ViewModels, navigasjons-state og app-handlinger
 /// - `SheetCoordinator` eier hvilken sheet som er aktiv
 /// - `ConnectivityMonitor` eier nettverks-status
 /// - ContentView eier transient view-state (FAB-meny åpen, clean-map,
-///   langt-trykk-koordinat, nav-destinasjon) som krysser flere modifiers
+///   trykk-og-hold-koordinat, nav-destinasjon) som krysser flere modifiers
 struct ContentView: View {
     @State var coordinator = AppCoordinator()
     @State var sheets = SheetCoordinator()

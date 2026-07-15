@@ -179,9 +179,10 @@ enum KartverketTileService {
     }
 
     static func styleURL(for layer: BaseLayer) -> URL {
+        // Use rawValue (stable across launches) instead of hashValue (randomised per
+        // process in Swift 4.2+, which defeats the cache and litters the Caches dir).
         let styleVersion = 1
-        let tileHash = String(layer.tileURL.hashValue, radix: 36)
-        let fileName = "kartverket-style-\(layer.rawValue)-\(tileHash)-v\(styleVersion).json"
+        let fileName = "kartverket-style-\(layer.rawValue)-v\(styleVersion).json"
         let cacheDir = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first
             ?? FileManager.default.temporaryDirectory
         let fileURL = cacheDir.appendingPathComponent(fileName)

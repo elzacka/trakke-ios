@@ -2,9 +2,9 @@ import SwiftUI
 
 // MARK: - Spacing Guide
 //
-// Bruk regler — først semantiske tokens, så atomiske som fallback.
+// Bruk regler – først semantiske tokens, så atomiske som fallback.
 //
-// SEMANTISKE (foretrukket — beskriver formål):
+// SEMANTISKE (foretrukket – beskriver formål):
 //   sheetHorizontal  Horisontal innrykk inni en sheet/scrollview (20).
 //   sheetTop         Topp-padding rett under drag-indicator (8).
 //   cardPadH/V       Padding inni CardSection (16h / 12v).
@@ -49,35 +49,35 @@ extension CGFloat {
         // Touch targets (WCAG)
         static let touchMin: CGFloat = 44
         static let touchComfortable: CGFloat = 48
-        /// Emergency CTA button height — intentionally oversized for SOS actions
+        /// Emergency CTA button height – intentionally oversized for SOS actions
         static let touchCTA: CGFloat = 72
 
-        /// Minimum bunn-padding for innhold inni AppMenuSheet — sikrer
+        /// Minimum bunn-padding for innhold inni AppMenuSheet – sikrer
         /// komfortabel klaring over den flytende BottomNavBar (52pt pille +
         /// 12pt margin + 24pt visuell luft = 88pt).
         static let bottomNavClearance: CGFloat = 88
 
-        // Button padding — kompakt vertikalt for å unngå dominerende knapper
+        // Button padding – kompakt vertikalt for å unngå dominerende knapper
         static let buttonPadV: CGFloat = 10
 
         // Icon slots for list rows
         static let iconSlot: CGFloat = 24      // SF Symbol icons in navigation rows
         static let iconSlotLarge: CGFloat = 28  // Weather symbols, search icons, POI outer frame
 
-        // Badge padding — intentionally tight for compact layout
+        // Badge padding – intentionally tight for compact layout
         static let badgePadH: CGFloat = 6
         static let badgePadV: CGFloat = 2
     }
 
-    /// Enhetlig hjørneskala — bruk den minste verdien som matcher rollen.
+    /// Enhetlig hjørneskala – bruk den minste verdien som matcher rollen.
     ///
     /// - `sm` (6pt): Små badges, chips, scale bar.
-    /// - `lg` (12pt): Innholdsflater — kort, knapper, søkefelt, listeelementer.
-    /// - `xl` (16pt): Fremtredende flater — modaler/dialoger, store CTA-er,
+    /// - `lg` (12pt): Innholdsflater – kort, knapper, søkefelt, listeelementer.
+    /// - `xl` (16pt): Fremtredende flater – modaler/dialoger, store CTA-er,
     ///   store kart-knapper (FAB, kompass, vær-pille).
     /// - `sheet` (20pt): iOS sheet-presentasjon (system).
     ///
-    /// Mellomverdien `md` (8pt) er fjernet — vi bruker bare disse fire trinnene
+    /// Mellomverdien `md` (8pt) er fjernet – vi bruker bare disse fire trinnene
     /// for å holde uttrykket enhetlig.
     enum TrakkeRadius {
         static let sm: CGFloat = 6

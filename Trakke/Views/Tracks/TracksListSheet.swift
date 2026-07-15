@@ -6,7 +6,7 @@ import CoreLocation
 /// og **turer** (GPS-opptak, kan logges/importeres). Erstatter de tidligere
 /// separate `RouteListSheet` og `ActivityListSheet`.
 ///
-/// Begge typer deler kategori-rom — en kategori med navnet «Vinter» kan
+/// Begge typer deler kategori-rom – en kategori med navnet «Vinter» kan
 /// inneholde både ruter og turer, og vises som én gruppe.
 ///
 /// Action-bar har fire ikoner: `+` (handlings-valg: Logg tur / Tegn rute),
@@ -45,7 +45,7 @@ struct TracksListSheet: View {
     // MARK: - Track Item
 
     /// Enum-wrapper som lar `ForEach` rendre rute-rader og tur-rader om
-    /// hverandre i samme liste. Bare innebygd der det trengs — handlinger
+    /// hverandre i samme liste. Bare innebygd der det trengs – handlinger
     /// kaller ViewModels direkte på riktig type via mønster-matching.
     enum TrackItem: Identifiable, Hashable {
         case route(Route)
@@ -58,7 +58,7 @@ struct TracksListSheet: View {
             }
         }
 
-        /// Brukes til sortering i sammenslått liste — nyeste øverst.
+        /// Brukes til sortering i sammenslått liste – nyeste øverst.
         var sortDate: Date {
             switch self {
             case .route(let r): r.createdAt
@@ -134,7 +134,7 @@ struct TracksListSheet: View {
                     isEmbedded: true
                 )
             }
-            // Tittel utelatt — knappene («Logg tur» / «Tegn rute» /
+            // Tittel utelatt – knappene («Logg tur» / «Tegn rute» /
             // «Eksporter alle ruter» osv.) er selvforklarende, og en
             // tittel som «Logg tur eller tegn rute» repeterer bare. Følger
             // mønsteret fra de øvrige action-sheet-dialogene (long-press,
@@ -344,7 +344,7 @@ struct TracksListSheet: View {
 
     private func routeRowContent(_ route: Route) -> some View {
         HStack(spacing: .Trakke.md) {
-            // Skjult tilstand dempes kun på farge-prikken, ikke på teksten —
+            // Skjult tilstand dempes kun på farge-prikken, ikke på teksten –
             // teksten må holde full kontrast (WCAG 1.4.3).
             Circle()
                 .fill(Color(hex: route.color ?? "#E07000"))
@@ -434,7 +434,7 @@ struct TracksListSheet: View {
         // som rute-prikken) slik at rad-strukturen er den samme. Dato til
         // høyre er det som visuelt skiller en tur fra en rute.
         HStack(spacing: .Trakke.md) {
-            // Skjult tilstand dempes kun på farge-prikken, ikke på teksten —
+            // Skjult tilstand dempes kun på farge-prikken, ikke på teksten –
             // teksten må holde full kontrast (WCAG 1.4.3).
             Circle()
                 .fill(Color.Trakke.brand)
@@ -484,7 +484,7 @@ struct TracksListSheet: View {
     /// Kategori-header speiler ExpandableSection-stilen (Brukerveiledning,
     /// Personvernerklæring osv.): plain tittel-tekst, chevron-down til
     /// høyre som roterer ved ekspandering, antall-tekst etter tittel.
-    /// Per-kategori-synlighet-bryteren er fjernet — brukerne kan toggle
+    /// Per-kategori-synlighet-bryteren er fjernet – brukerne kan toggle
     /// per rad via VisibilityToggleButton som er like tilgjengelig.
     @ViewBuilder
     private func categoryHeader(title: String, count: Int) -> some View {

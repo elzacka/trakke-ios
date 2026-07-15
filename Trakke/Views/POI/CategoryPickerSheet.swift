@@ -7,7 +7,7 @@ struct CategoryPickerSheet: View {
     @Bindable var viewModel: POIViewModel
     @Environment(\.dismiss) private var dismiss
 
-    /// Rekkefølge på grupper — friluftsliv øverst (mest brukt for hiking),
+    /// Rekkefølge på grupper – friluftsliv øverst (mest brukt for hiking),
     /// landskap, kulturarv, beredskap sist.
     private static let groupOrder: [ContentGroup] = [
         .friluftsliv, .landskap, .kulturarv, .beredskap,
@@ -69,8 +69,8 @@ struct CategoryPickerSheet: View {
         }
     }
 
-    /// Kategorirad — ikon (her er det funksjonelt: identifiserer kategorien
-    /// på kartet), navn, og hake når aktivert. Hele raden er klikkbar.
+    /// Kategorirad – ikon (her er det funksjonelt: identifiserer kategorien
+    /// på kartet), navn, og hake når aktivert. Hele raden er trykkbar.
     private func categoryRow(_ category: POICategory) -> some View {
         let isEnabled = viewModel.enabledCategories.contains(category)
         return Button {

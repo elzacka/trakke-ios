@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Hjem-fanen — første sheet som åpnes når brukeren trykker FAB.
+/// Hjem-fanen – første sheet som åpnes når brukeren trykker FAB.
 /// Inneholder søkefelt øverst (live søk mot Geonorge) og collapsed
 /// kategori-hierarki under. Kategoriene skjules mens brukeren søker.
 struct HomeTabContent: View {

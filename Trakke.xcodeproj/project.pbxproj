@@ -1768,7 +1768,6 @@
 				INFOPLIST_FILE = Trakke/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Tråkke";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
-				INFOPLIST_KEY_UIBackgroundModes = audio;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1921,7 +1920,6 @@
 				INFOPLIST_FILE = Trakke/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Tråkke";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
-				INFOPLIST_KEY_UIBackgroundModes = audio;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

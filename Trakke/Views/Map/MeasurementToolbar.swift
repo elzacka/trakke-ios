@@ -118,7 +118,7 @@ private struct ModeSegmentedToggle: View {
                     }
                 }
                 // Hele 44×44-flaten er trykkbar, ikke bare den 36×32 visuelle
-                // kapselen — contentShape ligger utenpå 44pt-rammen.
+                // kapselen – contentShape ligger utenpå 44pt-rammen.
                 .frame(width: 44, height: 44)
                 .contentShape(Rectangle())
         }

@@ -75,7 +75,7 @@ actor WaterTemperatureService {
             ocean = try await oceanTemp
         } catch is CancellationError {
             // Task cancellation is expected when the user navigates away mid-fetch.
-            // Not an error — don't log.
+            // Not an error – don't log.
             ocean = nil
         } catch let urlError as URLError where urlError.code == .cancelled {
             ocean = nil
@@ -103,17 +103,20 @@ actor WaterTemperatureService {
             fetchedAt: .now
         )
 
-        // Cache the result with Expires from ocean response (or fallback TTL)
-        if cache.count >= Self.maxCacheEntries {
-            if let oldest = cache.min(by: { $0.value.expiresAt < $1.value.expiresAt })?.key {
-                cache.removeValue(forKey: oldest)
+        // Only cache when at least one sub-fetch succeeded; a failed fetch must
+        // not block retries for the full TTL duration.
+        if ocean != nil || !spots.isEmpty {
+            if cache.count >= Self.maxCacheEntries {
+                if let oldest = cache.min(by: { $0.value.expiresAt < $1.value.expiresAt })?.key {
+                    cache.removeValue(forKey: oldest)
+                }
             }
+            cache[key] = CachedResult(
+                result: result,
+                expiresAt: ocean?.expiresAt ?? Date.now.addingTimeInterval(Self.fallbackTTL),
+                lastModified: ocean?.lastModified
+            )
         }
-        cache[key] = CachedResult(
-            result: result,
-            expiresAt: ocean?.expiresAt ?? Date.now.addingTimeInterval(Self.fallbackTTL),
-            lastModified: ocean?.lastModified
-        )
 
         return result
     }
@@ -245,11 +248,11 @@ actor WaterTemperatureService {
             (data, response) = try await APIClient.session.data(for: request)
         } catch let urlError as URLError where Self.isCertificateFailure(urlError) {
             bathingDisabledUntil = Date.now.addingTimeInterval(Self.bathingDisableInterval)
-            Logger.weather.error("havvarsel-frost certificate failure (\(urlError.code.rawValue)) — disabling bathing-spot fetch until \(self.bathingDisabledUntil?.description ?? "?", privacy: .public)")
+            Logger.weather.error("havvarsel-frost certificate failure (\(urlError.code.rawValue)) – disabling bathing-spot fetch until \(self.bathingDisabledUntil?.description ?? "?", privacy: .public)")
             return []
         }
 
-        // TLS handshake succeeded — clear any prior backoff so the next failure
+        // TLS handshake succeeded – clear any prior backoff so the next failure
         // starts from a fresh window instead of stacking with stale state.
         bathingDisabledUntil = nil
 

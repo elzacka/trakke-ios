@@ -46,6 +46,8 @@ actor ElevationService {
     }
 
     private func cacheProfile(_ points: [ElevationPoint], forKey key: String) {
+        // Remove any prior entry for the same key so the order array stays deduplicated.
+        profileCacheOrder.removeAll { $0 == key }
         profileCache[key] = points
         profileCacheOrder.append(key)
         if profileCache.count > Self.profileCacheLimit, let oldest = profileCacheOrder.first {

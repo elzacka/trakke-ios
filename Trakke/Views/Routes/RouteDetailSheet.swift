@@ -138,7 +138,7 @@ struct RouteDetailSheet: View {
 
     // MARK: - Actions
     //
-    // Høyrejustert ikon-bar — samme stil som Naviger-list-fanene. Posisjon
+    // Høyrejustert ikon-bar – samme stil som Naviger-list-fanene. Posisjon
     // i HStack indikerer hierarki: primær-handling (naviger) først,
     // destruktiv (slett) sist.
 

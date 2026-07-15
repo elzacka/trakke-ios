@@ -1,11 +1,11 @@
 import SwiftUI
 
-/// Tråkkes egen dialog — dempet, kompakt, iOS-alert-inspirert layout med
+/// Tråkkes egen dialog – dempet, kompakt, iOS-alert-inspirert layout med
 /// tekst-knapper og delere mellom. Brukes for bekreftelser (Ja/Nei),
 /// informasjonsmeldinger (OK) og kontekstmenyer (flere valg).
 ///
 /// Designprinsipper:
-/// - Innholdet styrer størrelsen — ingen unødvendig luft eller dominerende fyll.
+/// - Innholdet styrer størrelsen – ingen unødvendig luft eller dominerende fyll.
 /// - Tekst-knapper (ingen fylte pille-knapper) som speiler iOS-konvensjon.
 /// - To valg = horisontal rad. Tre eller flere = vertikal stabel.
 /// - Brand-farge for primær, rød for destruktiv, dempet tekst for avbryt.
@@ -183,7 +183,7 @@ extension View {
     }
 
     /// Variant med flere handlinger (kontekstmeny). Vertikal stabel med delere.
-    /// Tittel er valgfri — for selvforklarende handlingsmenyer (long-press)
+    /// Tittel er valgfri – for selvforklarende handlingsmenyer (long-press)
     /// klarer dialogen seg uten tittel, slik som iOS action sheets.
     func trakkeDialog(
         isPresented: Binding<Bool>,

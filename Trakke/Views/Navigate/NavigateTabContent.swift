@@ -1,7 +1,7 @@
 import SwiftUI
 import CoreLocation
 
-/// Naviger-fanen — to under-faner: **Turer og ruter** (sammenslått) og **Steder**.
+/// Naviger-fanen – to under-faner: **Turer og ruter** (sammenslått) og **Steder**.
 /// Bruker isEmbedded-modus av TracksListSheet og WaypointListSheet for å
 /// gjenbruke all eksisterende liste-logikk (importer, eksporter, kategorier,
 /// kontekstmeny, kart-synlighet) uten dobbel header eller dobbel
