@@ -132,12 +132,6 @@ struct InfoSheet: View {
                         )
                         Divider()
                         dataSourceRow(
-                            name: "Havvarsel-Frost",
-                            detail: String(localized: "info.havvarsel.detail"),
-                            license: "CC BY 4.0"
-                        )
-                        Divider()
-                        dataSourceRow(
                             name: "NVE / Varsom",
                             detail: String(localized: "info.nve.detail"),
                             license: "NLOD"

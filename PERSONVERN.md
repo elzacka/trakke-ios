@@ -43,7 +43,7 @@ Appen henter data fra følgende tjenester. Alle er norske eller europeiske, med 
 | Kartverket WMS (wms.geonorge.no) | Turruter | Kartområde | Norge |
 | Geonorge (ws.geonorge.no) | Stedsnavn, adresser, høydedata | Søketekst eller koordinater | Norge |
 | Meteorologisk institutt (api.met.no) | Vær, havtemperatur, luftkvalitet | Omtrentlig posisjon (luftkvalitet: 2 desimaler, ca. 1,1 km) | Norge |
-| Havvarsel-Frost (havvarsel-frost.met.no) | Badevannstemperatur | Omtrentlig posisjon | Norge |
+| Meteorologisk institutt — Havvarsel-Frost (havvarsel-frost.met.no) | Badevannstemperatur fra målestasjonar | Omtrentlig posisjon | Norge |
 | DSB (ogc.dsb.no) | Tilfluktsrom | Kartområde | Norge |
 | Riksantikvaren (api.ra.no) | Kulturminner | Kartområde | Norge |
 | Miljødirektoratet | Naturvernområder og naturskog | Kartområde | Norge |

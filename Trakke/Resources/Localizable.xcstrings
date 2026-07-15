@@ -1689,17 +1689,6 @@
         }
       }
     },
-    "info.havvarsel.detail" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Badevannsdata"
-          }
-        }
-      }
-    },
     "info.kartverket.detail" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1761,7 +1750,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vær og luftkvalitet"
+            "value" : "Vær, havtemperatur, luftkvalitet og badevannsdata"
           }
         }
       }
