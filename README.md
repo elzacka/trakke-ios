@@ -61,8 +61,7 @@ MIT.
 
 - Kartverket: kart, terreng og tjenester (NLOD 2.0)
 - Miljødirektoratet: naturvern og naturskog (NLOD 2.0)
-- Meteorologisk institutt: vær, havtemperatur og luftkvalitet (CC BY 4.0)
-- Havvarsel-Frost: badevannsdata (CC BY 4.0)
+- Meteorologisk institutt: vær, luftkvalitet, hav- og badevannstemperatur (CC BY 4.0)
 - NVE / Varsom: snøskred- og flomvarsler (NLOD)
 - Artsdatabanken: artsbilder (CC BY 4.0)
 - Riksantikvaren: kulturminner (NLOD)

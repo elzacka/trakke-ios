@@ -55,9 +55,9 @@ Non-essential requests (species images, knowledge pack updates) are silently ski
 
 All dependencies are open-source and pinned via `Package.resolved`. No closed-source SDKs.
 
-- MapLibre Native — BSD-2-Clause
-- MapLibreSwiftUI — ISC
-- GRDB — MIT
+- MapLibre Native (BSD-2-Clause)
+- MapLibreSwiftUI (ISC)
+- GRDB (MIT)
 
 ## Supported versions
 

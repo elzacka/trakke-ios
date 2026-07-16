@@ -1750,7 +1750,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vær, havtemperatur, luftkvalitet og badevannsdata"
+            "value" : "Vær, luftkvalitet, hav- og badevannstemperatur"
           }
         }
       }
