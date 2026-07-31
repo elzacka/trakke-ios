@@ -93,6 +93,16 @@ struct InfoSheet: View {
                     )
                 }
                 .accessibilityHint(String(localized: "accessibility.opensExternalLink"))
+                Divider().padding(.leading, .Trakke.dividerLeading)
+                // Ingen vurderingsdialog i appen – raden er eneste inngang,
+                // og bare for den som selv oppsøker den.
+                Link(destination: URL(string: "https://apps.apple.com/app/id6759306717?action=write-review")!) {
+                    TrakkeMenuRow(
+                        label: String(localized: "info.rateApp"),
+                        trailing: { TrakkeMenuRowExternal() }
+                    )
+                }
+                .accessibilityHint(String(localized: "accessibility.opensExternalLink"))
             }
 
             // MARK: - 3. Datagrunnlag og kode
@@ -110,7 +120,7 @@ struct InfoSheet: View {
                         dataSourceRow(
                             name: "Kartverket",
                             detail: String(localized: "info.kartverket.detail"),
-                            license: "NLOD 2.0"
+                            license: "CC BY 4.0"
                         )
                         Divider()
                         dataSourceRow(

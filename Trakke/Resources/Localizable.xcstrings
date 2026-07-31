@@ -1942,6 +1942,17 @@
         }
       }
     },
+    "info.rateApp" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vurder Tråkke i App Store"
+          }
+        }
+      }
+    },
     "info.section.attribution" : {
       "extractionState" : "manual",
       "localizations" : {

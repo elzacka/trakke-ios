@@ -1,6 +1,6 @@
 # Personvernerklæring for Tråkke
 
-**Sist oppdatert:** 15. juli 2026
+**Sist oppdatert:** 31. juli 2026
 
 ## 1. Kort fortalt
 
@@ -15,7 +15,7 @@ Tråkke lagrer all data lokalt på enheten din. Ingen personopplysninger samles 
 - **Innstillinger:** valgt kartlag, koordinatformat og øvrige innstillinger
 - **Nedlastede kart** for offline bruk
 - **Kunnskapsartikler** for offline bruk
-- **Midlertidige vær- og luftkvalitetsdata** (i minnet, slettes når du lukker appen)
+- **Mellomlagrede vær- og varseldata:** svar fra vær- og varseltjenestene mellomlagres kort tid på enheten, beskyttet med iOS-filbeskyttelse, og slettes med «Slett alle data»
 
 Disse dataene forlater aldri enheten.
 

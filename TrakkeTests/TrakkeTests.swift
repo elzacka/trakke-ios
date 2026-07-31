@@ -1354,15 +1354,15 @@ func kartverketStyleJSON(layer: BaseLayer) {
     cache.storeCachedResponse(cached, for: request)
     #expect(cache.cachedResponse(for: request) != nil)
 
-    APIClient.clearCache()
-    // URLCache tømmes på en intern kø – poll kort i stedet for å anta
-    // synkron effekt.
+    // Både lagring og tømming skjer på URLCaches interne kø. La lagringen
+    // få sette seg, og gjenta tømmingen i pollingen – ellers kan en sent
+    // committet lagring gjenoppstå etter removeAll og gjøre testen ustabil.
+    try? await Task.sleep(for: .milliseconds(300))
     var cleared = false
     for _ in 0..<40 where !cleared {
+        APIClient.clearCache()
+        try? await Task.sleep(for: .milliseconds(50))
         cleared = cache.cachedResponse(for: request) == nil
-        if !cleared {
-            try? await Task.sleep(for: .milliseconds(50))
-        }
     }
     #expect(cleared, "clearCache() skal tømme APIClients session-cache")
 }

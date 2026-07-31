@@ -1,7 +1,7 @@
 {
   "version": 1,
   "source": "Kartverket GeoNorge API",
-  "license": "NLOD 2.0",
+  "license": "CC BY 4.0",
   "kommuner": [
     {
       "id": "4203",
