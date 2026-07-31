@@ -241,11 +241,13 @@ actor WaterTemperatureService {
 
         var request = URLRequest(url: url, timeoutInterval: Self.timeout)
         request.setValue(Self.userAgent, forHTTPHeaderField: "User-Agent")
+        // Badetemperatur er ikke-essensielt – hopp over i Lav data-modus.
+        request.allowsConstrainedNetworkAccess = false
 
         let data: Data
         let response: URLResponse
         do {
-            (data, response) = try await APIClient.session.data(for: request)
+            (data, response) = try await Self.fetchWithRetry(request)
         } catch let urlError as URLError where Self.isCertificateFailure(urlError) {
             bathingDisabledUntil = Date.now.addingTimeInterval(Self.bathingDisableInterval)
             Logger.weather.error("havvarsel-frost certificate failure (\(urlError.code.rawValue)) – disabling bathing-spot fetch until \(self.bathingDisabledUntil?.description ?? "?", privacy: .public)")
@@ -262,6 +264,19 @@ actor WaterTemperatureService {
         }
 
         return parseBathingSpots(data)
+    }
+
+    /// Én retry ved timeout/frafalt forbindelse – speiler `APIClient.fetchData`,
+    /// som ikke kan brukes direkte her fordi sertifikatfeil må fanges som
+    /// `URLError` for TLS-backoff-logikken.
+    private static func fetchWithRetry(_ request: URLRequest) async throws -> (Data, URLResponse) {
+        do {
+            return try await APIClient.session.data(for: request)
+        } catch let error as URLError
+            where error.code == .timedOut || error.code == .networkConnectionLost {
+            try await Task.sleep(for: .seconds(1))
+            return try await APIClient.session.data(for: request)
+        }
     }
 
     private static func isCertificateFailure(_ error: URLError) -> Bool {

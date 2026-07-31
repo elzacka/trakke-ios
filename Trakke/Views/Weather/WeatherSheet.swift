@@ -366,7 +366,7 @@ struct WeatherSheet: View {
                     Image(systemName: "info.circle")
                         .font(.system(size: 14, weight: .regular))
                         .foregroundStyle(Color.Trakke.textSoft)
-                        .frame(width: 24, height: 24)
+                        .frame(width: .Trakke.touchMin, height: .Trakke.touchMin)
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)

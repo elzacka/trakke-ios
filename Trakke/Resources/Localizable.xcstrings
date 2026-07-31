@@ -2996,7 +2996,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fremme!"
+            "value" : "Fremme"
           }
         }
       }
@@ -3316,39 +3316,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Rute: © OpenStreetMap-bidragsytere"
-          }
-        }
-      }
-    },
-    "navigation.routeErrorGeneric" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prøv igjen eller bruk kompasspeiling."
-          }
-        }
-      }
-    },
-    "navigation.routeErrorTimeout" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Beregningen tok for lang tid. Sjekk nettforbindelsen og prøv igjen, eller bruk kompasspeiling."
-          }
-        }
-      }
-    },
-    "navigation.routeErrorTitle" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kunne ikke beregne rute"
           }
         }
       }
@@ -5242,6 +5209,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "SOS-signal"
+          }
+        }
+      }
+    },
+    "sos.noTorch" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denne enheten mangler lommelykt. SOS-signalet bruker bare lyd."
           }
         }
       }

@@ -286,6 +286,8 @@ struct TrakkeMapView: UIViewRepresentable {
         var lastCompassUserLat: Double = 0
         var lastCompassUserLon: Double = 0
         var lastAppliedNavCameraMode: NavigationCameraMode?
+        /// Ønsket kameramodus under navigasjon; nil når navigasjon er av.
+        var desiredNavCameraMode: NavigationCameraMode?
         var compassDestinationAnnotation: NavigationDestinationAnnotation?
 
         init(
@@ -324,6 +326,16 @@ struct TrakkeMapView: UIViewRepresentable {
 
         func mapView(_ mapView: MLNMapView, regionDidChangeAnimated animated: Bool) {
             isUserInteracting = false
+
+            // En gest (pinch/pan) eller setZoomLevel kan ha slått av MapLibre-
+            // tracking under navigasjon. Re-engasjer her ved gest-slutt.
+            if let mode = desiredNavCameraMode {
+                let desired: MLNUserTrackingMode = mode == .courseUp ? .followWithHeading : .follow
+                if mapView.userTrackingMode != desired {
+                    applyNavTracking(on: mapView, mode: mode)
+                }
+            }
+
             viewModel.currentZoom = mapView.zoomLevel
             viewModel.currentCenter = mapView.centerCoordinate
             viewModel.currentHeading = mapView.direction
@@ -348,9 +360,9 @@ struct TrakkeMapView: UIViewRepresentable {
         }
 
         func mapView(_ mapView: MLNMapView, didUpdate userLocation: MLNUserLocation?) {
-            guard let coordinate = userLocation?.coordinate,
-                  CLLocationCoordinate2DIsValid(coordinate) else { return }
-            viewModel.userLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+            guard let location = userLocation?.location,
+                  CLLocationCoordinate2DIsValid(location.coordinate) else { return }
+            viewModel.userLocation = location
         }
 
         func mapView(_ mapView: MLNMapView, didFinishLoading style: MLNStyle) {

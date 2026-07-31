@@ -264,6 +264,7 @@ struct PreferencesSheet: View {
         mapViewModel.baseLayer = .topo
 
         URLCache.shared.removeAllCachedResponses()
+        APIClient.clearCache()
 
         // Rydd eksporterte filer fra tmp
         let tempDir = FileManager.default.temporaryDirectory

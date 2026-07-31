@@ -13,6 +13,7 @@ Email **hei@tazk.no** with subject `[SECURITY] Trakke iOS - <brief description>`
 - No tracking, no IDFA, no analytics SDKs, no third-party telemetry
 - All user data stays on-device — nothing is transmitted to app-owned servers
 - Only `Location When In Use` is requested
+- During active navigation, location updates continue while the screen is locked so the lock-screen Live Activity stays current (shown by the iOS location indicator); this stops when navigation ends
 
 For what data is processed and the legal basis under GDPR, see [PERSONVERN.md](PERSONVERN.md).
 
@@ -45,7 +46,7 @@ Primary APIs are Norwegian or EU/EEA. One non-EU service is used for non-persona
 
 ### Data deletion (GDPR Art. 17)
 
-In-app deletion clears every persistent and transient store the app owns. See [PERSONVERN.md](PERSONVERN.md) section 4 for the user-facing description.
+In-app deletion clears every persistent and transient store the app owns. See [PERSONVERN.md](PERSONVERN.md) section 5 for the user-facing description.
 
 ### Low Data Mode
 

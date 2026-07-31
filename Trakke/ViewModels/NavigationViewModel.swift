@@ -21,9 +21,12 @@ final class NavigationViewModel {
 
     // MARK: - Private State
 
-    /// Avstand til destinasjon ved oppstart – hindrer feilaktig "Fremme!"
-    /// når brukeren starter nær destinasjonen (f.eks. retrace av rundtur).
-    private var compassStartDistance: Double?
+    /// Største observerte avstand til destinasjonen i økten – hindrer
+    /// feilaktig "Fremme!" når brukeren starter nær destinasjonen (f.eks.
+    /// retrace av rundtur). Ankomst krever at brukeren enten har vært lengre
+    /// unna enn 2x terskelen, eller har nærmet seg minst én terskel – slik
+    /// fungerer ankomst også for mål brukeren starter 30-60 m fra.
+    private var maxObservedDistance: Double = 0
     private var lastProcessedTime: Date?
     private var isProcessingUpdate = false
     private var navigationActivityID: String?
@@ -38,17 +41,18 @@ final class NavigationViewModel {
 
     private static let arrivalThreshold: Double = 30
     private static let minUpdateInterval: TimeInterval = 1.0
-    private static let gpsWatchdogTimeout: TimeInterval = 15
+    /// Instansvariabel (ikke static) slik at tester kan korte den ned uten å
+    /// påvirke parallelle tester.
+    var gpsWatchdogTimeout: TimeInterval = 15
 
     // MARK: - Start Compass Navigation
 
     func startCompassNavigation(to dest: CLLocationCoordinate2D) {
-        endStaleLiveActivities()
         destination = dest
         isActive = true
         isPaused = false
         hasArrived = false
-        compassStartDistance = nil
+        maxObservedDistance = 0
         HapticFeedback.prepare()
         restartGPSWatchdog()
         startLiveActivity()
@@ -82,7 +86,7 @@ final class NavigationViewModel {
         destination = nil
         compassBearing = 0
         compassDistance = 0
-        compassStartDistance = nil
+        maxObservedDistance = 0
         lastProcessedTime = nil
         isProcessingUpdate = false
         lastActivityUpdate = nil
@@ -115,8 +119,9 @@ final class NavigationViewModel {
     /// Kalles hver gang en fersk posisjon behandles, samt ved start/resume.
     private func restartGPSWatchdog() {
         gpsWatchdogTask?.cancel()
+        let timeout = gpsWatchdogTimeout
         gpsWatchdogTask = Task { [weak self] in
-            try? await Task.sleep(for: .seconds(Self.gpsWatchdogTimeout))
+            try? await Task.sleep(for: .seconds(timeout))
             guard !Task.isCancelled, let self else { return }
             self.gpsQuality = .lost
         }
@@ -134,14 +139,11 @@ final class NavigationViewModel {
 
         compassBearing = Bearing.bearing(from: location.coordinate, to: dest)
         compassDistance = Haversine.distance(from: location.coordinate, to: dest)
+        maxObservedDistance = max(maxObservedDistance, compassDistance)
 
-        if compassStartDistance == nil {
-            compassStartDistance = compassDistance
-        }
-
-        guard let startDistance = compassStartDistance else { return }
         let minStartDistance = Self.arrivalThreshold * 2  // 60m
-        let hasMovedMeaningfully = startDistance > minStartDistance
+        let hasMovedMeaningfully = maxObservedDistance > minStartDistance
+            || maxObservedDistance - compassDistance > Self.arrivalThreshold
 
         if !hasArrived
             && compassDistance < Self.arrivalThreshold
@@ -157,18 +159,28 @@ final class NavigationViewModel {
 
     private func startLiveActivity() {
         guard ActivityKit.ActivityAuthorizationInfo().areActivitiesEnabled else { return }
-        let content = ActivityKit.ActivityContent(
-            state: currentActivityState(),
-            staleDate: Date().addingTimeInterval(60)
-        )
-        do {
-            let activity = try ActivityKit.Activity.request(
-                attributes: NavigationActivityAttributes(),
-                content: content
+        navigationActivityID = nil
+        Task { [weak self] in
+            // Gamle aktiviteter (forrige økt eller re-målretting) MÅ avsluttes
+            // i samme task som den nye opprettes – en frittstående opprydding
+            // kjører etter Activity.request og avliver den nye aktiviteten.
+            for activity in ActivityKit.Activity<NavigationActivityAttributes>.activities {
+                await activity.end(dismissalPolicy: .immediate)
+            }
+            guard let self, self.isActive else { return }
+            let content = ActivityKit.ActivityContent(
+                state: self.currentActivityState(),
+                staleDate: Date().addingTimeInterval(60)
             )
-            navigationActivityID = activity.id
-        } catch {
-            Logger.navigation.error("Live Activity start: \(error.localizedDescription, privacy: .public)")
+            do {
+                let activity = try ActivityKit.Activity.request(
+                    attributes: NavigationActivityAttributes(),
+                    content: content
+                )
+                self.navigationActivityID = activity.id
+            } catch {
+                Logger.navigation.error("Live Activity start: \(error.localizedDescription, privacy: .private)")
+            }
         }
     }
 
@@ -200,14 +212,6 @@ final class NavigationViewModel {
                 ActivityKit.ActivityContent(state: state, staleDate: nil),
                 dismissalPolicy: .immediate
             )
-        }
-    }
-
-    private func endStaleLiveActivities() {
-        Task {
-            for activity in ActivityKit.Activity<NavigationActivityAttributes>.activities {
-                await activity.end(dismissalPolicy: .immediate)
-            }
         }
     }
 

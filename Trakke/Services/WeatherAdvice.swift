@@ -355,7 +355,7 @@ extension WeatherService {
         // Check for precipitation starting (currently dry → precipitation within 6h)
         if current.precipitation < 0.1 {
             if let precipStart = upcoming.first(where: { $0.precipitationProbability > 50 && $0.precipitation > 0.5 }) {
-                let hour = hourFormatter.string(from: precipStart.time)
+                let hour = hourString(from: precipStart.time)
                 let severity: WindWarningLevel = precipStart.precipitation > 4 ? .caution : .none
                 let key: String.LocalizationValue = switch precipitationType(for: precipStart.symbol) {
                 case .snow: "weather.upcoming.snow \(hour)"
@@ -381,7 +381,7 @@ extension WeatherService {
                 gustWarningLevel(point.windGust ?? point.windSpeed)
             )
             if futureWorstWind > currentWorstWind && futureWorstWind >= .caution {
-                let hour = hourFormatter.string(from: point.time)
+                let hour = hourString(from: point.time)
                 return UpcomingChange(
                     description: String(localized: "weather.upcoming.wind \(hour)"),
                     hour: hour,
@@ -393,7 +393,7 @@ extension WeatherService {
         // Check for heavy precipitation increase
         if current.precipitation < 1 {
             if let heavyStart = upcoming.first(where: { $0.precipitation > 4 }) {
-                let hour = hourFormatter.string(from: heavyStart.time)
+                let hour = hourString(from: heavyStart.time)
                 let key: String.LocalizationValue = switch precipitationType(for: heavyStart.symbol) {
                 case .snow: "weather.upcoming.heavySnow \(hour)"
                 case .sleet: "weather.upcoming.heavySleet \(hour)"
@@ -410,11 +410,13 @@ extension WeatherService {
         return nil
     }
 
-    private static let hourFormatter: DateFormatter = {
+    /// DateFormatter er ikke trådsikker og funksjonene her er nonisolated –
+    /// lag formatteren per kall i stedet for å dele en global instans.
+    private static func hourString(from date: Date) -> String {
         let f = DateFormatter()
         f.dateFormat = "HH"
-        return f
-    }()
+        return f.string(from: date)
+    }
 
     // outdoorAssessment fjernet i mai 2026 – den tolket værdata for hardt
     // ("Mye vind. Ta vindtette klær på eksponerte strekninger.") og bommet

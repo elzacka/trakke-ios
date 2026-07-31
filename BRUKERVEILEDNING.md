@@ -59,7 +59,7 @@ Trykk og hold på en rad: «Rediger», «Vis kun denne» og «Slett».
 
 Nederst i hver liste ligger tre ikoner:
 
-- **Opp-pil**: Importer fra `.gpx`- eller `.geojson`-fil. Filer som du har eksportert fra Tråkke eller andre apper. F. eks via Airdrop, e-post eller Filer på iPhone.
+- **Opp-pil**: Importer fra `.gpx`- eller `.geojson`-fil – filer du har eksportert fra Tråkke eller andre apper, f.eks. via AirDrop, e-post eller Filer på iPhone.
 - **Ned-pil**: Eksporter alt som `.gpx`-fil. 
 - **Papirkurv**: Slett alle.
 
@@ -127,7 +127,7 @@ Nederst finner du denne brukerveiledningen, personvernerklæring og lenke til Tr
 ## 9. SOS og nød (Verktøy-fanen → SOS)
 
 - **Koordinater**: Posisjonen din i to formater. Trykk kopier-knappen. Koordinaten slettes fra utklippstavlen etter fem minutter.
-- **SOS-signal**: Sender SOS i morsekode med lommelykten. Slå på **Lydsignal** for å legge til et 2800 Hz-lydsignal. Signalet gjentas til du trykker «Stopp». Skjermen kan ikke lukkes mens SOS er aktiv.
+- **SOS-signal**: Sender SOS i morsekode med lommelykten. Slå på **Lydsignal** for å legge til et 2800 Hz-lydsignal. Signalet gjentas til du trykker «Stopp», og fortsetter selv om skjermen låses. Skjermen kan ikke lukkes mens SOS er aktiv. På enheter uten lommelykt brukes bare lyd.
 - **Nødnumre**: Trykk for å ringe: 113 (ambulanse), 112 (politi), 110 (brann), 116 117 (legevakt).
 
 ## 10. Måleverktøy (Verktøy-fanen → Måleverktøy)

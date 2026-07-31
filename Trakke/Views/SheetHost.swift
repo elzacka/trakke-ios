@@ -76,7 +76,9 @@ struct SheetHost: ViewModifier {
         .presentationDetents([.medium, .large], selection: $sheetDetent)
         .presentationDragIndicator(.hidden)
         .presentationBackgroundInteraction(.enabled(upThrough: .large))
-        .interactiveDismissDisabled(false)
+        // Aktivt SOS-signal (via Verktøy-fanen) skal ikke kunne dras vekk –
+        // samme regel som det frittstående nødarket.
+        .interactiveDismissDisabled(sosViewModel.isActive)
     }
 
     // MARK: - FAB Menu Callbacks
@@ -306,7 +308,9 @@ struct SheetHost: ViewModifier {
             .presentationDetents([.medium, .large])
             .presentationDragIndicator(.visible)
             .presentationBackgroundInteraction(.enabled(upThrough: .large))
-            .onDisappear { sosViewModel.deactivate() }
+            // Ingen deactivate ved onDisappear: et programmatisk arkbytte
+            // (filimport, deep link) skal ikke stoppe et aktivt nødsignal.
+            // Signalet stoppes kun eksplisitt med Stopp-knappen.
 
         case .activitySave:
             ActivitySaveSheet(viewModel: activityViewModel)

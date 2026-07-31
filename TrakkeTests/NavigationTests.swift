@@ -33,8 +33,10 @@ import CoreLocation
     let b = CLLocationCoordinate2D(latitude: 60.0, longitude: 10.0)
     let bearingAB = Bearing.bearing(from: a, to: b)
     let bearingBA = Bearing.bearing(from: b, to: a)
+    // Samme lengdegrad: sann resiprok peiling avviker < 0,01 grader.
+    // Romslig toleranse ville maskert formelregresjoner.
     let diff = abs(bearingAB - bearingBA)
-    #expect(abs(diff - 180) < 5)
+    #expect(abs(diff - 180) < 0.5)
 }
 
 // MARK: - NavigationState Model Tests
@@ -109,7 +111,7 @@ func cameraModeRawValues() {
     #expect(bearing >= 0 && bearing < 360)
 }
 
-@Test func navigationViewModelCompassArrival() async {
+@Test func navigationViewModelCompassArrival() async throws {
     let vm = await NavigationViewModel()
     let dest = CLLocationCoordinate2D(latitude: 59.0, longitude: 10.0)
     await vm.startCompassNavigation(to: dest)
@@ -121,13 +123,50 @@ func cameraModeRawValues() {
     let arrivedAtStart = await vm.hasArrived
     #expect(!arrivedAtStart, "Skal ikke være fremme ved start")
 
-    try? await Task.sleep(for: .milliseconds(1100))
+    // `try` (ikke `try?`): blir sleepen kansellert skal testen feile,
+    // ikke stille hoppe over oppdateringen som utløser ankomst.
+    try await Task.sleep(for: .milliseconds(1100))
 
     let nearLocation = CLLocation(latitude: 59.00001, longitude: 10.00001)
     await vm.processLocationUpdate(nearLocation)
 
     let arrived = await vm.hasArrived
     #expect(arrived)
+}
+
+@Test func navigationViewModelArrivalFromShortStart() async throws {
+    // Start ~50 m fra målet – under minStartDistance (60 m), men ankomst
+    // skal likevel fyre når brukeren har nærmet seg mer enn én terskel (30 m).
+    let vm = await NavigationViewModel()
+    let dest = CLLocationCoordinate2D(latitude: 59.0, longitude: 10.0)
+    await vm.startCompassNavigation(to: dest)
+
+    let startLocation = CLLocation(latitude: 59.00045, longitude: 10.0) // ~50 m
+    await vm.processLocationUpdate(startLocation)
+    let arrivedAtStart = await vm.hasArrived
+    #expect(!arrivedAtStart)
+
+    try await Task.sleep(for: .milliseconds(1100))
+
+    let nearLocation = CLLocation(latitude: 59.00004, longitude: 10.0) // ~4 m
+    await vm.processLocationUpdate(nearLocation)
+    let arrived = await vm.hasArrived
+    #expect(arrived, "Ankomst skal fungere også for mål brukeren starter 30-60 m fra")
+}
+
+@Test func gpsWatchdogFlagsLostSignalAndRecovers() async throws {
+    let vm = await NavigationViewModel()
+    await MainActor.run { vm.gpsWatchdogTimeout = 0.2 }
+    let dest = CLLocationCoordinate2D(latitude: 59.0, longitude: 10.0)
+    await vm.startCompassNavigation(to: dest)
+
+    try await Task.sleep(for: .milliseconds(600))
+    let lostQuality = await vm.gpsQuality
+    #expect(lostQuality == .lost, "Uten posisjoner innen timeout skal GPS meldes tapt")
+
+    await vm.processLocationUpdate(CLLocation(latitude: 59.001, longitude: 10.0))
+    let recoveredQuality = await vm.gpsQuality
+    #expect(recoveredQuality != .lost, "Fersk posisjon skal nullstille vaktbikkja")
 }
 
 @Test func navigationViewModelNoFalseArrivalAtStart() async {

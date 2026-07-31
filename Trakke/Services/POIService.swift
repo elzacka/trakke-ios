@@ -113,6 +113,7 @@ actor POIService {
         var allPOIs: [POI] = []
         var offset = 0
         var hasMore = true
+        let decoder = JSONDecoder()
 
         for page in 0..<Self.kulturminnerMaxPages {
             guard hasMore else { break }
@@ -136,7 +137,7 @@ actor POIService {
                 timeout: Self.poiFetchTimeout,
                 additionalHeaders: ["Accept": "application/geo+json"]
             )
-            let response = try JSONDecoder().decode(KulturminnerResponse.self, from: data)
+            let response = try decoder.decode(KulturminnerResponse.self, from: data)
             let rawCount = response.features.count
             let pois = response.features.compactMap { feature -> POI? in
                 guard feature.geometry.type == "Point",

@@ -106,6 +106,10 @@ final class AppCoordinator {
             mapViewModel.startTrackingLocation()
             return
         }
+        // CLLocationManager leverer ingen posisjoner før startUpdatingLocation
+        // er kalt – uten denne linjen samler et opptak startet uten aktiv
+        // kartsporing null punkter og turen går tapt ved lagring.
+        mapViewModel.startTrackingLocation()
         mapViewModel.setLocationObserver("recording") { [weak activityViewModel] location in
             Task { @MainActor in
                 activityViewModel?.processLocation(location)

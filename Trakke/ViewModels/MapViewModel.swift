@@ -1,5 +1,6 @@
 import SwiftUI
 import CoreLocation
+import os
 import OSLog
 
 @MainActor
@@ -52,12 +53,18 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
     }
 
     private let locationManager = CLLocationManager()
-    private var lastHeadingTime: Date?
-    private var lastHeadingValue: Double = 0
+    private struct HeadingThrottleState {
+        var lastTime: Date?
+        var lastValue: Double = 0
+    }
+    /// Terskles i nonisolated delegatkontekst FØR hopp til MainActor –
+    /// magnetometeret fyrer hyppig under navigasjon, og forkastede
+    /// oppdateringer skal ikke belaste hovedaktoren med Task-allokeringer.
+    private let headingThrottle = OSAllocatedUnfairLock(initialState: HeadingThrottleState())
     private var smoothedHeading: Double = 0
     @ObservationIgnored nonisolated(unsafe) private var defaultsObserver: NSObjectProtocol?
-    private static let headingMinInterval: TimeInterval = 0.2  // ~5 Hz max
-    private static let headingMinDelta: Double = 2.0           // degrees
+    private nonisolated static let headingMinInterval: TimeInterval = 0.2  // ~5 Hz max
+    private nonisolated static let headingMinDelta: Double = 2.0           // degrees
     private static let headingSmoothingFactor: Double = 0.25   // low-pass filter (0 = ignore new, 1 = no smoothing)
 
     override init() {
@@ -208,7 +215,12 @@ if defaults.bool(forKey: AppStorageKeys.overlayNaturvernomrader) { overlays.inse
         // process, so it stops naturally if the app is force-quit.
         locationManager.allowsBackgroundLocationUpdates = true
         locationManager.showsBackgroundLocationIndicator = true
-        locationManager.distanceFilter = 1.0
+        // Ingen distanceFilter under navigasjon: et filter stopper alle
+        // callbacks når brukeren står stille, noe som fryser HUD/Live Activity
+        // og utløser GPS-vaktbikkja falskt. Automatisk pause må også av –
+        // iOS gjenopptar ikke oppdateringer pålitelig etter pause med låst skjerm.
+        locationManager.pausesLocationUpdatesAutomatically = false
+        locationManager.distanceFilter = kCLDistanceFilterNone
         locationManager.activityType = .fitness
 
         locationManager.startUpdatingLocation()
@@ -219,14 +231,14 @@ if defaults.bool(forKey: AppStorageKeys.overlayNaturvernomrader) { overlays.inse
         isNavigating = false
         userHeading = nil
         removeLocationObserver("navigation")
-        lastHeadingTime = nil
-        lastHeadingValue = 0
+        headingThrottle.withLock { $0 = HeadingThrottleState() }
 
         // Fully stop all location services first to ensure a clean break.
         locationManager.stopUpdatingLocation()
         locationManager.stopUpdatingHeading()
         locationManager.allowsBackgroundLocationUpdates = false
         locationManager.showsBackgroundLocationIndicator = false
+        locationManager.pausesLocationUpdatesAutomatically = true
         locationManager.distanceFilter = kCLDistanceFilterNone
         locationManager.activityType = .other
 
@@ -255,18 +267,21 @@ if defaults.bool(forKey: AppStorageKeys.overlayNaturvernomrader) { overlays.inse
 
     nonisolated func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
         let heading = newHeading.trueHeading >= 0 ? newHeading.trueHeading : newHeading.magneticHeading
+        let now = Date()
+        let passesThrottle = headingThrottle.withLock { state -> Bool in
+            if let lastTime = state.lastTime,
+               now.timeIntervalSince(lastTime) < Self.headingMinInterval {
+                var delta = abs(heading - state.lastValue)
+                if delta > 180 { delta = 360 - delta }
+                guard delta >= Self.headingMinDelta else { return false }
+            }
+            state.lastTime = now
+            state.lastValue = heading
+            return true
+        }
+        guard passesThrottle else { return }
         Task { @MainActor [weak self] in
             guard let self else { return }
-            let now = Date()
-            if let lastTime = lastHeadingTime,
-               now.timeIntervalSince(lastTime) < Self.headingMinInterval {
-                var delta = abs(heading - lastHeadingValue)
-                if delta > 180 { delta = 360 - delta }
-                guard delta >= Self.headingMinDelta else { return }
-            }
-            lastHeadingTime = now
-            lastHeadingValue = heading
-
             // Low-pass filter to smooth magnetometer jitter.
             // Handle 0/360 wrap-around by computing shortest angular delta.
             var delta = heading - smoothedHeading

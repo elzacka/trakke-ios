@@ -40,12 +40,11 @@ jobs:
       - name: Cache SPM packages
         uses: actions/cache@v5
         with:
-          path: |
-            ~/Library/Developer/Xcode/DerivedData/**/SourcePackages
+          path: SourcePackages
           key: spm-${{ hashFiles('Trakke.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
 
       - name: Resolve packages
-        run: xcodebuild -resolvePackageDependencies -project Trakke.xcodeproj -scheme Trakke
+        run: xcodebuild -resolvePackageDependencies -project Trakke.xcodeproj -scheme Trakke -clonedSourcePackagesDirPath SourcePackages
 
       - name: Find available simulator
         id: simulator
@@ -66,19 +65,22 @@ jobs:
                       if 'iPhone' in d['name'] and d['isAvailable']:
                           print(d['name'])
                           sys.exit(0)
-          print('iPhone 16 Pro')
+          # No guessed device name: a bogus fallback hides the real cause
+          # behind a misleading 'No devices matching' error.
+          sys.stderr.write('ERROR: no available iPhone simulator on this runner\n')
+          sys.exit(1)
           ")
           echo "device=$DEVICE" >> "$GITHUB_OUTPUT"
           echo "Using simulator: $DEVICE"
 
-      - name: Run unit tests
+      - name: Run tests
         run: |
           xcodebuild \
             -project Trakke.xcodeproj \
             -scheme Trakke \
             -destination 'platform=iOS Simulator,name=${{ steps.simulator.outputs.device }}' \
             -skipMacroValidation \
-            -only-testing:TrakkeTests \
+            -clonedSourcePackagesDirPath SourcePackages \
             -testLanguage nb \
             -testRegion NO \
             -enableCodeCoverage YES \
@@ -93,6 +95,7 @@ jobs:
             -configuration Release \
             -destination 'platform=iOS Simulator,name=${{ steps.simulator.outputs.device }}' \
             -skipMacroValidation \
+            -clonedSourcePackagesDirPath SourcePackages \
             build
 
       - name: Upload test results

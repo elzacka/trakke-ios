@@ -32,6 +32,7 @@ extension TrakkeMapView.Coordinator {
         guard let style = mapView.style else { return }
 
         if !isNavigating {
+            desiredNavCameraMode = nil
             if navLayersActive {
                 clearCompassNavLayers(from: style)
                 clearCompassDestinationPin(from: mapView)
@@ -70,24 +71,33 @@ extension TrakkeMapView.Coordinator {
         // Re-apply tracking when mode changed explicitly, or when MapLibre
         // reset userTrackingMode to .none after a user gesture (zoom/pan).
         // Guard on !isUserInteracting so we don't fight an active gesture.
+        desiredNavCameraMode = cameraMode
         let desiredTracking: MLNUserTrackingMode = cameraMode == .courseUp ? .followWithHeading : .follow
         let modeChangedExplicitly = cameraMode != lastAppliedNavCameraMode
         let trackingWasReset = !isUserInteracting && mapView.userTrackingMode != desiredTracking
 
         if modeChangedExplicitly || trackingWasReset {
-            switch cameraMode {
-            case .courseUp:
-                mapView.userTrackingMode = .followWithHeading
-            case .northUp:
-                mapView.userTrackingMode = .follow
-                if mapView.direction != 0 {
-                    mapView.setDirection(0, animated: true)
-                }
-            }
-            lastAppliedNavCameraMode = cameraMode
+            applyNavTracking(on: mapView, mode: cameraMode)
         }
 
         navLayersActive = true
+    }
+
+    /// Setter MapLibre-tracking for gitt navigasjonskameramodus. Kalles fra
+    /// updateUIView OG fra regionDidChangeAnimated (gest-slutt) – updateUIView
+    /// alene er ikke nok, siden den bare kjøres ved observert state-endring,
+    /// som kan utebli når brukeren står stille etter gesten.
+    func applyNavTracking(on mapView: MLNMapView, mode: NavigationCameraMode) {
+        switch mode {
+        case .courseUp:
+            mapView.userTrackingMode = .followWithHeading
+        case .northUp:
+            mapView.userTrackingMode = .follow
+            if mapView.direction != 0 {
+                mapView.setDirection(0, animated: true)
+            }
+        }
+        lastAppliedNavCameraMode = mode
     }
 
     // MARK: - Kompass-destinasjons-pin

@@ -1303,6 +1303,70 @@ func kartverketStyleJSON(layer: BaseLayer) {
     #expect(SOSService.sosPattern.last == -7, "Pattern must end with inter-word gap (-7)")
 }
 
+@Test @MainActor func sosRapidToggleDoesNotDeadlock() async {
+    // Regresjonsvern: start/stop kjedes i SOSViewModel og `SOSService.start`
+    // må forbli fire-and-forget. Et blokkerende start (await på løkka) ville
+    // låst kjeden slik at stop aldri når aktoren.
+    let vm = SOSViewModel()
+    vm.activate()
+    vm.deactivate()
+    vm.activate()
+
+    let pending = vm.pendingOperations
+    let completed = await withTaskGroup(of: Bool.self) { group in
+        group.addTask {
+            await pending?.value
+            return true
+        }
+        group.addTask {
+            try? await Task.sleep(for: .seconds(5))
+            return false
+        }
+        let first = await group.next() ?? false
+        group.cancelAll()
+        return first
+    }
+    #expect(completed, "start/stop-kjeden skal ikke låse seg")
+    #expect(vm.isActive)
+
+    vm.deactivate()
+    await vm.pendingOperations?.value
+    #expect(!vm.isActive)
+}
+
+// MARK: - APIClient Cache Tests
+
+@Test func apiClientClearCacheEmptiesPrivateSessionCache() async {
+    // GDPR "Slett alle data": API-svar ligger i APIClients PRIVATE session-
+    // cache, ikke i URLCache.shared. Denne testen låser fast at clearCache()
+    // faktisk tømmer cachen slettestien er avhengig av.
+    let url = URL(string: "https://example.invalid/trakke-cache-test")!
+    let request = URLRequest(url: url)
+    let response = HTTPURLResponse(
+        url: url,
+        statusCode: 200,
+        httpVersion: nil,
+        headerFields: ["Cache-Control": "max-age=3600"]
+    )!
+    let cached = CachedURLResponse(response: response, data: Data("x".utf8))
+
+    let cache = APIClient.urlCache
+    cache.storeCachedResponse(cached, for: request)
+    #expect(cache.cachedResponse(for: request) != nil)
+
+    APIClient.clearCache()
+    // URLCache tømmes på en intern kø – poll kort i stedet for å anta
+    // synkron effekt.
+    var cleared = false
+    for _ in 0..<40 where !cleared {
+        cleared = cache.cachedResponse(for: request) == nil
+        if !cleared {
+            try? await Task.sleep(for: .milliseconds(50))
+        }
+    }
+    #expect(cleared, "clearCache() skal tømme APIClients session-cache")
+}
+
 // MARK: - AQI Class Tests
 
 @Test func aqiClassBoundaries() {

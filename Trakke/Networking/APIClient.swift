@@ -35,15 +35,23 @@ enum APIClient {
         return "Trakke-iOS/\(version) hei@tazk.no"
     }()
 
+    /// Egen referanse til sesjonens cache: `session.configuration` returnerer
+    /// en KOPI, så GDPR-sletting må tømme via denne – ikke via konfigurasjonen.
+    /// Egen katalog (ikke delt med URLCache.shared) slik at sletting virker
+    /// deterministisk og kan verifiseres.
+    static let urlCache = URLCache(
+        memoryCapacity: 20 * 1024 * 1024,  // 20 MB
+        diskCapacity: 100 * 1024 * 1024,    // 100 MB
+        directory: FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)
+            .first?.appendingPathComponent("APIClientCache")
+    )
+
     static let session: URLSession = {
         let config = URLSessionConfiguration.default
         config.timeoutIntervalForRequest = 15
         config.timeoutIntervalForResource = 60
         config.waitsForConnectivity = true
-        config.urlCache = URLCache(
-            memoryCapacity: 20 * 1024 * 1024,  // 20 MB
-            diskCapacity: 100 * 1024 * 1024     // 100 MB
-        )
+        config.urlCache = urlCache
         config.httpAdditionalHeaders = [
             "Accept-Encoding": "gzip, deflate, br",
             "Accept-Language": "nb-NO,nb;q=0.9,no;q=0.8,en;q=0.5",
@@ -204,6 +212,14 @@ enum APIClient {
         }
 
         throw lastError ?? APIError.networkError(URLError(.unknown).localizedDescription)
+    }
+
+    /// GDPR-sletting: tømmer sesjonens private URLCache. API-svarene (vær,
+    /// luftkvalitet, badetemperatur, Varsom, geokoding) er nøklet på URL-er
+    /// som inneholder brukerens trunkerte koordinater, og ligger i DENNE
+    /// cachen – `URLCache.shared` dekker den ikke.
+    static func clearCache() {
+        urlCache.removeAllCachedResponses()
     }
 
     static func buildURL(

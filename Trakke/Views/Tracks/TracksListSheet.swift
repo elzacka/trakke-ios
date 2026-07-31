@@ -366,7 +366,7 @@ struct TracksListSheet: View {
             if !route.isVisible {
                 Image(systemName: "eye.slash")
                     .font(Font.Trakke.captionSoft)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.Trakke.textSoft)
             }
         }
         .padding(.vertical, 12)
@@ -460,7 +460,7 @@ struct TracksListSheet: View {
             if !activity.isVisible {
                 Image(systemName: "eye.slash")
                     .font(Font.Trakke.captionSoft)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.Trakke.textSoft)
             }
         }
         .padding(.vertical, 12)

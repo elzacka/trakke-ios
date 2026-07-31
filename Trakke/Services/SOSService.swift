@@ -5,6 +5,12 @@ import OSLog
 /// Manages the SOS Morse code signal using the device torch and optional audio.
 /// Morse SOS pattern: ··· – – – ··· (dot=1 unit, dash=3 units, inter-element gap=1 unit,
 /// inter-letter gap=3 units, inter-word gap=7 units). Unit = 250 ms.
+///
+/// Lydmotoren kjører ALLTID mens signalet er aktivt – også når «Lydsignal» er av
+/// (da rendres stillhet). Den aktive audio-sesjonen er det som holder appen
+/// kjørende i bakgrunnen (UIBackgroundModes: audio), slik at lykte-løkka
+/// fortsetter når skjermen låses. Uten motoren suspenderes prosessen og
+/// blinkingen fryser.
 actor SOSService {
     private let unitDuration: UInt64 = 250_000_000 // 250 ms in nanoseconds
     private let toneFrequency: Float = 2800 // Hz
@@ -12,6 +18,10 @@ actor SOSService {
     private var loopTask: Task<Void, Never>?
     private var audioEngine: AVAudioEngine?
     private var sourceNode: AVAudioSourceNode?
+    private var interruptionObserver: NSObjectProtocol?
+    /// Generasjonsteller: opprydding fra en avløst løkke (kansellert sleep,
+    /// forsinket stop) må aldri røre en nyere løkkes lykt/lyd.
+    private var generation = 0
     /// Thread-safe flag for the audio render block (called from audio thread)
     private let toneActive = OSAllocatedUnfairLock(initialState: false)
 
@@ -32,24 +42,19 @@ actor SOSService {
         -7
     ]
 
-    func start(withAudio: Bool) async {
-        // Cancel any existing loop so a rapid deactivate→activate doesn't leave
-        // a stale loop running alongside the new one.
+    func start(withAudio: Bool) {
+        generation += 1
+        let gen = generation
         loopTask?.cancel()
-        loopTask = nil
         isRunning = true
 
-        if withAudio {
-            startAudio()
-        }
+        startAudio()
 
-        let task = Task { await self.runSignalLoop(withAudio: withAudio) }
-        loopTask = task
-        await task.value
-        loopTask = nil
+        loopTask = Task { await self.runSignalLoop(withAudio: withAudio, generation: gen) }
     }
 
     func stop() {
+        generation += 1
         isRunning = false
         loopTask?.cancel()
         loopTask = nil
@@ -59,20 +64,24 @@ actor SOSService {
 
     // MARK: - Signal Loop
 
-    private func runSignalLoop(withAudio: Bool) async {
-        while isRunning {
+    private func runSignalLoop(withAudio: Bool, generation gen: Int) async {
+        while isRunning && gen == generation {
             for element in Self.sosPattern {
-                guard isRunning else { break }
+                guard isRunning, gen == generation else { break }
                 let isOn = element > 0
                 let units = abs(element)
                 setTorch(on: isOn)
-                if withAudio { setAudioTone(on: isOn) }
+                setAudioTone(on: isOn && withAudio)
 
                 do {
                     try await Task.sleep(nanoseconds: unitDuration * UInt64(units))
                 } catch {
-                    // Task cancelled
-                    stop()
+                    // Kansellert. Rydd bare opp hvis denne løkka fortsatt er
+                    // gjeldende – en avløst løkke må ikke slukke en nyere.
+                    if gen == generation {
+                        setTorch(on: false)
+                        setAudioTone(on: false)
+                    }
                     return
                 }
             }
@@ -87,7 +96,11 @@ actor SOSService {
         do {
             try device.lockForConfiguration()
             defer { device.unlockForConfiguration() }
-            device.torchMode = on ? .on : .off
+            if on {
+                try device.setTorchModeOn(level: AVCaptureDevice.maxAvailableTorchLevel)
+            } else {
+                device.torchMode = .off
+            }
         } catch {
             // Torch unavailable -- silently continue with audio only
         }
@@ -100,6 +113,8 @@ actor SOSService {
     // MARK: - Audio
 
     private func startAudio() {
+        tearDownEngine()
+
         // Configure audio session BEFORE creating the engine.
         // On real devices, the output node format depends on the active session.
         do {
@@ -110,6 +125,11 @@ actor SOSService {
             return
         }
 
+        observeInterruptions()
+        buildAndStartEngine()
+    }
+
+    private func buildAndStartEngine() {
         let engine = AVAudioEngine()
 
         // Use an explicit format rather than relying on the output node, which can
@@ -156,15 +176,52 @@ actor SOSService {
         self.audioEngine = engine
     }
 
+    /// En telefonsamtale (typisk 113 fra SOS-arket) avbryter audio-sesjonen og
+    /// stopper motoren. Uten gjenoppbygging etter avbruddet forsvinner både
+    /// tonen og bakgrunns-keep-alive for lykta.
+    private func observeInterruptions() {
+        guard interruptionObserver == nil else { return }
+        interruptionObserver = NotificationCenter.default.addObserver(
+            forName: AVAudioSession.interruptionNotification,
+            object: AVAudioSession.sharedInstance(),
+            queue: nil
+        ) { [weak self] notification in
+            guard let info = notification.userInfo,
+                  let raw = info[AVAudioSessionInterruptionTypeKey] as? UInt,
+                  AVAudioSession.InterruptionType(rawValue: raw) == .ended else { return }
+            Task { await self?.handleInterruptionEnded() }
+        }
+    }
+
+    private func handleInterruptionEnded() {
+        guard isRunning else { return }
+        tearDownEngine()
+        do {
+            try AVAudioSession.sharedInstance().setActive(true)
+        } catch {
+            Logger.sos.error("Failed to reactivate audio session: \(error.localizedDescription, privacy: .private)")
+            return
+        }
+        buildAndStartEngine()
+    }
+
     private func setAudioTone(on: Bool) {
         toneActive.withLock { $0 = on }
     }
 
-    private func stopAudio() {
-        toneActive.withLock { $0 = false }
+    private func tearDownEngine() {
         audioEngine?.stop()
         audioEngine = nil
         sourceNode = nil
+    }
+
+    private func stopAudio() {
+        toneActive.withLock { $0 = false }
+        tearDownEngine()
+        if let observer = interruptionObserver {
+            NotificationCenter.default.removeObserver(observer)
+            interruptionObserver = nil
+        }
         try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
     }
 }

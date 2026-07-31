@@ -59,6 +59,13 @@ struct TrakkeApp: App {
                 withIntermediateDirectories: true
             )
         }
+        // Katalogen opprettes FØR beskyttelsen settes på Application Support
+        // under, og setAttributes gjelder ikke rekursivt – sett klassen
+        // eksplisitt så nye tile-cache-filer arver .complete.
+        try? fileManager.setAttributes(
+            [.protectionKey: FileProtectionType.complete],
+            ofItemAtPath: mapLibreCacheDir.path
+        )
 
         // Protect the entire Application Support directory so all files
         // (including .store-wal and .store-shm) inherit NSFileProtectionComplete
@@ -135,6 +142,18 @@ struct TrakkeApp: App {
             } catch {
                 fatalError("Failed to create SwiftData ModelContainer after recovery attempt")
             }
+        }
+
+        // Katalog-attributtet over endrer ikke beskyttelsesklassen på filer
+        // som allerede finnes (f.eks. fra en eldre installasjon) – sett
+        // .complete eksplisitt på selve databasefilene, slik SECURITY.md og
+        // PERSONVERN.md lover. Trygt: SwiftData-skriving skjer kun i forgrunnen.
+        for path in [storeURL.path, storeURL.path + "-wal", storeURL.path + "-shm"]
+        where fileManager.fileExists(atPath: path) {
+            try? fileManager.setAttributes(
+                [.protectionKey: FileProtectionType.complete],
+                ofItemAtPath: path
+            )
         }
     }
 

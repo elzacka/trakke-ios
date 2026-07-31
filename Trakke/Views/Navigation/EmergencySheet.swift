@@ -11,6 +11,7 @@ struct EmergencySheet: View {
     /// gir sin egen navigasjons-kontekst.
     var inline = false
     @State private var numberToCall: String?
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         if inline {
@@ -38,7 +39,7 @@ struct EmergencySheet: View {
         }
         .background(sosViewModel.isActive ? Color.Trakke.brandDark : Color.Trakke.background)
         .tint(Color.Trakke.brand)
-        .animation(.easeInOut(duration: 0.25), value: sosViewModel.isActive)
+        .animation(reduceMotion ? nil : .easeInOut(duration: 0.25), value: sosViewModel.isActive)
         .trakkeDialog(
             isPresented: Binding(
                 get: { numberToCall != nil },
@@ -155,6 +156,13 @@ struct EmergencySheet: View {
             }
             .buttonStyle(.trakkeSecondary)
             .accessibilityLabel(String(localized: "sos.activate"))
+
+            if !sosViewModel.hasTorch {
+                Text(String(localized: "sos.noTorch"))
+                    .font(Font.Trakke.caption)
+                    .foregroundStyle(Color.Trakke.textSoft)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
         }
     }
 }
@@ -269,12 +277,12 @@ private struct ActiveSignalView: View {
 
             Text("\u{00B7}\u{00B7}\u{00B7} \u{2014} \u{2014} \u{2014} \u{00B7}\u{00B7}\u{00B7}")
                 .font(Font.Trakke.morse)
-                .foregroundStyle(.white.opacity(0.9))
+                .foregroundStyle(Color.Trakke.textInverse.opacity(0.9))
                 .accessibilityLabel("SOS")
 
             Text(String(localized: "sos.signalActive"))
                 .font(Font.Trakke.bodyMedium)
-                .foregroundStyle(.white.opacity(0.85))
+                .foregroundStyle(Color.Trakke.textInverse.opacity(0.85))
 
             Spacer()
 
@@ -286,7 +294,7 @@ private struct ActiveSignalView: View {
                     .foregroundStyle(Color.Trakke.brandDark)
                     .frame(maxWidth: .infinity)
                     .frame(height: .Trakke.touchCTA)
-                    .background(.white)
+                    .background(Color.Trakke.surface)
                     .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.xl))
             }
             .accessibilityLabel(String(localized: "sos.stop"))
