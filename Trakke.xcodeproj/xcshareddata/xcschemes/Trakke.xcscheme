@@ -50,6 +50,17 @@
                ReferencedContainer = "container:Trakke.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "746496025FF3B330585A58C4"
+               BuildableName = "TrakkeUITests.xctest"
+               BlueprintName = "TrakkeUITests"
+               ReferencedContainer = "container:Trakke.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <CommandLineArguments>
       </CommandLineArguments>

@@ -20,6 +20,7 @@ schemes:
       config: Debug
       targets:
         - TrakkeTests
+        - TrakkeUITests
     profile:
       config: Release
     analyze:
@@ -41,7 +42,7 @@ packages:
 settings:
   base:
     SWIFT_VERSION: "6.3"
-    MARKETING_VERSION: "1.7.1"
+    MARKETING_VERSION: "1.7.2"
     CURRENT_PROJECT_VERSION: 1
     SWIFT_STRICT_CONCURRENCY: complete
   configs:
