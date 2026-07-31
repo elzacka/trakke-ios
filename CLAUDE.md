@@ -14,7 +14,7 @@ Norwegian outdoor map app for iPhone. Built on Kartverket maps (not Apple Maps).
 ## Project
 
 - **Repo**: https://github.com/elzacka/trakke-ios
-- **Version**: 1.7.2 (build 1) — set in `project.yml`
+- **Version**: 1.7.2 (build 2) — set in `project.yml`
 - **Target**: iOS 26.0+, Swift 6.3, Xcode 26.5
 - **PWA reference**: `/Users/lene/dev/trakke_pwa` — reference ONLY when explicitly instructed
 
