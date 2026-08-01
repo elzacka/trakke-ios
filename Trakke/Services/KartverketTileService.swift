@@ -107,7 +107,9 @@ enum OverlayLayer: String, CaseIterable, Identifiable, Sendable {
                 + "&BBOX={bbox-epsg-3857}&WIDTH=256&HEIGHT=256"
                 + "&FORMAT=image/png&TRANSPARENT=true"
         case .naturvernomrader:
-            return "https://kart.miljodirektoratet.no/arcgis/services/vern/mapserver/WMSServer"
+            // kart.miljodirektoratet.no sluttet å svare sommeren 2026 –
+            // wms.miljodirektoratet.no er nytt vertsnavn for samme tjeneste.
+            return "https://wms.miljodirektoratet.no/arcgis/services/vern/MapServer/WMSServer"
                 + "?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap"
                 + "&LAYERS=naturvern_omrade&STYLES=&SRS=EPSG:3857"
                 + "&BBOX={bbox-epsg-3857}&WIDTH=256&HEIGHT=256"

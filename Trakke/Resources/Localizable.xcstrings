@@ -1546,6 +1546,17 @@
         }
       }
     },
+    "image.accessibility.fallback" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Illustrasjon"
+          }
+        }
+      }
+    },
     "image.attribution.artsdatabanken" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3496,28 +3507,6 @@
         }
       }
     },
-    "offline.choice.downloads" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nedlastede kart"
-          }
-        }
-      }
-    },
-    "offline.choice.downloads.subtitle" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Administrer nedlastede kartområder"
-          }
-        }
-      }
-    },
     "offline.choice.kommune" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3569,6 +3558,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Innstillinger"
+          }
+        }
+      }
+    },
+    "offline.defaultAreaName %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Område %@"
           }
         }
       }
@@ -3705,6 +3705,17 @@
         }
       }
     },
+    "offline.manager.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nedlastede kart"
+          }
+        }
+      }
+    },
     "offline.packs" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3810,7 +3821,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nedlastede kart"
+            "value" : "Last ned kart"
           }
         }
       }

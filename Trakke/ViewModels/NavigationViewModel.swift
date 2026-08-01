@@ -33,6 +33,10 @@ final class NavigationViewModel {
     private var lastActivityUpdate: Date?
 
     private static let activityUpdateInterval: TimeInterval = 5.0
+    /// Romslig stale-frist: mister enheten GPS-fiks en stund (skog, juv,
+    /// innendørs) skal låseskjerm/Dynamic Island vise siste kjente verdi i
+    /// stedet for å nedtones etter ett minutt.
+    private static let activityStaleInterval: TimeInterval = 600
 
     /// Watchdog som slår GPS-kvaliteten til `.lost` hvis ingen posisjon
     /// kommer inn innen `gpsWatchdogTimeout`. `GPSQuality(accuracy:)` dekker
@@ -158,7 +162,12 @@ final class NavigationViewModel {
     // MARK: - Live Activity
 
     private func startLiveActivity() {
-        guard ActivityKit.ActivityAuthorizationInfo().areActivitiesEnabled else { return }
+        guard ActivityKit.ActivityAuthorizationInfo().areActivitiesEnabled else {
+            // Skjer når brukeren har slått av Live Activities for appen
+            // (Innstillinger → Tråkke → Live-aktiviteter) – synlig i Console.
+            Logger.navigation.warning("Live Activity: aktiviteter er slått av for appen")
+            return
+        }
         navigationActivityID = nil
         Task { [weak self] in
             // Gamle aktiviteter (forrige økt eller re-målretting) MÅ avsluttes
@@ -170,7 +179,7 @@ final class NavigationViewModel {
             guard let self, self.isActive else { return }
             let content = ActivityKit.ActivityContent(
                 state: self.currentActivityState(),
-                staleDate: Date().addingTimeInterval(60)
+                staleDate: Date().addingTimeInterval(Self.activityStaleInterval)
             )
             do {
                 let activity = try ActivityKit.Activity.request(
@@ -178,6 +187,7 @@ final class NavigationViewModel {
                     content: content
                 )
                 self.navigationActivityID = activity.id
+                Logger.navigation.info("Live Activity startet: \(activity.id, privacy: .public)")
             } catch {
                 Logger.navigation.error("Live Activity start: \(error.localizedDescription, privacy: .private)")
             }
@@ -192,7 +202,7 @@ final class NavigationViewModel {
         lastActivityUpdate = now
         let content = ActivityKit.ActivityContent(
             state: currentActivityState(),
-            staleDate: Date().addingTimeInterval(60)
+            staleDate: Date().addingTimeInterval(Self.activityStaleInterval)
         )
         Task {
             guard let activity = ActivityKit.Activity<NavigationActivityAttributes>.activities

@@ -32,7 +32,7 @@ struct DownloadManagerSheet: View {
         }
         .background(Color.Trakke.background)
         .tint(Color.Trakke.brand)
-        .navigationTitle(String(localized: "offline.title"))
+        .navigationTitle(String(localized: "offline.manager.title"))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {

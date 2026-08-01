@@ -170,21 +170,34 @@ struct WaypointListSheet: View {
                     )
                     .padding(.top, .Trakke.xxl)
                 } else {
-                    ForEach(viewModel.categories, id: \.self) { category in
-                        collapsibleCategory(
-                            title: category,
-                            category: category,
-                            items: viewModel.waypoints(for: category)
-                        )
-                    }
+                    // Alle kategorier i ett kort, skilt med Divider – samme
+                    // mønster som kommune-treet i Last ned kart.
+                    VStack(spacing: 0) {
+                        ForEach(Array(viewModel.categories.enumerated()), id: \.element) { index, category in
+                            if index > 0 {
+                                Divider().padding(.leading, .Trakke.dividerLeading)
+                            }
+                            collapsibleCategory(
+                                title: category,
+                                category: category,
+                                items: viewModel.waypoints(for: category)
+                            )
+                        }
 
-                    if !viewModel.uncategorizedWaypoints.isEmpty {
-                        collapsibleCategory(
-                            title: String(localized: "waypoints.uncategorized"),
-                            category: nil,
-                            items: viewModel.uncategorizedWaypoints
-                        )
+                        if !viewModel.uncategorizedWaypoints.isEmpty {
+                            if !viewModel.categories.isEmpty {
+                                Divider().padding(.leading, .Trakke.dividerLeading)
+                            }
+                            collapsibleCategory(
+                                title: String(localized: "waypoints.uncategorized"),
+                                category: nil,
+                                items: viewModel.uncategorizedWaypoints
+                            )
+                        }
                     }
+                    .padding(.horizontal, .Trakke.cardPadH)
+                    .background(Color.Trakke.surface)
+                    .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))
                 }
 
                 Spacer(minLength: .Trakke.lg)
@@ -231,9 +244,6 @@ struct WaypointListSheet: View {
                 }
             }
         }
-        .padding(.horizontal, .Trakke.cardPadH)
-        .background(Color.Trakke.surface)
-        .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))
     }
 
     // MARK: - Row
@@ -419,7 +429,8 @@ struct WaypointListSheet: View {
             .padding(.vertical, .Trakke.sm)
             .background(Color.Trakke.brand)
             .clipShape(Capsule())
-            .padding(.bottom, .Trakke.lg)
+            // Innfelt i menyen må chipen klare den flytende BottomNavBar.
+            .padding(.bottom, isEmbedded ? .Trakke.bottomNavClearance : .Trakke.lg)
             .transition(reduceMotion ? .opacity : .move(edge: .bottom).combined(with: .opacity))
             .task {
                 try? await Task.sleep(for: .seconds(3))

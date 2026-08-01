@@ -90,6 +90,11 @@ actor SOSService {
 
     // MARK: - Torch
 
+    /// Logger første feilende skriving (og første vellykkede etterpå) slik at
+    /// «lykta sluknet med låst skjerm» kan skilles fra prosess-suspensjon i
+    /// Console-logger fra enhet.
+    private var torchWriteFailed = false
+
     private func setTorch(on: Bool) {
         guard let device = AVCaptureDevice.default(for: .video),
               device.hasTorch else { return }
@@ -101,8 +106,16 @@ actor SOSService {
             } else {
                 device.torchMode = .off
             }
+            if torchWriteFailed {
+                torchWriteFailed = false
+                Logger.sos.info("Torch writes recovered")
+            }
         } catch {
-            // Torch unavailable -- silently continue with audio only
+            // Fortsetter med bare lyd – men logg tilstandsskiftet.
+            if !torchWriteFailed {
+                torchWriteFailed = true
+                Logger.sos.error("Torch write failed: \(error.localizedDescription, privacy: .private)")
+            }
         }
     }
 
@@ -117,8 +130,12 @@ actor SOSService {
 
         // Configure audio session BEFORE creating the engine.
         // On real devices, the output node format depends on the active session.
+        // IKKE .mixWithOthers: som primær avspillingsapp har prosessen den
+        // sterkeste garantien for å fortsette i bakgrunnen med låst skjerm –
+        // det er dét som holder lykteløkka i live. At annen lyd avbrytes
+        // under et aktivt nødsignal er riktig prioritering.
         do {
-            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: .mixWithOthers)
+            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
             try AVAudioSession.sharedInstance().setActive(true)
         } catch {
             Logger.sos.error("Failed to configure audio session: \(error.localizedDescription, privacy: .private)")

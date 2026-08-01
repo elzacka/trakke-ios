@@ -247,19 +247,32 @@ struct TracksListSheet: View {
                     )
                     .padding(.top, .Trakke.xxl)
                 } else {
-                    ForEach(allCategories, id: \.self) { category in
-                        trackGroup(title: category, category: category, items: items(forCategory: category))
-                    }
+                    // Alle kategorier i ett kort, skilt med Divider – samme
+                    // mønster som kommune-treet i Last ned kart.
+                    VStack(spacing: 0) {
+                        ForEach(Array(allCategories.enumerated()), id: \.element) { index, category in
+                            if index > 0 {
+                                Divider().padding(.leading, .Trakke.dividerLeading)
+                            }
+                            trackGroup(title: category, category: category, items: items(forCategory: category))
+                        }
 
-                    if hasUncategorized {
-                        trackGroup(
-                            title: allCategories.isEmpty
-                                ? String(localized: "tracks.saved")
-                                : String(localized: "tracks.uncategorized"),
-                            category: nil,
-                            items: items(forCategory: nil)
-                        )
+                        if hasUncategorized {
+                            if !allCategories.isEmpty {
+                                Divider().padding(.leading, .Trakke.dividerLeading)
+                            }
+                            trackGroup(
+                                title: allCategories.isEmpty
+                                    ? String(localized: "tracks.saved")
+                                    : String(localized: "tracks.uncategorized"),
+                                category: nil,
+                                items: items(forCategory: nil)
+                            )
+                        }
                     }
+                    .padding(.horizontal, .Trakke.cardPadH)
+                    .background(Color.Trakke.surface)
+                    .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))
                 }
 
                 Spacer(minLength: .Trakke.lg)
@@ -290,9 +303,6 @@ struct TracksListSheet: View {
                 }
             }
         }
-        .padding(.horizontal, .Trakke.cardPadH)
-        .background(Color.Trakke.surface)
-        .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))
     }
 
     // MARK: - Route Row
@@ -648,7 +658,8 @@ struct TracksListSheet: View {
             .padding(.vertical, .Trakke.sm)
             .background(Color.Trakke.brand)
             .clipShape(Capsule())
-            .padding(.bottom, .Trakke.lg)
+            // Innfelt i menyen må chipen klare den flytende BottomNavBar.
+            .padding(.bottom, isEmbedded ? .Trakke.bottomNavClearance : .Trakke.lg)
             .transition(reduceMotion ? .opacity : .move(edge: .bottom).combined(with: .opacity))
             .task {
                 try? await Task.sleep(for: .seconds(3))

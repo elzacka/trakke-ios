@@ -111,7 +111,9 @@ struct MarkdownBodyView: View {
                 }
             }
             .buttonStyle(.plain)
-            .accessibilityLabel(caption)
+            // Bilder uten bildetekst (overskriften rett over beskriver dem)
+            // skal fortsatt ha en VoiceOver-etikett.
+            .accessibilityLabel(caption.isEmpty ? String(localized: "image.accessibility.fallback") : caption)
             .accessibilityAddTraits(.isImage)
             .accessibilityHint(String(localized: "image.fullscreen.hint"))
 
@@ -160,7 +162,9 @@ private struct SpeciesImageBlock: View {
                 }
             }
             .buttonStyle(.plain)
-            .accessibilityLabel(caption)
+            // Bilder uten bildetekst (overskriften rett over beskriver dem)
+            // skal fortsatt ha en VoiceOver-etikett.
+            .accessibilityLabel(caption.isEmpty ? String(localized: "image.accessibility.fallback") : caption)
             .accessibilityAddTraits(.isImage)
             .accessibilityHint(String(localized: "image.fullscreen.hint"))
         } else if isLoading {

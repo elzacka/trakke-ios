@@ -28,7 +28,7 @@ Trykk den grønne menyknappen for å åpne menyen. Nederst ligger fem faner:
 
 - **Hjem**: Søk på sted, adresse eller koordinat
 - **Naviger**: Turer og ruter, og Steder
-- **Verktøy**: Måleverktøy, Offlinekart og SOS
+- **Verktøy**: Måleverktøy, Last ned kart og SOS
 - **Info**: Vær, Kunnskap og Om
 - **Innstillinger**: Kartlag, visning, koordinatformat og «Slett alle data»
 
@@ -137,7 +137,7 @@ Nederst finner du denne brukerveiledningen, personvernerklæringen, lenke til Tr
 
 Dra et punkt for å justere. «Angre» fjerner siste punkt, «Nullstill» starter på nytt.
 
-## 11. Offlinekart (Verktøy-fanen → Offlinekart)
+## 11. Last ned kart (Verktøy-fanen → Last ned kart)
 
 Nedlastede kart brukes automatisk uten mobildekning. En stiplet firkant markerer grensene til de nedlastede områdene.
 

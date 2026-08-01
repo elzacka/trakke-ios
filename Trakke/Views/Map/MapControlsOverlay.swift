@@ -69,20 +69,19 @@ struct MapControlsOverlay<WeatherContent: View>: View {
             // Kort hint når rent-kart slås på – trykk og hold kan trigges utilsiktet
             // (f.eks. med hansker), og eneste andre signal er at ikonet endres.
             if showCleanMapHint {
-                VStack {
-                    Spacer()
-                    Text(String(localized: "map.cleanMap.hint"))
-                        .font(Font.Trakke.caption)
-                        .foregroundStyle(Color.Trakke.text)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 6)
-                        .background(.regularMaterial)
-                        .clipShape(.capsule)
-                    Spacer()
-                    Spacer()
-                }
-                .transition(.opacity)
-                .allowsHitTesting(false)
+                // Samme stil og plassering som info-chipene i OfflineToasts.
+                Text(String(localized: "map.cleanMap.hint"))
+                    .font(Font.Trakke.caption)
+                    .foregroundStyle(Color.Trakke.textInverse)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, .Trakke.lg)
+                    .padding(.vertical, .Trakke.sm)
+                    .background(Color.Trakke.brand)
+                    .clipShape(Capsule())
+                    .frame(maxHeight: .infinity, alignment: .bottom)
+                    .padding(.bottom, 80)
+                    .transition(.opacity)
+                    .allowsHitTesting(false)
             }
         }
         .task(id: isCleanMapActive) {

@@ -11,6 +11,7 @@ struct HomeTabContent: View {
     var body: some View {
         VStack(spacing: 0) {
             TrakkeSheetHeader(title: String(localized: "appTab.home"))
+                .onTapGesture { hideKeyboard() }
 
             ScrollView {
                 VStack(spacing: .Trakke.md) {
@@ -32,14 +33,26 @@ struct HomeTabContent: View {
                         searchResultsSection
                     } else {
                         CategoryHierarchyView(poiViewModel: poiViewModel)
+                            // simultaneous: radene virker som før, men et trykk
+                            // utenfor tastaturet lukker det også – ellers må
+                            // brukeren forlate hele visningen for å se
+                            // BottomNavBar igjen.
+                            .simultaneousGesture(TapGesture().onEnded { hideKeyboard() })
                     }
                 }
                 .padding(.horizontal, .Trakke.sheetHorizontal)
                 .padding(.top, .Trakke.lg)
                 .padding(.bottom, .Trakke.xxl + 60)
             }
+            .scrollDismissesKeyboard(.immediately)
         }
         .background(Color.Trakke.background)
+    }
+
+    private func hideKeyboard() {
+        UIApplication.shared.sendAction(
+            #selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil
+        )
     }
 
     private var isSearchActive: Bool {

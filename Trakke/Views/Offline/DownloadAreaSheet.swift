@@ -21,6 +21,12 @@ struct DownloadAreaSheet: View {
             .tint(Color.Trakke.brand)
             .navigationTitle(String(localized: "offline.download"))
             .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                // Forhåndsutfylt navn, samme mønster som «Lagre tur».
+                if viewModel.downloadName.isEmpty {
+                    viewModel.downloadName = Self.defaultAreaName
+                }
+            }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button(String(localized: "common.cancel")) {
@@ -39,6 +45,13 @@ struct DownloadAreaSheet: View {
                 }
             }
         }
+    }
+
+    private static var defaultAreaName: String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "nb_NO")
+        formatter.dateFormat = "d. MMMM yyyy"
+        return String(localized: "offline.defaultAreaName \(formatter.string(from: Date()))")
     }
 
     private var canDownload: Bool {
