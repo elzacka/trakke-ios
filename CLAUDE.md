@@ -14,7 +14,7 @@ Norwegian outdoor map app for iPhone. Built on Kartverket maps (not Apple Maps).
 ## Project
 
 - **Repo**: https://github.com/elzacka/trakke-ios
-- **Version**: 1.7.2 (build 3) — set in `project.yml`
+- **Version**: 1.7.2 (build 4) — set in `project.yml`
 - **Target**: iOS 26.0+, Swift 6.3, Xcode 26.5
 - **PWA reference**: `/Users/lene/dev/trakke_pwa` — reference ONLY when explicitly instructed
 
@@ -44,6 +44,8 @@ xcodebuild -project Trakke.xcodeproj -scheme Trakke \
 - **EU/EEA data residency** for API calls (exception: GitHub knowledge packs — no user data sent)
 - **WCAG 2.2 AA** mandatory (Norwegian law + EAA from June 2025)
 - **Coordinate formats**: DD, DMS, UTM (EUREF89 sone 33). MGRS was removed — the NGA `mgrs-ios` dependency is gone
+- **iPhone-only by design, iPad by accident** — every layout decision targets iPhone. `TARGETED_DEVICE_FAMILY` is `"1,2"` and **cannot be narrowed**: Apple rejects updates supporting fewer devices than the published version (QA1623). Attempted and rejected at upload on 1 August 2026. Real iPhone-only would need a new bundle ID, losing reviews and existing users. Consequence: App Store Connect requires a 13" iPad screenshot, and `ShareSheet`'s popover anchor plus the `horizontalSizeClass` branch in `ElevationProfileView` must stay
+- **Portrait only on iPhone** — `UISupportedInterfaceOrientations` lists portrait alone (since 1.7.2); no view has a landscape-adaptive layout. `UISupportedInterfaceOrientations~ipad` must keep all four: while iPad support exists, Apple rejects the upload without them ("you need to include all of the … orientations to support iPad multitasking"). Verified by a rejected upload on 1 August 2026
 
 ## Hard rules
 

@@ -43,7 +43,7 @@ settings:
   base:
     SWIFT_VERSION: "6.3"
     MARKETING_VERSION: "1.7.2"
-    CURRENT_PROJECT_VERSION: 3
+    CURRENT_PROJECT_VERSION: 4
     SWIFT_STRICT_CONCURRENCY: complete
   configs:
     Debug:
@@ -85,6 +85,10 @@ targets:
         INFOPLIST_KEY_CFBundleDisplayName: "Tråkke"
         INFOPLIST_KEY_LSApplicationCategoryType: "public.app-category.navigation"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        # iPad kan ikke fjernes: Apple avviser oppdateringer som støtter færre
+        # enheter enn versjonen i App Store (QA1623). Forsøkt 1. august 2026 og
+        # avvist ved opplasting. Appen er designet for iPhone; iPad er kun
+        # arvet støtte. Ny bundle-ID er eneste vei til ekte iPhone-only.
         TARGETED_DEVICE_FAMILY: "1,2"
         SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: false
         SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: false
