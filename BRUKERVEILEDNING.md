@@ -34,9 +34,13 @@ Trykk den grønne menyknappen for å åpne menyen. Nederst ligger fem faner:
 - **Info**: Vær, Kunnskap og Om
 - **Innstillinger**: Kartlag, visning, koordinatformat og «Slett alle data»
 
+Menyen lukkes på tre måter: trykk fanen som allerede er valgt, dra menyen ned, eller trykk på kartet.
+
 ## 3. Søk
 
 Søk på sted, adresse eller koordinat via **Hjem**-fanen. Trykk på et treff for å sentrere kartet.
+
+Har du åpnet tastaturet uten å ville søke likevel, lukker et trykk hvor som helst i Hjem-arket det igjen.
 
 ## 4. POI-kategorier
 

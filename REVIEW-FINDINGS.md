@@ -2,7 +2,7 @@
 
 Open findings from code reviews. Check this file before every review to avoid rediscovering known items. Remove entries when fixed (note the fix commit).
 
-Last full review: 2026-07-31 (all six iOS specialist agents, full codebase). All findings from that review are fixed and pushed. Current release candidate: **1.7.2 build 4**.
+Last full review: 2026-07-31 (all six iOS specialist agents, full codebase). All findings from that review are fixed and pushed. A typography review followed on 2026-08-01. Current release candidate: **1.7.2 build 5**.
 
 ## Open
 
@@ -20,6 +20,8 @@ Last full review: 2026-07-31 (all six iOS specialist agents, full codebase). All
 - **CI-2 (P3)** — No automated pre-flight for `NSSupportsLiveActivities` + widget entitlement consistency; only verified at archive time.
 
 ## Fixed and shipped in 1.7.2
+
+**Build 5** (`42102e5`, `1c85a9a`) — real type scale for long-form text: h2, h3 and body were all `.subheadline` differing only by weight, so headings did not read as headings. h2 is now Exo 2 Regular 20, h3 `.headline`, body `.body`. Scanning surfaces keep the tighter scale; the two must not be mixed (documented in `dev_only/CLAUDE.md`). "Lage bål" used `##` for both "Båltyper" and the fire types beneath it. Plus: tapping the active tab closes the menu, and tapping anywhere in the Hjem sheet dismisses the keyboard.
 
 **Build 4** (`88d2a50`) — portrait lock on iPhone via `UISupportedInterfaceOrientations`, with `~ipad` keeping all four orientations. iPad removal attempted and rejected by Apple; both constraints documented in `CLAUDE.md`, `project.yml` and `dev_only/CLAUDE.md`.
 
