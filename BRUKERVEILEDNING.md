@@ -9,6 +9,8 @@
 - **Trykk**: Legg til punkt i tegne- eller målemodus. Ellers lukker et trykk åpne ark og menyer.
 - **Trykk og hold**: Meny med «Legg til sted» og «Naviger hit»
 
+Appen vises alltid i portrett. Det er kartet som roterer, ikke skjermen.
+
 ### Knapper på kartet
 
 Knappene ligger langs høyre kant. Hvilke som vises styrer du i Innstillinger → Visning. Menyknappen er alltid der.
