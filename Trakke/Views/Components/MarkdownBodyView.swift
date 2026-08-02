@@ -52,26 +52,26 @@ struct MarkdownBodyView: View {
         case .heading2(let text, _):
             inlineText(text)
                 .font(Font.Trakke.articleHeading)
-                .padding(.top, .Trakke.sm)
+                .padding(.top, .Trakke.xl)
 
         case .heading3(let text):
             inlineText(text)
-                .font(Font.Trakke.bodyMedium)
-                .padding(.top, .Trakke.xs)
+                .font(Font.Trakke.articleSubheading)
+                .padding(.top, .Trakke.md)
 
         case .paragraph(let text):
             inlineText(text)
-                .font(Font.Trakke.bodyRegular)
+                .font(Font.Trakke.articleBody)
 
         case .bulletList(let items):
             VStack(alignment: .leading, spacing: .Trakke.xs) {
                 ForEach(Array(items.enumerated()), id: \.offset) { _, item in
                     HStack(alignment: .firstTextBaseline, spacing: .Trakke.sm) {
                         Text("\u{2022}")
-                            .font(Font.Trakke.bodyRegular)
+                            .font(Font.Trakke.articleBody)
                             .foregroundStyle(Color.Trakke.textTertiary)
                         inlineText(item)
-                            .font(Font.Trakke.bodyRegular)
+                            .font(Font.Trakke.articleBody)
                     }
                 }
             }
@@ -81,11 +81,11 @@ struct MarkdownBodyView: View {
                 ForEach(Array(items.enumerated()), id: \.offset) { index, item in
                     HStack(alignment: .firstTextBaseline, spacing: .Trakke.sm) {
                         Text("\(index + 1).")
-                            .font(Font.Trakke.bodyRegular)
+                            .font(Font.Trakke.articleBody)
                             .foregroundStyle(Color.Trakke.textTertiary)
                             .frame(minWidth: 20, alignment: .trailing)
                         inlineText(item)
-                            .font(Font.Trakke.bodyRegular)
+                            .font(Font.Trakke.articleBody)
                     }
                 }
             }
@@ -105,7 +105,7 @@ struct MarkdownBodyView: View {
 
                     if !caption.isEmpty {
                         Text(caption)
-                            .font(Font.Trakke.captionSoft)
+                            .font(Font.Trakke.articleCaption)
                             .foregroundStyle(Color.Trakke.textTertiary)
                     }
                 }
@@ -213,7 +213,7 @@ struct MarkdownTableView: View {
             HStack(spacing: 0) {
                 ForEach(Array(headers.enumerated()), id: \.offset) { _, header in
                     Self.markdownText(header)
-                        .font(Font.Trakke.bodyMedium)
+                        .font(Font.Trakke.bodyRegular.weight(.semibold))
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.vertical, .Trakke.xs)
                         .padding(.horizontal, .Trakke.sm)
@@ -231,7 +231,7 @@ struct MarkdownTableView: View {
                 HStack(alignment: .top, spacing: 0) {
                     ForEach(Array(row.prefix(headers.count).enumerated()), id: \.offset) { _, cell in
                         Self.markdownText(cell)
-                            .font(Font.Trakke.caption)
+                            .font(Font.Trakke.bodyRegular)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.vertical, .Trakke.xs)
                             .padding(.horizontal, .Trakke.sm)

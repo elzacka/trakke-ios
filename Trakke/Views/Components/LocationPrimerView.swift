@@ -7,7 +7,7 @@ struct LocationPrimerView: View {
     var body: some View {
         VStack(spacing: .Trakke.lg) {
             Image(systemName: "location")
-                .font(Font.Trakke.title)
+                .font(Font.Trakke.iconLarge)
                 .foregroundStyle(Color.Trakke.brand)
 
             VStack(spacing: .Trakke.sm) {

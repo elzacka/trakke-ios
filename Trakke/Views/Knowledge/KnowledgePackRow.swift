@@ -8,7 +8,7 @@ struct KnowledgePackRow: View {
         HStack {
             VStack(alignment: .leading, spacing: .Trakke.labelGap) {
                 Text(pack.countyName)
-                    .font(Font.Trakke.bodyRegular)
+                    .font(Font.Trakke.bodyMedium)
 
                 HStack(spacing: .Trakke.xs) {
                     if let theme = KnowledgeTheme(rawValue: pack.theme) {
@@ -16,7 +16,7 @@ struct KnowledgePackRow: View {
                     }
                     Text(ByteCountFormatter.string(fromByteCount: pack.fileSize, countStyle: .file))
                 }
-                .font(Font.Trakke.captionSoft)
+                .font(Font.Trakke.caption)
                 .foregroundStyle(Color.Trakke.textTertiary)
             }
 

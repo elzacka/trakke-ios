@@ -11,7 +11,7 @@ struct SearchResultRow: View {
 
             VStack(alignment: .leading, spacing: .Trakke.labelGap) {
                 Text(result.displayName)
-                    .font(Font.Trakke.bodyRegular)
+                    .font(Font.Trakke.bodyMedium)
                     .lineLimit(1)
 
                 if let subtext = result.subtext {

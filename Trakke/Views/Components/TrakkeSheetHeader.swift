@@ -19,7 +19,7 @@ struct TrakkeSheetHeader: View {
                 }
 
                 Text(title)
-                    .font(.custom("Exo 2", size: 28, relativeTo: .largeTitle).weight(.light))
+                    .font(Font.Trakke.articleTitle)
                     .foregroundStyle(Color.Trakke.brand)
                     .lineLimit(2)
                     .minimumScaleFactor(0.8)

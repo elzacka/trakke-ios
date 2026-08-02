@@ -367,7 +367,7 @@ struct TracksListSheet: View {
                     .foregroundStyle(Color.Trakke.text)
 
                 Text(routeViewModel.formattedDistance(route.distance))
-                    .font(Font.Trakke.captionSoft)
+                    .font(Font.Trakke.caption)
                     .foregroundStyle(Color.Trakke.textSoft)
             }
 
@@ -458,12 +458,12 @@ struct TracksListSheet: View {
                         .foregroundStyle(Color.Trakke.text)
                     Spacer()
                     Text(activity.startedAt, style: .date)
-                        .font(Font.Trakke.captionSoft)
+                        .font(Font.Trakke.caption)
                         .foregroundStyle(Color.Trakke.textSoft)
                 }
 
                 Text(ActivityViewModel.formatDistance(activity.distance))
-                    .font(Font.Trakke.captionSoft)
+                    .font(Font.Trakke.caption)
                     .foregroundStyle(Color.Trakke.textSoft)
             }
 
@@ -510,7 +510,7 @@ struct TracksListSheet: View {
         } label: {
             HStack(spacing: .Trakke.md) {
                 Text(title)
-                    .font(Font.Trakke.bodyRegular)
+                    .font(Font.Trakke.bodyMedium)
                     .foregroundStyle(Color.Trakke.text)
 
                 Text("(\(count))")

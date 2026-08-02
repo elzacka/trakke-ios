@@ -281,7 +281,7 @@ struct InfoSheet: View {
                                 .font(Font.Trakke.bodyMedium)
                                 .foregroundStyle(Color.Trakke.text)
                             Image(systemName: "arrow.up.right")
-                                .font(Font.Trakke.captionSoft)
+                                .font(Font.Trakke.caption)
                                 .foregroundStyle(Color.Trakke.textSoft)
                         }
                     }

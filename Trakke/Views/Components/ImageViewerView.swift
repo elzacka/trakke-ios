@@ -50,7 +50,7 @@ struct ImageViewerView: View {
                     Spacer()
                     Button { dismiss() } label: {
                         Image(systemName: "xmark.circle.fill")
-                            .font(Font.Trakke.numeralLarge)
+                            .font(Font.Trakke.iconLarge)
                             .symbolRenderingMode(.hierarchical)
                             .foregroundStyle(.white.opacity(0.8))
                             .frame(width: .Trakke.touchMin, height: .Trakke.touchMin)

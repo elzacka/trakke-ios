@@ -290,7 +290,7 @@ private struct ActiveSignalView: View {
                 viewModel.deactivate()
             } label: {
                 Text(String(localized: "sos.stop"))
-                    .font(Font.Trakke.title).bold()
+                    .font(Font.Trakke.articleSubheading)
                     .foregroundStyle(Color.Trakke.brandDark)
                     .frame(maxWidth: .infinity)
                     .frame(height: .Trakke.touchCTA)

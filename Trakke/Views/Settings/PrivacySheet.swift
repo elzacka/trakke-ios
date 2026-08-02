@@ -70,7 +70,7 @@ struct PrivacySheet: View {
             PrivacyBodyView(markdown: markdown, embedded: true)
         } else {
             Text(String(localized: "privacy.unavailable"))
-                .font(Font.Trakke.bodyRegular)
+                .font(Font.Trakke.articleBody)
                 .foregroundStyle(Color.Trakke.textSoft)
                 .padding(.vertical, .Trakke.sm)
         }
@@ -151,22 +151,22 @@ private struct PrivacyBodyView: View {
 
         case .heading3(let text):
             inlineText(text)
-                .font(Font.Trakke.bodyMedium)
-                .padding(.top, .Trakke.xs)
+                .font(Font.Trakke.articleSubheading)
+                .padding(.top, .Trakke.md)
 
         case .paragraph(let text):
             inlineText(text)
-                .font(Font.Trakke.bodyRegular)
+                .font(Font.Trakke.articleBody)
 
         case .bulletList(let items):
             VStack(alignment: .leading, spacing: .Trakke.xs) {
                 ForEach(Array(items.enumerated()), id: \.offset) { _, item in
                     HStack(alignment: .firstTextBaseline, spacing: .Trakke.sm) {
                         Text("\u{2022}")
-                            .font(Font.Trakke.bodyRegular)
+                            .font(Font.Trakke.articleBody)
                             .foregroundStyle(Color.Trakke.textTertiary)
                         inlineText(item)
-                            .font(Font.Trakke.bodyRegular)
+                            .font(Font.Trakke.articleBody)
                     }
                 }
             }
@@ -176,11 +176,11 @@ private struct PrivacyBodyView: View {
                 ForEach(Array(items.enumerated()), id: \.offset) { index, item in
                     HStack(alignment: .firstTextBaseline, spacing: .Trakke.sm) {
                         Text("\(index + 1).")
-                            .font(Font.Trakke.bodyRegular)
+                            .font(Font.Trakke.articleBody)
                             .foregroundStyle(Color.Trakke.textTertiary)
                             .frame(minWidth: 20, alignment: .trailing)
                         inlineText(item)
-                            .font(Font.Trakke.bodyRegular)
+                            .font(Font.Trakke.articleBody)
                     }
                 }
             }

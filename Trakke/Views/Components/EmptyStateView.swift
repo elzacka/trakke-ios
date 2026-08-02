@@ -19,7 +19,7 @@ struct EmptyStateView: View {
             VStack(alignment: alignment, spacing: .Trakke.sm) {
                 if let icon {
                     Image(systemName: icon)
-                        .font(Font.Trakke.title)
+                        .font(Font.Trakke.iconLarge)
                         .foregroundStyle(Color.Trakke.textTertiary)
                         .padding(.bottom, .Trakke.xs)
                 }

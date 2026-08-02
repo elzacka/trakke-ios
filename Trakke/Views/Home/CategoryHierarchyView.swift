@@ -155,7 +155,7 @@ private struct CategoryGroupSection: View {
 
                 if isEnabled {
                     Image(systemName: "checkmark")
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(Font.Trakke.bodyMedium)
                         .foregroundStyle(Color.Trakke.brandLight)
                 }
             }

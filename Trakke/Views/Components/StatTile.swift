@@ -19,7 +19,7 @@ struct StatTile: View {
                 .contentTransition(numericTransition ? .numericText() : .identity)
 
             Text(label)
-                .font(Font.Trakke.captionSoft)
+                .font(Font.Trakke.caption)
                 .foregroundStyle(Color.Trakke.textTertiary)
                 .lineLimit(1)
         }

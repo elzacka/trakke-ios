@@ -61,7 +61,7 @@ struct TrakkeDialog: View {
         VStack(spacing: .Trakke.xs) {
             if let title {
                 Text(title)
-                    .font(Font.Trakke.articleHeading)
+                    .font(Font.Trakke.dialogTitle)
                     .foregroundStyle(Color.Trakke.text)
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)

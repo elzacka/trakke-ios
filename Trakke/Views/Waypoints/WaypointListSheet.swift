@@ -257,7 +257,7 @@ struct WaypointListSheet: View {
 
                 if let elevation = waypoint.elevation {
                     Text("\(Int(elevation)) moh.")
-                        .font(Font.Trakke.captionSoft)
+                        .font(Font.Trakke.caption)
                         .foregroundStyle(Color.Trakke.textSoft)
                 }
             }
@@ -310,7 +310,7 @@ struct WaypointListSheet: View {
         } label: {
             HStack(spacing: .Trakke.md) {
                 Text(title)
-                    .font(Font.Trakke.bodyRegular)
+                    .font(Font.Trakke.bodyMedium)
                     .foregroundStyle(Color.Trakke.text)
 
                 Text("(\(count))")
