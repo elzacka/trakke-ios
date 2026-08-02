@@ -11,6 +11,7 @@ struct HomeTabContent: View {
     var body: some View {
         VStack(spacing: 0) {
             TrakkeSheetHeader(title: String(localized: "appTab.home"))
+                .contentShape(Rectangle())
                 .onTapGesture { hideKeyboard() }
 
             ScrollView {
@@ -29,16 +30,25 @@ struct HomeTabContent: View {
                         searchViewModel.updateQuery(newValue)
                     }
 
-                    if isSearchActive {
-                        searchResultsSection
-                    } else {
-                        CategoryHierarchyView(poiViewModel: poiViewModel)
-                            // simultaneous: radene virker som før, men et trykk
-                            // utenfor tastaturet lukker det også – ellers må
-                            // brukeren forlate hele visningen for å se
-                            // BottomNavBar igjen.
-                            .simultaneousGesture(TapGesture().onEnded { hideKeyboard() })
+                    // Gesten ligger på innholdet under søkefeltet, ikke på en
+                    // forelder av feltet: et trykk i feltet skal gi fokus, ikke
+                    // lukke tastaturet igjen. `simultaneous` gjør at rader og
+                    // treff fortsatt reagerer som før.
+                    Group {
+                        if isSearchActive {
+                            searchResultsSection
+                        } else {
+                            CategoryHierarchyView(poiViewModel: poiViewModel)
+                        }
                     }
+                    .simultaneousGesture(TapGesture().onEnded { hideKeyboard() })
+
+                    // Fyller resten av arket slik at også tomrommet under
+                    // innholdet lukker tastaturet.
+                    Color.clear
+                        .frame(maxWidth: .infinity, minHeight: .Trakke.keyboardDismissArea)
+                        .contentShape(Rectangle())
+                        .onTapGesture { hideKeyboard() }
                 }
                 .padding(.horizontal, .Trakke.sheetHorizontal)
                 .padding(.top, .Trakke.lg)

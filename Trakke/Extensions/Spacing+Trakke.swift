@@ -57,6 +57,10 @@ extension CGFloat {
         /// 12pt margin + 24pt visuell luft = 88pt).
         static let bottomNavClearance: CGFloat = 88
 
+        /// Høyde på den usynlige trykkflaten under innhold i søkeark, slik at
+        /// et trykk i tomrommet også lukker skjermtastaturet.
+        static let keyboardDismissArea: CGFloat = 240
+
         // Button padding – kompakt vertikalt for å unngå dominerende knapper
         static let buttonPadV: CGFloat = 10
 
