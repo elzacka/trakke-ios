@@ -55,6 +55,14 @@ struct HomeTabContent: View {
                 .padding(.bottom, .Trakke.xxl + 60)
             }
             .scrollDismissesKeyboard(.immediately)
+            // Fangflate bak hele rullefeltet: dekker også luften rundt
+            // søkefeltet og mellom kortene, som ellers ikke tilhører noen
+            // visning. Ligger bak innholdet, så knapper og rader kommer først.
+            .background {
+                Color.Trakke.background
+                    .contentShape(Rectangle())
+                    .onTapGesture { hideKeyboard() }
+            }
         }
         .background(Color.Trakke.background)
     }

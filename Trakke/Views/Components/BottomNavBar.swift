@@ -44,6 +44,10 @@ enum AppTab: Hashable, CaseIterable {
 /// med fem ikon-knapper. Synlig kun når brukeren har åpnet appmenyen via FAB.
 struct BottomNavBar: View {
     @Binding var selectedTab: AppTab
+    /// Trykk på fanen som allerede er valgt lukker arket. I full høyde er
+    /// kartstripen over arket bare noen få punkter høy, så dette er den
+    /// eneste pålitelige veien ut uten å dra arket ned.
+    var onReselectActiveTab: () -> Void = {}
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
@@ -64,8 +68,12 @@ struct BottomNavBar: View {
         let isActive = (tab == selectedTab)
 
         return Button {
-            withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.2)) {
-                selectedTab = tab
+            if isActive {
+                onReselectActiveTab()
+            } else {
+                withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.2)) {
+                    selectedTab = tab
+                }
             }
         } label: {
             Image(systemName: isActive ? tab.iconFilled : tab.icon)
@@ -77,6 +85,7 @@ struct BottomNavBar: View {
         }
         .accessibilityLabel(tab.label)
         .accessibilityAddTraits(isActive ? .isSelected : [])
+        .accessibilityHint(isActive ? String(localized: "accessibility.tapToClose") : "")
     }
 }
 

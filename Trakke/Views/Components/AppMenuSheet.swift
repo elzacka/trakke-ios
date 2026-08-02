@@ -30,13 +30,15 @@ struct AppMenuSheet: View {
     var onActivityFollow: (Activity) -> Void
     var onStartRecording: () -> Void
     var onDeleteAllData: (() -> Void)?
+    /// Lukker arket. Kalles når brukeren trykker fanen som allerede er valgt.
+    var onClose: () -> Void = {}
 
     var body: some View {
         ZStack(alignment: .bottom) {
             currentTabContent
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-            BottomNavBar(selectedTab: $selectedTab)
+            BottomNavBar(selectedTab: $selectedTab, onReselectActiveTab: onClose)
                 .padding(.bottom, 12)
         }
         .background(Color.Trakke.background)

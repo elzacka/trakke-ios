@@ -112,6 +112,17 @@
         }
       }
     },
+    "accessibility.tapToClose" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dobbelttrykk for å lukke menyen"
+          }
+        }
+      }
+    },
     "accessibility.tapToCollapse" : {
       "extractionState" : "manual",
       "localizations" : {

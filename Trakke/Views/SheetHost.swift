@@ -71,7 +71,8 @@ struct SheetHost: ViewModifier {
             onActivityRetrace: handleActivityRetrace,
             onActivityFollow: handleActivityFollow,
             onStartRecording: handleStartRecording,
-            onDeleteAllData: coordinator.clearAllServiceCaches
+            onDeleteAllData: coordinator.clearAllServiceCaches,
+            onClose: { isFABMenuOpen = false }
         )
         .presentationDetents([.medium, .large], selection: $sheetDetent)
         .presentationDragIndicator(.hidden)
