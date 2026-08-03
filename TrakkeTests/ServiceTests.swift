@@ -111,3 +111,40 @@ import Foundation
 }
 
 import CoreLocation
+
+// MARK: - Varsom flood decoding
+
+@Test func floodResponseDecodesStringCountyId() throws {
+    // Regresjonsvern: NVE endret CountyList[].Id fra tall til tekst. Modellen
+    // deklarerte Id som Int, og siden Decodable krever riktig type på hvert
+    // deklarert felt, feilet HELE responsen - alle flomvarsler forsvant, på
+    // et felt appen aldri leste. Denne nyttelasten har formen NVE faktisk
+    // sender i dag.
+    let json = """
+    [{
+      "CountyList": [{"Id": "21", "Name": "Svalbard",
+                      "MunicipalityList": null, "HighestActivityLevel": null}],
+      "ActivityLevel": "2",
+      "ValidFrom": "2026-08-03T00:00:00",
+      "ValidTo": "2026-08-04T00:00:00",
+      "MainText": "Flomfare"
+    }]
+    """.data(using: .utf8)!
+
+    let items = try JSONDecoder().decode([FloodResponse].self, from: json)
+    #expect(items.count == 1)
+    #expect(items.first?.CountyList?.first?.Name == "Svalbard")
+    #expect(items.first?.activityLevelInt == 2)
+}
+
+@Test func floodResponseToleratesUnknownFields() throws {
+    // Nye felter fra NVE skal ikke velte dekodingen.
+    let json = """
+    [{"CountyList": [{"Name": "Troms", "NyttFelt": 42}],
+      "ActivityLevel": "3", "ValidFrom": "2026-08-03T00:00:00",
+      "ValidTo": "2026-08-04T00:00:00", "MainText": "Test", "EnnaaEtFelt": "x"}]
+    """.data(using: .utf8)!
+
+    let items = try JSONDecoder().decode([FloodResponse].self, from: json)
+    #expect(items.first?.CountyList?.first?.Name == "Troms")
+}

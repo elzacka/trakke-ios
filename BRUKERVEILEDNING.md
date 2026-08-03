@@ -135,7 +135,9 @@ Under **Nedlastede kart** ser du hvor mye plass områdene bruker, og kan slette 
 ### SOS
 
 - **Koordinater**: Posisjonen din i to formater. Trykk kopier-knappen. Koordinaten slettes fra utklippstavlen etter fem minutter.
-- **SOS-signal**: Sender SOS i morsekode med lommelykten. Slå på **Lydsignal** for å legge til et 2800 Hz-lydsignal. Signalet gjentas til du trykker «Stopp», og fortsetter selv om du låser skjermen. Skjermen slukner ikke av seg selv mens SOS er aktivt, og arket kan ikke lukkes. På enheter uten lommelykt brukes bare lyd.
+- **SOS-signal**: Sender SOS i morsekode med lommelykten. Slå på **Lydsignal** for å legge til et 2800 Hz-lydsignal. Signalet gjentas til du trykker «Stopp». Skjermen slukner ikke av seg selv mens SOS er aktivt, og arket kan ikke lukkes.
+
+La skjermen stå på mens signalet går. Låser du telefonen med sideknappen, fortsetter lydsignalet, men iOS slår av lommelykten. Det er en begrensning i iOS som ingen app kommer utenom. På enheter uten lommelykt brukes bare lyd.
 - **Nødnumre**: Trykk for å ringe: 113 (ambulanse), 110 (brann), 112 (politi), 116 117 (legevakt).
 
 ## 6. Info

@@ -284,6 +284,17 @@ private struct ActiveSignalView: View {
                 .font(Font.Trakke.bodyMedium)
                 .foregroundStyle(Color.Trakke.textInverse.opacity(0.85))
 
+            // iOS slår av lommelykten når enheten låses. Skrivingen kaster
+            // ikke, den blir bare oversett (bekreftet med isTorchActive på
+            // enhet), så dette kan ikke løses i kode – bare sies tydelig.
+            if viewModel.hasTorch {
+                Text(String(localized: "sos.lockHint"))
+                    .font(Font.Trakke.caption)
+                    .foregroundStyle(Color.Trakke.textInverse.opacity(0.7))
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, .Trakke.lg)
+            }
+
             Spacer()
 
             Button {

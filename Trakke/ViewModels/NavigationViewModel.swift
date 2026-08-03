@@ -174,7 +174,7 @@ final class NavigationViewModel {
             // i samme task som den nye opprettes – en frittstående opprydding
             // kjører etter Activity.request og avliver den nye aktiviteten.
             for activity in ActivityKit.Activity<NavigationActivityAttributes>.activities {
-                await activity.end(dismissalPolicy: .immediate)
+                await activity.end(nil, dismissalPolicy: .immediate)
             }
             guard let self, self.isActive else { return }
             let content = ActivityKit.ActivityContent(

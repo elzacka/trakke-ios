@@ -5246,6 +5246,17 @@
         }
       }
     },
+    "sos.lockHint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La skjermen stå på. Låser du telefonen, fortsetter lyden, men iOS slår av lommelykten."
+          }
+        }
+      }
+    },
     "sos.noTorch" : {
       "extractionState" : "manual",
       "localizations" : {

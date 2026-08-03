@@ -225,12 +225,17 @@ private struct AvalancheResponse: Decodable {
     }
 }
 
-private struct FloodCounty: Decodable {
-    let Id: Int?
+// Internal (ikke private) slik at dekodingen kan regresjonstestes direkte.
+struct FloodCounty: Decodable {
+    // `Id` er bevisst utelatt. NVE endret feltet fra tall til tekst
+    // («Id»: "21"), og siden Decodable krever at hvert deklarert felt har
+    // riktig type, feilet HELE responsen - alle flomvarsler forsvant, på et
+    // felt vi aldri leste. Ta det bare inn igjen hvis det faktisk skal brukes,
+    // og da med en dekoder som tåler begge typene.
     let Name: String?
 }
 
-private struct FloodResponse: Decodable {
+struct FloodResponse: Decodable {
     let CountyList: [FloodCounty]?
     let ActivityLevel: String?
     let ValidFrom: String?
