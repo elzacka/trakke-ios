@@ -1,6 +1,7 @@
 import AVFoundation
 import os
 import OSLog
+import UIKit
 
 /// Manages the SOS Morse code signal using the device torch and optional audio.
 /// Morse SOS pattern: ··· – – – ··· (dot=1 unit, dash=3 units, inter-element gap=1 unit,
@@ -94,29 +95,38 @@ actor SOSService {
     /// «lykta sluknet med låst skjerm» kan skilles fra prosess-suspensjon i
     /// Console-logger fra enhet.
     private var torchWriteFailed = false
-
+    /// IKKE bytt til `setTorchModeOn(level:)`. Den ble innført i 1.7.2 for å få
+    /// maks lysstyrke, og slukket lyssignalet når skjermen ble låst – lyden
+    /// fortsatte, så prosessen levde; det var selve lykte-skrivingen som
+    /// feilet. `torchMode = .on` er det som virket i 1.7.1 og tidligere.
+    /// Pålitelighet i et nødsignal veier tyngre enn lysstyrke.
     private func setTorch(on: Bool) {
         guard let device = AVCaptureDevice.default(for: .video),
               device.hasTorch else { return }
         do {
             try device.lockForConfiguration()
             defer { device.unlockForConfiguration() }
-            if on {
-                try device.setTorchModeOn(level: AVCaptureDevice.maxAvailableTorchLevel)
-            } else {
-                device.torchMode = .off
-            }
+            device.torchMode = on ? .on : .off
             if torchWriteFailed {
                 torchWriteFailed = false
                 Logger.sos.info("Torch writes recovered")
             }
         } catch {
-            // Fortsetter med bare lyd – men logg tilstandsskiftet.
+            // Fortsetter med bare lyd – men logg tilstandsskiftet én gang, med
+            // låsetilstand, slik at Console skiller årsakene fra hverandre.
             if !torchWriteFailed {
                 torchWriteFailed = true
-                Logger.sos.error("Torch write failed: \(error.localizedDescription, privacy: .private)")
+                let tilstand = protectedDataAvailable ? "ulåst" : "låst"
+                Logger.sos.error(
+                    "Torch write failed (enhet \(tilstand, privacy: .public)): \(error.localizedDescription, privacy: .private)"
+                )
             }
         }
+    }
+
+    /// `false` når enheten er låst med kodelås. Brukes bare til diagnostikk.
+    private nonisolated var protectedDataAvailable: Bool {
+        MainActor.assumeIsolated { UIApplication.shared.isProtectedDataAvailable }
     }
 
     nonisolated var hasTorch: Bool {

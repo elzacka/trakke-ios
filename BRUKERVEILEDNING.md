@@ -26,27 +26,31 @@ Nederst til venstre står målestokk og kartdataattribusjon. Det er informasjon,
 
 ## 2. Menyen
 
-Trykk den grønne menyknappen for å åpne menyen. Nederst ligger fem faner:
+Trykk den grønne menyknappen for å åpne menyen. Nederst ligger fem faner, i samme rekkefølge som resten av denne veiledningen:
 
-- **Hjem**: Søk på sted, adresse eller koordinat
+- **Hjem**: Søk og kategorier på kartet
 - **Naviger**: Turer og ruter, og Steder
 - **Verktøy**: Måleverktøy, Last ned kart og SOS
 - **Info**: Vær, Kunnskap og Om
-- **Innstillinger**: Kartlag, visning, koordinatformat og «Slett alle data»
+- **Innstillinger**: Bakgrunnskart, kartlag, visning, koordinatformat og «Slett alle data»
 
 Menyen lukkes på tre måter: trykk fanen som allerede er valgt, dra menyen ned, eller trykk på kartet.
 
-## 3. Søk
+## 3. Hjem
 
-Søk på sted, adresse eller koordinat via **Hjem**-fanen. Trykk på et treff for å sentrere kartet.
+### Søk
+
+Søk på sted, adresse eller koordinat. Trykk på et treff for å sentrere kartet.
 
 Har du åpnet tastaturet uten å ville søke likevel, lukker et trykk hvor som helst i Hjem-arket det igjen.
 
-## 4. POI-kategorier
+### Kategorier på kartet
 
-Kategoriene er gruppert etter tema. Zoom litt inn hvis du ikke ser ikonene på kartet. De fleste kategoriene er lagret i appen og fungerer offline. Unntaket er kulturminner. De hentes fra internett.
+Kategoriene er gruppert etter tema: Friluftsliv, Landskap, Kulturarv og Beredskap. Trykk en gruppe for å åpne den, og slå på kategoriene du vil se.
 
-## 5. Turer og ruter, og Steder (Naviger-fanen)
+Zoom litt inn hvis du ikke ser ikonene på kartet. De fleste kategoriene er lagret i appen og fungerer offline. Unntaket er kulturminner, som hentes fra internett.
+
+## 4. Naviger
 
 To samlinger under én fane:
 
@@ -109,7 +113,34 @@ Kompassknappen er alltid synlig under navigasjon. Trykk den for å veksle mellom
 
 Mens du navigerer vises avstand og retning til målet på låseskjermen og i Dynamic Island.
 
-## 6. Vær (Info-fanen → Vær)
+## 5. Verktøy
+
+### Måleverktøy
+
+- **Avstand**: Trykk på kartet for å legge til punkter. Viser samlet avstand.
+- **Areal**: Legg til minst tre punkter. Viser areal.
+
+Dra et punkt for å justere. «Angre» fjerner siste punkt, «Nullstill» starter på nytt.
+
+### Last ned kart
+
+Nedlastede kart brukes automatisk uten mobildekning. En stiplet firkant markerer grensene til de nedlastede områdene.
+
+**Egendefinert område**: Trykk «Velg område», dra i hjørnene, trykk «Ferdig», og velg navn, bakgrunnskart og zoomnivå før du starter nedlasting.
+
+**Per kommune**: Bla gjennom kommuner per fylke, eller søk på kommunenavn. Trykk en kommune for å starte nedlasting.
+
+Under **Nedlastede kart** ser du hvor mye plass områdene bruker, og kan slette dem enkeltvis.
+
+### SOS
+
+- **Koordinater**: Posisjonen din i to formater. Trykk kopier-knappen. Koordinaten slettes fra utklippstavlen etter fem minutter.
+- **SOS-signal**: Sender SOS i morsekode med lommelykten. Slå på **Lydsignal** for å legge til et 2800 Hz-lydsignal. Signalet gjentas til du trykker «Stopp», og fortsetter selv om du låser skjermen. Skjermen slukner ikke av seg selv mens SOS er aktivt, og arket kan ikke lukkes. På enheter uten lommelykt brukes bare lyd.
+- **Nødnumre**: Trykk for å ringe: 113 (ambulanse), 110 (brann), 112 (politi), 116 117 (legevakt).
+
+## 6. Info
+
+### Vær
 
 Trykk på et værtall for å se hva det betyr for turen din. Finnes det en kunnskapsartikkel om temaet, lenker forklaringen videre.
 
@@ -120,38 +151,17 @@ Trykk på et værtall for å se hva det betyr for turen din. Finnes det en kunns
 - **Snøskred og flom**: Aktive varsler fra NVE. Snøskredvarselet gjelder posisjonen din. Trykk for å lese hele varselet.
 - **7-dagers varsel**: Trykk på en dag for å se timevarsel. Beste turdag er markert. Info-knappen forklarer fargene: Oransje = vær oppmerksom, rødt = farlig nivå.
 
-## 7. Kunnskap (Info-fanen → Kunnskap)
+### Kunnskap
 
 Artikler om friluftsliv og overlevelse. Noen artikler har bilder. Trykk på bildet for å se det i full størrelse.
 
-## 8. Om (Info-fanen → Om)
+### Om
 
 Øverst vises om appen er **Online** eller **Offline**, og hvilken tilkobling som er i bruk. Visningen bruker bare lokal nettverksinformasjon. Ingenting sendes ut.
 
 Nederst finner du denne brukerveiledningen, personvernerklæringen, lenke til Tråkkes kildekode og en lenke for å vurdere appen i App Store.
 
-## 9. SOS og nød (Verktøy-fanen → SOS)
-
-- **Koordinater**: Posisjonen din i to formater. Trykk kopier-knappen. Koordinaten slettes fra utklippstavlen etter fem minutter.
-- **SOS-signal**: Sender SOS i morsekode med lommelykten. Slå på **Lydsignal** for å legge til et 2800 Hz-lydsignal. Signalet gjentas til du trykker «Stopp», og fortsetter selv om skjermen låses. Skjermen kan ikke lukkes mens SOS er aktiv. På enheter uten lommelykt brukes bare lyd.
-- **Nødnumre**: Trykk for å ringe: 113 (ambulanse), 110 (brann), 112 (politi), 116 117 (legevakt).
-
-## 10. Måleverktøy (Verktøy-fanen → Måleverktøy)
-
-- **Avstand**: Trykk på kartet for å legge til punkter. Viser samlet avstand.
-- **Areal**: Legg til minst tre punkter. Viser areal.
-
-Dra et punkt for å justere. «Angre» fjerner siste punkt, «Nullstill» starter på nytt.
-
-## 11. Last ned kart (Verktøy-fanen → Last ned kart)
-
-Nedlastede kart brukes automatisk uten mobildekning. En stiplet firkant markerer grensene til de nedlastede områdene.
-
-**Egendefinert område**: Trykk «Velg område», dra i hjørnene, trykk «Ferdig», og velg navn, bakgrunnskart og zoomnivå før du starter nedlasting.
-
-**Per kommune**: Bla gjennom kommuner per fylke, eller søk på kommunenavn. Trykk en kommune for å starte nedlasting.
-
-## 12. Innstillinger
+## 7. Innstillinger
 
 ### Bakgrunnskart
 
@@ -161,9 +171,9 @@ Nedlastede kart brukes automatisk uten mobildekning. En stiplet firkant markerer
 
 ### Kartlag
 
-- **Bratthetskart**: Bratt terreng (over 27°) med potensiell snøskredfare.
+- **Bratt terreng**: Terreng over 27 grader, med potensiell snøskredfare.
 - **Naturskog**: Gammelskog, naturskogsannsynlighet eller nærhet til naturskog.
-- **Naturvernområder**: Vernede områder.
+- **Naturvernområde**: Vernede områder.
 - **Turruter**: Merkede stier.
 - **UTM-rutenett**: Kartrutenett for kartreferanser.
 
