@@ -1,7 +1,6 @@
 import AVFoundation
 import os
 import OSLog
-import UIKit
 
 /// Manages the SOS Morse code signal using the device torch and optional audio.
 /// Morse SOS pattern: ··· – – – ··· (dot=1 unit, dash=3 units, inter-element gap=1 unit,
@@ -91,15 +90,16 @@ actor SOSService {
 
     // MARK: - Torch
 
-    /// Logger første feilende skriving (og første vellykkede etterpå) slik at
-    /// «lykta sluknet med låst skjerm» kan skilles fra prosess-suspensjon i
-    /// Console-logger fra enhet.
+    /// Skrivingen kastet (systemet nektet konfigurasjonslåsen).
     private var torchWriteFailed = false
-    /// IKKE bytt til `setTorchModeOn(level:)`. Den ble innført i 1.7.2 for å få
-    /// maks lysstyrke, og slukket lyssignalet når skjermen ble låst – lyden
-    /// fortsatte, så prosessen levde; det var selve lykte-skrivingen som
-    /// feilet. `torchMode = .on` er det som virket i 1.7.1 og tidligere.
-    /// Pålitelighet i et nødsignal veier tyngre enn lysstyrke.
+    /// Skrivingen gikk gjennom, men lykta lyste ikke. Da har iOS oversett
+    /// kommandoen stille – typisk mønster når enheten er låst.
+    private var torchIgnored = false
+
+    /// IKKE bytt til `setTorchModeOn(level:)`. Den ble prøvd i 1.7.2 for å få
+    /// maks lysstyrke, men API-en oppfører seg ustabilt ved gjentatte kall i
+    /// en morse-løkke. `torchMode` er det opprinnelige og mer forutsigbare
+    /// valget; pålitelighet i et nødsignal veier tyngre enn lysstyrke.
     private func setTorch(on: Bool) {
         guard let device = AVCaptureDevice.default(for: .video),
               device.hasTorch else { return }
@@ -107,26 +107,31 @@ actor SOSService {
             try device.lockForConfiguration()
             defer { device.unlockForConfiguration() }
             device.torchMode = on ? .on : .off
+
+            // `isTorchActive` sier om lykta FAKTISK lyser. Skriver vi `.on`
+            // uten at den blir aktiv, har iOS oversett kommandoen stille –
+            // det skiller «systemet nekter» fra «koden vår kjører ikke».
+            if on && !device.isTorchActive {
+                if !torchIgnored {
+                    torchIgnored = true
+                    Logger.sos.error("Torch: skrev .on, men isTorchActive == false (kommandoen ble oversett)")
+                }
+            } else if on && torchIgnored {
+                torchIgnored = false
+                Logger.sos.info("Torch: lyser igjen")
+            }
+
             if torchWriteFailed {
                 torchWriteFailed = false
                 Logger.sos.info("Torch writes recovered")
             }
         } catch {
-            // Fortsetter med bare lyd – men logg tilstandsskiftet én gang, med
-            // låsetilstand, slik at Console skiller årsakene fra hverandre.
+            // Fortsetter med bare lyd – men logg tilstandsskiftet én gang.
             if !torchWriteFailed {
                 torchWriteFailed = true
-                let tilstand = protectedDataAvailable ? "ulåst" : "låst"
-                Logger.sos.error(
-                    "Torch write failed (enhet \(tilstand, privacy: .public)): \(error.localizedDescription, privacy: .private)"
-                )
+                Logger.sos.error("Torch write failed: \(error.localizedDescription, privacy: .private)")
             }
         }
-    }
-
-    /// `false` når enheten er låst med kodelås. Brukes bare til diagnostikk.
-    private nonisolated var protectedDataAvailable: Bool {
-        MainActor.assumeIsolated { UIApplication.shared.isProtectedDataAvailable }
     }
 
     nonisolated var hasTorch: Bool {
