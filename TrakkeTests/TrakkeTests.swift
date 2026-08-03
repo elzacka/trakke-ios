@@ -1039,6 +1039,41 @@ func kartverketStyleJSON(layer: BaseLayer) {
     #expect(!tracking) // centering on a coordinate disables user tracking
 }
 
+@Test func mapViewModelCenterOnReleasesFollowMode() async {
+    // Regresjonsvern: søk navigerte ikke til treffet hvis brukeren først
+    // hadde trykket lokasjonsknappen. Sentreringen i updateUIView er portet
+    // bak `userTrackingMode == .none`, og lokasjonsknappen setter
+    // isHeadingUp, som låser MapLibre i følge-modus. centerOn må derfor både
+    // slippe følge-modus og sette en eksplisitt kommando som når MapLibre
+    // utenom vaktene.
+    let vm = await MapViewModel()
+    await MainActor.run { vm.isHeadingUp = true }
+
+    let coord = CLLocationCoordinate2D(latitude: 61.4936, longitude: 8.7267)
+    await vm.centerOn(coordinate: coord, zoom: 14)
+
+    let headingUp = await vm.isHeadingUp
+    let tracking = await vm.isTrackingUser
+    let pending = await vm.pendingCenter
+    #expect(!headingUp, "Følge-modus må slippes, ellers blir kartet stående på brukeren")
+    #expect(!tracking)
+    #expect(pending != nil, "Sentreringen må sendes som eksplisitt kommando")
+    #expect(abs((pending?.latitude ?? 0) - 61.4936) < 0.0001)
+}
+
+@Test func mapViewModelRepeatedCenterOnKeepsIssuingCommand() async {
+    // Andre søk skal virke like godt som det første.
+    let vm = await MapViewModel()
+    await vm.centerOn(coordinate: CLLocationCoordinate2D(latitude: 59.9, longitude: 10.7))
+    await MainActor.run { vm.pendingCenter = nil }  // som updateUIView gjør
+
+    let andre = CLLocationCoordinate2D(latitude: 63.43, longitude: 10.39)
+    await vm.centerOn(coordinate: andre, zoom: 14)
+    let pending = await vm.pendingCenter
+    #expect(pending != nil, "Gjentatt sentrering må gi ny kommando")
+    #expect(abs((pending?.latitude ?? 0) - 63.43) < 0.0001)
+}
+
 @Test func mapViewModelZoomInOut() async {
     let vm = await MapViewModel()
     let initial = await vm.currentZoom

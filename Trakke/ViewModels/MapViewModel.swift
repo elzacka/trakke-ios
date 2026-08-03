@@ -19,6 +19,13 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
     /// MapLibre, også når en annen kamera-animasjon (kompass-reset,
     /// centerOnUser, lokasjon-tracking) holder `isUserInteracting=true`.
     var pendingZoom: Double?
+    /// Eksplisitt sentrerings-mål satt av søk, POI-valg og lignende. Leses og
+    /// nulles av `TrakkeMapView.updateUIView`. Må være en egen kommando, ikke
+    /// bare `currentCenter`: den vanlige sentreringen er portet bak
+    /// `userTrackingMode == .none`, og MapLibre står i følge-modus så snart
+    /// brukeren har trykket lokasjonsknappen. Uten denne når kommandoen
+    /// aldri fram, og kartet blir stående på brukerposisjonen.
+    var pendingCenter: CLLocationCoordinate2D?
     /// Markør for siste valgte søkeresultat. Settes når brukeren trykker på
     /// et treff i søkefeltet, beholdes mens brukeren utforsker området (pan,
     /// zoom, åpning av POI/sted-detalj, navigasjon mot punktet). Overskrives
@@ -176,9 +183,14 @@ if defaults.bool(forKey: AppStorageKeys.overlayNaturvernomrader) { overlays.inse
         showLocationPrimer = false
     }
 
+    /// Sentrerer kartet på et valgt punkt. Slipper både appens egen
+    /// bruker-følging og MapLibres kameramodus – ber du om å se et annet sted,
+    /// skal kartet ikke hoppe tilbake til deg.
     func centerOn(coordinate: CLLocationCoordinate2D, zoom: Double? = nil) {
         isTrackingUser = false
+        isHeadingUp = false
         currentCenter = coordinate
+        pendingCenter = coordinate
         if let zoom {
             currentZoom = zoom
         }

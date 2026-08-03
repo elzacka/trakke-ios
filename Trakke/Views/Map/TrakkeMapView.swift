@@ -125,7 +125,11 @@ struct TrakkeMapView: UIViewRepresentable {
                     mapView.userTrackingMode = .followWithHeading
                 }
             } else if mapView.userTrackingMode == .followWithHeading {
-                mapView.userTrackingMode = .follow
+                // .none, ikke .follow: slås retning-opp av, skal kartet tilbake
+                // til nord-opp UTEN at kameraet fortsatt henger på brukeren.
+                // .follow ville dessuten blokkert sentreringsblokka under, som
+                // krever .none, og gjort søk og POI-valg virkningsløse.
+                mapView.userTrackingMode = .none
             }
         }
 
@@ -136,6 +140,17 @@ struct TrakkeMapView: UIViewRepresentable {
         if let target = viewModel.pendingZoom {
             mapView.setZoomLevel(target, animated: true)
             viewModel.pendingZoom = nil
+        }
+
+        // Eksplisitt sentrerings-kommando (søk, POI-valg). Samme grunn som
+        // pendingZoom over: må fyres utenom vaktene under, ellers svelges den
+        // når MapLibre står i følge-modus etter et trykk på lokasjonsknappen.
+        if let target = viewModel.pendingCenter {
+            if mapView.userTrackingMode != .none {
+                mapView.userTrackingMode = .none
+            }
+            mapView.setCenter(target, zoomLevel: viewModel.currentZoom, animated: true)
+            viewModel.pendingCenter = nil
         }
 
         // Update base layer only when actually changed
