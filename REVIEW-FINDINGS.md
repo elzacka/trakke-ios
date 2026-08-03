@@ -2,11 +2,11 @@
 
 Open findings from code reviews. Check this file before every review to avoid rediscovering known items. Remove entries when fixed (note the fix commit).
 
-Last full review: 2026-07-31 (all six iOS specialist agents, full codebase). All findings from that review are fixed and pushed. A typography review followed on 2026-08-01. Current release candidate: **1.7.2 build 5**.
+Last full review: 2026-07-31 (all six iOS specialist agents, full codebase). All findings from that review are fixed and pushed. A typography review followed on 2026-08-01. Current release candidate: **1.7.2 build 6**.
 
 ## Open
 
-- **RELEASE (1.7.2 gate)** — Two fixes cannot be verified in the simulator and need a TestFlight run on device: the SOS torch continuing through a screen-lock cycle (with lydsignal both on and off), and the navigation Live Activity appearing on the lock screen and in the Dynamic Island. Diagnostic logging is in place for both — Console will name the cause if either still fails.
+- **RELEASE (1.7.2 gate)** — One item still needs a device run: the navigation Live Activity appearing on the lock screen and in the Dynamic Island. Diagnostic logging is in place; Console will name the cause if it fails. (The SOS torch question is settled: iOS silently ignores torch writes while the device is locked — confirmed on device via `isTorchActive`. Not fixable in code; the app and user guide now say so.)
 - **SOS-1 (P3, design decision needed)** — An active SOS signal can outlive its sheet (programmatic sheet swap, e.g. file import); there is no always-visible "SOS aktiv — stopp" affordance outside the sheet. Deliberate trade-off: an emergency signal is never stopped implicitly. A persistent on-map indicator/stop control while `sosViewModel.isActive` needs an ios-designer pass before implementing.
 - **IPAD-1 (P3, blocked by Apple)** — iPad support cannot be removed (see "Device support and orientation" in [dev_only/CLAUDE.md](dev_only/CLAUDE.md)). The app therefore ships an iPhone layout on iPad. If it is ever worth improving, the lever is constraining widths on floating elements (`BottomNavBar`, sheet content) following the existing `maxWidth` caps in `TrakkeDialog`, `LocationPrimerView` and `EmptyStateView`. App Store Connect also requires a current 13" iPad screenshot.
 - **TYPO-1 (P2)** — The markdown renderer exists in three near-identical copies: [MarkdownBodyView.swift](Trakke/Views/Components/MarkdownBodyView.swift), [UserGuideSheet.swift](Trakke/Views/Settings/UserGuideSheet.swift) and [PrivacySheet.swift](Trakke/Views/Settings/PrivacySheet.swift). They had already drifted (h2 top padding differed) before the 2026-08-01 type-scale pass aligned them. Extract one `MarkdownBlockView` under `Views/Components/` so the next scale change is made once.
@@ -20,6 +20,8 @@ Last full review: 2026-07-31 (all six iOS specialist agents, full codebase). All
 - **CI-2 (P3)** — No automated pre-flight for `NSSupportsLiveActivities` + widget entitlement consistency; only verified at archive time.
 
 ## Fixed and shipped in 1.7.2
+
+**Build 6** — search did not navigate to the selected result after the location button had been used, or on a repeat search: the centring in `updateUIView` is gated on `userTrackingMode == .none`, and nothing released MapLibre's follow mode (turning heading-up off left it on `.follow`, never `.none`). Flood warnings were entirely broken: NVE changed `CountyList[].Id` from number to string and `Decodable` failed the whole response over a field the app never reads — 1077 warnings discarded, confirmed against the live API. SOS now states that iOS switches the torch off when the device is locked (verified with `isTorchActive`; the write is silently ignored, so there is no code fix). Tapping inside the user guide or privacy policy collapses it. Deprecated `end(dismissalPolicy:)` replaced.
 
 **Build 5** (`42102e5`, `1c85a9a`) — real type scale for long-form text: h2, h3 and body were all `.subheadline` differing only by weight, so headings did not read as headings. h2 is now Exo 2 Regular 20, h3 `.headline`, body `.body`. Scanning surfaces keep the tighter scale; the two must not be mixed (documented in `dev_only/CLAUDE.md`). "Lage bål" used `##` for both "Båltyper" and the fire types beneath it. Plus: tapping the active tab closes the menu, and tapping anywhere in the Hjem sheet dismisses the keyboard.
 

@@ -53,7 +53,8 @@ struct InfoSheet: View {
             CardSection(String(localized: "info.section.gettingStarted")) {
                 ExpandableSection(
                     String(localized: "userguide.title"),
-                    bare: true
+                    bare: true,
+                    collapseOnContentTap: true
                 ) {
                     UserGuideSheet(embedded: true)
                 }
@@ -62,7 +63,8 @@ struct InfoSheet: View {
 
                 ExpandableSection(
                     String(localized: "info.privacy.policy"),
-                    bare: true
+                    bare: true,
+                    collapseOnContentTap: true
                 ) {
                     PrivacySheet(embedded: true)
                 }

@@ -161,7 +161,9 @@ Artikler om friluftsliv og overlevelse. Noen artikler har bilder. Trykk på bild
 
 Øverst vises om appen er **Online** eller **Offline**, og hvilken tilkobling som er i bruk. Visningen bruker bare lokal nettverksinformasjon. Ingenting sendes ut.
 
-Nederst finner du denne brukerveiledningen, personvernerklæringen, lenke til Tråkkes kildekode og en lenke for å vurdere appen i App Store.
+Her finner du også denne brukerveiledningen, personvernerklæringen, lenke til Tråkkes kildekode og en lenke for å vurdere appen i App Store.
+
+Brukerveiledningen og personvernerklæringen åpnes og lukkes ved å trykke på overskriften. Du kan også trykke hvor som helst i teksten for å lukke igjen, så slipper du å rulle tilbake til toppen.
 
 ## 7. Innstillinger
 

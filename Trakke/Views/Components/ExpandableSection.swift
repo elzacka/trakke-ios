@@ -13,6 +13,11 @@ struct ExpandableSection<Content: View>: View {
     /// Bare-modus: dropp den ytre CardSection-innpakningen – brukes når
     /// flere akkordeoner skal dele samme kort under en felles tittel.
     var bare: Bool = false
+    /// Lar et trykk i selve innholdet lukke seksjonen. For lange dokumenter
+    /// (brukerveiledning, personvern) sparer det brukeren for å rulle helt
+    /// tilbake til overskriften. Knapper og lenker inni innholdet får
+    /// fortsatt sitt eget trykk først.
+    var collapseOnContentTap: Bool = false
     @ViewBuilder let content: () -> Content
 
     @State private var isExpanded: Bool
@@ -22,11 +27,13 @@ struct ExpandableSection<Content: View>: View {
         _ title: String,
         initiallyExpanded: Bool = false,
         bare: Bool = false,
+        collapseOnContentTap: Bool = false,
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.title = title
         self.initiallyExpanded = initiallyExpanded
         self.bare = bare
+        self.collapseOnContentTap = collapseOnContentTap
         self.content = content
         self._isExpanded = State(initialValue: initiallyExpanded)
     }
@@ -70,6 +77,13 @@ struct ExpandableSection<Content: View>: View {
                 Divider().padding(.leading, .Trakke.dividerLeading)
                 content()
                     .padding(.top, .Trakke.sm)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        guard collapseOnContentTap else { return }
+                        withAnimation(reduceMotion ? .none : .easeInOut(duration: 0.2)) {
+                            isExpanded = false
+                        }
+                    }
             }
         }
     }
