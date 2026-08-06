@@ -35,31 +35,31 @@ struct CurrentConditionsCard: View {
         let showFeelsLike = tempRounded != apparentRounded
 
         VStack(alignment: .leading, spacing: .Trakke.md) {
-            HStack(alignment: .center, spacing: .Trakke.lg) {
-                Image(data.symbol)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: .Trakke.touchComfortable, height: .Trakke.touchComfortable)
-                    .accessibilityHidden(true)
-
-                VStack(alignment: .leading, spacing: .Trakke.labelGap) {
-                    Text("\(tempRounded)\u{00B0}")
-                        .font(Font.Trakke.temperature)
-                        .foregroundStyle(Color.Trakke.text)
-
-                    if showFeelsLike {
-                        Text(String(localized: "weather.feelsLike \(apparentRounded)"))
-                            .font(Font.Trakke.caption)
-                            .foregroundStyle(apparentTemp < -10 ? Color.Trakke.red : Color.Trakke.textTertiary)
-                    }
-
-                    Text(WeatherViewModel.conditionText(for: data.symbol))
-                        .font(Font.Trakke.caption)
-                        .foregroundStyle(Color.Trakke.textSecondary)
-                }
-                .accessibilityElement(children: .combine)
-
-                Spacer()
+            // Symbol og temperatur til venstre, tilstand og følt temperatur
+            // høyre. Før sto alt stablet inntil venstre kant med en Spacer som
+            // spiste høyre halvdel: tre linjer i høyden og halve bredden tom.
+            // To linjer fyller bredden og gir tilbake omtrent 30 punkter, som
+            // er en rad mer synlig når arket åpner på halv skjerm.
+            //
+            // Venstre/høyre er samme oppdeling som stat-radene under, så
+            // toppraden leses som en del av samme kort.
+            //
+            // `ViewThatFits` faller tilbake til den stablede varianten når
+            // teksten ikke får plass ved siden av. Ved store tekststørrelser
+            // ville temperaturen ellers presset tilstanden ut av kortet.
+            ViewThatFits(in: .horizontal) {
+                heroSideBySide(
+                    tempRounded: tempRounded,
+                    apparentRounded: apparentRounded,
+                    apparentTemp: apparentTemp,
+                    showFeelsLike: showFeelsLike
+                )
+                heroStacked(
+                    tempRounded: tempRounded,
+                    apparentRounded: apparentRounded,
+                    apparentTemp: apparentTemp,
+                    showFeelsLike: showFeelsLike
+                )
             }
             .contentShape(Rectangle())
             .onTapGesture { showTemperatureTooltip = true }
@@ -73,7 +73,10 @@ struct CurrentConditionsCard: View {
                 TooltipArticleLink(articleId: 38)
             }
 
-            Divider()
+            // Samme innrykk som linjene mellom radene under. Uten det stakk
+            // den øverste linja 4 pt lenger ut til venstre enn resten, og
+            // toppen så ut til å følge en annen regel enn resten av kortet.
+            Divider().padding(.leading, .Trakke.dividerLeading)
 
             VStack(spacing: 0) {
                 statRow(
@@ -132,6 +135,79 @@ struct CurrentConditionsCard: View {
                     .transition(reduceMotion ? .opacity : .opacity.combined(with: .move(edge: .top)))
             }
         }
+    }
+
+    // MARK: Toppraden
+
+    private func heroSideBySide(
+        tempRounded: Int,
+        apparentRounded: Int,
+        apparentTemp: Double,
+        showFeelsLike: Bool
+    ) -> some View {
+        HStack(alignment: .center, spacing: .Trakke.md) {
+            Image(data.symbol)
+                .resizable()
+                .scaledToFit()
+                .frame(width: .Trakke.touchComfortable, height: .Trakke.touchComfortable)
+                .accessibilityHidden(true)
+
+            Text("\(tempRounded)\u{00B0}")
+                .font(Font.Trakke.temperature)
+                .foregroundStyle(Color.Trakke.text)
+                .fixedSize()
+
+            Spacer(minLength: .Trakke.md)
+
+            VStack(alignment: .trailing, spacing: .Trakke.labelGap) {
+                Text(WeatherViewModel.conditionText(for: data.symbol))
+                    .font(Font.Trakke.caption)
+                    .foregroundStyle(Color.Trakke.textSecondary)
+
+                if showFeelsLike {
+                    Text(String(localized: "weather.feelsLike \(apparentRounded)"))
+                        .font(Font.Trakke.caption)
+                        .foregroundStyle(apparentTemp < -10 ? Color.Trakke.red : Color.Trakke.textTertiary)
+                }
+            }
+            .multilineTextAlignment(.trailing)
+            .fixedSize(horizontal: false, vertical: true)
+        }
+        .accessibilityElement(children: .combine)
+    }
+
+    private func heroStacked(
+        tempRounded: Int,
+        apparentRounded: Int,
+        apparentTemp: Double,
+        showFeelsLike: Bool
+    ) -> some View {
+        HStack(alignment: .center, spacing: .Trakke.lg) {
+            Image(data.symbol)
+                .resizable()
+                .scaledToFit()
+                .frame(width: .Trakke.touchComfortable, height: .Trakke.touchComfortable)
+                .accessibilityHidden(true)
+
+            VStack(alignment: .leading, spacing: .Trakke.labelGap) {
+                Text("\(tempRounded)\u{00B0}")
+                    .font(Font.Trakke.temperature)
+                    .foregroundStyle(Color.Trakke.text)
+
+                if showFeelsLike {
+                    Text(String(localized: "weather.feelsLike \(apparentRounded)"))
+                        .font(Font.Trakke.caption)
+                        .foregroundStyle(apparentTemp < -10 ? Color.Trakke.red : Color.Trakke.textTertiary)
+                }
+
+                Text(WeatherViewModel.conditionText(for: data.symbol))
+                    .font(Font.Trakke.caption)
+                    .foregroundStyle(Color.Trakke.textSecondary)
+            }
+
+            Spacer()
+        }
+        .accessibilityElement(children: .combine)
     }
 
     // MARK: Stats
@@ -216,6 +292,10 @@ struct CurrentConditionsCard: View {
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        // Trykkflaten blir stående på 44 pt, men den arver også kortets
+        // md-mellomrom over og under. Negativ padding henter tilbake det
+        // dobbelte luftlaget uten å krympe målet under WCAG-minimumet.
+        .padding(.vertical, -.Trakke.sm)
         // Uten synlig tekst må navnet komme herfra, ellers annonserer
         // VoiceOver bare «knapp».
         .accessibilityLabel(showMore
