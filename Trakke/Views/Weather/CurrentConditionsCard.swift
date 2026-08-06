@@ -204,22 +204,23 @@ struct CurrentConditionsCard: View {
                 showMore.toggle()
             }
         } label: {
-            HStack(spacing: .Trakke.xs) {
-                Text(showMore
-                    ? String(localized: "common.showLess")
-                    : String(localized: "common.showMore"))
-                    .font(Font.Trakke.caption)
-                    .foregroundStyle(Color.Trakke.brand)
-                Image(systemName: "chevron.down")
-                    .font(Font.Trakke.captionSoft)
-                    .foregroundStyle(Color.Trakke.brandLight)
-                    .rotationEffect(.degrees(showMore ? 180 : 0))
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .contentShape(Rectangle())
-            .padding(.vertical, .Trakke.xs)
+            // Bare en chevron. Retningen sier alt teksten sa, og «Vis mer»
+            // gjentok det pila allerede viste. Sentrert, fordi en ensom pil
+            // i venstre kant leses som en listerad og ikke som en bryter for
+            // kortet over.
+            Image(systemName: "chevron.down")
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(Color.Trakke.brandLight)
+                .rotationEffect(.degrees(showMore ? 180 : 0))
+                .frame(maxWidth: .infinity, minHeight: .Trakke.touchMin)
+                .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        // Uten synlig tekst må navnet komme herfra, ellers annonserer
+        // VoiceOver bare «knapp».
+        .accessibilityLabel(showMore
+            ? String(localized: "common.showLess")
+            : String(localized: "common.showMore"))
         .accessibilityHint(showMore
             ? String(localized: "accessibility.tapToCollapse")
             : String(localized: "accessibility.tapToExpand"))
