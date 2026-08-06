@@ -67,7 +67,6 @@ struct WeatherSheet: View {
             CardSection(String(localized: "weather.current")) {
                 CurrentConditionsCard(
                     data: forecast.current,
-                    hourlyData: forecast.hourly,
                     water: viewModel.waterTemperature,
                     airQuality: viewModel.airQuality,
                     daylight: viewModel.daylight
@@ -464,7 +463,6 @@ struct WeatherSheet: View {
                 CardSection(summaryTitle) {
                     CurrentConditionsCard(
                         data: day,
-                        hourlyData: hours,
                         water: isToday ? viewModel.waterTemperature : nil,
                         airQuality: isToday ? viewModel.airQuality : nil,
                         daylight: isToday ? viewModel.daylight : nil

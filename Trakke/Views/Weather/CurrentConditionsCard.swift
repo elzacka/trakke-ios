@@ -7,7 +7,6 @@ import SwiftUI
 
 struct CurrentConditionsCard: View {
     let data: WeatherData
-    var hourlyData: [WeatherData] = []
     var water: WaterTemperatureResult? = nil
     var airQuality: AirQualityData? = nil
     var daylight: SolarCalculator.DaylightInfo? = nil

@@ -182,9 +182,15 @@ actor WeatherService {
                           humidity: 0, pressure: nil, uvIndex: nil, cloudCoverage: 0,
                           symbol: "cloudy", time: now)
 
-        // Hourly: next 24 hours
-        let hourly = parsed.filter { $0.date > now && $0.date < now.addingTimeInterval(86400) }
-            .map(\.data)
+        // Alle framtidige punkter, ikke bare første døgn. MET leverer
+        // timesoppløsning de nærmeste døgnene og deretter seks timers bolker,
+        // og `hoursForDay` plukker ut dem som hører til dagen du har åpnet.
+        // Kuttet ved 24 timer tømte time-for-time-lista på alle dager utover
+        // i morgen, så dagsvisningen sto igjen med bare oppsummeringen.
+        //
+        // Trygt for de to som leser `hourly`: `upcomingChange` filtrerer selv
+        // ned til seks timer fram.
+        let hourly = parsed.filter { $0.date > now }.map(\.data)
 
         // Daily: group by calendar day, pick noon
         let calendar = Calendar.current
