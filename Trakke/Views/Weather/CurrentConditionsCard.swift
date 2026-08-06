@@ -73,12 +73,13 @@ struct CurrentConditionsCard: View {
                 TooltipArticleLink(articleId: 38)
             }
 
-            // Samme innrykk som linjene mellom radene under. Uten det stakk
-            // den øverste linja 4 pt lenger ut til venstre enn resten, og
-            // toppen så ut til å følge en annen regel enn resten av kortet.
-            Divider().padding(.leading, .Trakke.dividerLeading)
-
+            // Alle skillelinjene ligger i samme stabel med `spacing: 0`, så de
+            // får identisk innrykk og identisk luft. Linja under toppraden lå
+            // tidligere utenfor stabelen og arvet kortets md-mellomrom, som ga
+            // den mer luft enn de andre.
             VStack(spacing: 0) {
+                Divider().padding(.leading, .Trakke.dividerLeading)
+
                 statRow(
                     label: String(localized: "weather.wind"),
                     value: windValue
@@ -126,13 +127,21 @@ struct CurrentConditionsCard: View {
                         )
                     }
                 }
-            }
 
-            disclosureToggle
+                // Linje over chevronen: den avslutter radene, og sier at det
+                // som eventuelt kommer under er noe annet.
+                Divider().padding(.leading, .Trakke.dividerLeading)
 
-            if showMore {
-                detailsContent
-                    .transition(reduceMotion ? .opacity : .opacity.combined(with: .move(edge: .top)))
+                disclosureToggle
+
+                if showMore {
+                    // Og en under, når det faktisk er noe der. Uten den ville
+                    // chevronen hengt fast i den første detaljraden.
+                    Divider().padding(.leading, .Trakke.dividerLeading)
+
+                    detailsContent
+                        .transition(reduceMotion ? .opacity : .opacity.combined(with: .move(edge: .top)))
+                }
             }
         }
     }
@@ -292,10 +301,6 @@ struct CurrentConditionsCard: View {
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        // Trykkflaten blir stående på 44 pt, men den arver også kortets
-        // md-mellomrom over og under. Negativ padding henter tilbake det
-        // dobbelte luftlaget uten å krympe målet under WCAG-minimumet.
-        .padding(.vertical, -.Trakke.sm)
         // Uten synlig tekst må navnet komme herfra, ellers annonserer
         // VoiceOver bare «knapp».
         .accessibilityLabel(showMore
