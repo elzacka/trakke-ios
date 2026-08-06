@@ -1149,8 +1149,8 @@ func kartverketStyleJSON(layer: BaseLayer) {
 @Test func sheetCoordinatorDismissAll() async {
     let sheets = await SheetCoordinator()
     await MainActor.run {
-        sheets.present(.search)
-        #expect(sheets.active == .search)
+        sheets.present(.waypointList)
+        #expect(sheets.active == .waypointList)
         sheets.present(.tracks)
         #expect(sheets.active == .tracks)
         sheets.dismissAll()

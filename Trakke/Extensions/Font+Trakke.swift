@@ -16,6 +16,12 @@ extension Font {
     ///
     /// De to skalaene skal ikke blandes: en artikkel bruker ikke `bodyRegular`,
     /// og en listerad bruker ikke `articleBody`.
+    ///
+    /// Langform ble skalert ned i august 2026. Brødteksten lå på `.body` (17)
+    /// mot appens `.subheadline` (15), og en åpnet brukerveiledning eller
+    /// personvernerklæring dominerte skjermen i forhold til alt annet.
+    /// Skalaene har nå samme grunnstørrelse; langform skiller seg fortsatt på
+    /// familie og vekt i overskriftene, ikke på at brødteksten er større.
     enum Trakke {
         /// Merkevarefont – Exo 2. Standardvekt Light for display-tekst;
         /// variabelfonten bærer hele aksen 100–900, så `weight` kan settes.
@@ -32,19 +38,20 @@ extension Font {
         /// Arktittel. Eneste sted Light-vekten får stå alene og stor.
         static var articleTitle: Font { brand(size: 28, relativeTo: .largeTitle) }
 
-        /// h2. Exo 2 Regular, ikke Light: Light på 20 pt gir for tynne streker
-        /// mot cream-bakgrunn til å lese som overskrift.
-        static var articleHeading: Font { brand(size: 20, relativeTo: .title3, weight: .regular) }
+        /// h2. Exo 2 Regular, ikke Light: Light gir for tynne streker mot
+        /// cream-bakgrunn til å lese som overskrift.
+        static var articleHeading: Font { brand(size: 17, relativeTo: .headline, weight: .regular) }
 
         /// h3. Blir værende i systemfonten – familiebytte hver tredje linje
-        /// ville blitt uro, ikke struktur.
-        static var articleSubheading: Font { .headline }
+        /// ville blitt uro, ikke struktur. Vekten skiller den fra brødteksten.
+        static var articleSubheading: Font { .subheadline.weight(.semibold) }
 
-        /// Brødtekst og listepunkt i langform.
-        static var articleBody: Font { .body }
+        /// Brødtekst og listepunkt i langform. Samme størrelse som
+        /// `bodyRegular`, så en artikkel ikke roper mot resten av appen.
+        static var articleBody: Font { .subheadline }
 
         /// Bildetekst, kilde og fotnote i langform.
-        static var articleCaption: Font { .footnote }
+        static var articleCaption: Font { .caption }
 
         // MARK: - Skannende flater
 

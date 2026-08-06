@@ -148,24 +148,6 @@ struct SheetHost: ViewModifier {
     @ViewBuilder
     private func sheetContent(for active: ActiveSheet) -> some View {
         switch active {
-        case .search:
-            SearchSheet(
-                viewModel: searchViewModel,
-                onResultSelected: { result in
-                    mapViewModel.searchPinCoordinate = result.coordinate
-                    mapViewModel.centerOn(coordinate: result.coordinate, zoom: 14)
-                }
-            )
-            .presentationDetents([.medium, .large])
-            .presentationDragIndicator(.visible)
-            .presentationBackgroundInteraction(.enabled(upThrough: .large))
-
-        case .categoryPicker:
-            CategoryPickerSheet(viewModel: poiViewModel)
-                .presentationDetents([.medium, .large])
-                .presentationDragIndicator(.visible)
-                .presentationBackgroundInteraction(.enabled(upThrough: .large))
-
         case .poiDetail:
             if let poi = poiViewModel.selectedPOI {
                 POIDetailSheet(
@@ -300,18 +282,6 @@ struct SheetHost: ViewModifier {
                 .presentationDetents([.height(200)])
                 .presentationDragIndicator(.visible)
                 .presentationBackgroundInteraction(.enabled(upThrough: .height(200)))
-
-        case .emergency:
-            EmergencySheet(
-                userLocation: mapViewModel.userLocation,
-                sosViewModel: sosViewModel
-            )
-            .presentationDetents([.medium, .large])
-            .presentationDragIndicator(.visible)
-            .presentationBackgroundInteraction(.enabled(upThrough: .large))
-            // Ingen deactivate ved onDisappear: et programmatisk arkbytte
-            // (filimport, deep link) skal ikke stoppe et aktivt nødsignal.
-            // Signalet stoppes kun eksplisitt med Stopp-knappen.
 
         case .activitySave:
             ActivitySaveSheet(viewModel: activityViewModel)

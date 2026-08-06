@@ -2,8 +2,6 @@ import SwiftUI
 
 /// Hvilken sheet som er aktiv. Kun én kan være åpen om gangen.
 enum ActiveSheet: Identifiable, Hashable {
-    case search
-    case categoryPicker
     case poiDetail
     /// Sammenslaatt liste over ruter (planlagte/importerte linjer) og turer
     /// (GPS-opptak). Erstatter de tidligere `.routeList` og `.activityList`
@@ -18,7 +16,6 @@ enum ActiveSheet: Identifiable, Hashable {
     case offlineSetup
     case weather
     case measurement
-    case emergency
     case activitySave
 
     var id: Self { self }

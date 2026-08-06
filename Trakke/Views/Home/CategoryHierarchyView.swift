@@ -38,8 +38,33 @@ struct CategoryHierarchyView: View {
                         }
                     )
                 }
+
+                if !poiViewModel.enabledCategories.isEmpty {
+                    Divider().padding(.leading, .Trakke.dividerLeading)
+                    removeAllRow
+                }
             }
         }
+    }
+
+    /// Fjerner alle kategorier fra kartet. Lå tidligere i `CategoryPickerSheet`,
+    /// som ingen kodelinje åpnet – med ti kategorier på måtte du slå av hver
+    /// enkelt. Vises bare når det faktisk er noe å fjerne.
+    ///
+    /// `eye.slash` er appens etablerte symbol for å skjule noe fra kartet, og
+    /// står alene: navnet ligger i accessibilityLabel for skjermleser.
+    private var removeAllRow: some View {
+        Button {
+            poiViewModel.disableAllCategories()
+        } label: {
+            Image(systemName: "eye.slash")
+                .font(.system(size: 15, weight: .regular))
+                .foregroundStyle(Color.Trakke.brandLight)
+                .frame(maxWidth: .infinity, minHeight: .Trakke.touchMin)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(String(localized: "categories.disableAll"))
     }
 
     private func toggleExpanded(_ group: ContentGroup) {

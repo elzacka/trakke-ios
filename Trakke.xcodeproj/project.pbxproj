@@ -229,7 +229,6 @@
 		CE2E50E3844E5A3647715FB5 /* heavysleetshowersandthunder_night.svg in Resources */ = {isa = PBXBuildFile; fileRef = 8936A6973E52AAD3B9439F67 /* heavysleetshowersandthunder_night.svg */; };
 		D0C992C1917F9C211DA110E8 /* wilderness_shelters.geojson in Resources */ = {isa = PBXBuildFile; fileRef = 387B058D2CDB2D4437D30083 /* wilderness_shelters.geojson */; };
 		D2F5EA5B3480AC9ACA056A56 /* snowshowers_polartwilight.svg in Resources */ = {isa = PBXBuildFile; fileRef = 67F5E5FCBB47B3C24EBA9C84 /* snowshowers_polartwilight.svg */; };
-		D3ACC6AEE46BAE0878A98F34 /* SearchSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F3227EF60259A5DDBAB21C /* SearchSheet.swift */; };
 		D3CEFA8AD8A51FB3525BC879 /* WaypointListSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A018926A0576B0506D6A9F0 /* WaypointListSheet.swift */; };
 		D56237AC20BCA3F0F9885FD9 /* POIDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1B7445203EE8264FCD19E3F /* POIDetailSheet.swift */; };
 		D63D63EB20C96AF5968E3630 /* BundledPOIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E6E4C26D5FE9797521FAE65 /* BundledPOIService.swift */; };
@@ -266,7 +265,6 @@
 		EC3E7E122046760DFC75CDBC /* TrakkeListCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0D5DDCDEEC69F776DA8492 /* TrakkeListCard.swift */; };
 		EE67EEA7B97B3EB98DCB8235 /* lightsnowandthunder.svg in Resources */ = {isa = PBXBuildFile; fileRef = D34AAF64BE00633F268D3FE4 /* lightsnowandthunder.svg */; };
 		EF43652A11A22F5F5BD6FFB3 /* KnowledgeTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25F3760709AA65934A20AD1 /* KnowledgeTheme.swift */; };
-		F02120925CA0AF97951BFB53 /* CategoryPickerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 621B221F56A79F77A10ED993 /* CategoryPickerSheet.swift */; };
 		F07A82134353353DAA41B224 /* WaypointDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0A8D498B9F39DC00383EC0 /* WaypointDetailSheet.swift */; };
 		F161D9A25AE4B1BD583FEE27 /* MeasurementSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6636CECF08E17D7F0EF8B705 /* MeasurementSheet.swift */; };
 		F2577FB6537AEF30FA78E3C8 /* KnowledgeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F89D880883BA2585D8DEE20 /* KnowledgeViewModel.swift */; };
@@ -424,7 +422,6 @@
 		5F944958F71417AD19101601 /* SettingsTabContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTabContent.swift; sourceTree = "<group>"; };
 		60E4BC9E47AE926C88440B0D /* TrakkeToggleStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrakkeToggleStyle.swift; sourceTree = "<group>"; };
 		611359BB6027406F4E946147 /* MapActionBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapActionBar.swift; sourceTree = "<group>"; };
-		621B221F56A79F77A10ED993 /* CategoryPickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryPickerSheet.swift; sourceTree = "<group>"; };
 		638348A4A793DF01067BCA7F /* swimming_spots.geojson */ = {isa = PBXFileReference; path = swimming_spots.geojson; sourceTree = "<group>"; };
 		63BC3F28C3E7ED54DEF7D169 /* snowshowers_day.svg */ = {isa = PBXFileReference; path = snowshowers_day.svg; sourceTree = "<group>"; };
 		65999337FCB4974C83A35FA4 /* KommuneDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KommuneDetailView.swift; sourceTree = "<group>"; };
@@ -570,7 +567,6 @@
 		DF739DEDA40DECB3557B9EAE /* snowshowersandthunder_day.svg */ = {isa = PBXFileReference; path = snowshowersandthunder_day.svg; sourceTree = "<group>"; };
 		DF7660C8D438AD20A4327607 /* lightssnowshowersandthunder_day.svg */ = {isa = PBXFileReference; path = lightssnowshowersandthunder_day.svg; sourceTree = "<group>"; };
 		DFACD2A0311FC9E0E9B7E2BD /* TrakkeMigrationPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrakkeMigrationPlan.swift; sourceTree = "<group>"; };
-		E0F3227EF60259A5DDBAB21C /* SearchSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchSheet.swift; sourceTree = "<group>"; };
 		E1B7445203EE8264FCD19E3F /* POIDetailSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POIDetailSheet.swift; sourceTree = "<group>"; };
 		E2120D0B22F0935323CE76D8 /* DialogHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogHost.swift; sourceTree = "<group>"; };
 		E244C4D83CFC0CC9C9551368 /* Brukerveiledning.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Brukerveiledning.md; sourceTree = "<group>"; };
@@ -706,7 +702,6 @@
 		28C22EF4069B982A7C204939 /* POI */ = {
 			isa = PBXGroup;
 			children = (
-				621B221F56A79F77A10ED993 /* CategoryPickerSheet.swift */,
 				E1B7445203EE8264FCD19E3F /* POIDetailSheet.swift */,
 			);
 			path = POI;
@@ -874,7 +869,6 @@
 			isa = PBXGroup;
 			children = (
 				14BF64BF4F13693F38DFCEF3 /* SearchResultRow.swift */,
-				E0F3227EF60259A5DDBAB21C /* SearchSheet.swift */,
 			);
 			path = Search;
 			sourceTree = "<group>";
@@ -1478,7 +1472,6 @@
 				D63D63EB20C96AF5968E3630 /* BundledPOIService.swift in Sources */,
 				B9BE9AC1075DFE349FED2DA5 /* CardSection.swift in Sources */,
 				1705EE926883A0215705E800 /* CategoryHierarchyView.swift in Sources */,
-				F02120925CA0AF97951BFB53 /* CategoryPickerSheet.swift in Sources */,
 				808AA69F56CBE74E3EBBC1AC /* Color+Trakke.swift in Sources */,
 				DD16FDE8B1506E3C766110C4 /* ConnectivityMonitor.swift in Sources */,
 				7FB69E2272D9A7536F8550FE /* ContentView+FileImport.swift in Sources */,
@@ -1565,7 +1558,6 @@
 				B19031F076E5340EF1529719 /* SchemaV3.swift in Sources */,
 				E164ADD33A1575D147AF39EC /* SearchResultRow.swift in Sources */,
 				3993ED3E7C59EF2E48FD0121 /* SearchService.swift in Sources */,
-				D3ACC6AEE46BAE0878A98F34 /* SearchSheet.swift in Sources */,
 				F5B76961FC8F9649F633D278 /* SearchViewModel.swift in Sources */,
 				BE6A90DD6459698A8476B196 /* SelectionToolbar.swift in Sources */,
 				112AE48ECC65AE3C5F31F4D5 /* SettingsTabContent.swift in Sources */,
