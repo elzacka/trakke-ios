@@ -262,14 +262,11 @@ struct WaypointListSheet: View {
                 }
             }
 
-            // Hidden state is signalled by a subtle icon, not by dimming the
-            // whole row – dimmed body text fails WCAG 1.4.3 contrast.
-            if !waypoint.isVisible {
-                Image(systemName: "eye.slash")
-                    .font(Font.Trakke.captionSoft)
-                    .foregroundStyle(Color.Trakke.textSoft)
-                    .accessibilityHidden(true)
-            }
+            // Skjult tilstand vises av haken til høyre, som er borte når
+            // raden er skjult. Et eget øye-ikon her ga tre signaler for én
+            // av/på-verdi, og de pekte motsatt vei: haken kom når raden var
+            // synlig, øyet når den var skjult. VoiceOver får tilstanden fra
+            // radens accessibilityLabel.
 
             Spacer()
         }
@@ -365,24 +362,25 @@ struct WaypointListSheet: View {
                 action: { showFileImporter = true }
             )
 
-            TrakkeIconButton(
-                systemImage: "square.and.arrow.down",
-                isEnabled: !viewModel.waypoints.isEmpty,
-                accessibilityLabel: String(localized: "import.exportAll"),
-                action: {
-                    if let url = viewModel.exportAllGPX() {
-                        shareURL = ShareableURL(url: url)
+            // Samme regel som i Turer og ruter: knapper som ikke kan brukes
+            // tegnes ikke.
+            if !viewModel.waypoints.isEmpty {
+                TrakkeIconButton(
+                    systemImage: "square.and.arrow.down",
+                    accessibilityLabel: String(localized: "import.exportAll"),
+                    action: {
+                        if let url = viewModel.exportAllGPX() {
+                            shareURL = ShareableURL(url: url)
+                        }
                     }
-                }
-            )
+                )
 
-            TrakkeIconButton(
-                systemImage: "trash",
-                role: .destructive,
-                isEnabled: !viewModel.waypoints.isEmpty,
-                accessibilityLabel: String(localized: "waypoints.deleteAll"),
-                action: { showDeleteAllConfirmation = true }
-            )
+                TrakkeIconButton(
+                    systemImage: "trash",
+                    role: .destructive,
+                    accessibilityLabel: String(localized: "waypoints.deleteAll"),
+                    action: { showDeleteAllConfirmation = true }
+                )
             .trakkeDialog(
                 isPresented: $showDeleteAllConfirmation,
                 title: String(localized: "waypoints.deleteAll.title"),
@@ -392,6 +390,7 @@ struct WaypointListSheet: View {
                 },
                 cancel: .cancel(String(localized: "common.no"))
             )
+            }
         }
     }
 

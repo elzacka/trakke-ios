@@ -372,12 +372,6 @@ struct TracksListSheet: View {
             }
 
             Spacer()
-
-            if !route.isVisible {
-                Image(systemName: "eye.slash")
-                    .font(Font.Trakke.captionSoft)
-                    .foregroundStyle(Color.Trakke.textSoft)
-            }
         }
         .padding(.vertical, 12)
         .frame(minHeight: .Trakke.touchMin)
@@ -467,11 +461,6 @@ struct TracksListSheet: View {
                     .foregroundStyle(Color.Trakke.textSoft)
             }
 
-            if !activity.isVisible {
-                Image(systemName: "eye.slash")
-                    .font(Font.Trakke.captionSoft)
-                    .foregroundStyle(Color.Trakke.textSoft)
-            }
         }
         .padding(.vertical, 12)
         .frame(minHeight: .Trakke.touchMin)
@@ -557,20 +546,23 @@ struct TracksListSheet: View {
                 action: { showFileImporter = true }
             )
 
-            TrakkeIconButton(
-                systemImage: "square.and.arrow.down",
-                isEnabled: !isEmpty,
-                accessibilityLabel: String(localized: "import.exportAll"),
-                action: { showExportOptions = true }
-            )
+            // Eksport og sletting tegnes ikke når det ikke finnes noe å
+            // eksportere eller slette. En nedtonet knapp er en knapp du må
+            // lese og forkaste; en knapp som ikke er der, koster ingenting.
+            if !isEmpty {
+                TrakkeIconButton(
+                    systemImage: "square.and.arrow.down",
+                    accessibilityLabel: String(localized: "import.exportAll"),
+                    action: { showExportOptions = true }
+                )
 
-            TrakkeIconButton(
-                systemImage: "trash",
-                role: .destructive,
-                isEnabled: !isEmpty,
-                accessibilityLabel: String(localized: "tracks.deleteAll.title"),
-                action: { showDeleteOptions = true }
-            )
+                TrakkeIconButton(
+                    systemImage: "trash",
+                    role: .destructive,
+                    accessibilityLabel: String(localized: "tracks.deleteAll.title"),
+                    action: { showDeleteOptions = true }
+                )
+            }
         }
     }
 

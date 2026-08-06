@@ -70,7 +70,9 @@ struct AppLifecycleModifier: ViewModifier {
     private func handleFABMenuOpenChange(_ isOpen: Bool) {
         if isOpen {
             selectedTab = .home
-            sheetDetent = .large
+            // Åpne på halv skjerm, ikke full: menyen skal ikke dekke kartet
+            // du nettopp navigerte til.
+            sheetDetent = .medium
         }
     }
 

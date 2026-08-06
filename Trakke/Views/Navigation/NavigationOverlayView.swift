@@ -55,7 +55,6 @@ struct NavigationOverlayView: View {
 
             navBarDivider
             navBarStat(
-                icon: "point.topleft.down.to.point.bottomright.curvepath",
                 value: formatDistance(navigationVM.compassDistance),
                 label: String(localized: "navigation.distance")
             )
@@ -63,7 +62,6 @@ struct NavigationOverlayView: View {
             if let travelTime = navigationVM.estimatedTravelTime {
                 navBarDivider
                 navBarStat(
-                    icon: "clock",
                     value: MeasurementService.formatDuration(travelTime),
                     label: String(localized: "navigation.timeRemaining")
                 )
@@ -147,11 +145,11 @@ struct NavigationOverlayView: View {
         )
     }
 
-    private func navBarStat(icon: String, value: String, label: String) -> some View {
+    /// Uten ikon: enheten i verdien sier allerede hva tallet er («230 m»,
+    /// «18 min»). HUD-en leses i bevegelse og skal være den roligste flaten
+    /// i appen, så alt som ikke bærer informasjon er borte.
+    private func navBarStat(value: String, label: String) -> some View {
         HStack(spacing: .Trakke.xs) {
-            Image(systemName: icon)
-                .font(.system(.caption, weight: .regular))
-                .foregroundStyle(Color.Trakke.textSoft)
             Text(value)
                 .font(.system(.subheadline, weight: .semibold).monospacedDigit())
                 .foregroundStyle(Color.Trakke.text)

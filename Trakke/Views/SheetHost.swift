@@ -162,7 +162,7 @@ struct SheetHost: ViewModifier {
 
         case .categoryPicker:
             CategoryPickerSheet(viewModel: poiViewModel)
-                .presentationDetents([.large])
+                .presentationDetents([.medium, .large])
                 .presentationDragIndicator(.visible)
                 .presentationBackgroundInteraction(.enabled(upThrough: .large))
 

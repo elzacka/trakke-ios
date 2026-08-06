@@ -6405,28 +6405,6 @@
         }
       }
     },
-    "weather.forecast.legend" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tallene viser maks-/min-temperatur, middelvind med vindkast, og UV-indeks (kun fra nivå 3).\n\nNoen verdier er fargelagt som varsel:\n• Vind/vindkast i oransje: stiv kuling eller mer (fra ~14 m/s). Tungt å gå mot vinden. Åpne flater og fjorder kan ha langt sterkere kast enn varselet viser.\n• Vind/vindkast i rødt: farlig vind. Unngå eksponerte fjell og høyder.\n• UV i oransje: nivå 6 eller mer (Sterk). Dekkende klær, hatt og rikelig solkrem anbefales også midt på dagen.\n• Nattetemperatur (n -3°) i rødt: under -5 °C. Sjekk klær og soveutstyr."
-          }
-        }
-      }
-    },
-    "weather.forecast.legend.label" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Forklaring til varselet"
-          }
-        }
-      }
-    },
     "weather.forecast.uncertainty" : {
       "extractionState" : "manual",
       "localizations" : {

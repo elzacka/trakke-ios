@@ -25,7 +25,7 @@ struct OfflineSetupSheet: View {
             NavigationStack {
                 innerContent
             }
-            .presentationDetents([.large])
+            .presentationDetents([.medium, .large])
             .presentationDragIndicator(.visible)
         }
     }

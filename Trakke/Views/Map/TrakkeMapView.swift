@@ -170,7 +170,8 @@ struct TrakkeMapView: UIViewRepresentable {
                     ne: CLLocationCoordinate2D(latitude: bounds.north, longitude: bounds.east)
                 ),
                 edgePadding: UIEdgeInsets(top: 60, left: 40, bottom: 140, right: 40),
-                animated: true
+                animated: true,
+                completionHandler: nil
             )
             viewModel.pendingBounds = nil
         }
