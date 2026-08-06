@@ -10,7 +10,7 @@ struct HomeTabContent: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            TrakkeSheetHeader(title: String(localized: "appTab.home"))
+            TrakkeSheetHeader()
                 .contentShape(Rectangle())
                 .onTapGesture { hideKeyboard() }
 

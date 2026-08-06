@@ -23,7 +23,7 @@ struct ToolsTabContent: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                TrakkeSheetHeader(title: String(localized: "appTab.tools"))
+                TrakkeSheetHeader()
 
                 TrakkeUnderlineTabs(
                     titles: subTabs,

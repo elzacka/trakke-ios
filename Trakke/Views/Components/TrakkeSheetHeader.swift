@@ -1,36 +1,48 @@
 import SwiftUI
 
-/// Custom topp for sheets – drag-handle (grabber) og stor brand-tittel.
+/// Custom topp for sheets – drag-handle (grabber) og valgfri brand-tittel.
 /// Valgfri back-knapp vises på pushed views så designspråket holdes
 /// konsistent også når NavigationStack pusher en ny visning.
+///
+/// Uten tittel står bare grabberen igjen. Menyens fem faner bruker den
+/// varianten: hvilken fane du står på leser du allerede av bunnlinja, og
+/// «Hjem» skrevet over et søkefelt du nettopp åpnet er en overskrift som
+/// ikke forteller noe. Detaljark beholder tittelen, for der er navnet på
+/// stedet, ruta eller artikkelen den eneste opplysningen om hva du ser på.
 struct TrakkeSheetHeader: View {
-    let title: String
+    var title: String? = nil
     var onBack: (() -> Void)? = nil
 
     var body: some View {
         VStack(spacing: 0) {
             dragHandle
                 .padding(.top, .Trakke.sm)
-                .padding(.bottom, .Trakke.lg)
+                // Uten tittel under trenger grabberen mindre luft: den skal
+                // skille seg fra innholdet, ikke stå i en egen sone.
+                .padding(.bottom, title == nil && onBack == nil ? .Trakke.md : .Trakke.lg)
 
-            HStack(alignment: .center, spacing: .Trakke.sm) {
-                if let onBack {
-                    backButton(action: onBack)
+            if title != nil || onBack != nil {
+                HStack(alignment: .center, spacing: .Trakke.sm) {
+                    if let onBack {
+                        backButton(action: onBack)
+                    }
+
+                    if let title {
+                        Text(title)
+                            .font(Font.Trakke.articleTitle)
+                            .foregroundStyle(Color.Trakke.brand)
+                            .lineLimit(2)
+                            .minimumScaleFactor(0.8)
+                            .multilineTextAlignment(.leading)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .accessibilityAddTraits(.isHeader)
+                    }
+
+                    Spacer()
                 }
-
-                Text(title)
-                    .font(Font.Trakke.articleTitle)
-                    .foregroundStyle(Color.Trakke.brand)
-                    .lineLimit(2)
-                    .minimumScaleFactor(0.8)
-                    .multilineTextAlignment(.leading)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .accessibilityAddTraits(.isHeader)
-
-                Spacer()
+                .padding(.horizontal, .Trakke.sheetHorizontal)
+                .padding(.bottom, .Trakke.lg)
             }
-            .padding(.horizontal, .Trakke.sheetHorizontal)
-            .padding(.bottom, .Trakke.lg)
         }
     }
 

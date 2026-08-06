@@ -4,11 +4,12 @@ struct SearchResultRow: View {
     let result: SearchResult
 
     var body: some View {
+        // Ingen ikon. Nålen, huset og sirkelen skilte sted, adresse og
+        // koordinat, men navnet og underteksten sier allerede hvilken av
+        // delene et treff er. Å beholde ikonet bare for stedstreff ville
+        // dessuten gitt en rufsete venstrekant der noen rader er innrykket
+        // og andre ikke.
         HStack(spacing: .Trakke.md) {
-            Image(systemName: iconName)
-                .foregroundStyle(Color.Trakke.textTertiary)
-                .frame(width: 28, height: 28)
-
             VStack(alignment: .leading, spacing: .Trakke.labelGap) {
                 Text(result.displayName)
                     .font(Font.Trakke.bodyMedium)
@@ -27,17 +28,6 @@ struct SearchResultRow: View {
         .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibilityText)
-    }
-
-    private var iconName: String {
-        switch result.type {
-        case .place:
-            return "mappin"
-        case .address:
-            return "house"
-        case .coordinates:
-            return "location.circle"
-        }
     }
 
     private var accessibilityText: String {
