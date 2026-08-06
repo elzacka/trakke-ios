@@ -20,29 +20,31 @@ struct TrakkeNavigationLiveActivity: Widget {
                     VStack(alignment: .trailing, spacing: 2) {
                         Text(context.state.distance)
                             .font(.title3.monospacedDigit().weight(.semibold))
-                        Text("til mål")
+                        Text(context.state.travelTime.map { "\($0) igjen" } ?? "til mål")
                             .font(.caption2)
                             .foregroundStyle(.secondary)
                     }
                     .padding(.trailing, 4)
                 }
             } compactLeading: {
-                HStack(spacing: 3) {
-                    Image(systemName: "location.north.fill")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(brandGreen)
-                        .rotationEffect(.degrees(Double(context.state.bearing)))
-                    Text("\(context.state.bearing)°")
+                // Ingen roterende pil her: på denne plassen er det ikke rom for
+                // et nordmerke, og en fritt roterende pil leses som «gå hit».
+                // Tallet er entydig.
+                Text(context.state.hasArrived
+                    ? "Fremme"
+                    : "\(context.state.bearing)° \(context.state.cardinalDirection)")
+                    .font(.caption.monospacedDigit().weight(.semibold))
+                    .foregroundStyle(brandGreen)
+            } compactTrailing: {
+                if !context.state.hasArrived {
+                    Text(context.state.distance)
                         .font(.caption.monospacedDigit().weight(.semibold))
                 }
-            } compactTrailing: {
-                Text(context.state.distance)
-                    .font(.caption.monospacedDigit().weight(.semibold))
             } minimal: {
-                Image(systemName: "location.north.fill")
+                Image(systemName: context.state.hasArrived
+                    ? "flag.checkered" : "location.north.circle")
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(brandGreen)
-                    .rotationEffect(.degrees(Double(context.state.bearing)))
             }
         }
     }
@@ -55,17 +57,21 @@ struct NavigationLockScreenView: View {
 
     var body: some View {
         HStack(spacing: 16) {
-            NavigationBearingCell(state: state)
+            if state.hasArrived {
+                arrivedCell
+            } else {
+                NavigationBearingCell(state: state)
 
-            Divider()
-                .frame(height: 32)
+                Divider()
+                    .frame(height: 32)
 
-            VStack(alignment: .leading, spacing: 2) {
-                Text(state.distance)
-                    .font(.title3.monospacedDigit().weight(.semibold))
-                Text("til mål")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(state.distance)
+                        .font(.title3.monospacedDigit().weight(.semibold))
+                    Text(state.travelTime.map { "\($0) igjen" } ?? "til mål")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
             }
 
             Spacer()
@@ -78,6 +84,16 @@ struct NavigationLockScreenView: View {
         }
         .padding()
     }
+
+    private var arrivedCell: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "flag.checkered")
+                .font(.title3.weight(.semibold))
+                .foregroundStyle(brandGreen)
+            Text("Fremme")
+                .font(.headline.weight(.bold))
+        }
+    }
 }
 
 // MARK: - Bearing Cell
@@ -86,11 +102,8 @@ struct NavigationBearingCell: View {
     let state: NavigationActivityAttributes.ContentState
 
     var body: some View {
-        HStack(spacing: 6) {
-            Image(systemName: "location.north.fill")
-                .font(.title3.weight(.semibold))
-                .foregroundStyle(brandGreen)
-                .rotationEffect(.degrees(Double(state.bearing)))
+        HStack(spacing: 8) {
+            CompassRose(bearing: state.bearing)
 
             VStack(alignment: .leading, spacing: 1) {
                 Text(state.cardinalDirection)
@@ -100,5 +113,42 @@ struct NavigationBearingCell: View {
                     .foregroundStyle(.secondary)
             }
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Retning mot målet")
+        .accessibilityValue("\(state.bearing) grader, \(state.cardinalDirection) fra nord")
+    }
+}
+
+// MARK: - Kompassrose
+
+/// Retningen vises som en rose med fast nordmerke, ikke som en fritt
+/// roterende pil.
+///
+/// Widget-utvidelsen har ingen tilgang til enhetens kompass, og
+/// Live Activity-oppdateringer er for sjeldne til å følge en kroppsvending.
+/// En pil uten nordreferanse ville derfor sett ut som «gå denne veien» mens
+/// den i virkeligheten peker mot målet regnet fra nord. Nordmerket gjør
+/// avlesningen entydig: den kan overføres rett til et fysisk kompass.
+/// Den retningen som følger kroppen din finnes i appens nav-bar.
+struct CompassRose: View {
+    let bearing: Int
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .strokeBorder(.secondary.opacity(0.35), lineWidth: 1)
+
+            Text("N")
+                .font(.system(size: 8, weight: .bold))
+                .foregroundStyle(.secondary)
+                .offset(y: -10)
+
+            Image(systemName: "location.north.fill")
+                .font(.system(size: 11, weight: .bold))
+                .foregroundStyle(brandGreen)
+                .rotationEffect(.degrees(Double(bearing)))
+        }
+        .frame(width: 30, height: 30)
+        .accessibilityHidden(true)
     }
 }

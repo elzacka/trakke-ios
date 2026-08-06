@@ -6,5 +6,11 @@ struct NavigationActivityAttributes: ActivityAttributes {
         var cardinalDirection: String
         var distance: String
         var isPaused: Bool
+        /// Låseskjermen må vite om ankomst – uten dette fortsatte den å telle
+        /// ned mens appen viste «Fremme».
+        var hasArrived: Bool
+        /// Estimert gangtid, ferdig formatert. `nil` ved ankomst og før
+        /// første posisjon.
+        var travelTime: String?
     }
 }

@@ -53,9 +53,31 @@ struct MapScreen: View {
 
     // MARK: - Clean Map
 
+    private var cameraFollowMode: MapCameraFollowMode {
+        MapCameraFollowMode.current(
+            isCameraDetached: mapViewModel.isCameraDetached,
+            isNavigating: navigationViewModel.isActive,
+            navigationCameraMode: navigationViewModel.cameraMode,
+            isTrackingUser: mapViewModel.isTrackingUser,
+            isHeadingUp: mapViewModel.isHeadingUp
+        )
+    }
+
+    /// Knappen er ikke lenger bare et kompass – den er lokasjons- og
+    /// følgekontrollen, og eneste sted modusen leses av. Den må derfor vises
+    /// så snart kameraet gjør noe: følger deg, eller er koblet fra fordi du
+    /// dro i kartet. Uten dette kunne du med kompasset avslått i Visning bare
+    /// se modus «fritt», aldri nå «retning opp», og aldri se at kartet følger
+    /// deg.
+    ///
+    /// Det eneste tilfellet som fortsatt respekterer preferansen er
+    /// utgangstilstanden: kartet har aldri fulgt deg, og du har ikke flyttet
+    /// det. Da er det ingenting å melde. Rent kart går foran alt – der er
+    /// poenget at kontrollene er borte.
     private var effectiveShowCompass: Bool {
         guard !isCleanMapActive else { return false }
-        return showCompass || navigationViewModel.isActive
+        if showCompass || navigationViewModel.isActive { return true }
+        return cameraFollowMode != .free || mapViewModel.isCameraDetached
     }
     private var effectiveShowZoomControls: Bool { isCleanMapActive ? false : showZoomControls }
     private var effectiveShowScaleBar: Bool { isCleanMapActive ? false : showScaleBar }
@@ -239,6 +261,7 @@ struct MapScreen: View {
             NavigationOverlayView(
                 navigationVM: navigationViewModel,
                 userHeading: mapViewModel.userHeading,
+                headingIsReliable: mapViewModel.headingIsReliable,
                 onStop: { coordinator.showStopConfirmation = true }
             )
             .trakkeDialog(

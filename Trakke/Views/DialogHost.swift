@@ -71,7 +71,11 @@ struct DialogHost: ViewModifier {
     private var longPressDialogButtons: [TrakkeDialogButton] {
         [
             .primary(String(localized: "waypoints.addWaypoint"), action: addWaypointAtLongPress),
-            .primary(String(localized: "navigation.navigateHere"), action: navigateToLongPress)
+            .primary(String(localized: "navigation.navigateHere"), action: navigateToLongPress),
+            // En handlingsliste trenger en synlig vei ut. Å trykke utenfor
+            // lukker den også, men det er en skjult utvei – den som ikke
+            // kjenner den, sitter fast i en dialog uten spørsmål.
+            .cancel()
         ]
     }
 

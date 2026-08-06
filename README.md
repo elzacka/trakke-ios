@@ -1,20 +1,20 @@
 # Tråkke
 
-En kartapp for iPhone, laget for tur i norsk natur. Bygget på Kartverkets kart. Fungerer offline. Lagrer ingenting om deg.
+En kartapp for iPhone, laget for tur i norsk natur. Bygget på Kartverkets kart. Virker uten dekning. Lagrer ingenting om deg.
 
 [Last ned Tråkke fra App Store](https://apps.apple.com/no/app/id6759306717). Appen er gratis, uten annonser og uten sporing.
 
 ## Hva du får
 
-**Kart fra Kartverket.** Topografisk, gråtone og turkart. Bratthet, naturskog, naturvern og turruter som kartlag. Stedsnavn- og adressesøk. Kompasset veksler kartet mellom nord opp og retning opp. Last ned hele kommuner eller egne områder for offline bruk.
+**Kart fra Kartverket.** Topografisk, gråtone og turkart. Bratthet, naturskog, naturvern og turruter som kartlag. Stedsnavn- og adressesøk. Kompasset veksler kartet mellom nord opp og retning opp. Last ned hele kommuner eller egne områder for bruk uten nett.
 
-**Steder på kartet.** Tilfluktsrom, gapahuker, hytter, badeplasser, bålplasser, hengekøyeplasser, teltplasser, rasteplasser, fosser, huler, utsiktspunkter, kulturminner og krigsminner. Slå av og på etter behov. Det meste fungerer offline.
+**Steder på kartet.** Tilfluktsrom, gapahuker, hytter, badeplasser, bålplasser, hengekøyeplasser, teltplasser, rasteplasser, fosser, huler, utsiktspunkter, kulturminner og krigsminner. Slå av og på etter behov. Det meste virker uten dekning.
 
 **Tur og navigasjon.** Tegn ruter, lagre steder, registrer turer med GPS. Turer og ruter står i samme samling, med felles kategorier og filter. Kompassretning til et valgt mål, også uten dekning. Under navigasjon vises avstand og retning på låseskjermen og i Dynamic Island. Import og eksport av GPX og GeoJSON.
 
 **Vær og varsler.** Værmelding, luftkvalitet og vanntemperatur fra Meteorologisk institutt. Snøskred og flom fra NVE/Varsom. Soloppgang og solnedgang.
 
-**Trygghet på tur.** Nødnumre, koordinater i flere formater, SOS-signal med blink og lyd, måleverktøy og en kunnskapsbase med artikler om friluftsliv, alt tilgjengelig offline.
+**Trygghet på tur.** Nødnumre, koordinater i flere formater, SOS-signal med blink og lyd, måleverktøy og en kunnskapsbase med artikler om friluftsliv, alt tilgjengelig uten nett.
 
 ## Personvern
 

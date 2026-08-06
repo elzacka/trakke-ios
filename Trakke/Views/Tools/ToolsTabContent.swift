@@ -89,6 +89,17 @@ struct ToolsTabContent: View {
                 onStartCustomOfflineSelection()
                 dismiss()
             },
+            onShowOnMap: { pack in
+                mapViewModel.showBounds(
+                    MapBounds(
+                        south: pack.bounds.south,
+                        west: pack.bounds.west,
+                        north: pack.bounds.north,
+                        east: pack.bounds.east
+                    )
+                )
+                dismiss()
+            },
             inline: true
         )
     }

@@ -16,9 +16,12 @@ Appen vises alltid i portrett. Det er kartet som roterer, ikke skjermen.
 Knappene ligger langs høyre kant. Hvilke som vises styrer du i Innstillinger → Visning. Menyknappen er alltid der.
 
 - **Grønn menyknapp**: Trykk for å åpne menyen. Trykk og hold skjuler alle kontroller, kartlag og POI-ikoner. Nyttig for å se topografien uten støy eller ta et rent skjermbilde. Et nytt trykk og hold på knappen viser dem igjen.
-- **Kompassknapp**: Trykk for å veksle mellom to modi. Pilen viser hvor nord er.
-  - **Nord opp** (rødt ikon): Kartet ligger fast med nord øverst.
-  - **Retning opp** (grønt ikon): Kartet snur seg etter retningen telefonen peker, og sentreres på deg.
+- **Kompassknapp**: Styrer om kartet følger deg. Nåla peker mot nord uansett tilstand. Tre tilstander, som du skiller på formen:
+  - **Åpen nål, grå**: Kartet står fritt. Trykk henter det tilbake til deg.
+  - **Fylt nål, grønn**: Kartet følger deg med nord øverst.
+  - **Fylt nål med nordstrek, grønn**: Kartet følger deg og snur seg etter retningen du går i.
+
+  Flytter du kartet selv, slutter det å følge deg til du trykker knappen igjen. Det gjelder også midt i navigasjon.
 - **Værwidget**: Viser temperatur og symbol for kartsenteret. Trykk for fullt vær med varsel, snøskred og luftkvalitet.
 - **Zoom-knapper (+/−)**: Zoom inn og ut ett trinn. Nyttig med hansker eller én hånd.
 
@@ -48,7 +51,7 @@ Har du åpnet tastaturet uten å ville søke likevel, lukker et trykk hvor som h
 
 Kategoriene er gruppert etter tema: Friluftsliv, Landskap, Kulturarv og Beredskap. Trykk en gruppe for å åpne den, og slå på kategoriene du vil se.
 
-Zoom litt inn hvis du ikke ser ikonene på kartet. De fleste kategoriene er lagret i appen og fungerer offline. Unntaket er kulturminner, som hentes fra internett.
+Zoom litt inn hvis du ikke ser ikonene på kartet. De fleste kategoriene er lagret i appen og virker uten dekning. Unntaket er kulturminner, som hentes fra internett.
 
 ## 4. Naviger
 
@@ -107,11 +110,17 @@ Etter turen får du statistikk, høydeprofil, eksport som GPX, og «Gå tilbake 
 
 Trykk og hold på kartet og velg «Naviger hit», eller åpne et sted og trykk «Naviger».
 
-Navigasjonen viser en pil mot målet og avstanden dit. Det er en rett linje, ikke langs sti. Den fungerer uten dekning. Du varsles når du er framme (30 m fra målet).
+Navigasjonen viser en pil mot målet, avstanden dit og hvor lang tid det er igjen å gå. Det er en rett linje, ikke langs sti. Den fungerer uten dekning.
 
-Kompassknappen er alltid synlig under navigasjon. Trykk den for å veksle mellom nord opp og retning opp.
+Pila peker fra der du står mot målet, sett fra måten du holder telefonen. Er GPS-signalet så svakt at retningen ikke er til å stole på, forsvinner pila og bare gradtallet blir stående. Kommer du helt inntil målet, tones pila ned: da er avstanden mindre enn usikkerheten i posisjonen, og retningen sier ikke lenger noe.
 
-Mens du navigerer vises avstand og retning til målet på låseskjermen og i Dynamic Island.
+Du varsles når du er framme. Hvor nær du må være, avhenger av hvor presis posisjonen er. Vanligvis rundt 12 m, mer når signalet er dårlig.
+
+Gangtiden regnes ut fra hvor raskt du faktisk nærmer deg målet. Går du en omvei, viser den det. Før appen har målt tempoet ditt, regner den med 4 km/t.
+
+Kompassknappen er alltid synlig under navigasjon, og virker som ellers i appen: tre tilstander du skiller på formen på nåla. Se [Knapper på kartet](#knapper-på-kartet). Du kan flytte kartet for å se lenger fram uten at det hopper tilbake. Ett trykk på knappen henter det tilbake til deg.
+
+Mens du navigerer vises avstand, gangtid og retning til målet på låseskjermen og i Dynamic Island. Der er retningen vist som en kompassrose med nordmerke, ikke som en pil som følger kroppen din. Låseskjermen har ikke tilgang til kompasset. Pila som følger deg finner du i appen.
 
 ## 5. Verktøy
 
@@ -130,7 +139,14 @@ Nedlastede kart brukes automatisk uten mobildekning. En stiplet firkant markerer
 
 **Per kommune**: Bla gjennom kommuner per fylke, eller søk på kommunenavn. Trykk en kommune for å starte nedlasting.
 
-Under **Nedlastede kart** ser du hvor mye plass områdene bruker, og kan slette dem enkeltvis.
+Har du lastet ned noe, ligger raden **Nedlastede kart** øverst med antall områder og hvor mye plass de bruker til sammen. Trykk den for å åpne lista.
+
+I lista kan du:
+
+- **Se hvor et område er**: Trykk raden. Menyen lukkes og kartet viser hele området.
+- **Endre navn**: Trykk og hold raden og velg «Endre navn».
+- **Oppdatere kartet**: Trykk og hold raden og velg «Oppdater». Appen sjekker flisene mot Kartverket og henter bare det som er endret. Er alt ferskt, skjer ingenting.
+- **Slette**: Trykk papirkurven i raden. Du får en bekreftelse først.
 
 ### SOS
 
@@ -159,7 +175,7 @@ Artikler om friluftsliv og overlevelse. Noen artikler har bilder. Trykk på bild
 
 ### Om
 
-Øverst vises om appen er **Online** eller **Offline**, og hvilken tilkobling som er i bruk. Visningen bruker bare lokal nettverksinformasjon. Ingenting sendes ut.
+Øverst vises om appen er **Tilkoblet** eller **Frakoblet**, og hvilken tilkobling som er i bruk. Visningen bruker bare lokal nettverksinformasjon. Ingenting sendes ut.
 
 Her finner du også denne brukerveiledningen, personvernerklæringen, lenke til Tråkkes kildekode og en lenke for å vurdere appen i App Store.
 
@@ -191,4 +207,4 @@ DD, DMS eller UTM (EUREF89 sone 33). Trykk info-knappen ved hvert format for for
 
 ### Slett alle data
 
-Sletter alle lokale ruter, steder, turer, offlinekart, kunnskapspakker og innstillinger. Krever bekreftelse. Kan ikke angres. Dette dekker også retten din til sletting under GDPR.
+Sletter alle lokale ruter, steder, turer, nedlastede kart, kunnskapspakker og innstillinger. Krever bekreftelse. Kan ikke angres. Dette dekker også retten din til sletting under GDPR.

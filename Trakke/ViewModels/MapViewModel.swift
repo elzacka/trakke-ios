@@ -3,6 +3,15 @@ import CoreLocation
 import os
 import OSLog
 
+/// Et rektangulært kartutsnitt. Brukes som kamerakommando for å vise et helt
+/// nedlastet kartområde.
+struct MapBounds: Equatable, Sendable {
+    let south: Double
+    let west: Double
+    let north: Double
+    let east: Double
+}
+
 @MainActor
 @Observable
 final class MapViewModel: NSObject, CLLocationManagerDelegate {
@@ -26,6 +35,11 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
     /// brukeren har trykket lokasjonsknappen. Uten denne når kommandoen
     /// aldri fram, og kartet blir stående på brukerposisjonen.
     var pendingCenter: CLLocationCoordinate2D?
+    /// Eksplisitt «vis hele dette området»-kommando (nedlastet kartområde).
+    /// Samme mekanikk som `pendingCenter`: leses og nulles av
+    /// `TrakkeMapView.updateUIView`. Et senterpunkt alene ville ikke sagt noe
+    /// om hvor stort området er, som er hele spørsmålet man stiller.
+    var pendingBounds: MapBounds?
     /// Markør for siste valgte søkeresultat. Settes når brukeren trykker på
     /// et treff i søkefeltet, beholdes mens brukeren utforsker området (pan,
     /// zoom, åpning av POI/sted-detalj, navigasjon mot punktet). Overskrives
@@ -41,9 +55,22 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
 
     // MARK: - Navigation State
 
+    /// Sann når brukeren selv har flyttet kartet. Da skal visningen bli
+    /// stående – også midt i navigasjon, og i begge kameramodusene. Uten
+    /// dette hentet MapLibre-tracking kameraet tilbake til brukerposisjonen
+    /// straks gesten slapp, og det var umulig å se på terrenget lenger fram.
+    /// Kobles inn igjen ved et bevisst valg: lokasjonsknappen, kompass-
+    /// knappen, eller start av navigasjon.
+    var isCameraDetached = false
+
     var isNavigating = false
     var isHeadingUp = false
     var userHeading: Double?
+    /// Usann når magnetometeret ikke kan stoles på: manglende sann nord
+    /// (misvisningen er da ukjent) eller for stor `headingAccuracy`. Nær
+    /// bilpanser, ryggsekkramme eller magnetdeksel bommer kompasset lett med
+    /// titalls grader, og en retningspil som ikke sier fra er verre enn ingen.
+    var headingIsReliable = false
 
     // Keyed observers so navigation and recording can co-exist without one
     // overwriting the other (a single closure slot meant starting navigation
@@ -68,11 +95,21 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
     /// magnetometeret fyrer hyppig under navigasjon, og forkastede
     /// oppdateringer skal ikke belaste hovedaktoren med Task-allokeringer.
     private let headingThrottle = OSAllocatedUnfairLock(initialState: HeadingThrottleState())
+    /// Leses fra `locationManagerShouldDisplayHeadingCalibration`, som er
+    /// nonisolated og må svare synkront – derfor et låst flagg framfor
+    /// MainActor-state.
+    private let calibrationAllowed = OSAllocatedUnfairLock(initialState: false)
     private var smoothedHeading: Double = 0
+    /// Usann til første måling. Uten seeding starter lavpassfilteret på
+    /// forrige økts verdi (eller rett nord) og bruker et par sekunder på å
+    /// svinge seg inn på riktig retning.
+    private var hasSmoothedHeading = false
     @ObservationIgnored nonisolated(unsafe) private var defaultsObserver: NSObjectProtocol?
     private nonisolated static let headingMinInterval: TimeInterval = 0.2  // ~5 Hz max
     private nonisolated static let headingMinDelta: Double = 2.0           // degrees
     private static let headingSmoothingFactor: Double = 0.25   // low-pass filter (0 = ignore new, 1 = no smoothing)
+    /// Over denne feilmarginen i grader er pila ikke til å stole på.
+    private nonisolated static let maxHeadingError: Double = 25
 
     override init() {
         super.init()
@@ -151,6 +188,7 @@ if defaults.bool(forKey: AppStorageKeys.overlayNaturvernomrader) { overlays.inse
             return
         }
         isTrackingUser = true
+        isCameraDetached = false
         locationManager.startUpdatingLocation()
     }
 
@@ -171,6 +209,7 @@ if defaults.bool(forKey: AppStorageKeys.overlayNaturvernomrader) { overlays.inse
         }
         currentCenter = location.coordinate
         isTrackingUser = true
+        isCameraDetached = false
         locationManager.startUpdatingLocation()
     }
 
@@ -189,11 +228,23 @@ if defaults.bool(forKey: AppStorageKeys.overlayNaturvernomrader) { overlays.inse
     func centerOn(coordinate: CLLocationCoordinate2D, zoom: Double? = nil) {
         isTrackingUser = false
         isHeadingUp = false
+        // Samme regel som for en gest: ba du om å se et annet sted, skal
+        // kartet bli der til du selv henter kameraet tilbake.
+        isCameraDetached = true
         currentCenter = coordinate
         pendingCenter = coordinate
         if let zoom {
             currentZoom = zoom
         }
+    }
+
+    /// Viser et helt nedlastet kartområde. Kobler fra kameraet av samme grunn
+    /// som `centerOn`: ba du om å se et bestemt område, skal kartet bli der.
+    func showBounds(_ bounds: MapBounds) {
+        isTrackingUser = false
+        isHeadingUp = false
+        isCameraDetached = true
+        pendingBounds = bounds
     }
 
     func zoomIn() {
@@ -218,6 +269,7 @@ if defaults.bool(forKey: AppStorageKeys.overlayNaturvernomrader) { overlays.inse
 
         isNavigating = true
         isTrackingUser = true
+        isCameraDetached = false
 
         // Allow location updates to continue when the screen locks so the
         // Live Activity on the lock screen stays current. The blue status-bar
@@ -235,13 +287,22 @@ if defaults.bool(forKey: AppStorageKeys.overlayNaturvernomrader) { overlays.inse
         locationManager.distanceFilter = kCLDistanceFilterNone
         locationManager.activityType = .fitness
 
+        // Uten dette svarer iOS aldri på et ukalibrert magnetometer: standard
+        // er å ikke vise kalibreringsskjermen, så en pil som bommer 30 grader
+        // blir stående uten at brukeren får sjansen til å rette den.
+        calibrationAllowed.withLock { $0 = true }
+
         locationManager.startUpdatingLocation()
         locationManager.startUpdatingHeading()
     }
 
     func stopNavigation() {
         isNavigating = false
+        isCameraDetached = false
         userHeading = nil
+        headingIsReliable = false
+        hasSmoothedHeading = false
+        calibrationAllowed.withLock { $0 = false }
         removeLocationObserver("navigation")
         headingThrottle.withLock { $0 = HeadingThrottleState() }
 
@@ -277,8 +338,19 @@ if defaults.bool(forKey: AppStorageKeys.overlayNaturvernomrader) { overlays.inse
         }
     }
 
+    nonisolated func locationManagerShouldDisplayHeadingCalibration(_ manager: CLLocationManager) -> Bool {
+        calibrationAllowed.withLock { $0 }
+    }
+
     nonisolated func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
-        let heading = newHeading.trueHeading >= 0 ? newHeading.trueHeading : newHeading.magneticHeading
+        // Målpeilingen er alltid mot sann nord. Faller retningen tilbake til
+        // magnetisk nord er misvisningen med i tallet (~3 grader på Sørlandet,
+        // opptil ~11 i Finnmark), og pila skal merkes som upålitelig.
+        let hasTrueNorth = newHeading.trueHeading >= 0
+        let heading = hasTrueNorth ? newHeading.trueHeading : newHeading.magneticHeading
+        let isReliable = hasTrueNorth
+            && newHeading.headingAccuracy >= 0
+            && newHeading.headingAccuracy <= Self.maxHeadingError
         let now = Date()
         let passesThrottle = headingThrottle.withLock { state -> Bool in
             if let lastTime = state.lastTime,
@@ -294,14 +366,21 @@ if defaults.bool(forKey: AppStorageKeys.overlayNaturvernomrader) { overlays.inse
         guard passesThrottle else { return }
         Task { @MainActor [weak self] in
             guard let self else { return }
-            // Low-pass filter to smooth magnetometer jitter.
-            // Handle 0/360 wrap-around by computing shortest angular delta.
-            var delta = heading - smoothedHeading
-            if delta > 180 { delta -= 360 }
-            if delta < -180 { delta += 360 }
-            smoothedHeading = (smoothedHeading + delta * Self.headingSmoothingFactor)
-                .truncatingRemainder(dividingBy: 360)
-            if smoothedHeading < 0 { smoothedHeading += 360 }
+            headingIsReliable = isReliable
+
+            if hasSmoothedHeading {
+                // Low-pass filter to smooth magnetometer jitter.
+                // Handle 0/360 wrap-around by computing shortest angular delta.
+                var delta = heading - smoothedHeading
+                if delta > 180 { delta -= 360 }
+                if delta < -180 { delta += 360 }
+                smoothedHeading = (smoothedHeading + delta * Self.headingSmoothingFactor)
+                    .truncatingRemainder(dividingBy: 360)
+                if smoothedHeading < 0 { smoothedHeading += 360 }
+            } else {
+                smoothedHeading = heading
+                hasSmoothedHeading = true
+            }
 
             userHeading = smoothedHeading
         }

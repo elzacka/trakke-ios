@@ -6,8 +6,17 @@ import SwiftUI
 struct NavigationOverlayView: View {
     let navigationVM: NavigationViewModel
     let userHeading: Double?
+    let headingIsReliable: Bool
     var onStop: () -> Void
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    /// Pila viser retningen *relativt til hvor brukeren peker telefonen*. Uten
+    /// en pålitelig kompassretning ville den i praksis blitt en nordreferert
+    /// pil – visuelt identisk, men med motsatt betydning. Da vises tallet
+    /// alene i stedet.
+    private var showsArrow: Bool {
+        headingIsReliable && userHeading != nil
+    }
 
     var body: some View {
         VStack(spacing: .Trakke.sm) {
@@ -47,8 +56,18 @@ struct NavigationOverlayView: View {
             navBarDivider
             navBarStat(
                 icon: "point.topleft.down.to.point.bottomright.curvepath",
-                value: formatDistance(navigationVM.compassDistance)
+                value: formatDistance(navigationVM.compassDistance),
+                label: String(localized: "navigation.distance")
             )
+
+            if let travelTime = navigationVM.estimatedTravelTime {
+                navBarDivider
+                navBarStat(
+                    icon: "clock",
+                    value: MeasurementService.formatDuration(travelTime),
+                    label: String(localized: "navigation.timeRemaining")
+                )
+            }
 
             navBarDivider
             stopButton
@@ -96,14 +115,20 @@ struct NavigationOverlayView: View {
     private var compassDirectionCell: some View {
         let relativeBearing = computeRelativeBearing()
         return HStack(spacing: .Trakke.xs) {
-            Image(systemName: "location.north.fill")
-                .font(.system(.footnote, weight: .semibold))
-                .foregroundStyle(Color.Trakke.brand)
-                .rotationEffect(.degrees(relativeBearing))
-                .animation(
-                    reduceMotion ? nil : .easeInOut(duration: 0.5),
-                    value: relativeBearing
-                )
+            if showsArrow {
+                Image(systemName: "location.north.fill")
+                    .font(.system(.footnote, weight: .semibold))
+                    .foregroundStyle(Color.Trakke.brand)
+                    // Innenfor GPS-usikkerheten er peilingen støy. Pila fryses
+                    // i modellen og tones ned her, så brukeren ser at den ikke
+                    // lenger peker på noe.
+                    .opacity(navigationVM.isBearingReliable ? 1 : 0.35)
+                    .rotationEffect(.degrees(relativeBearing))
+                    .animation(
+                        reduceMotion ? nil : .easeInOut(duration: 0.5),
+                        value: relativeBearing
+                    )
+            }
             Text(bearingText(navigationVM.compassBearing))
                 .font(.system(.subheadline, weight: .semibold).monospacedDigit())
                 .foregroundStyle(Color.Trakke.text)
@@ -115,11 +140,14 @@ struct NavigationOverlayView: View {
         .accessibilityElement(children: .combine)
         .accessibilityLabel(
             String(localized: "navigation.bearing")
-                + ": \(Int(navigationVM.compassBearing))\u{00B0}"
+                + ": \(roundedBearing)\u{00B0}"
+        )
+        .accessibilityHint(
+            showsArrow ? "" : String(localized: "navigation.headingUnavailable")
         )
     }
 
-    private func navBarStat(icon: String, value: String) -> some View {
+    private func navBarStat(icon: String, value: String, label: String) -> some View {
         HStack(spacing: .Trakke.xs) {
             Image(systemName: icon)
                 .font(.system(.caption, weight: .regular))
@@ -134,7 +162,8 @@ struct NavigationOverlayView: View {
         .padding(.horizontal, .Trakke.sm)
         .frame(maxWidth: .infinity, minHeight: 44)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(value)
+        .accessibilityLabel(label)
+        .accessibilityValue(value)
     }
 
     private var navBarDivider: some View {
@@ -171,6 +200,17 @@ struct NavigationOverlayView: View {
                     ? String(localized: "navigation.gpsLost")
                     : String(localized: "navigation.gpsReduced")
             )
+            .accessibilityValue(accuracyDescription)
+    }
+
+    /// Avstandstallet vises på metersnivå uansett usikkerhet. VoiceOver-brukere
+    /// får usikkerheten sagt her; seende ser den gule/røde pillen.
+    private var accuracyDescription: String {
+        guard navigationVM.gpsAccuracy > 0 else { return "" }
+        return String(
+            format: String(localized: "navigation.gpsAccuracy %lld"),
+            Int(navigationVM.gpsAccuracy.rounded())
+        )
     }
 
     // MARK: - Ankomst-banner
@@ -197,11 +237,17 @@ struct NavigationOverlayView: View {
     }
 
     private func computeRelativeBearing() -> Double {
-        let heading = userHeading ?? 0
+        guard let heading = userHeading else { return 0 }
         var delta = navigationVM.compassBearing - heading
         if delta > 180 { delta -= 360 }
         if delta < -180 { delta += 360 }
         return delta
+    }
+
+    /// Avrunding, ikke avkorting: `Int(89.8)` ga 89 grader og en systematisk
+    /// skjevhet nedover.
+    private var roundedBearing: Int {
+        Int(navigationVM.compassBearing.rounded()) % 360
     }
 
     private func bearingText(_ degrees: Double) -> String {
@@ -219,6 +265,6 @@ struct NavigationOverlayView: View {
         case 292.5..<337.5: direction = "NV"
         default: direction = ""
         }
-        return "\(Int(n))\u{00B0} \(direction)"
+        return "\(Int(n.rounded()) % 360)\u{00B0} \(direction)"
     }
 }

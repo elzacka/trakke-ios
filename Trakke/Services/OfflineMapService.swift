@@ -55,7 +55,23 @@ struct OfflinePackContext: Codable, Sendable {
 @MainActor
 final class OfflineMapService {
     static let shared = OfflineMapService()
-    nonisolated private static let tileSizeEstimate: Int64 = 15_000 // ~15 KB per tile
+    /// Målt gjennomsnitt for Kartverkets topografiske fliser, ikke et anslag:
+    /// 8038 fliser i flisdatabasen ga 51,7 KB i snitt (6. august 2026). De
+    /// detaljerte nivåene som dominerer en pakke lå på 47–48 KB, de grove på
+    /// 78–127 KB, men de er så få at snittet trekkes mot de detaljerte.
+    ///
+    /// Verdien var 15 KB, altså 3,4 ganger for lavt. Gråtonekartet er lettere
+    /// enn dette; anslaget er felles for alle kartlagene og treffer derfor
+    /// topografisk og turkart best.
+    ///
+    /// ÅPENT: anslaget er fortsatt for lavt. Oslo kommune anslås nå til
+    /// 168 MB, men pakken passerte 379 MB allerede på 57 prosent. Størrelsen
+    /// per flis er målt og riktig, så avviket ligger i `estimateTileCount`,
+    /// som ser ut til å telle omtrent en tredjedel av flisene MapLibre
+    /// faktisk henter. Mistanken er at nedlastingen skjer på enhetens
+    /// skalafaktor (@2x/@3x), mens formelen teller ett sett fliser.
+    /// Ikke undersøkt.
+    nonisolated private static let tileSizeEstimate: Int64 = 50_000
 
     private init() {}
 
@@ -140,6 +156,16 @@ final class OfflineMapService {
 
     func getPacks() -> [OfflinePackInfo] {
         guard let packs = MLNOfflineStorage.shared.packs else { return [] }
+        // MapLibre regner framdriften for en inaktiv pakke først når den bes
+        // om; fram til da er tilstanden `.unknown` og tellerne står på null.
+        // Uten dette viste ferdige nedlastinger «0 B» og «Totalt lagret 0 B»,
+        // og `isComplete` ble aldri sann – som igjen skjulte både «Vis området
+        // på kartet» og «Oppdater». Svaret kommer som en
+        // MLNOfflinePackProgressChanged-varsling, som `startObserving` allerede
+        // lytter på og laster lista på nytt fra.
+        for pack in packs where pack.state == .unknown {
+            pack.requestProgress()
+        }
         return packs.compactMap { packInfo(from: $0) }
     }
 
@@ -161,6 +187,47 @@ final class OfflineMapService {
         guard let packs = MLNOfflineStorage.shared.packs else { return }
         for pack in packs {
             MLNOfflineStorage.shared.removePack(pack) { _ in }
+        }
+    }
+
+    /// Gir pakken nytt navn. Navnet ligger i pakkens `context`, så det er den
+    /// som skrives om – selve flisene røres ikke.
+    /// `async` framfor completion-closure: MapLibres callback kjører utenfor
+    /// MainActor, og en `@MainActor`-isolert closure sendt inn dit er en
+    /// datakappløp-feil under Swift 6. Bare kontinuasjonen krysser grensen.
+    func renamePack(_ info: OfflinePackInfo, to newName: String) async {
+        guard let pack = findPack(id: info.id),
+              let ctx = decodeContext(pack.context) else { return }
+        let updated = OfflinePackContext(
+            id: ctx.id,
+            name: newName,
+            layer: ctx.layer,
+            kommuneId: ctx.kommuneId
+        )
+        guard let data = try? JSONEncoder().encode(updated) else { return }
+
+        await withCheckedContinuation { continuation in
+            pack.setContext(data) { error in
+                if let error {
+                    Logger.offline.error("Rename pack error: \(error, privacy: .private)")
+                }
+                continuation.resume()
+            }
+        }
+    }
+
+    /// Sjekker flisene mot serveren og henter bare dem som er endret.
+    /// Vesentlig billigere enn å slette og laste ned på nytt, og er grunnen
+    /// til at «oppdater» ikke er pakket inn som en ny nedlasting.
+    func refreshPack(_ info: OfflinePackInfo) async {
+        guard let pack = findPack(id: info.id) else { return }
+        await withCheckedContinuation { continuation in
+            MLNOfflineStorage.shared.invalidatePack(pack) { error in
+                if let error {
+                    Logger.offline.error("Refresh pack error: \(error, privacy: .private)")
+                }
+                continuation.resume()
+            }
         }
     }
 

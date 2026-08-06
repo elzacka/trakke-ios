@@ -302,6 +302,33 @@ final class OfflineViewModel {
         loadPacks()
     }
 
+    /// Tomt eller bare mellomrom avvises – en pakke uten navn er umulig å
+    /// skille fra de andre i lista.
+    func renamePack(_ pack: OfflinePackInfo, to newName: String) {
+        let trimmed = newName.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        Task { [weak self] in
+            await self?.service.renamePack(pack, to: trimmed)
+            self?.loadPacks()
+        }
+    }
+
+    /// Pakker som oppdateres nå. Raden viser det, så brukeren ikke trykker
+    /// igjen i troen på at ingenting skjedde – oppdateringen er stille når
+    /// flisene allerede er ferske.
+    var refreshingPackIds: Set<String> = []
+
+    func refreshPack(_ pack: OfflinePackInfo) {
+        guard !refreshingPackIds.contains(pack.id) else { return }
+        refreshingPackIds.insert(pack.id)
+        Task { [weak self] in
+            await self?.service.refreshPack(pack)
+            guard let self else { return }
+            self.refreshingPackIds.remove(pack.id)
+            self.loadPacks()
+        }
+    }
+
     func pausePack(_ pack: OfflinePackInfo) {
         service.pausePack(pack)
     }

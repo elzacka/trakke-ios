@@ -2668,6 +2668,61 @@
         }
       }
     },
+    "map.camera.a11yHint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trykk for å veksle mellom å følge posisjonen din og å la kartet stå fritt"
+          }
+        }
+      }
+    },
+    "map.camera.a11yLabel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kartvisning"
+          }
+        }
+      }
+    },
+    "map.camera.followHeading" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Følger deg – retning opp"
+          }
+        }
+      }
+    },
+    "map.camera.followNorth" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Følger deg – nord opp"
+          }
+        }
+      }
+    },
+    "map.camera.free" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kartet står fritt"
+          }
+        }
+      }
+    },
     "map.cleanMap.hint" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3199,6 +3254,17 @@
         }
       }
     },
+    "navigation.gpsAccuracy %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nøyaktighet omtrent %lld meter"
+          }
+        }
+      }
+    },
     "navigation.gpsLost" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3217,6 +3283,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Redusert GPS"
+          }
+        }
+      }
+    },
+    "navigation.headingUnavailable" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kompassretningen er ikke tilgjengelig. Tallet viser retningen fra nord."
           }
         }
       }
@@ -3448,6 +3525,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gått"
+          }
+        }
+      }
+    },
+    "navigation.underOneMinute" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Under 1 min"
+          }
+        }
+      }
+    },
+    "offline.areaCount %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld område"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld områder"
+                }
+              }
+            }
           }
         }
       }
@@ -3738,6 +3849,39 @@
         }
       }
     },
+    "offline.refresh" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oppdater"
+          }
+        }
+      }
+    },
+    "offline.rename" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Endre navn"
+          }
+        }
+      }
+    },
+    "offline.renameTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nytt navn på området"
+          }
+        }
+      }
+    },
     "offline.retry" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3767,6 +3911,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dra hjørnene for å justere området"
+          }
+        }
+      }
+    },
+    "offline.showOnMap" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vis området på kartet"
           }
         }
       }

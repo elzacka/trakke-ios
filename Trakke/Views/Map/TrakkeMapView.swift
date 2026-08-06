@@ -121,7 +121,11 @@ struct TrakkeMapView: UIViewRepresentable {
         // or disengage when toggled off. Navigation overrides this with its own logic.
         if !isNavigating {
             if viewModel.isHeadingUp {
-                if !context.coordinator.isUserInteracting && mapView.userTrackingMode != .followWithHeading {
+                // `!isCameraDetached`: har brukeren flyttet kartet, skal
+                // retning-opp ikke dra kameraet tilbake til posisjonen.
+                if !context.coordinator.isUserInteracting
+                    && !viewModel.isCameraDetached
+                    && mapView.userTrackingMode != .followWithHeading {
                     mapView.userTrackingMode = .followWithHeading
                 }
             } else if mapView.userTrackingMode == .followWithHeading {
@@ -151,6 +155,24 @@ struct TrakkeMapView: UIViewRepresentable {
             }
             mapView.setCenter(target, zoomLevel: viewModel.currentZoom, animated: true)
             viewModel.pendingCenter = nil
+        }
+
+        // «Vis nedlastet område». Egen kommando fordi et senterpunkt ikke sier
+        // noe om utstrekning – spørsmålet brukeren stiller er nettopp hvor
+        // stort området er. Luft rundt, og litt ekstra i bunn for kontrollene.
+        if let bounds = viewModel.pendingBounds {
+            if mapView.userTrackingMode != .none {
+                mapView.userTrackingMode = .none
+            }
+            mapView.setVisibleCoordinateBounds(
+                MLNCoordinateBounds(
+                    sw: CLLocationCoordinate2D(latitude: bounds.south, longitude: bounds.west),
+                    ne: CLLocationCoordinate2D(latitude: bounds.north, longitude: bounds.east)
+                ),
+                edgePadding: UIEdgeInsets(top: 60, left: 40, bottom: 140, right: 40),
+                animated: true
+            )
+            viewModel.pendingBounds = nil
         }
 
         // Update base layer only when actually changed
@@ -335,16 +357,46 @@ struct TrakkeMapView: UIViewRepresentable {
         /// Prevents updateUIView from snapping the map back to the old center.
         var isUserInteracting = false
 
-        func mapView(_ mapView: MLNMapView, regionWillChangeAnimated animated: Bool) {
+        /// Alle kameraendringer forårsaket av brukerens fingre. Skiller en
+        /// gest fra appens egne kamerakommandoer, som ikke skal koble fra.
+        private static let gestureReasons: MLNCameraChangeReason = [
+            .gesturePan, .gesturePinch, .gestureRotate, .gestureZoomIn,
+            .gestureZoomOut, .gestureOneFingerZoom, .gestureTilt
+        ]
+
+        // Selektorene er skrevet ut eksplisitt: implementeres reason-variantene,
+        // kaller MapLibre ikke lenger `regionWillChange/DidChangeAnimated`, og
+        // et navn som ikke treffer ville stilltiende falt tilbake til gammel
+        // oppførsel.
+        @objc(mapView:regionWillChangeWithReason:animated:)
+        func mapView(
+            _ mapView: MLNMapView,
+            regionWillChangeWith reason: MLNCameraChangeReason,
+            animated: Bool
+        ) {
             isUserInteracting = true
         }
 
-        func mapView(_ mapView: MLNMapView, regionDidChangeAnimated animated: Bool) {
+        @objc(mapView:regionDidChangeWithReason:animated:)
+        func mapView(
+            _ mapView: MLNMapView,
+            regionDidChangeWith reason: MLNCameraChangeReason,
+            animated: Bool
+        ) {
             isUserInteracting = false
 
-            // En gest (pinch/pan) eller setZoomLevel kan ha slått av MapLibre-
-            // tracking under navigasjon. Re-engasjer her ved gest-slutt.
-            if let mode = desiredNavCameraMode {
+            // Flyttet brukeren kartet selv, skal visningen bli stående til
+            // hen henter kameraet tilbake. Før ble tracking re-engasjert her,
+            // og kartet hoppet tilbake i det gesten slapp.
+            if !reason.intersection(Self.gestureReasons).isEmpty {
+                viewModel.isCameraDetached = true
+                viewModel.isTrackingUser = false
+            }
+
+            // En setZoomLevel eller annen programmatisk endring kan ha slått av
+            // MapLibre-tracking under navigasjon. Re-engasjer her – men aldri
+            // når brukeren bevisst har koblet fra.
+            if let mode = desiredNavCameraMode, !viewModel.isCameraDetached {
                 let desired: MLNUserTrackingMode = mode == .courseUp ? .followWithHeading : .follow
                 if mapView.userTrackingMode != desired {
                     applyNavTracking(on: mapView, mode: mode)
@@ -354,15 +406,6 @@ struct TrakkeMapView: UIViewRepresentable {
             viewModel.currentZoom = mapView.zoomLevel
             viewModel.currentCenter = mapView.centerCoordinate
             viewModel.currentHeading = mapView.direction
-
-            if viewModel.isTrackingUser, let userLocation = viewModel.userLocation {
-                let center = mapView.centerCoordinate
-                let distance = CLLocation(latitude: center.latitude, longitude: center.longitude)
-                    .distance(from: userLocation)
-                if distance > 50 {
-                    viewModel.isTrackingUser = false
-                }
-            }
 
             let bounds = mapView.visibleCoordinateBounds
             let viewport = ViewportBounds(

@@ -18,6 +18,7 @@ struct MapControlsOverlay<WeatherContent: View>: View {
     var onToggleCameraMode: (() -> Void)?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var showCleanMapHint = false
+    @State private var shownCameraModeHint: MapCameraFollowMode?
 
     var body: some View {
         ZStack {
@@ -68,6 +69,24 @@ struct MapControlsOverlay<WeatherContent: View>: View {
 
             // Kort hint når rent-kart slås på – trykk og hold kan trigges utilsiktet
             // (f.eks. med hansker), og eneste andre signal er at ikonet endres.
+            if let mode = shownCameraModeHint {
+                // Ikonene er nye for brukeren. En kort etikett navngir modusen
+                // du nettopp slo på, så formen læres. Vises aldri for «fritt» –
+                // at kartet står fritt er selvforklarende når du selv dro i det.
+                Text(mode.localizedName)
+                    .font(Font.Trakke.caption)
+                    .foregroundStyle(Color.Trakke.textInverse)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, .Trakke.lg)
+                    .padding(.vertical, .Trakke.sm)
+                    .background(Color.Trakke.brand)
+                    .clipShape(Capsule())
+                    .frame(maxHeight: .infinity, alignment: .bottom)
+                    .padding(.bottom, 80)
+                    .transition(.opacity)
+                    .allowsHitTesting(false)
+            }
+
             if showCleanMapHint {
                 // Samme stil og plassering som info-chipene i OfflineToasts.
                 Text(String(localized: "map.cleanMap.hint"))
@@ -92,6 +111,19 @@ struct MapControlsOverlay<WeatherContent: View>: View {
             try? await Task.sleep(for: .seconds(2))
             withAnimation(reduceMotion ? .none : .easeInOut(duration: 0.2)) {
                 showCleanMapHint = false
+            }
+        }
+        .task(id: followMode) {
+            // `.free` navngis ikke: en pan er sin egen forklaring, og et varsel
+            // på hver eneste kartflytting ville vært støy.
+            guard followMode != .free, !isCleanMapActive else { return }
+            let mode = followMode
+            withAnimation(reduceMotion ? .none : .easeInOut(duration: 0.2)) {
+                shownCameraModeHint = mode
+            }
+            try? await Task.sleep(for: .seconds(2))
+            withAnimation(reduceMotion ? .none : .easeInOut(duration: 0.2)) {
+                shownCameraModeHint = nil
             }
         }
     }
@@ -246,40 +278,70 @@ struct MapControlsOverlay<WeatherContent: View>: View {
 
     // MARK: - Compass
 
-    private var isHeadingUpActive: Bool {
-        isNavigating ? navigationCameraMode == .courseUp : viewModel.isHeadingUp
+    var followMode: MapCameraFollowMode {
+        MapCameraFollowMode.current(
+            isCameraDetached: viewModel.isCameraDetached,
+            isNavigating: isNavigating,
+            navigationCameraMode: navigationCameraMode,
+            isTrackingUser: viewModel.isTrackingUser,
+            isHeadingUp: viewModel.isHeadingUp
+        )
     }
 
-    /// Kompass + retnings-veksler. Tapper:
-    /// - Under navigasjon: veksler mellom nord-opp og retning-opp via kamera-modus.
-    /// - Ellers: slår heading-up av/på og sentrerer på brukeren.
-    /// Ikon-fargen signalerer aktiv tilstand (grønn = retning-opp, rød = nord-opp).
+    /// Farge er forsterkning, ikke bærer: grå når kartet står fritt, grønn når
+    /// det følger deg. Den gamle rød/grønn-vekslingen mellom nord-opp og
+    /// retning-opp er borte – de to skilles nå på ikonets form, som er lesbart
+    /// også for de som ikke skiller rødt fra grønt.
+    private var compassTint: Color {
+        followMode == .free ? Color.Trakke.textTertiary : Color.Trakke.brand
+    }
+
+    /// Kompass + følgemodus, samme tredeling som lokasjonsknappen i Apples Kart.
+    ///
+    /// Rekkefølgen er bevisst ulik i de to bruksmåtene, fordi hviletilstanden
+    /// er motsatt: utenfor navigasjon er fritt kart det normale og følging et
+    /// avbrekk, under navigasjon er det omvendt.
+    /// - Fritt kart: ett trykk henter kameraet tilbake til den modusen du
+    ///   hadde. Det bytter ikke modus i tillegg – ett trykk gjør én ting.
+    /// - Følger, utenfor navigasjon: trykk veksler nord opp ↔ retning opp.
+    /// - Følger, under navigasjon: trykk veksler kameramodus (samme veksling,
+    ///   men eid av navigasjonen slik at den overlever HUD-en).
     private var compassButton: some View {
         Button {
-            if isNavigating {
-                onToggleCameraMode?()
-            } else if viewModel.isHeadingUp {
-                viewModel.isHeadingUp = false
-                viewModel.shouldResetHeading = true
+            switch followMode {
+            case .free:
                 viewModel.centerOnUser()
-            } else {
-                viewModel.isHeadingUp = true
-                viewModel.centerOnUser()
+            case .followNorth:
+                if isNavigating {
+                    onToggleCameraMode?()
+                } else {
+                    viewModel.isHeadingUp = true
+                    viewModel.centerOnUser()
+                }
+            case .followHeading:
+                if isNavigating {
+                    onToggleCameraMode?()
+                } else {
+                    viewModel.isHeadingUp = false
+                    viewModel.shouldResetHeading = true
+                    viewModel.centerOnUser()
+                }
             }
         } label: {
-            Image(systemName: "location.north.fill")
+            Image(systemName: followMode.symbolName)
                 .font(Font.Trakke.bodyMedium)
-                .foregroundStyle(isHeadingUpActive ? Color.Trakke.brand : Color.Trakke.red)
+                .foregroundStyle(compassTint)
+                // Nålen peker mot nord i alle tre modusene – det er den ene
+                // opplysningen som gjelder uansett hva kameraet gjør.
                 .rotationEffect(.degrees(-viewModel.currentHeading))
                 .frame(width: 56, height: 56)
                 .background(Color.Trakke.surface)
                 .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.xl))
                 .trakkeControlShadow()
         }
-        .accessibilityLabel(isHeadingUpActive
-            ? String(localized: "map.controls.compass.courseUp")
-            : String(localized: "map.controls.compass"))
-        .accessibilityHint(String(localized: "map.controls.myPosition"))
+        .accessibilityLabel(String(localized: "map.camera.a11yLabel"))
+        .accessibilityValue(followMode.localizedName)
+        .accessibilityHint(String(localized: "map.camera.a11yHint"))
     }
 
     // MARK: - Offline Chip

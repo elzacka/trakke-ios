@@ -5,8 +5,13 @@ struct DownloadManagerSheet: View {
     var onNewDownload: (() -> Void)?
     var isEmbedded: Bool = false
     var dismissSheet: (() -> Void)?
+    /// Viser området på kartet og lukker menyen. Uten denne forteller lista
+    /// bare et navn – ikke hvilket terreng du faktisk har liggende.
+    var onShowOnMap: ((OfflinePackInfo) -> Void)?
     @Environment(\.dismiss) private var dismiss
     @State private var packToDelete: OfflinePackInfo?
+    @State private var packToRename: OfflinePackInfo?
+    @State private var newName: String = ""
 
     var body: some View {
         Group {
@@ -66,6 +71,24 @@ struct DownloadManagerSheet: View {
                 packToDelete = nil
             }
         )
+        // Samme mønster som å endre navn på en kategori i Steder.
+        .alert(String(localized: "offline.renameTitle"), isPresented: Binding(
+            get: { packToRename != nil },
+            set: { if !$0 { packToRename = nil; newName = "" } }
+        )) {
+            TextField(String(localized: "offline.areaName"), text: $newName)
+            Button(String(localized: "common.save")) {
+                if let pack = packToRename {
+                    viewModel.renamePack(pack, to: newName)
+                }
+                packToRename = nil
+                newName = ""
+            }
+            Button(String(localized: "common.cancel"), role: .cancel) {
+                packToRename = nil
+                newName = ""
+            }
+        }
     }
 
     private var packList: some View {
@@ -109,10 +132,50 @@ struct DownloadManagerSheet: View {
     }
 
     private func packRow(_ pack: OfflinePackInfo) -> some View {
+        packRowContent(pack)
+            // Hele raden er trykkbar, men bare når nedlastingen er ferdig –
+            // et halvlastet område har ingen meningsfull utstrekning å vise.
+            .contentShape(Rectangle())
+            .onTapGesture {
+                guard pack.progress.isComplete, let onShowOnMap else { return }
+                onShowOnMap(pack)
+            }
+            .contextMenu {
+                Button {
+                    packToRename = pack
+                    newName = pack.name
+                } label: {
+                    Label(String(localized: "offline.rename"), systemImage: "pencil")
+                }
+                if pack.progress.isComplete {
+                    Button {
+                        viewModel.refreshPack(pack)
+                    } label: {
+                        Label(String(localized: "offline.refresh"), systemImage: "arrow.clockwise")
+                    }
+                }
+                // «Slett» gjentas ikke her – papirkurven i raden er alltid
+                // synlig, og appens regel er at trykk-og-hold ikke dupliserer
+                // en handling som allerede står framme.
+            }
+            .accessibilityElement(children: .combine)
+            .accessibilityHint(
+                pack.progress.isComplete
+                    ? String(localized: "offline.showOnMap")
+                    : ""
+            )
+    }
+
+    private func packRowContent(_ pack: OfflinePackInfo) -> some View {
         VStack(alignment: .leading, spacing: .Trakke.rowVertical) {
             HStack {
                 Text(pack.name)
                     .font(Font.Trakke.bodyMedium)
+                if viewModel.refreshingPackIds.contains(pack.id) {
+                    ProgressView()
+                        .controlSize(.mini)
+                        .padding(.leading, .Trakke.xs)
+                }
                 Spacer()
                 Text(layerDisplayName(pack.layer))
                     .font(Font.Trakke.captionSoft)

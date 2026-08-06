@@ -13,8 +13,8 @@ Tråkke lagrer all data lokalt på enheten din. Ingen personopplysninger samles 
 - **Ruter, steder og turer** du oppretter
 - **Turdata:** GPS-spor, avstand og høydemeter fra registrerte turer
 - **Innstillinger:** valgt kartlag, koordinatformat og øvrige innstillinger
-- **Nedlastede kart** for offline bruk
-- **Kunnskapsartikler** for offline bruk
+- **Nedlastede kart** for bruk uten nett
+- **Kunnskapsartikler** for bruk uten nett
 - **Mellomlagrede vær- og varseldata:** svar fra vær- og varseltjenestene mellomlagres kort tid på enheten, beskyttet med iOS-filbeskyttelse, og slettes med «Slett alle data»
 
 Disse dataene forlater aldri enheten.
@@ -29,7 +29,7 @@ Under aktiv navigering fortsetter Tråkke å lese posisjonen mens skjermen er l�
 
 ### Nettverksstatus
 
-Appen viser om enheten er online eller offline, og hvilken tilkoblingstype som er i bruk (Wi-Fi, mobildata, kablet, annet eller ingen). Dette leses lokalt fra iOS via NWPathMonitor. Ingen nettverksdata sendes ut av enheten og ingenting lagres.
+Appen viser om enheten er tilkoblet eller frakoblet, og hvilken tilkoblingstype som er i bruk (Wi-Fi, mobildata, kablet, annet eller ingen). Dette leses lokalt fra iOS via NWPathMonitor. Ingen nettverksdata sendes ut av enheten og ingenting lagres.
 
 ### Data som ikke samles inn
 
