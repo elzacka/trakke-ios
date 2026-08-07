@@ -187,6 +187,12 @@ struct InfoSheet: View {
                         )
                         Divider()
                         dataSourceRow(
+                            name: "Wikimedia Commons",
+                            detail: String(localized: "info.wikimedia.detail"),
+                            license: "CC BY / CC BY-SA"
+                        )
+                        Divider()
+                        dataSourceRow(
                             name: "UT.no/DNT, Statskog m.fl.",
                             detail: String(localized: "info.utno.detail"),
                             license: "ODbL / NLOD"

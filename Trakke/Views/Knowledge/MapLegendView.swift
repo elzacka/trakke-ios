@@ -13,11 +13,19 @@ struct MapLegendView: View {
                         legendSection(section)
                     }
 
-                    Text(String(localized: "legend.attribution"))
-                        .font(Font.Trakke.captionSoft)
-                        .foregroundStyle(Color.Trakke.textTertiary)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.horizontal, .Trakke.xs)
+                    // CC BY 4.0 krever at bearbeiding angis og at lisensen
+                    // lenkes – utsnittene er beskårne, så begge deler står her.
+                    VStack(alignment: .leading, spacing: .Trakke.labelGap) {
+                        Text(String(localized: "legend.attribution"))
+                            .foregroundStyle(Color.Trakke.textTertiary)
+                        Link(destination: URL(string: "https://creativecommons.org/licenses/by/4.0/deed.no")!) {
+                            Text(verbatim: "creativecommons.org/licenses/by/4.0")
+                        }
+                        .accessibilityHint(String(localized: "accessibility.opensExternalLink"))
+                    }
+                    .font(Font.Trakke.captionSoft)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, .Trakke.xs)
 
                     Spacer(minLength: .Trakke.lg)
                 }

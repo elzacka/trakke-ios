@@ -99,8 +99,17 @@ struct KnowledgeCategoryView: View {
     let category: ArticleCategory
     @Bindable var viewModel: KnowledgeViewModel
 
+    // Alfabetisk på tittel, med norsk sortering (æ, ø, å sist) – samme
+    // regel som kategorilista. Unntak: Beredskap leses i den rekkefølgen
+    // temaene blir aktuelle i en krise (forberedelse → varsling →
+    // informasjon → oppholdssted → tilfluktsrom), styrt av sortOrder i
+    // SurvivalArticles.json.
     private var filteredArticles: [KnowledgeArticle] {
-        viewModel.articles.filter { $0.category == category.rawValue }
+        let inCategory = viewModel.articles.filter { $0.category == category.rawValue }
+        if category == .beredskap {
+            return inCategory.sorted { $0.sortOrder < $1.sortOrder }
+        }
+        return inCategory.sorted { $0.title.localizedCompare($1.title) == .orderedAscending }
     }
 
     var body: some View {
