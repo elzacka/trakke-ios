@@ -14,6 +14,7 @@ struct PreferencesSheet: View {
     @AppStorage(AppStorageKeys.showCompass) private var showCompass = false
     @AppStorage(AppStorageKeys.showZoomControls) private var showZoomControls = false
     @AppStorage(AppStorageKeys.showScaleBar) private var showScaleBar = false
+    @AppStorage(AppStorageKeys.showZoomLevel) private var showZoomLevel = false
     @AppStorage(AppStorageKeys.enableRotation) private var enableRotation = true
     @AppStorage(AppStorageKeys.overlayTurrutebasen) private var overlayTurrutebasen = false
     @AppStorage(AppStorageKeys.overlayNaturvernomrader) private var overlayNaturvernomrader = false
@@ -107,6 +108,11 @@ struct PreferencesSheet: View {
                             settingsToggle(
                                 label: String(localized: "settings.showScaleBar"),
                                 isOn: $showScaleBar
+                            )
+                            Divider()
+                            settingsToggle(
+                                label: String(localized: "settings.showZoomLevel"),
+                                isOn: $showZoomLevel
                             )
                             Divider()
                             settingsToggle(

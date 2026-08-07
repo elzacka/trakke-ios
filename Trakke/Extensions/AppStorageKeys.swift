@@ -5,6 +5,7 @@ enum AppStorageKeys {
     static let showCompass = "showCompass"
     static let showZoomControls = "showZoomControls"
     static let showScaleBar = "showScaleBar"
+    static let showZoomLevel = "showZoomLevel"
     static let enableRotation = "enableRotation"
     static let overlayTurrutebasen = "overlayTurrutebasen"
     static let overlayNaturskog = "overlayNaturskog"

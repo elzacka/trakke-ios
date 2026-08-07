@@ -2800,6 +2800,28 @@
         }
       }
     },
+    "map.scale.a11y" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Målestokk og zoomnivå"
+          }
+        }
+      }
+    },
+    "map.zoomLevel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "zoomnivå"
+          }
+        }
+      }
+    },
     "map.layer.grayscale" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5320,6 +5342,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vis målestokk"
+          }
+        }
+      }
+    },
+    "settings.showZoomLevel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vis zoomnivå"
           }
         }
       }

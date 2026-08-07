@@ -2,9 +2,11 @@ import ActivityKit
 import WidgetKit
 import SwiftUI
 
-// Brand green (#3e4533) – duplicated here since the widget extension
-// cannot import from the main app target.
-private let brandGreen = Color(red: 0.243, green: 0.271, blue: 0.200)
+// Ingen merkevarefarge her. Låseskjerm og Dynamic Island har bakgrunn appen
+// ikke styrer, og den mørke skogsgrønna (#3e4533) forsvant nesten på svart:
+// gradtallet og himmelretningen var vanskeligere å lese enn avstanden ved
+// siden av, som ikke satte farge og dermed arvet den lyse systemfargen.
+// Alt her følger nå systemfargen, som tilpasser seg lys og mørk bakgrunn.
 
 struct TrakkeNavigationLiveActivity: Widget {
     var body: some WidgetConfiguration {
@@ -34,7 +36,6 @@ struct TrakkeNavigationLiveActivity: Widget {
                     ? "Fremme"
                     : "\(context.state.bearing)° \(context.state.cardinalDirection)")
                     .font(.caption.monospacedDigit().weight(.semibold))
-                    .foregroundStyle(brandGreen)
             } compactTrailing: {
                 if !context.state.hasArrived {
                     Text(context.state.distance)
@@ -44,7 +45,6 @@ struct TrakkeNavigationLiveActivity: Widget {
                 Image(systemName: context.state.hasArrived
                     ? "flag.checkered" : "location.north.circle")
                     .font(.caption.weight(.semibold))
-                    .foregroundStyle(brandGreen)
             }
         }
     }
@@ -89,7 +89,6 @@ struct NavigationLockScreenView: View {
         HStack(spacing: 8) {
             Image(systemName: "flag.checkered")
                 .font(.title3.weight(.semibold))
-                .foregroundStyle(brandGreen)
             Text("Fremme")
                 .font(.headline.weight(.bold))
         }
@@ -110,7 +109,6 @@ struct NavigationBearingCell: View {
                     .font(.headline.weight(.bold))
                 Text("\(state.bearing)°")
                     .font(.caption.monospacedDigit())
-                    .foregroundStyle(.secondary)
             }
         }
         .accessibilityElement(children: .combine)
@@ -145,7 +143,7 @@ struct CompassRose: View {
 
             Image(systemName: "location.north.fill")
                 .font(.system(size: 11, weight: .bold))
-                .foregroundStyle(brandGreen)
+                .foregroundStyle(.primary)
                 .rotationEffect(.degrees(Double(bearing)))
         }
         .frame(width: 30, height: 30)

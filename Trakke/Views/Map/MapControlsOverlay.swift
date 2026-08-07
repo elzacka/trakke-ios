@@ -8,6 +8,7 @@ struct MapControlsOverlay<WeatherContent: View>: View {
     var showCompass = false
     var showZoomControls = false
     var showScaleBar = false
+    var showZoomLevel = false
     var hideMenuAndZoom = false
     var isConnected = true
     var isCleanMapActive = false
@@ -39,7 +40,7 @@ struct MapControlsOverlay<WeatherContent: View>: View {
                 HStack(alignment: .bottom) {
                     // Bunn venstre: målestokk over Kartverket-attribusjon, samme stil
                     VStack(alignment: .leading, spacing: .Trakke.rowVertical) {
-                        if showScaleBar {
+                        if showScaleBar || showZoomLevel {
                             scaleBar
                         }
                         attributionText
@@ -207,33 +208,68 @@ struct MapControlsOverlay<WeatherContent: View>: View {
 
     // MARK: - Scale Bar
 
+    /// Målestokk og zoomnivå i samme pille. Begge har egen bryter i
+    /// Innstillinger, og pillen viser det som er slått på – én, begge eller
+    /// ingen. De hører sammen fordi de svarer på samme spørsmål: hvor mye
+    /// kart ser jeg, og hvor tett er detaljene.
     private var scaleBar: some View {
         let scale = scaleInfo
         return HStack(spacing: .Trakke.xs) {
-            Rectangle()
-                .fill(Color.Trakke.textTertiary)
-                .frame(width: scale.widthPt, height: 2)
-                .overlay(alignment: .leading) {
-                    Rectangle()
-                        .fill(Color.Trakke.textTertiary)
-                        .frame(width: 1, height: 6)
-                }
-                .overlay(alignment: .trailing) {
-                    Rectangle()
-                        .fill(Color.Trakke.textTertiary)
-                        .frame(width: 1, height: 6)
-                }
-            Text(scale.label)
-                .font(Font.Trakke.captionSoft)
-                .foregroundStyle(Color.Trakke.textTertiary)
+            if showScaleBar {
+                scaleRule(width: scale.widthPt)
+
+                Text(scale.label)
+                    .font(Font.Trakke.captionSoft)
+                    .foregroundStyle(Color.Trakke.textTertiary)
+            }
+
+            if showZoomLevel {
+                // Avrundet nedover, ikke til nærmeste: terskler sjekkes med
+                // `zoom >= minZoom` på den brøkne verdien, så «z12» skal bety
+                // «du har passert 12», ikke «du er i nærheten av 12».
+                Text("z\(scale.zoom)")
+                    .font(Font.Trakke.captionSoft.monospacedDigit())
+                    .foregroundStyle(Color.Trakke.textTertiary)
+            }
         }
         .padding(.horizontal, .Trakke.sm)
         .padding(.vertical, .Trakke.xs)
         .background(.ultraThinMaterial)
         .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.sm))
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(String(localized: "map.scale.a11y"))
+        .accessibilityValue(scaleAccessibilityValue(scale))
     }
 
-    private var scaleInfo: (widthPt: CGFloat, label: String) {
+    private func scaleRule(width: CGFloat) -> some View {
+        Rectangle()
+            .fill(Color.Trakke.textTertiary)
+            .frame(width: width, height: 2)
+            .overlay(alignment: .leading) {
+                Rectangle()
+                    .fill(Color.Trakke.textTertiary)
+                    .frame(width: 1, height: 6)
+            }
+            .overlay(alignment: .trailing) {
+                Rectangle()
+                    .fill(Color.Trakke.textTertiary)
+                    .frame(width: 1, height: 6)
+            }
+    }
+
+    private func scaleAccessibilityValue(
+        _ scale: (widthPt: CGFloat, label: String, zoom: Int)
+    ) -> String {
+        var parts: [String] = []
+        if showScaleBar { parts.append(scale.label) }
+        if showZoomLevel {
+            parts.append("\(String(localized: "map.zoomLevel")) \(scale.zoom)")
+        }
+        return parts.joined(separator: ", ")
+    }
+
+
+    private var scaleInfo: (widthPt: CGFloat, label: String, zoom: Int) {
         let lat = viewModel.currentCenter.latitude
         let zoom = viewModel.currentZoom
         let metersPerPixel = 156543.03392 * cos(lat * .pi / 180) / pow(2, zoom)
@@ -254,7 +290,11 @@ struct MapControlsOverlay<WeatherContent: View>: View {
             label = "\(Int(snapped)) m"
         }
 
-        return (widthPt: CGFloat(max(30, min(barWidth, 120))), label: label)
+        return (
+            widthPt: CGFloat(max(30, min(barWidth, 120))),
+            label: label,
+            zoom: Int(zoom.rounded(.down))
+        )
     }
 
     // MARK: - Attribution

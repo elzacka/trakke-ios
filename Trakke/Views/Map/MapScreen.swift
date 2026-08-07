@@ -22,6 +22,7 @@ struct MapScreen: View {
     @AppStorage(AppStorageKeys.showCompass) private var showCompass = false
     @AppStorage(AppStorageKeys.showZoomControls) private var showZoomControls = false
     @AppStorage(AppStorageKeys.showScaleBar) private var showScaleBar = false
+    @AppStorage(AppStorageKeys.showZoomLevel) private var showZoomLevel = false
     @AppStorage(AppStorageKeys.enableRotation) private var enableRotation = true
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -81,6 +82,7 @@ struct MapScreen: View {
     }
     private var effectiveShowZoomControls: Bool { isCleanMapActive ? false : showZoomControls }
     private var effectiveShowScaleBar: Bool { isCleanMapActive ? false : showScaleBar }
+    private var effectiveShowZoomLevel: Bool { isCleanMapActive ? false : showZoomLevel }
     private var effectiveShowWeatherWidget: Bool { isCleanMapActive ? false : showWeatherWidget }
     private var effectiveOverlays: Set<OverlayLayer> { isCleanMapActive ? [] : mapViewModel.enabledOverlays }
 
@@ -227,6 +229,7 @@ struct MapScreen: View {
             showCompass: effectiveShowCompass,
             showZoomControls: effectiveShowZoomControls,
             showScaleBar: effectiveShowScaleBar,
+            showZoomLevel: effectiveShowZoomLevel,
             hideMenuAndZoom: mapMode != .idle || activityViewModel.isRecording,
             isConnected: connectivityMonitor.isConnected,
             isCleanMapActive: isCleanMapActive,

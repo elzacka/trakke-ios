@@ -22,8 +22,16 @@ actor POIService {
         bounds: ViewportBounds,
         zoom: Double
     ) async -> [POI] {
-        guard zoom >= category.minZoom else { return [] }
-        guard bounds.isValid else { return [] }
+        guard zoom >= category.minZoom else {
+            Logger.poi.debug(
+                "\(category.rawValue, privacy: .public): hoppet over, zoom \(zoom, privacy: .public) < \(category.minZoom, privacy: .public)"
+            )
+            return []
+        }
+        guard bounds.isValid else {
+            Logger.poi.debug("\(category.rawValue, privacy: .public): ugyldig kartutsnitt")
+            return []
+        }
 
         let buffered = bounds.buffered()
 
@@ -57,6 +65,12 @@ actor POIService {
                 return bundledFallback
             }
 
+            // Logg antallet, ikke bare feil. Et kall som lykkes og gir null
+            // treff så tidligere nøyaktig ut som at kategorien var i stykker:
+            // ingenting på kartet, ingenting i loggen.
+            Logger.poi.debug(
+                "\(category.rawValue, privacy: .public): \(pois.count, privacy: .public) treff fra API"
+            )
             cache[key] = CacheEntry(pois: pois, timestamp: Date())
             cleanCache()
             return pois
