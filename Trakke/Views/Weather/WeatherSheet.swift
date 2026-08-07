@@ -458,37 +458,36 @@ struct WeatherSheet: View {
             ? String(localized: "weather.current")
             : String(localized: "weather.daySummary")
 
-        return ScrollView {
-            VStack(spacing: .Trakke.cardGap) {
-                CardSection(summaryTitle) {
-                    CurrentConditionsCard(
-                        data: day,
-                        water: isToday ? viewModel.waterTemperature : nil,
-                        airQuality: isToday ? viewModel.airQuality : nil,
-                        daylight: isToday ? viewModel.daylight : nil
-                    )
-                }
+        return TrakkePushedPage(title: formatFullDate(day.time)) {
+            ScrollView {
+                VStack(spacing: .Trakke.cardGap) {
+                    CardSection(summaryTitle) {
+                        CurrentConditionsCard(
+                            data: day,
+                            water: isToday ? viewModel.waterTemperature : nil,
+                            airQuality: isToday ? viewModel.airQuality : nil,
+                            daylight: isToday ? viewModel.daylight : nil
+                        )
+                    }
 
-                if !hours.isEmpty {
-                    CardSection(String(localized: "weather.hourly")) {
-                        VStack(spacing: 0) {
-                            ForEach(hours, id: \.time) { hour in
-                                if hours.first?.time != hour.time {
-                                    Divider().padding(.leading, .Trakke.dividerLeading)
+                    if !hours.isEmpty {
+                        CardSection(String(localized: "weather.hourly")) {
+                            VStack(spacing: 0) {
+                                ForEach(hours, id: \.time) { hour in
+                                    if hours.first?.time != hour.time {
+                                        Divider().padding(.leading, .Trakke.dividerLeading)
+                                    }
+                                    hourlyRow(hour)
                                 }
-                                hourlyRow(hour)
                             }
                         }
                     }
                 }
+                .padding(.horizontal, .Trakke.sheetHorizontal)
+                .padding(.top, .Trakke.sheetTop)
+                .padding(.bottom, .Trakke.lg)
             }
-            .padding(.horizontal, .Trakke.sheetHorizontal)
-            .padding(.top, .Trakke.sheetTop)
-            .padding(.bottom, .Trakke.lg)
         }
-        .background(Color.Trakke.background)
-        .navigationTitle(formatFullDate(day.time))
-        .navigationBarTitleDisplayMode(.inline)
     }
 
     private func hoursForDay(_ dayIndex: Int, forecast: WeatherForecast) -> [WeatherData] {

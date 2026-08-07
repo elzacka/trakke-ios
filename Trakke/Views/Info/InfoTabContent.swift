@@ -50,6 +50,8 @@ struct InfoTabContent: View {
                     KnowledgeCategoryView(category: category, viewModel: knowledgeViewModel)
                 case .article(let article):
                     ArticleDetailView(article: article)
+                case .mapLegend:
+                    MapLegendView()
                 }
             }
         }

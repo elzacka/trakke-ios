@@ -14,13 +14,20 @@ struct ActivityDetailSheet: View {
     @State private var showEditDialog = false
 
     var body: some View {
-        if isEmbedded {
+        VStack(spacing: 0) {
+            // Pushet visning får appens tilbakeknapp; top-level sheet har
+            // ingen vei tilbake og viser bare tittelen.
+            TrakkeSheetHeader(title: activity.name, onBack: backAction)
             content
-        } else {
-            NavigationStack {
-                content
-            }
         }
+        .background(Color.Trakke.background)
+        .tint(Color.Trakke.brand)
+        .toolbar(.hidden, for: .navigationBar)
+    }
+
+    private var backAction: (() -> Void)? {
+        guard isEmbedded else { return nil }
+        return { dismiss() }
     }
 
     private var content: some View {
@@ -34,12 +41,8 @@ struct ActivityDetailSheet: View {
                 Spacer(minLength: .Trakke.lg)
             }
             .padding(.horizontal, .Trakke.sheetHorizontal)
-            .padding(.top, .Trakke.sheetTop)
+            .padding(.top, .Trakke.sm)
         }
-        .background(Color.Trakke.background)
-        .tint(Color.Trakke.brand)
-        .navigationTitle(activity.name)
-        .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showEditDialog) {
             EditNameCategorySheet(
                 title: String(localized: "common.edit"),

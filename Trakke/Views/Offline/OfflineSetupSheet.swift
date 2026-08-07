@@ -98,7 +98,6 @@ struct OfflineSetupSheet: View {
             NavigationLink {
                 DownloadManagerSheet(
                     viewModel: viewModel,
-                    isEmbedded: true,
                     onShowOnMap: onShowOnMap
                 )
             } label: {

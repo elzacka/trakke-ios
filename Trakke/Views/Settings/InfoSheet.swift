@@ -61,6 +61,19 @@ struct InfoSheet: View {
 
                 Divider().padding(.leading, .Trakke.dividerLeading)
 
+                // Tegnforklaringen pushes som egen side: innholdet er en
+                // symbolliste med egne kort og seksjoner, ikke et dokument
+                // som kan rendres inline slik naboene kan.
+                NavigationLink(value: KnowledgeDestination.mapLegend) {
+                    TrakkeMenuRow(
+                        label: String(localized: "legend.title"),
+                        trailing: { TrakkeMenuRowChevron() }
+                    )
+                }
+                .buttonStyle(.plain)
+
+                Divider().padding(.leading, .Trakke.dividerLeading)
+
                 ExpandableSection(
                     String(localized: "info.privacy.policy"),
                     bare: true,

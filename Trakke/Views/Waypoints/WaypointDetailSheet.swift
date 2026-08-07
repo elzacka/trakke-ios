@@ -15,9 +15,9 @@ struct WaypointDetailSheet: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            if !isEmbedded {
-                TrakkeSheetHeader(title: waypoint.name)
-            }
+            // Pushet visning får appens tilbakeknapp; top-level sheet har
+            // ingen vei tilbake og viser bare tittelen.
+            TrakkeSheetHeader(title: waypoint.name, onBack: backAction)
 
             ScrollView {
                 VStack(spacing: .Trakke.cardGap) {
@@ -28,16 +28,21 @@ struct WaypointDetailSheet: View {
                     Spacer(minLength: .Trakke.lg)
                 }
                 .padding(.horizontal, .Trakke.sheetHorizontal)
-                .padding(.top, isEmbedded ? .Trakke.sheetTop : .Trakke.sm)
+                .padding(.top, .Trakke.sm)
                 .padding(.bottom, .Trakke.xxl)
             }
         }
         .background(Color.Trakke.background)
         .tint(Color.Trakke.brand)
+        .toolbar(.hidden, for: .navigationBar)
         .sheet(item: $shareURL) { item in
             ShareSheet(activityItems: [item.url])
         }
-        .modifier(WaypointEmbeddedNavTitleModifier(isEmbedded: isEmbedded, title: waypoint.name))
+    }
+
+    private var backAction: (() -> Void)? {
+        guard isEmbedded else { return nil }
+        return { dismiss() }
     }
 
     // MARK: - Info Card
@@ -193,24 +198,6 @@ struct WaypointDetailSheet: View {
                 },
                 cancel: .cancel(String(localized: "common.no"))
             )
-        }
-    }
-}
-
-/// Setter navigationTitle bare når viewet er pushet (isEmbedded), så parent
-/// NavigationStack viser tittel og back-knapp i toolbaren. Når viewet
-/// presenteres som top-level sheet, viser TrakkeSheetHeader tittelen i stedet.
-private struct WaypointEmbeddedNavTitleModifier: ViewModifier {
-    let isEmbedded: Bool
-    let title: String
-
-    func body(content: Content) -> some View {
-        if isEmbedded {
-            content
-                .navigationTitle(title)
-                .navigationBarTitleDisplayMode(.inline)
-        } else {
-            content
         }
     }
 }

@@ -4,12 +4,9 @@ import SwiftUI
 
 struct ArticleDetailView: View {
     let article: KnowledgeArticle
-    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        VStack(spacing: 0) {
-            TrakkeSheetHeader(title: article.title, onBack: { dismiss() })
-
+        TrakkePushedPage(title: article.title) {
             ScrollView {
                 VStack(alignment: .leading, spacing: .Trakke.cardGap) {
                     MarkdownBodyView(markdown: article.body)
@@ -42,9 +39,6 @@ struct ArticleDetailView: View {
                 .padding(.top, .Trakke.sheetTop)
             }
         }
-        .background(Color.Trakke.background)
-        .tint(Color.Trakke.brand)
-        .toolbar(.hidden, for: .navigationBar)
     }
 }
 

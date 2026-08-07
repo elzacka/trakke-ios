@@ -1,8 +1,10 @@
 import SwiftUI
 
+/// Nås bare som pushet visning fra OfflineSetupSheet – derfor ingen egen
+/// NavigationStack-gren. En slik gren var død kode av samme sort som de fire
+/// ark-tilfellene ingen satte.
 struct DownloadManagerSheet: View {
     @Bindable var viewModel: OfflineViewModel
-    var isEmbedded: Bool = false
     /// Viser området på kartet og lukker menyen. Uten denne forteller lista
     /// bare et navn – ikke hvilket terreng du faktisk har liggende.
     var onShowOnMap: ((OfflinePackInfo) -> Void)?
@@ -11,12 +13,8 @@ struct DownloadManagerSheet: View {
     @State private var newName: String = ""
 
     var body: some View {
-        Group {
-            if isEmbedded {
-                innerContent
-            } else {
-                NavigationStack { innerContent }
-            }
+        TrakkePushedPage(title: String(localized: "offline.manager.title")) {
+            innerContent
         }
     }
 
@@ -32,10 +30,6 @@ struct DownloadManagerSheet: View {
                 packList
             }
         }
-        .background(Color.Trakke.background)
-        .tint(Color.Trakke.brand)
-        .navigationTitle(String(localized: "offline.manager.title"))
-        .navigationBarTitleDisplayMode(.inline)
         .trakkeDialog(
             isPresented: Binding(
                 get: { packToDelete != nil },

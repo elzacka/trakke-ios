@@ -12,9 +12,9 @@ struct RouteDetailSheet: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            if !isEmbedded {
-                TrakkeSheetHeader(title: route.name)
-            }
+            // Pushet visning får appens tilbakeknapp; top-level sheet har
+            // ingen vei tilbake og viser bare tittelen.
+            TrakkeSheetHeader(title: route.name, onBack: backAction)
 
             ScrollView {
                 VStack(spacing: .Trakke.cardGap) {
@@ -25,13 +25,13 @@ struct RouteDetailSheet: View {
                     Spacer(minLength: .Trakke.lg)
                 }
                 .padding(.horizontal, .Trakke.sheetHorizontal)
-                .padding(.top, isEmbedded ? .Trakke.sheetTop : .Trakke.sm)
+                .padding(.top, .Trakke.sm)
                 .padding(.bottom, .Trakke.xxl)
             }
         }
         .background(Color.Trakke.background)
         .tint(Color.Trakke.brand)
-        .modifier(EmbeddedNavTitleModifier(isEmbedded: isEmbedded, title: route.name))
+        .toolbar(.hidden, for: .navigationBar)
         .sheet(isPresented: $showEditDialog) {
             EditNameCategorySheet(
                 title: String(localized: "common.edit"),
@@ -202,22 +202,9 @@ struct RouteDetailSheet: View {
         .padding(.vertical, .Trakke.rowVertical)
     }
 
-}
 
-/// Setter navigationTitle bare når viewet er pushet (isEmbedded), så parent
-/// NavigationStack viser tittel og back-knapp i toolbaren. Når viewet
-/// presenteres som top-level sheet, viser TrakkeSheetHeader tittelen i stedet.
-private struct EmbeddedNavTitleModifier: ViewModifier {
-    let isEmbedded: Bool
-    let title: String
-
-    func body(content: Content) -> some View {
-        if isEmbedded {
-            content
-                .navigationTitle(title)
-                .navigationBarTitleDisplayMode(.inline)
-        } else {
-            content
-        }
+    private var backAction: (() -> Void)? {
+        guard isEmbedded else { return nil }
+        return { dismiss() }
     }
 }

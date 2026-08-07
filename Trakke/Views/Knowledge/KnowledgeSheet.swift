@@ -21,6 +21,8 @@ struct KnowledgeSheet: View {
                             KnowledgeCategoryView(category: category, viewModel: viewModel)
                         case .article(let article):
                             ArticleDetailView(article: article)
+                        case .mapLegend:
+                            MapLegendView()
                         }
                     }
             }
@@ -88,6 +90,7 @@ struct KnowledgeSheet: View {
 enum KnowledgeDestination: Hashable {
     case category(ArticleCategory)
     case article(KnowledgeArticle)
+    case mapLegend
 }
 
 // MARK: - Article Category View
@@ -95,16 +98,13 @@ enum KnowledgeDestination: Hashable {
 struct KnowledgeCategoryView: View {
     let category: ArticleCategory
     @Bindable var viewModel: KnowledgeViewModel
-    @Environment(\.dismiss) private var dismiss
 
     private var filteredArticles: [KnowledgeArticle] {
         viewModel.articles.filter { $0.category == category.rawValue }
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            TrakkeSheetHeader(title: category.displayName, onBack: { dismiss() })
-
+        TrakkePushedPage(title: category.displayName) {
             ScrollView {
                 VStack(spacing: .Trakke.cardGap) {
                     if filteredArticles.isEmpty {
@@ -135,8 +135,5 @@ struct KnowledgeCategoryView: View {
                 .padding(.top, .Trakke.sheetTop)
             }
         }
-        .background(Color.Trakke.background)
-        .tint(Color.Trakke.brand)
-        .toolbar(.hidden, for: .navigationBar)
     }
 }

@@ -25,7 +25,7 @@ Knappene ligger langs høyre kant. Hvilke som vises styrer du i Innstillinger �
 - **Værwidget**: Viser temperatur og symbol for kartsenteret. Trykk for fullt vær med varsel, snøskred og luftkvalitet.
 - **Zoom-knapper (+/−)**: Zoom inn og ut ett trinn. Nyttig med hansker eller én hånd.
 
-Nederst til venstre står målestokk og kartdataattribusjon. Det er informasjon, ikke knapper. Målestokk endrer seg ettersom du zoomer inn eller ut på kartet.
+Nederst til venstre står målestokk og kartdataattribusjon. Det er informasjon, ikke knapper. Målestokk endrer seg ettersom du zoomer inn eller ut på kartet. Du kan også vise zoomnivået (for eksempel «z12») i samme pille – slå det på i Innstillinger under Visning. Zoomnivået brukes i tegnforklaringen, som forteller fra hvilket nivå ulike kartsymboler vises.
 
 ## 2. Menyen
 
@@ -177,7 +177,9 @@ Artikler om friluftsliv og overlevelse. Noen artikler har bilder. Trykk på bild
 
 Øverst vises om appen er **Tilkoblet** eller **Frakoblet**, og hvilken tilkobling som er i bruk. Visningen bruker bare lokal nettverksinformasjon. Ingenting sendes ut.
 
-Her finner du også denne brukerveiledningen, personvernerklæringen, lenke til Tråkkes kildekode og en lenke for å vurdere appen i App Store.
+Her finner du også denne brukerveiledningen, tegnforklaringen og personvernerklæringen, lenke til Tråkkes kildekode og en lenke for å vurdere appen i App Store.
+
+**Tegnforklaring** viser Kartverkets kartsymboler med norsk forklaring. Der det er kjent, står også zoomnivået symbolet vises fra, for eksempel «fra z11» for turisthytter og merkede stier.
 
 Brukerveiledningen og personvernerklæringen åpnes og lukkes ved å trykke på overskriften. Du kan også trykke hvor som helst i teksten for å lukke igjen, så slipper du å rulle tilbake til toppen.
 
@@ -199,7 +201,7 @@ Brukerveiledningen og personvernerklæringen åpnes og lukkes ved å trykke på 
 
 ### Visning
 
-Tillat kartrotasjon. Vis eller skjul kompass, målestokk, værwidget og zoomknapper.
+Tillat kartrotasjon. Vis eller skjul kompass, målestokk, zoomnivå, værwidget og zoomknapper.
 
 ### Koordinatformat
 
