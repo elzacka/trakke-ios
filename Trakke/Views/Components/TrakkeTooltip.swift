@@ -13,19 +13,14 @@ struct TrakkeTooltipContent: View {
     var source: String? = nil
 
     var body: some View {
-        CardSection {
+        // Tittelen går til `CardSection`, som gir den appens
+        // seksjonsoverskrift over kortet – samme form som «AKKURAT NÅ» og
+        // «NETTVERKSSTATUS». Før lå den inni kortet med samme vekt som
+        // avsnittsoverskriftene under, så ingenting skilte nivåene.
+        CardSection(title) {
             VStack(alignment: .leading, spacing: .Trakke.sm) {
-                if !title.isEmpty {
-                    Text(title)
-                        .font(Font.Trakke.bodyMedium)
-                        .foregroundStyle(Color.Trakke.text)
-                }
-
                 if !text.isEmpty {
-                    Text(text)
-                        .font(Font.Trakke.bodyRegular)
-                        .foregroundStyle(Color.Trakke.textSecondary)
-                        .fixedSize(horizontal: false, vertical: true)
+                    formatted(text)
                 }
 
                 ForEach(Array(sections.enumerated()), id: \.offset) { _, section in
@@ -35,10 +30,7 @@ struct TrakkeTooltipContent: View {
                             .foregroundStyle(Color.Trakke.text)
                             .padding(.top, .Trakke.sm)
                     }
-                    Text(section.text)
-                        .font(Font.Trakke.bodyRegular)
-                        .foregroundStyle(Color.Trakke.textSecondary)
-                        .fixedSize(horizontal: false, vertical: true)
+                    formatted(section.text)
                 }
 
                 if let source {
@@ -50,6 +42,35 @@ struct TrakkeTooltipContent: View {
             }
             .padding(.vertical, .Trakke.sm)
             .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
+    /// Kulepunkt får kula i egen kolonne. Rendret som én `Text` la ombrukket
+    /// linje starte under kula i stedet for under teksten, og en liste med
+    /// fem nivåer ble en vegg. Tomme linjer blir avsnittsluft.
+    @ViewBuilder
+    private func formatted(_ raw: String) -> some View {
+        let lines = raw.components(separatedBy: "\n")
+        VStack(alignment: .leading, spacing: .Trakke.xs) {
+            ForEach(Array(lines.enumerated()), id: \.offset) { _, line in
+                if line.isEmpty {
+                    Color.clear.frame(height: .Trakke.xs)
+                } else if line.hasPrefix("\u{2022} ") {
+                    HStack(alignment: .firstTextBaseline, spacing: .Trakke.sm) {
+                        Text("\u{2022}")
+                        Text(String(line.dropFirst(2)))
+                            .fixedSize(horizontal: false, vertical: true)
+                        Spacer(minLength: 0)
+                    }
+                    .font(Font.Trakke.bodyRegular)
+                    .foregroundStyle(Color.Trakke.textSecondary)
+                } else {
+                    Text(line)
+                        .font(Font.Trakke.bodyRegular)
+                        .foregroundStyle(Color.Trakke.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
         }
     }
 }
@@ -79,14 +100,19 @@ private struct TooltipSheet<TooltipContent: View>: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: .Trakke.cardGap) {
-                    tooltipContent()
+            VStack(spacing: 0) {
+                // Appens egen grabber, som i alle andre ark. Uten den fikk
+                // vær-forklaringene systemets indikator og skilte seg ut.
+                TrakkeSheetHeader()
+
+                ScrollView {
+                    VStack(alignment: .leading, spacing: .Trakke.cardGap) {
+                        tooltipContent()
+                    }
+                    .padding(.horizontal, .Trakke.sheetHorizontal)
+                    .padding(.bottom, .Trakke.lg)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                .padding(.horizontal, .Trakke.sheetHorizontal)
-                .padding(.top, .Trakke.sheetTop)
-                .padding(.bottom, .Trakke.lg)
-                .frame(maxWidth: .infinity, alignment: .leading)
             }
             .scrollBounceBehavior(.basedOnSize)
             .background(Color.Trakke.background)
@@ -97,7 +123,7 @@ private struct TooltipSheet<TooltipContent: View>: View {
             }
         }
         .presentationDetents([.medium, .large])
-        .presentationDragIndicator(.visible)
+        .presentationDragIndicator(.hidden)
         .presentationBackground(Color.Trakke.background)
         .presentationCornerRadius(.TrakkeRadius.sheet)
     }

@@ -3529,17 +3529,6 @@
         }
       }
     },
-    "navigation.underOneMinute" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Under 1 min"
-          }
-        }
-      }
-    },
     "offline.areaCount %lld" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7027,7 +7016,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Måles i millimeter. 1 mm er 1 liter vann per kvadratmeter. Sannsynligheten sier om det kommer noe, ikke hvor mye.\n\nSlik kjennes nedbøren (mm per time):\n• Under 0,5 mm/t: yr eller småregn. Lette klær holder.\n• 0,5–2,5 mm/t: lett regn. Vannfast jakke er nok på kort tur.\n• 2,5–7,5 mm/t: moderat regn. Regnklær trengs på lengre tur.\n• 7,5–15 mm/t: kraftig regn. Full skall, ekstra varmt undertøy, vurder kortere rute.\n• Over 15 mm/t: styrtregn eller skybrudd. Bekker svulmer på minutter, økt rasfare i bratt terreng, lite sikt.\n\nFor snø er tommelfingerregelen at 1 mm vann gir ca. 1 cm snø, men tørr puddersnø kan gi opptil det tredobbelte.\n\nHelse: Våte klær gir mye raskere varmetap enn tørre, og sammen med vind og kulde er dette en hovedgrunn til hypotermi (kroppstemperatur under 35 °C). Barn og eldre er mest utsatt, men friske voksne kan også bli kraftig påvirket etter lengre eksponering."
+            "value" : "Måles i millimeter. 1 mm er 1 liter vann per kvadratmeter. Sannsynligheten sier om det kommer noe, ikke hvor mye.\n\nSlik kjennes nedbøren (mm per time):\n• Under 0,5 mm/t: Yr eller småregn. Lette klær holder.\n• 0,5–2,5 mm/t: Lett regn. Vannfast jakke er nok på kort tur.\n• 2,5–7,5 mm/t: Moderat regn. Regnklær trengs på lengre tur.\n• 7,5–15 mm/t: Kraftig regn. Full skall, ekstra varmt undertøy, vurder kortere rute.\n• Over 15 mm/t: Styrtregn eller skybrudd. Bekker svulmer på minutter, økt rasfare i bratt terreng, lite sikt.\n\nFor snø er tommelfingerregelen at 1 mm vann gir ca. 1 cm snø, men tørr puddersnø kan gi opptil det tredobbelte.\n\nHelse: Våte klær gir mye raskere varmetap enn tørre, og sammen med vind og kulde er dette en hovedgrunn til hypotermi (kroppstemperatur under 35 °C). Barn og eldre er mest utsatt, men friske voksne kan også bli kraftig påvirket etter lengre eksponering."
           }
         }
       }
@@ -7170,7 +7159,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Måles i hektopascal (hPa). Normalt trykk ved havflaten er 1013 hPa. Trykket faller cirka 1 hPa per 8 meter du stiger. På 1000 moh. er det rundt 900 hPa.\n\nHva trykket forteller om været:\n• Lavtrykk (under ca. 1010 hPa, kraftig lavtrykk 970–990 hPa): luft stiger, skyer dannes og det kommer ofte vind og nedbør. Lavtrykk betyr ikke kaldere, men det bringer som regel mildere og fuktigere luft inn over landet.\n• Høytrykk (over ca. 1020 hPa, kraftig høytrykk 1025–1050 hPa): luft synker, himmelen klarner og det roer seg. Gir varme dager om sommeren, men kalde, stjerneklare netter om vinteren.\n• Fallende trykk: dårligere vær på vei. Stigende trykk: bedring på vei.\n\nHelse: Når trykket faller raskt, i lavtrykk eller når du går raskt opp i fjellet, oppstår en trykkforskjell mellom luft i bihuler og mellomøre og omgivelsene. Du kan kjenne press over panne, tette ører, hodepine eller svimmelhet. Mange migrenepasienter merker værendringer som utløser. Kroniske bihulebetennelser og indre-øre-plager som gir svimmelhet øker risikoen.\n\nKilde: Store norske leksikon."
+            "value" : "Måles i hektopascal (hPa). Normalt trykk ved havflaten er 1013 hPa. Trykket faller cirka 1 hPa per 8 meter du stiger. På 1000 moh. er det rundt 900 hPa.\n\nHva trykket forteller om været:\n• Lavtrykk (under ca. 1010 hPa, kraftig lavtrykk 970–990 hPa): Luft stiger, skyer dannes og det kommer ofte vind og nedbør. Lavtrykk betyr ikke kaldere, men det bringer som regel mildere og fuktigere luft inn over landet.\n• Høytrykk (over ca. 1020 hPa, kraftig høytrykk 1025–1050 hPa): Luft synker, himmelen klarner og det roer seg. Gir varme dager om sommeren, men kalde, stjerneklare netter om vinteren.\n• Fallende trykk: Dårligere vær på vei. Stigende trykk: bedring på vei.\n\nHelse: Når trykket faller raskt, i lavtrykk eller når du går raskt opp i fjellet, oppstår en trykkforskjell mellom luft i bihuler og mellomøre og omgivelsene. Du kan kjenne press over panne, tette ører, hodepine eller svimmelhet. Mange migrenepasienter merker værendringer som utløser. Kroniske bihulebetennelser og indre-øre-plager som gir svimmelhet øker risikoen.\n\nKilde: Store norske leksikon."
           }
         }
       }
@@ -8556,7 +8545,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Middelvinden oppgis i meter per sekund (m/s). Vindkast er den høyeste vindhastigheten målt over tre sekunder, og kan være langt sterkere enn middelvinden.\n\nSlik kjennes vinden (Beaufort-skalaen):\n• 0–1 m/s: stille eller nesten stille. Røyk stiger rett opp.\n• 2–3 m/s: svak vind. Du merker den i ansiktet.\n• 4–7 m/s: lett til laber bris. Behagelig sommervær.\n• 8–10 m/s: frisk bris. Klærne blafrer, småbåter får hvite bølgetopper.\n• 11–13 m/s: liten kuling. Du må snakke høyt for å bli hørt.\n• 14–16 m/s: stiv kuling. Tungt å gå mot vinden.\n• 17–24 m/s: sterk kuling til liten storm. Greiner brekker. Hold deg unna åpne høyder.\n• 25+ m/s: full storm eller mer. Livsfarlig. Unngå alle eksponerte steder.\n\nOver tregrensen og i fjorder og trange daler er vinden ofte langt sterkere enn varselet viser.\n\nHelse: Vind river bort det varme luftlaget klærne fanger inntil huden, og du mister kroppsvarme mye raskere, også ved milde temperaturer. Vind tørker dessuten ut slimhinner og gir øye-irritasjon, særlig i kaldt og snørikt terreng.\n\nKilde: Store norske leksikon (Beauforts vindskala)."
+            "value" : "Middelvinden oppgis i meter per sekund (m/s). Vindkast er den høyeste vindhastigheten målt over tre sekunder, og kan være langt sterkere enn middelvinden.\n\nSlik kjennes vinden (Beaufort-skalaen):\n• 0–1 m/s: Stille eller nesten stille. Røyk stiger rett opp.\n• 2–3 m/s: Svak vind. Du merker den i ansiktet.\n• 4–7 m/s: Lett til laber bris. Behagelig sommervær.\n• 8–10 m/s: Frisk bris. Klærne blafrer, småbåter får hvite bølgetopper.\n• 11–13 m/s: Liten kuling. Du må snakke høyt for å bli hørt.\n• 14–16 m/s: Stiv kuling. Tungt å gå mot vinden.\n• 17–24 m/s: Sterk kuling til liten storm. Greiner brekker. Hold deg unna åpne høyder.\n• 25+ m/s: Full storm eller mer. Livsfarlig. Unngå alle eksponerte steder.\n\nOver tregrensen og i fjorder og trange daler er vinden ofte langt sterkere enn varselet viser.\n\nHelse: Vind river bort det varme luftlaget klærne fanger inntil huden, og du mister kroppsvarme mye raskere, også ved milde temperaturer. Vind tørker dessuten ut slimhinner og gir øye-irritasjon, særlig i kaldt og snørikt terreng.\n\nKilde: Store norske leksikon (Beauforts vindskala)."
           }
         }
       }

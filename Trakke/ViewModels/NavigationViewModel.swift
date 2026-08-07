@@ -24,9 +24,6 @@ final class NavigationViewModel {
     /// Usann når avstanden er innenfor GPS-usikkerheten. Da er peilingen ren
     /// støy, og pila fryses i stedet for å snurre rundt.
     var isBearingReliable = true
-    /// Estimert gangtid til målet, målt på hvor raskt brukeren faktisk
-    /// nærmer seg. `nil` før første posisjon og etter ankomst.
-    var estimatedTravelTime: TimeInterval?
 
     // MARK: - Private State
 
@@ -46,14 +43,6 @@ final class NavigationViewModel {
     private var lastProcessedTime: Date?
     private var navigationActivityID: String?
     private var lastActivityUpdate: Date?
-
-    /// Startpunktet for gjeldende tempomåling: avstand til målet og
-    /// tidspunktet den ble målt.
-    private var travelTimeSample: (distance: Double, time: Date)?
-    /// Glattet tempo mot målet (m/s). Måles på faktisk redusert avstand, ikke
-    /// på GPS-fart: går du en omvei rundt et vann, nærmer du deg saktere enn
-    /// du går, og estimatet skal vise det.
-    private var closingRate: Double?
 
     private static let activityUpdateInterval: TimeInterval = 5.0
     /// Romslig stale-frist: mister enheten GPS-fiks en stund (skog, juv,
@@ -94,16 +83,6 @@ final class NavigationViewModel {
     /// Under denne avstanden domineres peilingen av GPS-støy.
     private static let minBearingDistance: Double = 10
 
-    /// Måleintervall for tempo. Kortere vinduer drukner i GPS-støy: ±5 m
-    /// støy på ett sekund er ±5 m/s.
-    private static let travelTimeSampleInterval: TimeInterval = 10
-    private static let closingRateSmoothing: Double = 0.4
-    /// Under dette tempoet regnes brukeren som stående – da beholdes forrige
-    /// måling i stedet for at estimatet blåses opp av en pause.
-    private static let minUsableSpeed: Double = 0.15   // 0,5 km/t
-    private static let maxWalkingSpeed: Double = 2.5   // 9 km/t
-    private static let fallbackWalkingSpeed: Double = 1.1  // 4 km/t
-
     /// Porten mot for hyppige oppdateringer. Må ligge godt under
     /// CoreLocations ~1 Hz, ellers faller annenhver posisjon utenfor og
     /// HUD-en blir opptil to sekunder gammel. Instansvariabler (ikke static)
@@ -123,9 +102,6 @@ final class NavigationViewModel {
         hasComputedBearing = false
         gpsAccuracy = 0
         isBearingReliable = true
-        estimatedTravelTime = nil
-        travelTimeSample = nil
-        closingRate = nil
         HapticFeedback.prepare()
         restartGPSWatchdog()
         startLiveActivity()
@@ -143,9 +119,6 @@ final class NavigationViewModel {
     func resumeNavigation() {
         guard isActive else { return }
         isPaused = false
-        // Tempomålingen står stille under pause; start et nytt vindu i stedet
-        // for å tolke pausen som svært langsom gange.
-        travelTimeSample = nil
         restartGPSWatchdog()
         updateLiveActivity(force: true)
     }
@@ -164,9 +137,6 @@ final class NavigationViewModel {
         compassDistance = 0
         gpsAccuracy = 0
         isBearingReliable = true
-        estimatedTravelTime = nil
-        travelTimeSample = nil
-        closingRate = nil
         maxObservedDistance = 0
         arrivalHits = 0
         hasComputedBearing = false
@@ -247,7 +217,6 @@ final class NavigationViewModel {
 
         maxObservedDistance = max(maxObservedDistance, compassDistance)
         updateArrival(accuracy: location.horizontalAccuracy)
-        updateTravelTime(location, now: now)
 
         updateLiveActivity()
     }
@@ -286,45 +255,8 @@ final class NavigationViewModel {
         guard arrivalHits >= Self.arrivalConfirmations else { return }
 
         hasArrived = true
-        estimatedTravelTime = nil
         HapticFeedback.success()
         updateLiveActivity(force: true)
-    }
-
-    // MARK: - Gangtid
-
-    private func updateTravelTime(_ location: CLLocation, now: Date) {
-        if let sample = travelTimeSample {
-            let elapsed = now.timeIntervalSince(sample.time)
-            if elapsed >= Self.travelTimeSampleInterval {
-                let rate = min(
-                    Self.maxWalkingSpeed,
-                    (sample.distance - compassDistance) / elapsed
-                )
-                // Står brukeren stille, eller går et strekk bort fra målet,
-                // beholdes forrige tempo. Et rødt lys skal ikke doble
-                // estimatet.
-                if rate >= Self.minUsableSpeed {
-                    closingRate = closingRate.map {
-                        $0 + (rate - $0) * Self.closingRateSmoothing
-                    } ?? rate
-                }
-                travelTimeSample = (compassDistance, now)
-            }
-        } else {
-            travelTimeSample = (compassDistance, now)
-        }
-
-        guard !hasArrived else {
-            estimatedTravelTime = nil
-            return
-        }
-
-        // Før første måling: GPS-farten hvis den finnes, ellers 4 km/t.
-        // `location.speed` er negativ når enheten ikke kan måle fart.
-        let speed = closingRate
-            ?? max(Self.fallbackWalkingSpeed, min(Self.maxWalkingSpeed, location.speed))
-        estimatedTravelTime = compassDistance / speed
     }
 
     // MARK: - Live Activity
@@ -399,8 +331,7 @@ final class NavigationViewModel {
             cardinalDirection: cardinalDirection(for: compassBearing),
             distance: MeasurementService.formatDistance(compassDistance),
             isPaused: isPaused,
-            hasArrived: hasArrived,
-            travelTime: estimatedTravelTime.map(MeasurementService.formatDuration)
+            hasArrived: hasArrived
         )
     }
 

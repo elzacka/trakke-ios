@@ -241,17 +241,6 @@ struct SheetHost: ViewModifier {
             .presentationDragIndicator(.visible)
             .presentationBackgroundInteraction(.enabled(upThrough: .large))
 
-        case .offlineManager:
-            DownloadManagerSheet(
-                viewModel: offlineViewModel,
-                onNewDownload: {
-                    sheets.active = .offlineSetup
-                }
-            )
-            .presentationDetents([.medium, .large])
-            .presentationDragIndicator(.visible)
-            .presentationBackgroundInteraction(.enabled(upThrough: .large))
-
         case .downloadArea:
             DownloadAreaSheet(viewModel: offlineViewModel)
                 .presentationDetents([.medium, .large])

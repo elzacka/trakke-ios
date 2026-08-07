@@ -2,13 +2,10 @@ import SwiftUI
 
 struct DownloadManagerSheet: View {
     @Bindable var viewModel: OfflineViewModel
-    var onNewDownload: (() -> Void)?
     var isEmbedded: Bool = false
-    var dismissSheet: (() -> Void)?
     /// Viser området på kartet og lukker menyen. Uten denne forteller lista
     /// bare et navn – ikke hvilket terreng du faktisk har liggende.
     var onShowOnMap: ((OfflinePackInfo) -> Void)?
-    @Environment(\.dismiss) private var dismiss
     @State private var packToDelete: OfflinePackInfo?
     @State private var packToRename: OfflinePackInfo?
     @State private var newName: String = ""
@@ -39,21 +36,6 @@ struct DownloadManagerSheet: View {
         .tint(Color.Trakke.brand)
         .navigationTitle(String(localized: "offline.manager.title"))
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button {
-                    onNewDownload?()
-                    if isEmbedded {
-                        dismissSheet?()
-                    } else {
-                        dismiss()
-                    }
-                } label: {
-                    Image(systemName: "plus")
-                }
-                .accessibilityLabel(String(localized: "offline.download"))
-            }
-        }
         .trakkeDialog(
             isPresented: Binding(
                 get: { packToDelete != nil },
@@ -145,18 +127,20 @@ struct DownloadManagerSheet: View {
                     packToRename = pack
                     newName = pack.name
                 } label: {
-                    Label(String(localized: "offline.rename"), systemImage: "pencil")
+                    Text(String(localized: "offline.rename"))
                 }
                 if pack.progress.isComplete {
                     Button {
                         viewModel.refreshPack(pack)
                     } label: {
-                        Label(String(localized: "offline.refresh"), systemImage: "arrow.clockwise")
+                        Text(String(localized: "offline.refresh"))
                     }
                 }
-                // «Slett» gjentas ikke her – papirkurven i raden er alltid
-                // synlig, og appens regel er at trykk-og-hold ikke dupliserer
-                // en handling som allerede står framme.
+                Button(role: .destructive) {
+                    packToDelete = pack
+                } label: {
+                    Text(String(localized: "common.delete"))
+                }
             }
             .accessibilityElement(children: .combine)
             .accessibilityHint(
@@ -184,18 +168,6 @@ struct DownloadManagerSheet: View {
                     .padding(.vertical, .Trakke.badgePadV)
                     .background(Color.Trakke.brandTint)
                     .clipShape(Capsule())
-
-                Button {
-                    packToDelete = pack
-                } label: {
-                    Image(systemName: "trash")
-                        .font(Font.Trakke.caption)
-                        .foregroundStyle(Color.Trakke.red)
-                        .frame(minWidth: .Trakke.touchMin, minHeight: .Trakke.touchMin)
-                        .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel(String(localized: "common.delete"))
             }
 
             HStack {

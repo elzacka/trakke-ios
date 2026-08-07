@@ -322,22 +322,19 @@ struct TracksListSheet: View {
                         argument: String(localized: "list.showOnlyThis.announce \(route.name)")
                     )
                 } label: {
-                    Label(
-                        String(localized: "routes.showOnlyThis"),
-                        systemImage: "eye.circle"
-                    )
+                    Text(String(localized: "routes.showOnlyThis"))
                 }
 
                 Button {
                     editingRoute = route
                 } label: {
-                    Label(String(localized: "common.edit"), systemImage: "pencil")
+                    Text(String(localized: "common.edit"))
                 }
 
                 Button(role: .destructive) {
                     routeViewModel.deleteRoute(route)
                 } label: {
-                    Label(String(localized: "common.delete"), systemImage: "trash")
+                    Text(String(localized: "common.delete"))
                 }
             }
 
@@ -403,22 +400,19 @@ struct TracksListSheet: View {
                 Button {
                     editingActivity = activity
                 } label: {
-                    Label(String(localized: "common.edit"), systemImage: "pencil")
+                    Text(String(localized: "common.edit"))
                 }
 
                 Button {
                     activityViewModel.convertToRoute(activity, using: routeViewModel)
                 } label: {
-                    Label(
-                        String(localized: "activity.convertToRoute"),
-                        systemImage: "point.topleft.down.to.point.bottomright.curvepath"
-                    )
+                    Text(String(localized: "activity.convertToRoute"))
                 }
 
                 Button(role: .destructive) {
                     activityViewModel.deleteActivity(activity)
                 } label: {
-                    Label(String(localized: "common.delete"), systemImage: "trash")
+                    Text(String(localized: "common.delete"))
                 }
             }
 

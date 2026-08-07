@@ -72,14 +72,6 @@ func arrivalThresholdScalesWithAccuracy() {
     #expect(NavigationViewModel.arrivalThreshold(for: -1) == 12)
 }
 
-// MARK: - Varighetsformatering
-
-@Test func durationFormatting() {
-    #expect(MeasurementService.formatDuration(30) == "Under 1 min")
-    #expect(MeasurementService.formatDuration(18 * 60) == "18 min")
-    #expect(MeasurementService.formatDuration(60 * 60) == "1 t")
-    #expect(MeasurementService.formatDuration(95 * 60) == "1 t 35 min")
-}
 
 // MARK: - NavigationViewModel Tests
 
@@ -273,35 +265,7 @@ func maxObservedDistanceIgnoresOutliers() async {
     #expect(!arrived, "Brukeren har ikke beveget seg – ingen ankomst")
 }
 
-@Test("Gangtid estimeres fra første posisjon")
-func travelTimeEstimate() async {
-    let dest = CLLocationCoordinate2D(latitude: 59.0, longitude: 10.0)
-    let vm = await makeTestViewModel(destination: dest)
 
-    let initial = await vm.estimatedTravelTime
-    #expect(initial == nil, "Ingen posisjon ennå gir ingen gangtid")
-
-    await vm.processLocationUpdate(fix(59.002, 10.0))  // ~222 m
-    let estimate = await vm.estimatedTravelTime
-    // Uten målt tempo brukes 4 km/t: ~200 sekunder.
-    #expect(estimate != nil)
-    #expect(estimate! > 150 && estimate! < 250)
-}
-
-@Test("Gangtid faller bort ved ankomst")
-func travelTimeClearedOnArrival() async {
-    let dest = CLLocationCoordinate2D(latitude: 59.0, longitude: 10.0)
-    let vm = await makeTestViewModel(destination: dest)
-
-    await vm.processLocationUpdate(fix(59.001, 10.0))
-    await vm.processLocationUpdate(fix(59.00004, 10.0))
-    await vm.processLocationUpdate(fix(59.00004, 10.0))
-
-    let arrived = await vm.hasArrived
-    #expect(arrived)
-    let estimate = await vm.estimatedTravelTime
-    #expect(estimate == nil)
-}
 
 @Test("Peilingen fryses når avstanden er innenfor GPS-støyen")
 func bearingFreezesNearTarget() async {

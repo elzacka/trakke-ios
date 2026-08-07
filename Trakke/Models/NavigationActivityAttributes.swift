@@ -9,8 +9,5 @@ struct NavigationActivityAttributes: ActivityAttributes {
         /// Låseskjermen må vite om ankomst – uten dette fortsatte den å telle
         /// ned mens appen viste «Fremme».
         var hasArrived: Bool
-        /// Estimert gangtid, ferdig formatert. `nil` ved ankomst og før
-        /// første posisjon.
-        var travelTime: String?
     }
 }

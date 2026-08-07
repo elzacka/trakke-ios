@@ -20,7 +20,7 @@ struct TrakkeNavigationLiveActivity: Widget {
                     VStack(alignment: .trailing, spacing: 2) {
                         Text(context.state.distance)
                             .font(.title3.monospacedDigit().weight(.semibold))
-                        Text(context.state.travelTime.map { "\($0) igjen" } ?? "til mål")
+                        Text("til mål")
                             .font(.caption2)
                             .foregroundStyle(.secondary)
                     }
@@ -68,7 +68,7 @@ struct NavigationLockScreenView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(state.distance)
                         .font(.title3.monospacedDigit().weight(.semibold))
-                    Text(state.travelTime.map { "\($0) igjen" } ?? "til mål")
+                    Text("til mål")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }

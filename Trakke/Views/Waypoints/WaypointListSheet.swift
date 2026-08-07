@@ -337,7 +337,7 @@ struct WaypointListSheet: View {
                     renamingCategory = category
                     renameNewName = category
                 } label: {
-                    Label(String(localized: "common.rename"), systemImage: "pencil")
+                    Text(String(localized: "common.rename"))
                 }
             }
         }
@@ -405,16 +405,13 @@ struct WaypointListSheet: View {
                 argument: String(localized: "list.showOnlyThis.announce \(waypoint.name)")
             )
         } label: {
-            Label(
-                String(localized: "waypoints.showOnlyThis"),
-                systemImage: "eye.circle"
-            )
+            Text(String(localized: "waypoints.showOnlyThis"))
         }
 
         Button(role: .destructive) {
             waypointToDelete = waypoint
         } label: {
-            Label(String(localized: "common.delete"), systemImage: "trash")
+            Text(String(localized: "common.delete"))
         }
     }
 

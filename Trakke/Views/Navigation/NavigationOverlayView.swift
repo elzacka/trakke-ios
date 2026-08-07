@@ -54,18 +54,7 @@ struct NavigationOverlayView: View {
             compassDirectionCell
 
             navBarDivider
-            navBarStat(
-                value: formatDistance(navigationVM.compassDistance),
-                label: String(localized: "navigation.distance")
-            )
-
-            if let travelTime = navigationVM.estimatedTravelTime {
-                navBarDivider
-                navBarStat(
-                    value: MeasurementService.formatDuration(travelTime),
-                    label: String(localized: "navigation.timeRemaining")
-                )
-            }
+            distanceCell
 
             navBarDivider
             stopButton
@@ -145,23 +134,36 @@ struct NavigationOverlayView: View {
         )
     }
 
-    /// Uten ikon: enheten i verdien sier allerede hva tallet er («230 m»,
-    /// «18 min»). HUD-en leses i bevegelse og skal være den roligste flaten
-    /// i appen, så alt som ikke bærer informasjon er borte.
-    private func navBarStat(value: String, label: String) -> some View {
-        HStack(spacing: .Trakke.xs) {
-            Text(value)
+    /// Avstand med «Avstand i luftlinje» under. Uten ikon: enheten sier
+    /// allerede hva tallet er. Undertittelen står der fordi tallet ellers
+    /// leses som gangavstand – peilingen går rett fram, ikke langs sti, og
+    /// forskjellen kan være stor i terreng.
+    ///
+    /// Tidsestimatet som lå her er fjernet av samme grunn: en gangtid regnet
+    /// på luftlinje lover noe terrenget ikke holder.
+    private var distanceCell: some View {
+        VStack(spacing: 0) {
+            Text(formatDistance(navigationVM.compassDistance))
                 .font(.system(.subheadline, weight: .semibold).monospacedDigit())
                 .foregroundStyle(Color.Trakke.text)
                 .contentTransition(.numericText())
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+
+            Text(String(localized: "navigation.straightLine"))
+                .font(.system(.caption2))
+                .foregroundStyle(Color.Trakke.textTertiary)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
         }
         .padding(.horizontal, .Trakke.sm)
         .frame(maxWidth: .infinity, minHeight: 44)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(label)
-        .accessibilityValue(value)
+        .accessibilityLabel(String(localized: "navigation.distance"))
+        .accessibilityValue(
+            formatDistance(navigationVM.compassDistance)
+                + ", " + String(localized: "navigation.straightLine")
+        )
     }
 
     private var navBarDivider: some View {

@@ -48,17 +48,6 @@ enum MeasurementService {
         return String(format: "%.0f m", meters)
     }
 
-    /// Varighet til visning i navigasjons-HUD og på låseskjermen. Gangtid er
-    /// et estimat – sekunder ville gitt en presisjon estimatet ikke har.
-    static func formatDuration(_ seconds: TimeInterval) -> String {
-        guard seconds.isFinite, seconds > 0 else { return "\u{2013}" }
-        if seconds < 60 { return String(localized: "navigation.underOneMinute") }
-        let minutes = Int((seconds / 60).rounded())
-        if minutes < 60 { return "\(minutes) min" }
-        let hours = minutes / 60
-        let rest = minutes % 60
-        return rest == 0 ? "\(hours) t" : "\(hours) t \(rest) min"
-    }
 
     static func formatElevation(_ meters: Double) -> String {
         "\(Int(meters.rounded())) m"

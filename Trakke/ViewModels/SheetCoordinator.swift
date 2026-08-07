@@ -11,7 +11,6 @@ enum ActiveSheet: Identifiable, Hashable {
     case waypointList
     case waypointDetail
     case waypointEdit
-    case offlineManager
     case downloadArea
     case offlineSetup
     case weather
