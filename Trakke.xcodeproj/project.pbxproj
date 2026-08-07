@@ -167,6 +167,7 @@
 		9666FCF3983BF4C9C9D4D6D2 /* RouteSaveSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0B6A552D3B2051865D92D15 /* RouteSaveSheet.swift */; };
 		989F96FA810508C3D9D6CC18 /* Bearing.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B26570C579C1A80526E5A /* Bearing.swift */; };
 		98CF7CBB31AA5360AF6AF7CE /* clearsky_night.svg in Resources */ = {isa = PBXBuildFile; fileRef = C5C59C0A84CFCDA153DB0956 /* clearsky_night.svg */; };
+		999A1131FBF002B206938343 /* BundledSpeciesImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F0ECAA575F1796C6EF23511 /* BundledSpeciesImage.swift */; };
 		9B25CEA7AFBBD315B719C25E /* sleet.svg in Resources */ = {isa = PBXBuildFile; fileRef = 078EEA9D89BC3BAEB3584697 /* sleet.svg */; };
 		9C9B4F6981B39E14D4C33AD3 /* rainshowersandthunder_day.svg in Resources */ = {isa = PBXBuildFile; fileRef = 88647FCD9241DD192C359521 /* rainshowersandthunder_day.svg */; };
 		9DAB8CBD444CB9D9DBFD47B6 /* NavigationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4711AD6123FBDCB2103C0D3E /* NavigationViewModel.swift */; };
@@ -371,6 +372,7 @@
 		2B5AA04468954FB6FBA31348 /* Trakke.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Trakke.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2B6E2DD11A5F4E2ACAA70167 /* PackStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackStorageTests.swift; sourceTree = "<group>"; };
 		2E6E4C26D5FE9797521FAE65 /* BundledPOIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundledPOIService.swift; sourceTree = "<group>"; };
+		2F0ECAA575F1796C6EF23511 /* BundledSpeciesImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundledSpeciesImage.swift; sourceTree = "<group>"; };
 		2F839339307DB2720A58C1E5 /* sleetshowers_polartwilight.svg */ = {isa = PBXFileReference; path = sleetshowers_polartwilight.svg; sourceTree = "<group>"; };
 		30BCD1CBB926C9DDCED61BED /* KnowledgeArticle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnowledgeArticle.swift; sourceTree = "<group>"; };
 		31E85512B571BF6621E937BF /* heavysleetshowersandthunder_day.svg */ = {isa = PBXFileReference; path = heavysleetshowersandthunder_day.svg; sourceTree = "<group>"; };
@@ -725,6 +727,7 @@
 			isa = PBXGroup;
 			children = (
 				48A20058239EB89295A71175 /* Activity.swift */,
+				2F0ECAA575F1796C6EF23511 /* BundledSpeciesImage.swift */,
 				30BCD1CBB926C9DDCED61BED /* KnowledgeArticle.swift */,
 				A40C0F8CE947B8F54DEE8604 /* KnowledgeArticle+GRDB.swift */,
 				CB54AF153094CE54757BE82D /* KnowledgeEntry.swift */,
@@ -1479,6 +1482,7 @@
 				989F96FA810508C3D9D6CC18 /* Bearing.swift in Sources */,
 				8902A57C1C10EEB17A9AC623 /* BottomNavBar.swift in Sources */,
 				D63D63EB20C96AF5968E3630 /* BundledPOIService.swift in Sources */,
+				999A1131FBF002B206938343 /* BundledSpeciesImage.swift in Sources */,
 				B9BE9AC1075DFE349FED2DA5 /* CardSection.swift in Sources */,
 				1705EE926883A0215705E800 /* CategoryHierarchyView.swift in Sources */,
 				808AA69F56CBE74E3EBBC1AC /* Color+Trakke.swift in Sources */,
@@ -1713,7 +1717,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -1820,7 +1824,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
