@@ -17,6 +17,9 @@ struct MarkdownBodyView: View {
         let caption: String
         let isSpecies: Bool
         var loadedImage: UIImage?
+        /// Krediteringen bildet ble vist med – bundlede Commons-bilder har
+        /// fotograf og lisens som må følge bildet også i fullskjerm.
+        var attribution: String?
         var name: String { id }
     }
 
@@ -36,7 +39,7 @@ struct MarkdownBodyView: View {
                 ImageViewerView(
                     uiImage: uiImage,
                     caption: ref.caption,
-                    attribution: String(localized: "image.attribution.artsdatabanken")
+                    attribution: ref.attribution ?? String(localized: "image.attribution.artsdatabanken")
                 )
             } else if !ref.isSpecies {
                 ImageViewerView(name: ref.name, caption: ref.caption)
@@ -122,8 +125,14 @@ struct MarkdownBodyView: View {
                 scientificName: scientificName,
                 caption: caption,
                 imageService: imageService,
-                onTap: { loadedImage in
-                    selectedImage = ImageRef(id: scientificName, caption: caption, isSpecies: true, loadedImage: loadedImage)
+                onTap: { loadedImage, attribution in
+                    selectedImage = ImageRef(
+                        id: scientificName,
+                        caption: caption,
+                        isSpecies: true,
+                        loadedImage: loadedImage,
+                        attribution: attribution
+                    )
                 }
             )
         }
@@ -145,28 +154,22 @@ private struct SpeciesImageBlock: View {
     let scientificName: String
     let caption: String
     var imageService: ArtsdatabankenImageService = ArtsdatabankenImageService.default
-    let onTap: (UIImage) -> Void
+    /// Bildet og krediteringen det ble vist med, så fullskjermvisningen
+    /// aldri viser feil fotograf.
+    let onTap: (UIImage, String) -> Void
     @State private var image: UIImage?
     @State private var isLoading = true
 
-    var body: some View {
-        if let image {
-            Button { onTap(image) } label: {
-                VStack(alignment: .leading, spacing: .Trakke.xs) {
-                    Image(uiImage: image)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))
+    /// Bundlet reservebilde for arter Artsdatabanken-katalogen mangler.
+    private var bundled: BundledSpeciesImage? {
+        BundledSpeciesImage.byScientificName[scientificName]
+    }
 
-                    speciesCaption
-                }
-            }
-            .buttonStyle(.plain)
-            // Bilder uten bildetekst (overskriften rett over beskriver dem)
-            // skal fortsatt ha en VoiceOver-etikett.
-            .accessibilityLabel(caption.isEmpty ? String(localized: "image.accessibility.fallback") : caption)
-            .accessibilityAddTraits(.isImage)
-            .accessibilityHint(String(localized: "image.fullscreen.hint"))
+    var body: some View {
+        if let bundled, let bundledImage = UIImage(named: bundled.assetName) {
+            imageBlock(bundledImage, attribution: bundled.credit)
+        } else if let image {
+            imageBlock(image, attribution: String(localized: "image.attribution.artsdatabanken"))
         } else if isLoading {
             VStack(alignment: .leading, spacing: .Trakke.xs) {
                 RoundedRectangle(cornerRadius: .TrakkeRadius.lg)
@@ -177,7 +180,7 @@ private struct SpeciesImageBlock: View {
                             .accessibilityLabel(String(localized: "common.loading"))
                     }
 
-                speciesCaption
+                speciesCaption(String(localized: "image.attribution.artsdatabanken"))
             }
             .task(id: scientificName) {
                 image = await imageService.image(for: scientificName)
@@ -187,14 +190,33 @@ private struct SpeciesImageBlock: View {
         // If not loading and no image: show nothing (species image not available)
     }
 
-    private var speciesCaption: some View {
+    private func imageBlock(_ uiImage: UIImage, attribution: String) -> some View {
+        Button { onTap(uiImage, attribution) } label: {
+            VStack(alignment: .leading, spacing: .Trakke.xs) {
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))
+
+                speciesCaption(attribution)
+            }
+        }
+        .buttonStyle(.plain)
+        // Bilder uten bildetekst (overskriften rett over beskriver dem)
+        // skal fortsatt ha en VoiceOver-etikett.
+        .accessibilityLabel(caption.isEmpty ? String(localized: "image.accessibility.fallback") : caption)
+        .accessibilityAddTraits(.isImage)
+        .accessibilityHint(String(localized: "image.fullscreen.hint"))
+    }
+
+    private func speciesCaption(_ attribution: String) -> some View {
         VStack(alignment: .leading, spacing: .Trakke.labelGap) {
             if !caption.isEmpty {
                 Text(caption)
                     .font(Font.Trakke.captionSoft)
                     .foregroundStyle(Color.Trakke.textTertiary)
             }
-            Text(String(localized: "image.attribution.artsdatabanken"))
+            Text(attribution)
                 .font(Font.Trakke.captionSoft)
                 .foregroundStyle(Color.Trakke.textTertiary)
         }
