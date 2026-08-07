@@ -2055,6 +2055,17 @@
         }
       }
     },
+    "info.wikimedia.detail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enkelte artsbilder i kunnskapsartiklene, med fotograf og lisens i bildeteksten"
+          }
+        }
+      }
+    },
     "info.yr.detail" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2578,7 +2589,18 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Symboler: Kartverket (CC BY 4.0)"
+            "value" : "Symboler: Beskårne utsnitt fra Kartverkets N50-tegnforklaring (CC BY 4.0). Zoomnivåer: Kartverkets spesifikasjon for skjermkartografi v2.2, kontrollert mot kartet."
+          }
+        }
+      }
+    },
+    "legend.buildings.note" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skole og naust har egne symboler bare i trykte kart. På skjermkartet tegnes de som vanlige bygninger."
           }
         }
       }
@@ -2589,7 +2611,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Staker, bøyer og andre sjømerker hører til sjøkartene og tegnes ikke i dette kartet."
+            "value" : "Varder, staker, bøyer og andre sjømerker hører til sjøkartene og tegnes ikke i dette kartet."
           }
         }
       }
@@ -2633,7 +2655,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kartet bygger på Kartverkets kartserier. Jo mer du zoomer inn, jo flere detaljer og symboler ser du på kartet.\n\nFra zoomnivå 9 vises symboler merket «fra z9». Hovedveier og jernbane er med også på lavere zoomnivåer, mens de små turkartsymbolene dukker opp fra nivå 11. Du kan se hvilket zoomnivå du er på nederst til venstre på kartet, i den ovale boksen med tall. Slå den på i Innstillinger.\n\nFargene på selve kartet kan avvike litt fra symbolene her. Enkeltbygninger tegnes for eksempel i brunt og blått, og merkede stier i rødt."
+            "value" : "Kartet bygger på Kartverkets kartserier. Jo mer du zoomer inn, jo flere detaljer og symboler ser du på kartet.\n\nFra zoomnivå 9 vises symboler merket «fra z9». Nivåene følger Kartverkets tegneregler for skjermkart. På de laveste nivåene tegnes bare et utvalg, og symbolene kan ha en enklere form enn i oversikten her. Du kan se hvilket zoomnivå du er på nederst til venstre på kartet, i den ovale boksen med tall. Slå den på i Innstillinger.\n\nFargene på selve kartet kan avvike litt fra symbolene her. Enkeltbygninger tegnes for eksempel i brunt og blått, og merkede stier i rødt."
           }
         }
       }
@@ -3062,7 +3084,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Merket sti, gang- og sykkelvei"
+            "value" : "Merket sti"
           }
         }
       }
@@ -3096,17 +3118,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Myr"
-          }
-        }
-      }
-    },
-    "legend.row.naust" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Naust, bu"
           }
         }
       }
@@ -3199,28 +3210,6 @@
         }
       }
     },
-    "legend.row.skole" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Skole"
-          }
-        }
-      }
-    },
-    "legend.row.skuterloype" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Skuterløype"
-          }
-        }
-      }
-    },
     "legend.row.skytebane" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3260,7 +3249,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sti. Gangbru"
+            "value" : "Umerket sti"
           }
         }
       }
@@ -3386,17 +3375,6 @@
         }
       }
     },
-    "legend.row.varde" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Varde, båke"
-          }
-        }
-      }
-    },
     "legend.row.veiTunnel" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3514,6 +3492,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tegnforklaring"
+          }
+        }
+      }
+    },
+    "legend.transport.note" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skuterløyper tegnes ikke i dette kartet."
           }
         }
       }

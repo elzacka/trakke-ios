@@ -12,6 +12,9 @@ import SwiftUI
 struct TrakkeSheetHeader: View {
     var title: String? = nil
     var onBack: (() -> Void)? = nil
+    /// Skalerer med Dynamic Type – en fast 16 pt chevron ble stående
+    /// uleselig liten ved store teksttørrelser.
+    @ScaledMetric(relativeTo: .body) private var backIconSize: CGFloat = 16
 
     var body: some View {
         VStack(spacing: 0) {
@@ -57,7 +60,7 @@ struct TrakkeSheetHeader: View {
     private func backButton(action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: "chevron.left")
-                .font(.system(size: 16, weight: .semibold))
+                .font(.system(size: backIconSize, weight: .semibold))
                 .foregroundStyle(Color.Trakke.brandLight)
                 .frame(width: .Trakke.touchMin, height: .Trakke.touchMin)
                 .contentShape(Rectangle())

@@ -63,11 +63,13 @@ MIT.
 - Kartverket: kart, terreng og tjenester (CC BY 4.0)
 - Miljødirektoratet: naturvern og naturskog (NLOD 2.0)
 - Meteorologisk institutt: vær, luftkvalitet, hav- og badevannstemperatur (CC BY 4.0)
+- Yr/NRK: værsymboler (CC BY 4.0)
 - NVE / Varsom: snøskred- og flomvarsler (NLOD)
 - Artsdatabanken: artsbilder (CC BY 4.0)
 - Riksantikvaren: kulturminner (NLOD)
 - DSB: tilfluktsrom (NLOD)
 - Wikidata: fosser (CC0)
+- Wikimedia Commons: enkelte artsbilder (CC BY / CC BY-SA)
 - UT.no/DNT, Statskog, fjellstyrer m.fl.: hytter
 - OpenStreetMap-bidragsytere: øvrige kategorier (ODbL)
 

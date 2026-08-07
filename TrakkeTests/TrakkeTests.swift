@@ -2,6 +2,7 @@ import Testing
 import Foundation
 import CoreLocation
 import SwiftData
+import UIKit
 @testable import Trakke
 
 // MARK: - Model Tests
@@ -1508,6 +1509,52 @@ func kartverketStyleJSON(layer: BaseLayer) {
         #expect(!article.title.isEmpty, "Article id \(article.id) has empty title")
         #expect(!article.body.isEmpty, "Article id \(article.id) '\(article.title)' has empty body")
         #expect(!article.category.isEmpty, "Article id \(article.id) '\(article.title)' has empty category")
+    }
+}
+
+// MARK: - Map Legend
+
+// En feilskrevet nøkkel er taus: String(localized:) gir nøkkelen tilbake,
+// og raden viser «legend.row.tettbebyggelse» i stedet for norsk tekst.
+@Test("Alle tegnforklaringsnøkler er oversatt")
+func mapLegendKeysResolve() {
+    for section in MapLegend.sections {
+        #expect(section.title != section.titleKey, "Uoversatt seksjonsnøkkel: \(section.titleKey)")
+        if let footnoteKey = section.footnoteKey {
+            #expect(section.footnote != footnoteKey, "Uoversatt fotnotenøkkel: \(footnoteKey)")
+        }
+        for row in section.rows {
+            #expect(row.name != row.nameKey, "Uoversatt radnøkkel: \(row.nameKey)")
+            if let detailKey = row.detailKey {
+                #expect(row.detail != detailKey, "Uoversatt detaljnøkkel: \(detailKey)")
+            }
+        }
+    }
+    for level in MapLegend.detailLevels {
+        let resolved = String(localized: String.LocalizationValue(level.nameKey))
+        #expect(resolved != level.nameKey, "Uoversatt nivånøkkel: \(level.nameKey)")
+    }
+}
+
+// Hver rad peker på et imageset – et feilskrevet asset-navn rendrer som
+// tomrom uten å feile.
+@Test("Alle tegnforklaringssymboler finnes i asset-katalogen")
+func mapLegendAssetsExist() {
+    for section in MapLegend.sections {
+        for row in section.rows {
+            #expect(UIImage(named: row.asset) != nil, "Mangler imageset: \(row.asset)")
+        }
+    }
+}
+
+// Bundlede artsbilder må finnes i asset-katalogen og aldri skygge for
+// arter som finnes i Artsdatabanken-katalogen med kreditering intakt.
+@Test("Bundlede artsbilder finnes og har kreditering")
+func bundledSpeciesImagesExist() {
+    for (name, entry) in BundledSpeciesImage.byScientificName {
+        #expect(UIImage(named: entry.assetName) != nil, "Mangler imageset for \(name): \(entry.assetName)")
+        #expect(entry.credit.contains("Foto:"), "Kreditering mangler fotograf for \(name)")
+        #expect(entry.credit.contains("CC "), "Kreditering mangler lisens for \(name)")
     }
 }
 

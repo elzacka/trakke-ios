@@ -68,14 +68,16 @@ final class OfflineMapService {
     /// enn dette; anslaget er felles for alle kartlagene og treffer derfor
     /// topografisk og turkart best.
     ///
-    /// ÅPENT: anslaget er fortsatt for lavt. Oslo kommune anslås nå til
-    /// 168 MB, men pakken passerte 379 MB allerede på 57 prosent. Størrelsen
-    /// per flis er målt og riktig, så avviket ligger i `estimateTileCount`,
-    /// som ser ut til å telle omtrent en tredjedel av flisene MapLibre
-    /// faktisk henter. Mistanken er at nedlastingen skjer på enhetens
-    /// skalafaktor (@2x/@3x), mens formelen teller ett sett fliser.
-    /// Ikke undersøkt.
     nonisolated private static let tileSizeEstimate: Int64 = 50_000
+
+    /// MapLibre henter i praksis rundt fire ganger så mange fliser som
+    /// geometrien teller: raster-nedlastingen skjer på enhetens skalafaktor,
+    /// så retina-skjermer henter fliser fra neste zoomnivå. Kalibrert mot
+    /// Oslo-pakken: uten faktoren ble den anslått til 168 MB, men passerte
+    /// 379 MB allerede på 57 prosent (reelt ca. 665 MB, altså ~4×).
+    /// Faktoren ligger i `estimateTileCount`, ikke i flisstørrelsen, slik at
+    /// flisantall og megabyte i UI-et forblir konsistente.
+    nonisolated private static let deviceScaleFactor = 4
 
     private init() {}
 
@@ -94,7 +96,7 @@ final class OfflineMapService {
             let yMax = Int(floor((1 - log(tan(south * .pi / 180) + 1 / cos(south * .pi / 180)) / .pi) / 2 * n))
             total += (abs(xMax - xMin) + 1) * (abs(yMax - yMin) + 1)
         }
-        return total
+        return total * deviceScaleFactor
     }
 
     nonisolated static func estimateSize(tileCount: Int) -> Int64 {
