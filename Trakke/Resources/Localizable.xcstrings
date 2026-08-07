@@ -3706,6 +3706,17 @@
         }
       }
     },
+    "offline.downloading" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laster ned"
+          }
+        }
+      }
+    },
     "offline.download" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3871,6 +3882,17 @@
         }
       }
     },
+    "offline.resume" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fortsett"
+          }
+        }
+      }
+    },
     "offline.retry" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3922,6 +3944,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Last ned"
+          }
+        }
+      }
+    },
+    "offline.stopped" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stanset på"
           }
         }
       }

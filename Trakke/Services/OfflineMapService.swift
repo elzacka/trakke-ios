@@ -13,6 +13,10 @@ struct OfflinePackInfo: Identifiable, Sendable {
     let minZoom: Int
     let maxZoom: Int
     let progress: OfflineDownloadProgress
+    /// Sann bare mens MapLibre faktisk henter fliser. En pakke som er
+    /// avbrutt (appen drept, nedlasting stanset) ser ellers helt lik ut som
+    /// en som pågår – samme framdrift, samme tall, men den står stille.
+    let isDownloading: Bool
 }
 
 struct OfflineDownloadProgress: Sendable {
@@ -276,7 +280,8 @@ final class OfflineMapService {
             ),
             minZoom: Int(region.minimumZoomLevel),
             maxZoom: Int(region.maximumZoomLevel),
-            progress: dlProgress
+            progress: dlProgress,
+            isDownloading: pack.state == .active
         )
     }
 

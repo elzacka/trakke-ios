@@ -92,19 +92,6 @@ struct DownloadManagerSheet: View {
                     }
                 }
 
-                // Storage info
-                HStack {
-                    Text(String(localized: "offline.totalStorage"))
-                        .foregroundStyle(Color.Trakke.textTertiary)
-                    Spacer()
-                    let totalBytes = viewModel.packs.reduce(Int64(0)) { $0 + Int64($1.progress.completedBytes) }
-                    Text(OfflineMapService.formatBytes(totalBytes))
-                        .monospacedDigit()
-                        .foregroundStyle(Color.Trakke.textTertiary)
-                }
-                .font(Font.Trakke.caption)
-                .padding(.horizontal, .Trakke.xs)
-
                 Spacer(minLength: .Trakke.lg)
             }
             .padding(.horizontal, .Trakke.sheetHorizontal)
@@ -135,6 +122,12 @@ struct DownloadManagerSheet: View {
                     } label: {
                         Text(String(localized: "offline.refresh"))
                     }
+                } else if !pack.isDownloading {
+                    Button {
+                        viewModel.resumePack(pack)
+                    } label: {
+                        Text(String(localized: "offline.resume"))
+                    }
                 }
                 Button(role: .destructive) {
                     packToDelete = pack
@@ -150,47 +143,37 @@ struct DownloadManagerSheet: View {
             )
     }
 
+    /// To linjer: navn og størrelse øverst, kartlag og tilstand under.
+    /// Tidligere brukte en ferdig pakke fire linjer, hvorav én bare sa
+    /// «Fullført» med et grønt flueben – støy for det som er normaltilstanden.
+    /// Med flere områder ble lista unødig lang å bla gjennom.
     private func packRowContent(_ pack: OfflinePackInfo) -> some View {
-        VStack(alignment: .leading, spacing: .Trakke.rowVertical) {
+        VStack(alignment: .leading, spacing: .Trakke.labelGap) {
             HStack {
                 Text(pack.name)
                     .font(Font.Trakke.bodyMedium)
+                    .foregroundStyle(Color.Trakke.text)
                 if viewModel.refreshingPackIds.contains(pack.id) {
                     ProgressView()
                         .controlSize(.mini)
                         .padding(.leading, .Trakke.xs)
                 }
                 Spacer()
-                Text(layerDisplayName(pack.layer))
-                    .font(Font.Trakke.captionSoft)
-                    .foregroundStyle(Color.Trakke.textTertiary)
-                    .padding(.horizontal, .Trakke.badgePadH)
-                    .padding(.vertical, .Trakke.badgePadV)
-                    .background(Color.Trakke.brandTint)
-                    .clipShape(Capsule())
-            }
-
-            HStack {
-                Text(OfflineMapService.zoomDescription(maxZoom: pack.maxZoom))
-                    .font(Font.Trakke.caption)
-                    .foregroundStyle(Color.Trakke.textTertiary)
-
-                Spacer()
-
                 Text(OfflineMapService.formatBytes(Int64(pack.progress.completedBytes)))
                     .font(Font.Trakke.caption.monospacedDigit())
                     .foregroundStyle(Color.Trakke.textTertiary)
             }
 
-            if viewModel.isErrored(pack) {
-                HStack(spacing: .Trakke.sm) {
-                    Image(systemName: "exclamationmark.circle.fill")
-                        .font(Font.Trakke.caption)
-                        .foregroundStyle(Color.Trakke.red)
-                    Text(String(localized: "offline.downloadError"))
-                        .font(Font.Trakke.caption)
-                        .foregroundStyle(Color.Trakke.red)
-                    Spacer()
+            HStack(spacing: .Trakke.sm) {
+                Text(subtitle(for: pack))
+                    .font(Font.Trakke.caption)
+                    .foregroundStyle(
+                        viewModel.isErrored(pack) ? Color.Trakke.red : Color.Trakke.textTertiary
+                    )
+
+                Spacer()
+
+                if viewModel.isErrored(pack) {
                     Button(String(localized: "offline.retry")) {
                         viewModel.retryPack(pack)
                     }
@@ -198,25 +181,33 @@ struct DownloadManagerSheet: View {
                     .foregroundStyle(Color.Trakke.brand)
                     .buttonStyle(.plain)
                 }
-            } else if !pack.progress.isComplete {
+            }
+
+            // Framdriftslinja står bare mens noe faktisk skjer. På en stanset
+            // pakke er den en linje som aldri beveger seg; tallet i
+            // undertittelen sier det samme uten å ta plass.
+            if pack.isDownloading && !pack.progress.isComplete {
                 ProgressView(value: pack.progress.percentage, total: 100)
                     .tint(Color.Trakke.brand)
-
-                Text(String(format: "%.0f%%", pack.progress.percentage))
-                    .font(Font.Trakke.captionSoft.monospacedDigit())
-                    .foregroundStyle(Color.Trakke.textTertiary)
-            } else {
-                HStack(spacing: .Trakke.xs) {
-                    Image(systemName: "checkmark.circle.fill")
-                        .font(Font.Trakke.caption)
-                        .foregroundStyle(Color.Trakke.brand)
-                    Text(String(localized: "offline.complete"))
-                        .font(Font.Trakke.caption)
-                        .foregroundStyle(Color.Trakke.textTertiary)
-                }
             }
         }
         .padding(.vertical, .Trakke.xs)
+    }
+
+    /// «Topografisk · Detaljert» når alt er nede, ellers med tilstanden bakerst.
+    private func subtitle(for pack: OfflinePackInfo) -> String {
+        let layer = layerDisplayName(pack.layer)
+        if viewModel.isErrored(pack) {
+            return layer + " · " + String(localized: "offline.downloadError")
+        }
+        if pack.progress.isComplete {
+            return layer + " · " + OfflineMapService.zoomDescription(maxZoom: pack.maxZoom)
+        }
+        let percent = String(format: "%.0f", pack.progress.percentage)
+        let state = pack.isDownloading
+            ? String(localized: "offline.downloading")
+            : String(localized: "offline.stopped")
+        return layer + " · " + state + " " + percent + " %"
     }
 
     private func layerDisplayName(_ layer: String) -> String {
