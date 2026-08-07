@@ -103,13 +103,16 @@ final class OfflineMapService {
 
     nonisolated static func formatBytes(_ bytes: Int64) -> String {
         if bytes >= 1_073_741_824 {
-            return String(format: "%.1f GB", Double(bytes) / 1_073_741_824)
+            return MeasurementService.withUnit(
+                MeasurementService.decimal(Double(bytes) / 1_073_741_824, digits: 1), "GB")
         } else if bytes >= 1_048_576 {
-            return String(format: "%.1f MB", Double(bytes) / 1_048_576)
+            return MeasurementService.withUnit(
+                MeasurementService.decimal(Double(bytes) / 1_048_576, digits: 1), "MB")
         } else if bytes >= 1024 {
-            return String(format: "%.0f KB", Double(bytes) / 1024)
+            return MeasurementService.withUnit(
+                MeasurementService.decimal(Double(bytes) / 1024, digits: 0), "KB")
         }
-        return "\(bytes) B"
+        return MeasurementService.withUnit("\(bytes)", "B")
     }
 
     /// Human-readable description of what a max zoom level provides for hiking.

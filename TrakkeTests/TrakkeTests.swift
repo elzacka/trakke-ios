@@ -1124,10 +1124,12 @@ func kartverketStyleJSON(layer: BaseLayer) {
 
 @Test func routeViewModelFormattedDistance() async {
     let vm = await RouteViewModel()
+    // Fast mellomrom mellom tall og enhet, og norsk desimalkomma. Testen
+    // hevdet før «2.5 km» med punktum, altså engelsk tallformat.
     let short = await vm.formattedDistance(500)
-    #expect(short == "500 m")
+    #expect(short == "500\u{00A0}m")
     let long = await vm.formattedDistance(2500)
-    #expect(long == "2.5 km")
+    #expect(long == "2,5\u{00A0}km")
     let none = await vm.formattedDistance(nil)
     #expect(none == "--")
     let zero = await vm.formattedDistance(0)

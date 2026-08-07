@@ -41,22 +41,41 @@ enum MeasurementService {
 
     // MARK: - Formatting
 
+    /// Tall til visning, med brukerens desimaltegn. `String(format:)` uten
+    /// `locale:` er språkuavhengig og gir alltid punktum, så hele appen viste
+    /// «1.2 km» der norsk skal ha «1,2 km». Målt: uten locale «2.4», med
+    /// `Locale.current` på nb_NO «2,4».
+    ///
+    /// Gjelder ikke koordinater og API-parametre. Der er punktum riktig:
+    /// koordinater kopieres ut til andre tjenester, og en komma-desimal i en
+    /// URL-parameter ville brutt kallet.
+    nonisolated static func decimal(_ value: Double, digits: Int) -> String {
+        String(format: "%.\(digits)f", locale: Locale.current, value)
+    }
+
+    /// Fast mellomrom mellom tall og enhet. Norsk tegnsetting skiller dem med
+    /// mellomrom, og et vanlig mellomrom lar «1,2» og «km» havne på hver sin
+    /// linje i en trang celle.
+    nonisolated static func withUnit(_ number: String, _ unit: String) -> String {
+        number + "\u{00A0}" + unit
+    }
+
     static func formatDistance(_ meters: Double) -> String {
         if meters >= 1000 {
-            return String(format: "%.1f km", meters / 1000)
+            return withUnit(decimal(meters / 1000, digits: 1), "km")
         }
-        return String(format: "%.0f m", meters)
+        return withUnit(decimal(meters, digits: 0), "m")
     }
 
 
     static func formatElevation(_ meters: Double) -> String {
-        "\(Int(meters.rounded())) m"
+        withUnit("\(Int(meters.rounded()))", "m")
     }
 
     static func formatArea(_ squareMeters: Double) -> String {
         if squareMeters >= 10_000 {
-            return String(format: "%.2f km\u{00B2}", squareMeters / 1_000_000)
+            return withUnit(decimal(squareMeters / 1_000_000, digits: 2), "km\u{00B2}")
         }
-        return String(format: "%.0f m\u{00B2}", squareMeters)
+        return withUnit(decimal(squareMeters, digits: 0), "m\u{00B2}")
     }
 }

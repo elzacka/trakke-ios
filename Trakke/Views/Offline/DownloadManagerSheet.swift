@@ -203,7 +203,7 @@ struct DownloadManagerSheet: View {
         if pack.progress.isComplete {
             return layer + " · " + OfflineMapService.zoomDescription(maxZoom: pack.maxZoom)
         }
-        let percent = String(format: "%.0f", pack.progress.percentage)
+        let percent = MeasurementService.decimal(pack.progress.percentage, digits: 0)
         let state = pack.isDownloading
             ? String(localized: "offline.downloading")
             : String(localized: "offline.stopped")

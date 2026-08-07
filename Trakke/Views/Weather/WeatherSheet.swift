@@ -212,7 +212,7 @@ struct WeatherSheet: View {
                 .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: .Trakke.labelGap) {
-                Text(String(localized: "weather.uv.label \(String(format: "%.0f", uv))"))
+                Text(String(localized: "weather.uv.label \(MeasurementService.decimal(uv, digits: 0))"))
                     .font(Font.Trakke.bodyMedium)
                     .foregroundStyle(Color.Trakke.text)
                 Text(advice)
@@ -443,7 +443,7 @@ struct WeatherSheet: View {
             WeatherService.gustWarningLevel(day.windGust ?? day.windSpeed)
         )
         if worstWind >= .danger, let gust = day.windGust {
-            label += ", \(String(localized: "weather.wind.gustLabel \(String(format: "%.0f", gust))"))"
+            label += ", \(String(localized: "weather.wind.gustLabel \(MeasurementService.decimal(gust, digits: 0))"))"
         }
         return label
     }
@@ -546,19 +546,19 @@ struct WeatherSheet: View {
                         HStack(spacing: .Trakke.labelGap) {
                             Image(systemName: "drop.fill")
                                 .font(Font.Trakke.captionSoft)
-                            Text(String(format: "%.1f mm", hour.precipitation))
+                            Text(MeasurementService.withUnit(MeasurementService.decimal(hour.precipitation, digits: 1), "mm"))
                         }
                         .font(Font.Trakke.caption)
                         .foregroundStyle(Color.Trakke.textSecondary)
                     }
 
-                    Text(String(format: "%.0f m/s", hour.windSpeed))
+                    Text(MeasurementService.withUnit(MeasurementService.decimal(hour.windSpeed, digits: 0), "m/s"))
                         .font(Font.Trakke.caption.monospacedDigit())
                         .foregroundStyle(windColor)
                 }
 
                 if let gust = hour.windGust, gust > hour.windSpeed * 1.2 {
-                    Text(String(localized: "weather.wind.gustLabel \(String(format: "%.0f", gust))"))
+                    Text(String(localized: "weather.wind.gustLabel \(MeasurementService.decimal(gust, digits: 0))"))
                         .font(Font.Trakke.captionSoft.monospacedDigit())
                         .foregroundStyle(windColor)
                 }

@@ -131,9 +131,34 @@ final class POIViewModel {
         }
     }
 
+    /// Taket på antall markører deles likt mellom kategoriene som er på.
+    ///
+    /// Før tok den `prefix(maxAnnotations)` av hele lista. Live-kategorier
+    /// legges til sist i `viewportChanged`, så det var alltid de som ble
+    /// kuttet – og kulturminner, den eneste rent live-kategorien, kunne
+    /// forsvinne helt fra kartet så snart nok bunter var slått på i et tett
+    /// område. Kategorien så ut til å være i stykker, men var bare kuttet
+    /// bort etter at den var hentet.
     private func enforceAnnotationLimit() {
         guard pois.count > Self.maxAnnotations else { return }
-        pois = Array(pois.prefix(Self.maxAnnotations))
+
+        // Bevar rekkefølgen kategoriene dukket opp i, så kartet ikke
+        // stokker om på seg selv mellom oppdateringer.
+        var order: [POICategory] = []
+        for poi in pois where !order.contains(poi.category) {
+            order.append(poi.category)
+        }
+        guard order.count > 1 else {
+            pois = Array(pois.prefix(Self.maxAnnotations))
+            return
+        }
+
+        let quota = max(1, Self.maxAnnotations / order.count)
+        var kept: [POI] = []
+        for category in order {
+            kept.append(contentsOf: pois.filter { $0.category == category }.prefix(quota))
+        }
+        pois = kept
     }
 
     func selectPOI(_ poi: POI) {

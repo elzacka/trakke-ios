@@ -118,12 +118,12 @@ struct CurrentConditionsCard: View {
                     if let spot = water.bathingSpots.first {
                         statRow(
                             label: spot.name ?? String(localized: "weather.bathingSpot"),
-                            value: String(format: "%.1f°", spot.temperature)
+                            value: MeasurementService.decimal(spot.temperature, digits: 1) + "\u{00B0}"
                         )
                     } else if let ocean = water.oceanTemperature {
                         statRow(
                             label: String(localized: "weather.seaTemperature"),
-                            value: String(format: "%.1f°", ocean.temperature)
+                            value: MeasurementService.decimal(ocean.temperature, digits: 1) + "\u{00B0}"
                         )
                     }
                 }
@@ -223,20 +223,20 @@ struct CurrentConditionsCard: View {
 
     private var windValue: String {
         let dir = WeatherService.windDirectionFullName(data.windDirection)
-        let base = String(format: "%.0f m/s %@", data.windSpeed, dir)
+        let base = MeasurementService.withUnit(MeasurementService.decimal(data.windSpeed, digits: 0), "m/s") + " " + dir
         if let gust = data.windGust, gust > data.windSpeed * 1.2 {
-            return base + " · " + String(localized: "weather.wind.gustLabel \(String(format: "%.0f", gust))")
+            return base + " · " + String(localized: "weather.wind.gustLabel \(MeasurementService.decimal(gust, digits: 0))")
         }
         return base
     }
 
     private var precipValue: String {
         if data.precipitation > 0.05 {
-            return String(format: "%.1f mm", data.precipitation)
+            return MeasurementService.withUnit(MeasurementService.decimal(data.precipitation, digits: 1), "mm")
                 + " · "
-                + String(format: "%.0f %%", data.precipitationProbability)
+                + MeasurementService.withUnit(MeasurementService.decimal(data.precipitationProbability, digits: 0), "%")
         } else if data.precipitationProbability > 30 {
-            return String(format: "%.0f %% sjanse", data.precipitationProbability)
+            return MeasurementService.withUnit(MeasurementService.decimal(data.precipitationProbability, digits: 0), "%") + " sjanse"
         } else {
             return String(localized: "weather.precipitation.none")
         }
@@ -343,7 +343,7 @@ struct CurrentConditionsCard: View {
             if let pressure = data.pressure {
                 statRow(
                     label: String(localized: "weather.pressure"),
-                    value: String(format: "%.0f hPa", pressure)
+                    value: MeasurementService.withUnit(MeasurementService.decimal(pressure, digits: 0), "hPa")
                 )
                 .contentShape(Rectangle())
                 .onTapGesture { showPressureTooltip = true }
@@ -361,7 +361,7 @@ struct CurrentConditionsCard: View {
 
             statRow(
                 label: String(localized: "weather.humidity"),
-                value: String(format: "%.0f %%", data.humidity)
+                value: MeasurementService.withUnit(MeasurementService.decimal(data.humidity, digits: 0), "%")
             )
             .contentShape(Rectangle())
             .onTapGesture { showHumidityTooltip = true }
