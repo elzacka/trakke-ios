@@ -11,41 +11,65 @@ import OSLog
 enum BundledPOIService {
     private static var cache: [POICategory: [POI]] = [:]
 
+    /// In-flight parses, keyed by category. A second `loadIfNeeded` call for a
+    /// category that is already parsing awaits the running task instead of
+    /// starting a duplicate multi-megabyte decode of the same files.
+    private static var loadTasks: [POICategory: Task<[POI], Never>] = [:]
+
     static func pois(for category: POICategory, in bounds: ViewportBounds) -> [POI] {
         let all = cache[category] ?? []
         return all.filter { bounds.contains($0.coordinate) }
     }
 
-    /// Pre-load all bundled categories into the cache. Call once at app launch.
-    static func preloadAll() {
-        Task.detached(priority: .utility) {
-            let allCategories: [POICategory] = [
-                .caves, .viewpoints, .warMemorials, .wildernessShelters, .shelters,
-                .swimmingSpot, .firePit, .waterfall, .hammock,
-                .restStop, .tentSite, .cabins,
-            ]
-            for category in allCategories {
-                let pois = loadFromBundle(category)
-                await MainActor.run {
-                    cache[category] = pois
-                    Logger.poi.debug("BundledPOI: loaded \(pois.count, privacy: .public) \(category.rawValue, privacy: .public) from bundle")
-                }
+    /// Pre-load the given categories into the cache. Called at launch with the
+    /// categories that are switched on; `loadIfNeeded(_:)` covers the rest as the
+    /// user turns them on.
+    ///
+    /// It used to load *every* category eagerly from a hand-written list of
+    /// twelve. Two things were wrong with that. The list went stale the moment
+    /// fourteen categories were added, silently. And with 26 categories the eager
+    /// load means parsing 12 MB of JSON into 43 000 POIs at every cold start —
+    /// while `enabledCategories` starts empty, so none of it is on the map.
+    static func preload(_ categories: Set<POICategory>) {
+        let wanted = categories.filter(\.isBundled)
+        guard !wanted.isEmpty else { return }
+        // Routes through loadIfNeeded so preloads share the in-flight registry
+        // with the toggle path — never two parses of the same category.
+        Task {
+            for category in wanted {
+                await loadIfNeeded(category)
             }
         }
     }
 
-    /// Load a single category if not yet cached.
+    /// Load a single category if not yet cached. Concurrent calls for the same
+    /// category await the in-flight parse instead of starting a duplicate one.
     static func loadIfNeeded(_ category: POICategory) async {
         if cache[category] != nil { return }
-        let pois = await Task.detached(priority: .utility) {
+        if let running = loadTasks[category] {
+            _ = await running.value
+            return
+        }
+        // No await between the cache check and the registry insert, so the
+        // check-then-register pair is atomic on the MainActor.
+        let task = Task.detached(priority: .utility) {
             loadFromBundle(category)
-        }.value
+        }
+        loadTasks[category] = task
+        let pois = await task.value
+        // If clearCache() ran while the parse was in flight («Slett alle data»),
+        // the registry entry is gone — do not repopulate the cache.
+        guard loadTasks[category] == task else { return }
         cache[category] = pois
+        loadTasks[category] = nil
         Logger.poi.debug("BundledPOI: loaded \(pois.count, privacy: .public) \(category.rawValue, privacy: .public) from bundle")
     }
 
     static func clearCache() {
         cache.removeAll()
+        // Also drop the in-flight registry: a parse landing after the wipe
+        // must not write its result back into the cache.
+        loadTasks.removeAll()
     }
 
     // MARK: - Loading
@@ -62,6 +86,22 @@ enum BundledPOIService {
             .wildernessShelters: ["wilderness_shelters"],
             .shelters: ["shelters"],
             .swimmingSpot: ["swimming_spots", "giant_kettles", "oxbow_lakes", "lagoons", "hot_springs"],
+            // Kulturminner er hybrid: UT.no-dataene gir kategorien innhold
+            // offline, Riksantikvaren utfyller når det er dekning.
+            .kulturminner: ["kulturminner_utno"],
+            .bridge: ["bridges"],
+            .fordingPlace: ["fording_places"],
+            .parking: ["parking"],
+            .signPost: ["sign_points"],
+            .toilet: ["toilets"],
+            .foodService: ["food_services"],
+            .recreationArea: ["recreation_areas"],
+            .fishing: ["fishing_spots"],
+            .climbing: ["climbing_spots"],
+            .sleddingHill: ["sledding_hills"],
+            .skiLift: ["ski_lifts"],
+            .tripRecord: ["trip_records"],
+            .attraction: ["attractions"],
             .firePit: ["fire_pits"],
             .waterfall: ["waterfalls"],
             .hammock: ["hammocks"],
@@ -69,7 +109,9 @@ enum BundledPOIService {
             .tentSite: ["tent_sites"],
             // Hytter: DNT-hytter og andre hytter (Statskog, fjellstyrer, kommuner, private).
             // provider-feltet injiseres i enrich() for å skille kildene i popup.
-            .cabins: ["dnt_hytter", "andre_hytter"],
+            // setre: setre, stølar og dagsturhytter som ikke ligger i
+            // hytteregisteret, men er egne POI-er hos UT.no.
+            .cabins: ["dnt_hytter", "andre_hytter", "setre"],
         ]
         guard let names = filenames[category] else { return [] }
         return names.flatMap { loadFile(named: $0, category: category) }
@@ -128,7 +170,7 @@ enum BundledPOIService {
     private nonisolated static func providerKey(forFile filename: String) -> String? {
         switch filename {
         case "dnt_hytter": return "dnt"
-        case "andre_hytter": return "andre"
+        case "andre_hytter", "setre": return "andre"
         default: return nil
         }
     }

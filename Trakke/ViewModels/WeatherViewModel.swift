@@ -88,6 +88,8 @@ final class WeatherViewModel {
     }
 
     func clearCaches() async {
+        fetchTask?.cancel()
+        fetchTask = nil
         await service.clearCache()
         await waterService.clearCache()
         await varsomService.clearCache()
@@ -96,7 +98,10 @@ final class WeatherViewModel {
         waterTemperature = nil
         varsomWarnings = []
         airQuality = nil
+        daylight = nil
         lastFetchCoordinate = nil
+        isLoading = false  // both cancelled exit paths in fetchForecast() skip this —
+        error = nil        // without it, a wipe mid-fetch leaves the sheet spinning forever
     }
 
     // MARK: - Norwegian Condition Text

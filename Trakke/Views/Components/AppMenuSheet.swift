@@ -82,7 +82,7 @@ struct AppMenuSheet: View {
                 weatherViewModel: weatherViewModel,
                 knowledgeViewModel: knowledgeViewModel,
                 connectivityMonitor: connectivityMonitor,
-                mapCenter: mapViewModel.userLocation?.coordinate ?? mapViewModel.currentCenter
+                mapViewModel: mapViewModel
             )
         case .settings:
             SettingsTabContent(

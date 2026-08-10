@@ -236,6 +236,14 @@ extension TrakkeMapView.Coordinator {
         coordinates: [CLLocationCoordinate2D],
         isDrawing: Bool
     ) {
+        // Same guard as updateMeasurementOverlay: skip rebuild when input is
+        // unchanged, so per-render churn (and mid-drag stomping) cannot happen.
+        if isDrawing == lastIsDrawing && coordinatesEqual(coordinates, lastDrawingCoordinates) {
+            return
+        }
+        lastDrawingCoordinates = coordinates
+        lastIsDrawing = isDrawing
+
         // Remove old drawing elements
         if let existing = drawingPolyline {
             mapView.removeAnnotation(existing)
@@ -246,7 +254,15 @@ extension TrakkeMapView.Coordinator {
             drawingAnnotations = []
         }
 
-        guard isDrawing, !coordinates.isEmpty else { return }
+        guard isDrawing, !coordinates.isEmpty else {
+            if !isDrawing {
+                // Drawing mode exited: reset the guard cache so re-entering
+                // drawing never skips its first rebuild against stale state.
+                lastDrawingCoordinates = []
+                lastIsDrawing = false
+            }
+            return
+        }
 
         // Add point markers
         let pointAnnotations = coordinates.enumerated().map { index, coord in
@@ -704,8 +720,19 @@ extension TrakkeMapView.Coordinator {
         on mapView: MLNMapView,
         packBounds: [(south: Double, west: Double, north: Double, east: Double)]
     ) {
+        guard let style = mapView.style else {
+            lastOfflinePackBounds = packBounds
+            return
+        }
+        // Skip the rebuild when bounds are unchanged AND the source still exists
+        // (after a style reload the source is gone and must be recreated even
+        // though lastOfflinePackBounds matches — didFinishLoading re-calls us).
+        let unchanged = packBounds.elementsEqual(lastOfflinePackBounds, by: ==)
+        if unchanged, !packBounds.isEmpty, style.source(withIdentifier: Self.offlineBoundsSrcID) != nil {
+            return
+        }
+        if unchanged, packBounds.isEmpty { return }
         lastOfflinePackBounds = packBounds
-        guard let style = mapView.style else { return }
 
         if packBounds.isEmpty {
             if let layer = style.layer(withIdentifier: Self.offlineBoundsLyrID) {

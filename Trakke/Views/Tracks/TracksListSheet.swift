@@ -586,8 +586,8 @@ struct TracksListSheet: View {
                 return
             }
         case "gpx":
-            let aCount = activityViewModel.importFile(from: url)
-            let rCount = aCount > 0 ? 0 : routeViewModel.importFile(from: url)
+            let aCount = await activityViewModel.importFileAsync(from: url)
+            let rCount = aCount > 0 ? 0 : await routeViewModel.importFileAsync(from: url)
             activityCount = aCount
             routeCount = rCount
         default:
@@ -617,6 +617,7 @@ struct TracksListSheet: View {
             routeViewModel.edit(route, name: newName, category: newCategory)
         }
         .presentationDetents([.medium, .large])
+        .presentationContentInteraction(.scrolls)
         .presentationDragIndicator(.visible)
     }
 
@@ -631,6 +632,7 @@ struct TracksListSheet: View {
             activityViewModel.edit(activity, name: newName, category: newCategory)
         }
         .presentationDetents([.medium, .large])
+        .presentationContentInteraction(.scrolls)
         .presentationDragIndicator(.visible)
     }
 
@@ -647,8 +649,12 @@ struct TracksListSheet: View {
             // Innfelt i menyen må chipen klare den flytende BottomNavBar.
             .padding(.bottom, isEmbedded ? .Trakke.bottomNavClearance : .Trakke.lg)
             .transition(reduceMotion ? .opacity : .move(edge: .bottom).combined(with: .opacity))
-            .task {
+            .task(id: importMessage) {
+                guard importMessage != nil else { return }
                 try? await Task.sleep(for: .seconds(3))
+                // try? svelger CancellationError – uten denne ville den gamle
+                // timeren (kansellert av id-endringen) fjernet den nye meldingen.
+                guard !Task.isCancelled else { return }
                 withAnimation(reduceMotion ? nil : .default) {
                     importMessage = nil
                 }

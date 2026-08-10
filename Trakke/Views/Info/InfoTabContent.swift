@@ -10,8 +10,15 @@ struct InfoTabContent: View {
     @Bindable var weatherViewModel: WeatherViewModel
     @Bindable var knowledgeViewModel: KnowledgeViewModel
     let connectivityMonitor: ConnectivityMonitor
-    let mapCenter: CLLocationCoordinate2D
+    /// Ren referanse – ingen @Bindable. Koordinaten leses kun inne i
+    /// onAppear/onChange-handlere, som ikke registrerer Observation-avhengigheter,
+    /// så GPS-oppdateringer (~1 Hz) re-rendrer ikke Info-fanen.
+    let mapViewModel: MapViewModel
     @State private var selectedSubTab: Int = 0
+
+    private var mapCenter: CLLocationCoordinate2D {
+        mapViewModel.userLocation?.coordinate ?? mapViewModel.currentCenter
+    }
 
     private let subTabs = [
         String(localized: "weather.title"),
@@ -44,16 +51,7 @@ struct InfoTabContent: View {
             .onChange(of: selectedSubTab) { _, new in
                 if new == 0 { weatherViewModel.fetchForecast(for: mapCenter) }
             }
-            .navigationDestination(for: KnowledgeDestination.self) { destination in
-                switch destination {
-                case .category(let category):
-                    KnowledgeCategoryView(category: category, viewModel: knowledgeViewModel)
-                case .article(let article):
-                    ArticleDetailView(article: article)
-                case .mapLegend:
-                    MapLegendView()
-                }
-            }
+            .knowledgeDestinations(viewModel: knowledgeViewModel)
         }
     }
 

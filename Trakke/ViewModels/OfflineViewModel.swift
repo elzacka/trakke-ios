@@ -20,7 +20,9 @@ final class OfflineViewModel {
 
     // Kommune browsing
     var kommuner: [KommuneRegion] = []
-    var kommuneSearchQuery = ""
+    var kommuneSearchQuery = "" {
+        didSet { if kommuneSearchQuery != oldValue { regroupKommuner() } }
+    }
     var kommuneDownloadLayer: BaseLayer = .topo
 
     private let service: OfflineMapService
@@ -42,6 +44,7 @@ final class OfflineViewModel {
             return
         }
         kommuner = file.kommuner
+        regroupKommuner()
     }
 
     var filteredKommuner: [KommuneRegion] {
@@ -51,9 +54,14 @@ final class OfflineViewModel {
         }
     }
 
-    var kommunerByFylke: [(fylke: String, kommuner: [KommuneRegion])] {
+    /// Cached grouping – recomputed only when the inputs (`kommuner`, `kommuneSearchQuery`)
+    /// change, so body evaluations during download progress ticks do not re-group and
+    /// re-sort all 357 kommuner.
+    private(set) var kommunerByFylke: [(fylke: String, kommuner: [KommuneRegion])] = []
+
+    private func regroupKommuner() {
         let grouped = Dictionary(grouping: filteredKommuner, by: \.fylke)
-        return grouped.keys.sorted { $0.localizedStandardCompare($1) == .orderedAscending }
+        kommunerByFylke = grouped.keys.sorted { $0.localizedStandardCompare($1) == .orderedAscending }
             .map { fylke in
                 let sorted = grouped[fylke]!.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
                 return (fylke: fylke, kommuner: sorted)

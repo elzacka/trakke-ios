@@ -12,6 +12,8 @@ struct ActivityDetailSheet: View {
     @State private var showDeleteConfirmation = false
     @State private var shareURL: ShareableURL?
     @State private var showEditDialog = false
+    @State private var stats: DerivedStats?
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
         VStack(spacing: 0) {
@@ -23,6 +25,27 @@ struct ActivityDetailSheet: View {
         .background(Color.Trakke.background)
         .tint(Color.Trakke.brand)
         .toolbar(.hidden, for: .navigationBar)
+        // Statistikken skannes én gang per aktivitet, ikke én gang per
+        // body-evaluering. De avledede egenskapene på `Activity` går gjennom
+        // hele sporet – `movingDuration` med en Haversine per punktpar – og
+        // uten mellomlagring kjørte hver eneste @State-vipp (rediger, del,
+        // slett) elleve fulle skanninger på hovedtråden. Sporet er uforanderlig
+        // etter lagring (redigering endrer bare navn og kategori), så
+        // `id: activity.id` kan ikke bli stående med utdaterte tall.
+        .task(id: activity.id) {
+            let moving = activity.movingDuration
+            stats = DerivedStats(
+                moving: moving,
+                // Avledet uten ny skanning – samme formler som pausedDuration
+                // og averageMovingSpeed i Activity.swift.
+                paused: max(0, activity.duration - moving),
+                avgSpeed: moving > 0 ? activity.distance / moving : 0,
+                maxSpeed: activity.maxSpeed,
+                minAlt: activity.minAltitude,
+                maxAlt: activity.maxAltitude,
+                elevationPoints: computeElevationPoints()
+            )
+        }
     }
 
     private var backAction: (() -> Void)? {
@@ -54,6 +77,7 @@ struct ActivityDetailSheet: View {
                 viewModel.edit(activity, name: newName, category: newCategory)
             }
             .presentationDetents([.medium, .large])
+            .presentationContentInteraction(.scrolls)
             .presentationDragIndicator(.visible)
         }
         .sheet(item: $shareURL) { item in
@@ -131,9 +155,17 @@ struct ActivityDetailSheet: View {
 
     // MARK: - Stats Card
 
+    /// Statistikken ligger i et rutenett med faste kolonner, ikke i rader av
+    /// `HStack`.
+    ///
+    /// Med rader fikk hver celle sin egen bredde ut fra innholdet, så
+    /// kolonnene i rad to og tre ikke sto under kolonnene i rad én. Med to
+    /// felter på siste rad ble hele høyre halvdel dessuten stående tom.
+    /// Et rutenett gir samme kolonnebredde uansett hvor mange felter turen
+    /// har, og reflyter av seg selv ved store tekststørrelser.
     private var statsCard: some View {
         CardSection(String(localized: "activity.stats")) {
-            HStack(spacing: .Trakke.lg) {
+            LazyVGrid(columns: statColumns, alignment: .leading, spacing: .Trakke.md) {
                 statItem(
                     icon: "arrow.left.and.right",
                     label: String(localized: "activity.distance"),
@@ -154,30 +186,85 @@ struct ActivityDetailSheet: View {
                     label: String(localized: "elevation.loss"),
                     value: "\(Int(activity.elevationLoss)) m"
                 )
+
+                // Tallene som først ble mulige da sporet fikk oppløsning. De
+                // vises bare når sporet faktisk bærer dem, så en gammel tur
+                // ikke får felter med nuller.
+                if let stats, stats.moving > 0 {
+                    statItem(
+                        icon: "figure.walk",
+                        label: String(localized: "activity.movingTime"),
+                        value: ActivityViewModel.formatDuration(stats.moving)
+                    )
+                    statItem(
+                        icon: "pause.circle",
+                        label: String(localized: "activity.pausedTime"),
+                        value: ActivityViewModel.formatDuration(stats.paused)
+                    )
+                    statItem(
+                        icon: "speedometer",
+                        label: String(localized: "activity.averageSpeed"),
+                        value: MeasurementService.formatSpeed(stats.avgSpeed)
+                    )
+                    // Enkelt strektegn som de øvrige. Måler-symbolene med
+                    // nål og prikker er for tette til å leses på 12 punkt i
+                    // tertiærfarge.
+                    statItem(
+                        icon: "bolt",
+                        label: String(localized: "activity.maxSpeed"),
+                        value: MeasurementService.formatSpeed(stats.maxSpeed)
+                    )
+                }
+
+                if let lowest = stats?.minAlt, let highest = stats?.maxAlt {
+                    statItem(
+                        icon: "arrow.down.to.line",
+                        label: String(localized: "activity.lowestPoint"),
+                        value: "\(Int(lowest)) m"
+                    )
+                    statItem(
+                        icon: "arrow.up.to.line",
+                        label: String(localized: "activity.highestPoint"),
+                        value: "\(Int(highest)) m"
+                    )
+                }
             }
             .padding(.vertical, .Trakke.rowVertical)
         }
+    }
+
+    /// Fire kolonner ved vanlig tekststørrelse, to når teksten er stor.
+    /// Fire smale kolonner med «3:45:11» og «2,8 km/t» i seg blir uleselige
+    /// lenge før tilgjengelighetsstørrelsene.
+    private var statColumns: [GridItem] {
+        let count = dynamicTypeSize >= .accessibility1 ? 2 : 4
+        return Array(repeating: GridItem(.flexible(), alignment: .leading), count: count)
     }
 
     // MARK: - Elevation Card
 
     private var elevationCard: some View {
         CardSection(String(localized: "elevation.profile")) {
-            if elevationPoints.count >= 2 {
-                elevationChart
-            } else {
-                Text(String(localized: "activity.noElevationData"))
-                    .font(Font.Trakke.caption)
-                    .foregroundStyle(Color.Trakke.textTertiary)
-                    .padding(.vertical, .Trakke.rowVertical)
+            // Tomtilstanden gates på at statistikken er beregnet, ikke på et
+            // tomt array – ellers blinker «ingen høydedata» innom i den første
+            // rammen, før grafen rekker å tegnes.
+            if let stats {
+                if stats.elevationPoints.count >= 2 {
+                    elevationChart(points: stats.elevationPoints)
+                } else {
+                    Text(String(localized: "activity.noElevationData"))
+                        .font(Font.Trakke.caption)
+                        .foregroundStyle(Color.Trakke.textTertiary)
+                        .padding(.vertical, .Trakke.rowVertical)
+                }
             }
         }
     }
 
     @ViewBuilder
-    private var elevationChart: some View {
+    private func elevationChart(points: [ElevPoint]) -> some View {
         Chart {
-            ForEach(Array(elevationPoints.enumerated()), id: \.offset) { _, point in
+            ForEach(Array(points.enumerated()), id: \.offset) { _, point in
                 AreaMark(
                     x: .value(String(localized: "elevation.distance"), point.distance / 1000),
                     y: .value(String(localized: "elevation.altitude"), point.altitude)
@@ -198,31 +285,54 @@ struct ActivityDetailSheet: View {
                 .lineStyle(StrokeStyle(lineWidth: 2))
             }
         }
+        // Uten et eksplisitt område runder Swift Charts x-aksen opp til neste
+        // «pene» tall – en tur på 10,4 km fikk en akse til 15, og kurven
+        // stoppet en tredjedel fra kanten med tomrom etter seg. Aksen skal
+        // være så lang som turen, ikke lenger.
+        .chartXScale(domain: 0...chartMaxDistance(for: points))
         .chartXAxisLabel(String(localized: "elevation.distanceKm"))
         .chartYAxisLabel("m")
         .frame(height: 160)
+    }
+
+    /// Turens lengde i kilometer, med et lite påslag så siste punkt ikke
+    /// klistrer seg til aksen.
+    private func chartMaxDistance(for points: [ElevPoint]) -> Double {
+        let metres = points.last?.distance ?? 0
+        guard metres > 0 else { return 1 }
+        return (metres / 1000) * 1.02
     }
 
     // MARK: - Details Card
 
     private var detailsCard: some View {
         CardSection(String(localized: "activity.details")) {
+            // «Dato» sto her før, med et klokkeslett ved siden av som ikke
+            // fortalte hva det var tidspunktet for. Raden viser starten på
+            // turen, og da skal den hete det.
             detailRow(
-                label: String(localized: "activity.date"),
+                label: String(localized: "activity.started"),
                 value: activity.startedAt.formatted(date: .long, time: .shortened)
             )
+            if let endedAt = activity.endedAt {
+                Divider().padding(.leading, .Trakke.dividerLeading)
+                // Full dato, som start-raden. Utover at radene skal se like
+                // ut: en tur som går over midnatt slutter på en annen dato,
+                // og da er klokkeslettet alene direkte misvisende.
+                detailRow(
+                    label: String(localized: "activity.ended"),
+                    value: endedAt.formatted(date: .long, time: .shortened)
+                )
+            }
             Divider().padding(.leading, .Trakke.dividerLeading)
             detailRow(
                 label: String(localized: "activity.trackPoints"),
                 value: "\(activity.trackPoints.count)"
             )
-            if let pace = averagePace {
-                Divider().padding(.leading, .Trakke.dividerLeading)
-                detailRow(
-                    label: String(localized: "activity.averagePace"),
-                    value: pace
-                )
-            }
+            // Her lå en «Snittfart» til, i min/km og regnet mot totaltid.
+            // Kortet over har allerede snittfart – i km/t og mot bevegelsestid.
+            // To rader med samme navn, ulik enhet og ulikt tall er ikke mer
+            // informasjon, det er tvil om hvilken som gjelder.
         }
     }
 
@@ -235,7 +345,7 @@ struct ActivityDetailSheet: View {
     // MARK: - Helpers
 
     private func statItem(icon: String, label: String, value: String) -> some View {
-        VStack(spacing: .Trakke.labelGap) {
+        VStack(alignment: .leading, spacing: .Trakke.labelGap) {
             HStack(spacing: .Trakke.xs) {
                 Image(systemName: icon)
                     .font(Font.Trakke.captionSoft)
@@ -244,11 +354,18 @@ struct ActivityDetailSheet: View {
                 Text(value)
                     .font(Font.Trakke.bodyMedium)
                     .monospacedDigit()
+                    // Tallet skal krympe framfor å brekke. «3:45:11» over to
+                    // linjer i en smal kolonne er verre enn litt mindre tekst.
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
             }
             Text(label)
                 .foregroundStyle(Color.Trakke.textTertiary)
                 .font(Font.Trakke.captionSoft)
+                .lineLimit(2)
+                .minimumScaleFactor(0.8)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .combine)
     }
 
@@ -264,39 +381,66 @@ struct ActivityDetailSheet: View {
         .padding(.vertical, .Trakke.rowVertical)
     }
 
-    private var averagePace: String? {
-        guard activity.distance > 0, activity.duration > 0 else { return nil }
-        let paceSecondsPerKm = activity.duration / (activity.distance / 1000)
-        let minutes = Int(paceSecondsPerKm) / 60
-        let seconds = Int(paceSecondsPerKm) % 60
-        return String(format: "%d:%02d min/km", minutes, seconds)
-    }
-
     private struct ElevPoint {
         let distance: Double
         let altitude: Double
     }
 
-    private var elevationPoints: [ElevPoint] {
+    /// Avledet statistikk, beregnet én gang per aktivitet i `.task(id:)` og
+    /// lest fra body i stedet for de utregnede egenskapene på `Activity`.
+    /// Formlene bor fortsatt i `Activity` – dette er bare visningens
+    /// mellomlager, ikke en ny kilde til tallene.
+    private struct DerivedStats {
+        let moving: TimeInterval
+        let paused: TimeInterval
+        let avgSpeed: Double
+        let maxSpeed: Double
+        let minAlt: Double?
+        let maxAlt: Double?
+        let elevationPoints: [ElevPoint]
+    }
+
+    /// Høydeprofilen er høyde mot *distanse*, og da kan to punkter ikke dele
+    /// samme x-verdi.
+    ///
+    /// Står du stille – en matpause – lagrer opptaket punkter uten at
+    /// distansen øker. Swift Charts slår sammen marks med lik x ved å
+    /// **summere** y, så en pause på 44 punkter i 1743 moh. ble tegnet som
+    /// 76 000 meter og dro hele aksen med seg. Punkter som ikke flytter
+    /// profilen framover, hører derfor ikke hjemme i den.
+    ///
+    /// Umålte høyder hoppes over av samme grunn som ellers: en 0 er ikke
+    /// havnivå her, den er manglende data, og den ville laget en pigg rett ned.
+    private func computeElevationPoints() -> [ElevPoint] {
         let points = activity.trackPoints
         guard points.count >= 2 else { return [] }
 
         var result: [ElevPoint] = []
         var cumulativeDistance: Double = 0
+        var lastPlottedDistance: Double?
 
         for (index, point) in points.enumerated() {
-            guard point.count >= 3 else { continue }
-            let altitude = point[2]
-
-            if index > 0, points[index - 1].count >= 2 {
-                let prev = CLLocationCoordinate2D(latitude: points[index - 1][1], longitude: points[index - 1][0])
+            if index > 0, points[index - 1].count >= 2, point.count >= 2 {
+                let prev = CLLocationCoordinate2D(
+                    latitude: points[index - 1][1],
+                    longitude: points[index - 1][0]
+                )
                 let curr = CLLocationCoordinate2D(latitude: point[1], longitude: point[0])
                 cumulativeDistance += Haversine.distance(from: prev, to: curr)
             }
 
+            guard let altitude = Activity.altitude(of: point) else { continue }
+            if let last = lastPlottedDistance, cumulativeDistance - last < Self.minProfileStep {
+                continue
+            }
+            lastPlottedDistance = cumulativeDistance
             result.append(ElevPoint(distance: cumulativeDistance, altitude: altitude))
         }
 
         return result
     }
+
+    /// Minste avstand mellom to punkter i profilen. Holder også antall marks
+    /// nede på lange turer, der sporet kan ha flere tusen punkter.
+    private static let minProfileStep: Double = 15
 }

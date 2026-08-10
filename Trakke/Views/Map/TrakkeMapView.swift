@@ -319,6 +319,8 @@ struct TrakkeMapView: UIViewRepresentable {
         var measurementAnnotations: [MeasurementPointAnnotation] = []
         var lastMeasurementCoordinates: [CLLocationCoordinate2D] = []
         var lastMeasurementMode: MeasurementMode?
+        var lastDrawingCoordinates: [CLLocationCoordinate2D] = []
+        var lastIsDrawing = false
         var searchPinAnnotation: SearchPinAnnotation?
         var navLayersActive = false
         var lastCompassUserLat: Double = 0

@@ -78,6 +78,9 @@ actor ArtsdatabankenImageService {
     private func loadCatalog() async {
         if let existing = catalogTask {
             catalog = await existing.value
+            // A memoized *failure* must not poison the session: drop the
+            // completed-with-nil task so the next request retries the network.
+            if catalog == nil { catalogTask = nil }
             return
         }
         let task = Task<[String: String]?, Never> {
@@ -93,6 +96,7 @@ actor ArtsdatabankenImageService {
         }
         catalogTask = task
         catalog = await task.value
+        if catalog == nil { catalogTask = nil }
     }
 
 }

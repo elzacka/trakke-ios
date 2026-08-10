@@ -428,8 +428,12 @@ struct WaypointListSheet: View {
             // Innfelt i menyen må chipen klare den flytende BottomNavBar.
             .padding(.bottom, isEmbedded ? .Trakke.bottomNavClearance : .Trakke.lg)
             .transition(reduceMotion ? .opacity : .move(edge: .bottom).combined(with: .opacity))
-            .task {
+            .task(id: viewModel.importMessage) {
+                guard viewModel.importMessage != nil else { return }
                 try? await Task.sleep(for: .seconds(3))
+                // try? svelger CancellationError – uten denne ville den gamle
+                // timeren (kansellert av id-endringen) fjernet den nye meldingen.
+                guard !Task.isCancelled else { return }
                 withAnimation(reduceMotion ? nil : .default) {
                     viewModel.importMessage = nil
                 }

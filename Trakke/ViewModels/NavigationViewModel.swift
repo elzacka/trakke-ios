@@ -42,6 +42,7 @@ final class NavigationViewModel {
     private var hasComputedBearing = false
     private var lastProcessedTime: Date?
     private var navigationActivityID: String?
+    private var liveActivityGeneration = 0
     private var lastActivityUpdate: Date?
 
     private static let activityUpdateInterval: TimeInterval = 5.0
@@ -269,14 +270,21 @@ final class NavigationViewModel {
             return
         }
         navigationActivityID = nil
+        liveActivityGeneration += 1
+        let gen = liveActivityGeneration
         Task { [weak self] in
+            // En foreldet task skal heller ikke feie – den kunne avslutte en
+            // aktivitet en nyere task allerede har opprettet.
+            guard let self, gen == self.liveActivityGeneration else { return }
             // Gamle aktiviteter (forrige økt eller re-målretting) MÅ avsluttes
             // i samme task som den nye opprettes – en frittstående opprydding
             // kjører etter Activity.request og avliver den nye aktiviteten.
             for activity in ActivityKit.Activity<NavigationActivityAttributes>.activities {
                 await activity.end(nil, dismissalPolicy: .immediate)
             }
-            guard let self, self.isActive else { return }
+            // Bare den nyeste start-forespørselen får opprette aktiviteten —
+            // samme generasjonsmønster som SOSService.
+            guard self.isActive, gen == self.liveActivityGeneration else { return }
             let content = ActivityKit.ActivityContent(
                 state: self.currentActivityState(),
                 staleDate: Date().addingTimeInterval(Self.activityStaleInterval)
