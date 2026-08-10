@@ -53,14 +53,20 @@ struct TrakkeSearchField: View {
                     Image(systemName: "xmark.circle.fill")
                         .font(.system(size: 16))
                         .foregroundStyle(Color.Trakke.textSoft)
-                        .frame(minWidth: .Trakke.touchMin, minHeight: .Trakke.touchMin)
+                        // Bredden holder 44 pt tap-areal. Høyden styres av
+                        // raden, ellers vokser feltet når kryss-knappen dukker
+                        // opp og krymper igjen når du tømmer det.
+                        .frame(minWidth: .Trakke.touchMin, maxHeight: .infinity)
                         .contentShape(Rectangle())
                 }
                 .accessibilityLabel(String(localized: "common.clear"))
             }
         }
         .padding(.horizontal, .Trakke.md)
-        .padding(.vertical, .Trakke.sm)
+        // Samme vertikale rytme som kategoriradene under: 12 pt over og under,
+        // minst 44 pt totalt. Feltet og radene leses da som én liste.
+        .padding(.vertical, 12)
+        .frame(minHeight: .Trakke.touchMin)
         .background(Color.Trakke.surface)
         .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))
         .overlay(

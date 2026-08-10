@@ -11,15 +11,10 @@ struct PreferencesSheet: View {
     var inline = false
     @AppStorage(AppStorageKeys.coordinateFormat) private var coordinateFormat: CoordinateFormat = .dd
     @AppStorage(AppStorageKeys.showWeatherWidget) private var showWeatherWidget = false
-    @AppStorage(AppStorageKeys.showCompass) private var showCompass = false
     @AppStorage(AppStorageKeys.showZoomControls) private var showZoomControls = false
     @AppStorage(AppStorageKeys.showScaleBar) private var showScaleBar = false
+    @AppStorage(AppStorageKeys.showZoomLevel) private var showZoomLevel = false
     @AppStorage(AppStorageKeys.enableRotation) private var enableRotation = true
-    @AppStorage(AppStorageKeys.overlayTurrutebasen) private var overlayTurrutebasen = false
-    @AppStorage(AppStorageKeys.overlayNaturvernomrader) private var overlayNaturvernomrader = false
-    @AppStorage(AppStorageKeys.overlayBratthetskart) private var overlayBratthetskart = false
-    @AppStorage(AppStorageKeys.overlayUtmRunenett) private var overlayUtmRunenett = false
-    @AppStorage(AppStorageKeys.overlayNaturskog) private var overlayNaturskog = false
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -63,32 +58,7 @@ struct PreferencesSheet: View {
 
                     // MARK: - Overlay Layers
                     CardSection(String(localized: "settings.overlays")) {
-                        VStack(spacing: 0) {
-                            settingsToggle(
-                                label: OverlayLayer.bratthetskart.displayName,
-                                isOn: $overlayBratthetskart
-                            )
-                            Divider()
-                            settingsToggle(
-                                label: OverlayLayer.naturskog.displayName,
-                                isOn: $overlayNaturskog
-                            )
-                            Divider()
-                            settingsToggle(
-                                label: OverlayLayer.naturvernomrader.displayName,
-                                isOn: $overlayNaturvernomrader
-                            )
-                            Divider()
-                            settingsToggle(
-                                label: OverlayLayer.turrutebasen.displayName,
-                                isOn: $overlayTurrutebasen
-                            )
-                            Divider()
-                            settingsToggle(
-                                label: OverlayLayer.utmRunenett.displayName,
-                                isOn: $overlayUtmRunenett
-                            )
-                        }
+                        OverlayThumbnailGrid()
                     }
 
                     // MARK: - Display
@@ -100,13 +70,13 @@ struct PreferencesSheet: View {
                             )
                             Divider()
                             settingsToggle(
-                                label: String(localized: "settings.showCompass"),
-                                isOn: $showCompass
+                                label: String(localized: "settings.showScaleBar"),
+                                isOn: $showScaleBar
                             )
                             Divider()
                             settingsToggle(
-                                label: String(localized: "settings.showScaleBar"),
-                                isOn: $showScaleBar
+                                label: String(localized: "settings.showZoomLevel"),
+                                isOn: $showZoomLevel
                             )
                             Divider()
                             settingsToggle(
@@ -215,14 +185,15 @@ struct PreferencesSheet: View {
         withAnimation(reduceMotion ? .none : .default) {
             coordinateFormat = .dd
             showWeatherWidget = false
-            showCompass = false
             showZoomControls = false
             showScaleBar = false
             enableRotation = true
-            overlayTurrutebasen = false
-            overlayNaturvernomrader = false
-            overlayBratthetskart = false
-            overlayNaturskog = false
+            // Alle kartlag av – går via UserDefaults-nøklene slik at både
+            // kortene i OverlayThumbnailGrid og MapViewModel plukker det opp.
+            // (Dekker også utmRunenett, som den gamle listen hadde glemt.)
+            for overlay in OverlayLayer.allCases {
+                UserDefaults.standard.set(false, forKey: overlay.storageKey)
+            }
             mapViewModel.baseLayer = .topo
         }
     }
@@ -248,7 +219,7 @@ struct PreferencesSheet: View {
         OfflineMapService.shared.deleteAllPacks()
         OfflineMapService.shared.clearTileCache()
 
-        knowledgeViewModel?.deleteAllPacks()
+        knowledgeViewModel?.clearCache()
         if knowledgeViewModel == nil {
             Task { await RemoteArticleService().clearCache() }
         }
@@ -281,15 +252,6 @@ struct PreferencesSheet: View {
 // MARK: - CoordinateFormat Description
 
 extension CoordinateFormat {
-    /// Short title shown in the settings row.
-    var formatTitle: String {
-        switch self {
-        case .dd: return "DD \u{2013} Desimalgrader (standard)"
-        case .dms: return "DMS \u{2013} Grader, minutter, sekunder"
-        case .utm: return "UTM \u{2013} Universal Transverse Mercator"
-        }
-    }
-
     /// Komprimert tittel – én linje, uten "(standard)" og fulle navn.
     /// Brukt i radio-rader der formatet vises sammen med eksempel-koordinat.
     var formatShortTitle: String {
@@ -298,12 +260,6 @@ extension CoordinateFormat {
         case .dms: return "Grader, minutter, sekunder (DMS)"
         case .utm: return "UTM (sone 33)"
         }
-    }
-
-    /// Tooltip description from reliable Norwegian sources.
-    var formatTooltip: String {
-        let key = "settings.format.\(rawValue).tooltip"
-        return Bundle.main.localizedString(forKey: key, value: nil, table: nil)
     }
 
     /// Example coordinate showing how the format looks.

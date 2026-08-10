@@ -15,14 +15,7 @@ struct KnowledgeSheet: View {
         } else {
             NavigationStack {
                 knowledgeContent
-                    .navigationDestination(for: KnowledgeDestination.self) { destination in
-                        switch destination {
-                        case .category(let category):
-                            KnowledgeCategoryView(category: category, viewModel: viewModel)
-                        case .article(let article):
-                            ArticleDetailView(article: article)
-                        }
-                    }
+                    .knowledgeDestinations(viewModel: viewModel)
             }
         }
     }
@@ -40,7 +33,7 @@ struct KnowledgeSheet: View {
     private func destination(for category: ArticleCategory) -> KnowledgeDestination {
         let articles = articlesForCategory(category)
         if articles.count == 1, let article = articles.first {
-            return .article(article)
+            return .article(article, section: nil)
         }
         return .category(category)
     }
@@ -87,7 +80,50 @@ struct KnowledgeSheet: View {
 
 enum KnowledgeDestination: Hashable {
     case category(ArticleCategory)
-    case article(KnowledgeArticle)
+    /// `section` er overskriften det scrolles til i artikkelen. Brukes når
+    /// en verdi et annet sted i appen – f.eks. en værrad – peker på det
+    /// avsnittet som forklarer akkurat den verdien. nil åpner fra toppen.
+    case article(KnowledgeArticle, section: String? = nil)
+    case mapLegend
+}
+
+extension View {
+    /// Registrerer Kunnskap-destinasjonene på en NavigationStack. Alle verter
+    /// som kan lenke til en artikkel – Kunnskap, Info-fanen og Vær – bruker
+    /// denne, slik at en ny destinasjon ikke må legges inn tre steder og bli
+    /// glemt på ett av dem.
+    ///
+    /// `viewModel` er nil for verter som bare lenker til enkeltartikler, ikke
+    /// til kategorilister (Vær).
+    func knowledgeDestinations(viewModel: KnowledgeViewModel?) -> some View {
+        navigationDestination(for: KnowledgeDestination.self) { destination in
+            switch destination {
+            case .category(let category):
+                if let viewModel {
+                    KnowledgeCategoryView(category: category, viewModel: viewModel)
+                }
+            case .article(let article, let section):
+                ArticleDetailView(article: article, section: section)
+            case .mapLegend:
+                MapLegendView()
+            }
+        }
+    }
+}
+
+// MARK: - Bundled Article Lookup
+
+/// Oppslag av bundlede artikler på id. Værradene peker rett inn i Kunnskap,
+/// og forklaringen må finnes uten dekning og uten at et ark først venter på
+/// at artikler lastes – derfor de bundlede, ikke `KnowledgeViewModel.articles`.
+@MainActor
+enum BundledArticles {
+    static func article(_ id: Int64) -> KnowledgeArticle? { byID[id] }
+
+    private static let byID: [Int64: KnowledgeArticle] = Dictionary(
+        KnowledgeViewModel.loadBundledArticles().map { ($0.id, $0) },
+        uniquingKeysWith: { first, _ in first }
+    )
 }
 
 // MARK: - Article Category View
@@ -95,16 +131,22 @@ enum KnowledgeDestination: Hashable {
 struct KnowledgeCategoryView: View {
     let category: ArticleCategory
     @Bindable var viewModel: KnowledgeViewModel
-    @Environment(\.dismiss) private var dismiss
 
+    // Alfabetisk på tittel, med norsk sortering (æ, ø, å sist) – samme
+    // regel som kategorilista. Unntak: Beredskap leses i den rekkefølgen
+    // temaene blir aktuelle i en krise (forberedelse → varsling →
+    // informasjon → oppholdssted → tilfluktsrom), styrt av sortOrder i
+    // SurvivalArticles.json.
     private var filteredArticles: [KnowledgeArticle] {
-        viewModel.articles.filter { $0.category == category.rawValue }
+        let inCategory = viewModel.articles.filter { $0.category == category.rawValue }
+        if category == .beredskap {
+            return inCategory.sorted { $0.sortOrder < $1.sortOrder }
+        }
+        return inCategory.sorted { $0.title.localizedCompare($1.title) == .orderedAscending }
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            TrakkeSheetHeader(title: category.displayName, onBack: { dismiss() })
-
+        TrakkePushedPage(title: category.displayName) {
             ScrollView {
                 VStack(spacing: .Trakke.cardGap) {
                     if filteredArticles.isEmpty {
@@ -118,7 +160,7 @@ struct KnowledgeCategoryView: View {
                                 if index > 0 {
                                     Divider().padding(.leading, .Trakke.dividerLeading)
                                 }
-                                NavigationLink(value: KnowledgeDestination.article(article)) {
+                                NavigationLink(value: KnowledgeDestination.article(article, section: nil)) {
                                     TrakkeMenuRow(
                                         label: article.title,
                                         trailing: { TrakkeMenuRowChevron() }
@@ -135,8 +177,5 @@ struct KnowledgeCategoryView: View {
                 .padding(.top, .Trakke.sheetTop)
             }
         }
-        .background(Color.Trakke.background)
-        .tint(Color.Trakke.brand)
-        .toolbar(.hidden, for: .navigationBar)
     }
 }

@@ -51,60 +51,6 @@ extension WeatherService {
         }
     }
 
-    // MARK: - Precipitation Outdoor Impact
-
-    /// Outdoor impact description for precipitation amount (mm/h).
-    nonisolated static func precipitationOutdoorImpact(_ mm: Double) -> String {
-        switch mm {
-        case ..<0.1: return String(localized: "weather.precip.impact.none")
-        case 0.1..<1.0: return String(localized: "weather.precip.impact.light")
-        case 1.0..<4.0: return String(localized: "weather.precip.impact.moderate")
-        default: return String(localized: "weather.precip.impact.heavy")
-        }
-    }
-
-    /// Concrete sensory description of what a precipitation amount looks/feels like.
-    /// Thresholds: < 1 mm/h is drizzle range per SNL (yr = up to 1 mm/h in heavy
-    /// drizzle). > 20 mm/h is MET yellow warning level for intense rain (SNL/skybrudd).
-    /// Mid-range (1-20 mm/h) has no official Norwegian classification, so descriptions
-    /// are based on general outdoor experience.
-    nonisolated static func precipitationFeelsLike(_ mm: Double) -> String {
-        switch mm {
-        case ..<0.1: return String(localized: "weather.precip.feels.none")
-        case 0.1..<1.0: return String(localized: "weather.precip.feels.drizzle")
-        case 1.0..<5.0: return String(localized: "weather.precip.feels.moderate")
-        case 5.0..<20.0: return String(localized: "weather.precip.feels.heavy")
-        default: return String(localized: "weather.precip.feels.torrential")
-        }
-    }
-
-    // MARK: - Humidity Outdoor Impact
-
-    /// Outdoor impact description for relative humidity.
-    nonisolated static func humidityOutdoorImpact(_ humidity: Double) -> String {
-        switch humidity {
-        case ..<40: return String(localized: "weather.humidity.impact.low")
-        case 40..<70: return String(localized: "weather.humidity.impact.moderate")
-        case 70..<90: return String(localized: "weather.humidity.impact.high")
-        default: return String(localized: "weather.humidity.impact.veryHigh")
-        }
-    }
-
-    // MARK: - Temperature Outdoor Impact
-
-    /// Outdoor safety description for temperature ranges.
-    nonisolated static func temperatureOutdoorImpact(_ temp: Double, windChill: Double?) -> String {
-        let effective = windChill ?? temp
-        switch effective {
-        case ..<(-20): return String(localized: "weather.temp.impact.extremeCold")
-        case (-20)..<(-10): return String(localized: "weather.temp.impact.veryCold")
-        case (-10)..<0: return String(localized: "weather.temp.impact.cold")
-        case 0..<10: return String(localized: "weather.temp.impact.cool")
-        case 10..<20: return String(localized: "weather.temp.impact.mild")
-        default: return String(localized: "weather.temp.impact.warm")
-        }
-    }
-
     // MARK: - Wind Direction
 
     static var windDirections: [String] { ["N", "NØ", "Ø", "SØ", "S", "SV", "V", "NV"] }
@@ -115,90 +61,10 @@ extension WeatherService {
         return windDirections[index]
     }
 
-    /// Full Norwegian name for wind direction (e.g., "sørøst"). For use in tooltips.
+    /// Full Norwegian name for wind direction (e.g., "sørøst"). Vises i vindraden.
     nonisolated static func windDirectionFullName(_ degrees: Double) -> String {
         let index = ((Int((degrees / 45).rounded()) % 8) + 8) % 8
         return windDirectionsFull[index]
-    }
-
-    /// Explains why the wind direction matters for weather and trip planning.
-    /// Wind direction determines what type of air masses arrive – wet oceanic air
-    /// from the west vs. cold continental air from the east, etc.
-    /// Source: MET/Yr general meteorology, verified against SNL (vindretning).
-    nonisolated static func windDirectionContext(_ degrees: Double) -> String {
-        let index = ((Int((degrees / 45).rounded()) % 8) + 8) % 8
-        return switch index {
-        case 0: String(localized: "weather.wind.context.north")
-        case 1: String(localized: "weather.wind.context.northeast")
-        case 2: String(localized: "weather.wind.context.east")
-        case 3: String(localized: "weather.wind.context.southeast")
-        case 4: String(localized: "weather.wind.context.south")
-        case 5: String(localized: "weather.wind.context.southwest")
-        case 6: String(localized: "weather.wind.context.west")
-        case 7: String(localized: "weather.wind.context.northwest")
-        default: ""
-        }
-    }
-
-    /// Unicode arrow showing the direction wind blows TOWARD (opposite of "from").
-    nonisolated static func windDirectionArrow(_ degrees: Double) -> String {
-        // Wind "from" north blows south, so rotate 180 degrees for "toward" arrow
-        let toward = (degrees + 180).truncatingRemainder(dividingBy: 360)
-        let arrows = ["\u{2191}", "\u{2197}", "\u{2192}", "\u{2198}", "\u{2193}", "\u{2199}", "\u{2190}", "\u{2196}"]
-        let index = ((Int((toward / 45).rounded()) % 8) + 8) % 8
-        return arrows[index]
-    }
-
-    /// Norwegian wind name based on Beaufort scale (Yr/MET standard).
-    /// Uses exact Yr names, grouped for compact display where adjacent levels
-    /// have similar outdoor impact.
-    nonisolated static func windDescription(_ speed: Double) -> String {
-        switch speed {
-        case ..<0.3: return String(localized: "weather.wind.0")   // Stille
-        case 0.3..<1.6: return String(localized: "weather.wind.1")  // Nesten stille
-        case 1.6..<3.4: return String(localized: "weather.wind.2")  // Svak vind
-        case 3.4..<5.5: return String(localized: "weather.wind.3")  // Lett bris
-        case 5.5..<8.0: return String(localized: "weather.wind.4")  // Laber bris
-        case 8.0..<10.8: return String(localized: "weather.wind.5") // Frisk bris
-        case 10.8..<13.9: return String(localized: "weather.wind.6") // Liten kuling
-        case 13.9..<17.2: return String(localized: "weather.wind.7") // Stiv kuling
-        case 17.2..<20.8: return String(localized: "weather.wind.8") // Sterk kuling
-        case 20.8..<24.5: return String(localized: "weather.wind.9") // Liten storm
-        case 24.5..<28.5: return String(localized: "weather.wind.10") // Full storm
-        case 28.5..<32.7: return String(localized: "weather.wind.11") // Sterk storm
-        default: return String(localized: "weather.wind.12")          // Orkan
-        }
-    }
-
-    /// Beaufort level index for a given wind speed.
-    nonisolated static func beaufortLevel(_ speed: Double) -> Int {
-        switch speed {
-        case ..<0.3: return 0
-        case 0.3..<1.6: return 1
-        case 1.6..<3.4: return 2
-        case 3.4..<5.5: return 3
-        case 5.5..<8.0: return 4
-        case 8.0..<10.8: return 5
-        case 10.8..<13.9: return 6
-        case 13.9..<17.2: return 7
-        case 17.2..<20.8: return 8
-        case 20.8..<24.5: return 9
-        case 24.5..<28.5: return 10
-        case 28.5..<32.7: return 11
-        default: return 12
-        }
-    }
-
-    /// Land description for a Beaufort level (from Yr).
-    nonisolated static func windLandDescription(_ speed: Double) -> String {
-        let key = "weather.wind.land.\(beaufortLevel(speed))"
-        return Bundle.main.localizedString(forKey: key, value: nil, table: nil)
-    }
-
-    /// Mountain description for a Beaufort level (from Yr).
-    nonisolated static func windMountainDescription(_ speed: Double) -> String {
-        let key = "weather.wind.mountain.\(beaufortLevel(speed))"
-        return Bundle.main.localizedString(forKey: key, value: nil, table: nil)
     }
 
     /// Visual warning level for wind speed.
@@ -269,56 +135,6 @@ extension WeatherService {
             earlierHPa: earlierPressure,
             changeHPa: diff
         )
-    }
-
-    // MARK: - Pressure Outdoor Impact
-
-    nonisolated static func pressureOutdoorImpact(_ trend: PressureTrend) -> String {
-        switch trend {
-        case .rising: return String(localized: "weather.pressure.impact.rising")
-        case .falling: return String(localized: "weather.pressure.impact.falling")
-        case .stable: return String(localized: "weather.pressure.impact.stable")
-        }
-    }
-
-    // MARK: - UV Index (WHO/SNL scale)
-
-    enum UVLevel: Int {
-        case low = 0        // 0-2
-        case moderate = 1   // 3-5
-        case high = 2       // 6-7
-        case veryHigh = 3   // 8-10
-        case extreme = 4    // 11+
-    }
-
-    nonisolated static func uvLevel(_ index: Double) -> UVLevel {
-        switch index {
-        case ..<3: return .low
-        case 3..<6: return .moderate
-        case 6..<8: return .high
-        case 8..<11: return .veryHigh
-        default: return .extreme
-        }
-    }
-
-    nonisolated static func uvDescription(_ index: Double) -> String {
-        switch uvLevel(index) {
-        case .low: return String(localized: "weather.uv.low")
-        case .moderate: return String(localized: "weather.uv.moderate")
-        case .high: return String(localized: "weather.uv.high")
-        case .veryHigh: return String(localized: "weather.uv.veryHigh")
-        case .extreme: return String(localized: "weather.uv.extreme")
-        }
-    }
-
-    nonisolated static func uvOutdoorImpact(_ index: Double) -> String {
-        switch uvLevel(index) {
-        case .low: return String(localized: "weather.uv.impact.low")
-        case .moderate: return String(localized: "weather.uv.impact.moderate")
-        case .high: return String(localized: "weather.uv.impact.high")
-        case .veryHigh: return String(localized: "weather.uv.impact.veryHigh")
-        case .extreme: return String(localized: "weather.uv.impact.extreme")
-        }
     }
 
     // MARK: - Upcoming Weather Change

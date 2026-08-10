@@ -66,7 +66,6 @@ extension CGFloat {
 
         // Icon slots for list rows
         static let iconSlot: CGFloat = 24      // SF Symbol icons in navigation rows
-        static let iconSlotLarge: CGFloat = 28  // Weather symbols, search icons, POI outer frame
 
         // Badge padding – intentionally tight for compact layout
         static let badgePadH: CGFloat = 6

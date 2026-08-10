@@ -7,6 +7,9 @@ import SwiftUI
 struct OfflineSetupSheet: View {
     @Bindable var viewModel: OfflineViewModel
     var onCustom: () -> Void
+    /// Viser et nedlastet område på kartet. Nil skjuler handlingen – da er
+    /// raden fortsatt en vei til lista, bare uten kart-hopp.
+    var onShowOnMap: ((OfflinePackInfo) -> Void)?
     /// Inline-modus: ingen NavigationStack/title/presentationDetents – kalleren
     /// (f.eks. Verktøy-fanen) gir sin egen NavigationStack og sheet-kontekst.
     var inline = false
@@ -22,7 +25,8 @@ struct OfflineSetupSheet: View {
             NavigationStack {
                 innerContent
             }
-            .presentationDetents([.large])
+            .presentationDetents([.medium, .large])
+            .presentationContentInteraction(.scrolls)
             .presentationDragIndicator(.visible)
         }
     }
@@ -44,12 +48,17 @@ struct OfflineSetupSheet: View {
             .searchSuggestions {}
             .onAppear {
                 viewModel.loadKommuner()
+                // Lista over nedlastede områder må være fersk før raden over
+                // kan si hvor mange og hvor store de er.
+                viewModel.loadPacks()
             }
     }
 
     private var scrollableContent: some View {
         ScrollView {
             VStack(spacing: .Trakke.cardGap) {
+                downloadedSection
+
                 // Tegn eget område på kartet – handling, ikke hierarki.
                 VStack(alignment: .leading, spacing: .Trakke.sm) {
                     Text(String(localized: "offline.choice.custom"))
@@ -75,6 +84,60 @@ struct OfflineSetupSheet: View {
             .padding(.top, .Trakke.sheetTop)
             .padding(.bottom, .Trakke.xxl)
         }
+    }
+
+    /// Veien til å se og forvalte det du allerede har lastet ned. Vises bare
+    /// når det finnes noe – en tom rad ville vært støy i en flate som ellers
+    /// handler om å laste ned.
+    ///
+    /// `DownloadManagerSheet` var bygget, dokumentert i brukerveiledningen og
+    /// utilgjengelig: ingen kodelinje satte `SheetCoordinator.offlineManager`.
+    /// Inngangen forsvant sannsynligvis da MerSheet ble erstattet av faner.
+    @ViewBuilder
+    private var downloadedSection: some View {
+        if !viewModel.packs.isEmpty {
+            NavigationLink {
+                DownloadManagerSheet(
+                    viewModel: viewModel,
+                    onShowOnMap: onShowOnMap
+                )
+            } label: {
+                HStack(spacing: .Trakke.sm) {
+                    // Ingen ikon: menyrader i Tråkke bærer bare tekst. Et ikon
+                    // her ville vært pynt, og appen skal være distraksjonsfri.
+                    VStack(alignment: .leading, spacing: .Trakke.labelGap) {
+                        Text(String(localized: "offline.manager.title"))
+                            .font(Font.Trakke.bodyMedium)
+                            .foregroundStyle(Color.Trakke.text)
+                        Text(downloadedSummary)
+                            .font(Font.Trakke.caption)
+                            .foregroundStyle(Color.Trakke.textTertiary)
+                    }
+
+                    Spacer()
+
+                    Image(systemName: "chevron.right")
+                        .font(Font.Trakke.caption)
+                        .foregroundStyle(Color.Trakke.textTertiary)
+                }
+                .padding(.vertical, .Trakke.rowVertical)
+                .padding(.horizontal, .Trakke.md)
+                .frame(minHeight: .Trakke.touchMin)
+                .background(Color.Trakke.surface)
+                .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))
+            }
+            .buttonStyle(.plain)
+        }
+    }
+
+    private var downloadedSummary: String {
+        let bytes = viewModel.packs.reduce(Int64(0)) {
+            $0 + Int64($1.progress.completedBytes)
+        }
+        // Interpolasjonsformen, ikke `String(format:)`: bare den slår opp
+        // flertallsvariantene, så det blir «1 område», ikke «1 områder».
+        let areas = String(localized: "offline.areaCount \(viewModel.packs.count)")
+        return "\(areas) · \(OfflineMapService.formatBytes(bytes))"
     }
 
     @ViewBuilder

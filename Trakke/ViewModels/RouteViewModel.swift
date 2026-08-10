@@ -155,11 +155,6 @@ final class RouteViewModel {
         routes.filter(\.isVisible)
     }
 
-    func selectRoute(_ route: Route) {
-        selectedRoute = route
-        loadElevationProfile(for: route)
-    }
-
     func clearSelection() {
         selectedRoute = nil
         elevationProfile = []
@@ -292,18 +287,23 @@ final class RouteViewModel {
         return points
     }
 
-    /// Sum elevation gain and loss across coordinates when they have elevation.
-    /// Returns nil when not all points carry an elevation value.
+    /// Stigning og fall for en rute, når punktene bærer høyde.
+    ///
+    /// Regnes av `ElevationMath`, samme kilde som turopptak og turimport.
+    /// Funksjonen summerte tidligere hver eneste høydeendring, mens turer
+    /// brukte en terskel – samme trasé ga da ulike høydemeter avhengig av om
+    /// den lå som rute eller tur.
+    ///
+    /// Kravet om at *alle* punkter måtte ha høyde er også borte: en fil der
+    /// noen få punkter mangler høyde ga før ingen høydemeter i det hele tatt.
+    /// Nå regnes det på de punktene som faktisk har en måling.
     static func elevationGainLoss(forCoordinates coordinates: [[Double]]) -> (gain: Double, loss: Double)? {
-        guard coordinates.count >= 2 else { return nil }
-        guard coordinates.allSatisfy({ $0.count >= 3 && $0[2].isFinite }) else { return nil }
-        var gain: Double = 0
-        var loss: Double = 0
-        for i in 1..<coordinates.count {
-            let diff = coordinates[i][2] - coordinates[i - 1][2]
-            if diff > 0 { gain += diff } else { loss += -diff }
+        let altitudes: [Double?] = coordinates.map { point in
+            guard point.count >= 3, point[2].isFinite else { return nil }
+            return point[2]
         }
-        return (gain, loss)
+        guard altitudes.compactMap({ $0 }).count >= 2 else { return nil }
+        return ElevationMath.gainLoss(altitudes: altitudes)
     }
 
     // MARK: - Export

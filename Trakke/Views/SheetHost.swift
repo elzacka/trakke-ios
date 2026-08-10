@@ -75,6 +75,12 @@ struct SheetHost: ViewModifier {
             onClose: { isFABMenuOpen = false }
         )
         .presentationDetents([.medium, .large], selection: $sheetDetent)
+        // Et sveip i innholdet ruller, det drar ikke arket opp i fullhøyde. Da
+        // kan du skru ting av og på i Innstillinger og se kartet samtidig.
+        // Høyden endres i stedet ved å dra i grabberen, som alle fem fanene
+        // tegner via `TrakkeSheetHeader` over rullefeltet – derfor er systemets
+        // egen indikator fortsatt skjult, ellers ville det blitt to.
+        .presentationContentInteraction(.scrolls)
         .presentationDragIndicator(.hidden)
         .presentationBackgroundInteraction(.enabled(upThrough: .large))
         // Aktivt SOS-signal (via Verktøy-fanen) skal ikke kunne dras vekk –
@@ -114,13 +120,10 @@ struct SheetHost: ViewModifier {
     }
 
     private func handleWaypointEdit(_ waypoint: Waypoint) {
+        let menuWasOpen = isFABMenuOpen
         isFABMenuOpen = false
         sheets.editingWaypoint = waypoint
-        // Defer sheet-presentasjon til etter AppMenuSheet er dismissed,
-        // ellers blokkerer den nye sheet-presentasjonen.
-        DispatchQueue.main.async {
-            sheets.active = .waypointEdit
-        }
+        sheets.present(.waypointEdit, otherSheetIsOpen: menuWasOpen)
     }
 
     private func handleWaypointNavigate(_ coordinate: CLLocationCoordinate2D) {
@@ -148,24 +151,6 @@ struct SheetHost: ViewModifier {
     @ViewBuilder
     private func sheetContent(for active: ActiveSheet) -> some View {
         switch active {
-        case .search:
-            SearchSheet(
-                viewModel: searchViewModel,
-                onResultSelected: { result in
-                    mapViewModel.searchPinCoordinate = result.coordinate
-                    mapViewModel.centerOn(coordinate: result.coordinate, zoom: 14)
-                }
-            )
-            .presentationDetents([.medium, .large])
-            .presentationDragIndicator(.visible)
-            .presentationBackgroundInteraction(.enabled(upThrough: .large))
-
-        case .categoryPicker:
-            CategoryPickerSheet(viewModel: poiViewModel)
-                .presentationDetents([.large])
-                .presentationDragIndicator(.visible)
-                .presentationBackgroundInteraction(.enabled(upThrough: .large))
-
         case .poiDetail:
             if let poi = poiViewModel.selectedPOI {
                 POIDetailSheet(
@@ -176,6 +161,7 @@ struct SheetHost: ViewModifier {
                     }
                 )
                 .presentationDetents([.medium, .large])
+                .presentationContentInteraction(.scrolls)
                 .presentationDragIndicator(.hidden)
                 .presentationBackgroundInteraction(.enabled(upThrough: .large))
             }
@@ -205,6 +191,7 @@ struct SheetHost: ViewModifier {
                 }
             )
             .presentationDetents([.medium, .large])
+            .presentationContentInteraction(.scrolls)
             .presentationDragIndicator(.visible)
             .presentationBackgroundInteraction(.enabled(upThrough: .large))
 
@@ -220,7 +207,7 @@ struct SheetHost: ViewModifier {
                 onWaypointSelected: { _ in },
                 onWaypointEdit: { wp in
                     sheets.editingWaypoint = wp
-                    sheets.active = .waypointEdit
+                    sheets.present(.waypointEdit)
                 },
                 onWaypointNavigate: { coordinate in
                     coordinator.startCompassNavigation(to: coordinate)
@@ -228,6 +215,7 @@ struct SheetHost: ViewModifier {
                 }
             )
             .presentationDetents([.medium, .large])
+            .presentationContentInteraction(.scrolls)
             .presentationDragIndicator(.visible)
             .presentationBackgroundInteraction(.enabled(upThrough: .large))
 
@@ -238,7 +226,7 @@ struct SheetHost: ViewModifier {
                     waypoint: wp,
                     onEdit: { waypoint in
                         sheets.editingWaypoint = waypoint
-                        sheets.active = .waypointEdit
+                        sheets.present(.waypointEdit)
                     },
                     onNavigate: { coordinate in
                         coordinator.startCompassNavigation(to: coordinate)
@@ -246,6 +234,7 @@ struct SheetHost: ViewModifier {
                     }
                 )
                 .presentationDetents([.medium, .large])
+                .presentationContentInteraction(.scrolls)
                 .presentationDragIndicator(.hidden)
                 .presentationBackgroundInteraction(.enabled(upThrough: .large))
             }
@@ -256,62 +245,23 @@ struct SheetHost: ViewModifier {
                 editingWaypoint: sheets.editingWaypoint
             )
             .presentationDetents([.medium, .large])
-            .presentationDragIndicator(.visible)
-            .presentationBackgroundInteraction(.enabled(upThrough: .large))
-
-        case .offlineManager:
-            DownloadManagerSheet(
-                viewModel: offlineViewModel,
-                onNewDownload: {
-                    sheets.active = .offlineSetup
-                }
-            )
-            .presentationDetents([.medium, .large])
+            .presentationContentInteraction(.scrolls)
             .presentationDragIndicator(.visible)
             .presentationBackgroundInteraction(.enabled(upThrough: .large))
 
         case .downloadArea:
             DownloadAreaSheet(viewModel: offlineViewModel)
                 .presentationDetents([.medium, .large])
+                .presentationContentInteraction(.scrolls)
                 .presentationDragIndicator(.visible)
                 .presentationBackgroundInteraction(.enabled(upThrough: .large))
-
-        case .offlineSetup:
-            OfflineSetupSheet(
-                viewModel: offlineViewModel,
-                onCustom: {
-                    mapViewModel.searchPinCoordinate = nil
-                    offlineViewModel.startSelection(
-                        center: mapViewModel.currentCenter,
-                        zoom: mapViewModel.currentZoom
-                    )
-                }
-            )
-            .presentationBackgroundInteraction(.enabled(upThrough: .large))
 
         case .weather:
             WeatherSheet(viewModel: weatherViewModel)
                 .presentationDetents([.medium, .large])
+                .presentationContentInteraction(.scrolls)
                 .presentationDragIndicator(.visible)
                 .presentationBackgroundInteraction(.enabled(upThrough: .large))
-
-        case .measurement:
-            MeasurementSheet(viewModel: measurementViewModel)
-                .presentationDetents([.height(200)])
-                .presentationDragIndicator(.visible)
-                .presentationBackgroundInteraction(.enabled(upThrough: .height(200)))
-
-        case .emergency:
-            EmergencySheet(
-                userLocation: mapViewModel.userLocation,
-                sosViewModel: sosViewModel
-            )
-            .presentationDetents([.medium, .large])
-            .presentationDragIndicator(.visible)
-            .presentationBackgroundInteraction(.enabled(upThrough: .large))
-            // Ingen deactivate ved onDisappear: et programmatisk arkbytte
-            // (filimport, deep link) skal ikke stoppe et aktivt nødsignal.
-            // Signalet stoppes kun eksplisitt med Stopp-knappen.
 
         case .activitySave:
             ActivitySaveSheet(viewModel: activityViewModel)

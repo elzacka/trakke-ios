@@ -44,7 +44,9 @@ struct ContentView: View {
 
     @State var isFABMenuOpen = false
     @State var selectedTab: AppTab = .home
-    @State var sheetDetent: PresentationDetent = .large
+    /// Halv skjerm som standard. Kartet er hovedsaken, og et ark som dekker
+    /// alt skjuler det du nettopp så på. Du kan alltid dra opp til full.
+    @State var sheetDetent: PresentationDetent = .medium
     /// Non-nil while the long-press confirmation dialog is presented for the
     /// given coordinate. Nil dismisses the dialog.
     @State var longPressCoordinate: CLLocationCoordinate2D?

@@ -74,8 +74,12 @@ struct DownloadCompleteToast: View {
         .frame(maxHeight: .infinity, alignment: .bottom)
         .padding(.bottom, 80)
         .transition(reduceMotion ? .opacity : .move(edge: .bottom).combined(with: .opacity))
-        .task {
+        .task(id: viewModel.completionMessage) {
+            guard viewModel.completionMessage != nil else { return }
             try? await Task.sleep(for: .seconds(4))
+            // try? svelger CancellationError – uten denne ville den gamle
+            // timeren (kansellert av id-endringen) fjernet den nye meldingen.
+            guard !Task.isCancelled else { return }
             withAnimation(reduceMotion ? nil : .default) {
                 viewModel.completionMessage = nil
             }

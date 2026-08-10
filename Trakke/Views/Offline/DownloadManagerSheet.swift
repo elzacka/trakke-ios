@@ -1,20 +1,20 @@
 import SwiftUI
 
+/// Nås bare som pushet visning fra OfflineSetupSheet – derfor ingen egen
+/// NavigationStack-gren. En slik gren var død kode av samme sort som de fire
+/// ark-tilfellene ingen satte.
 struct DownloadManagerSheet: View {
     @Bindable var viewModel: OfflineViewModel
-    var onNewDownload: (() -> Void)?
-    var isEmbedded: Bool = false
-    var dismissSheet: (() -> Void)?
-    @Environment(\.dismiss) private var dismiss
+    /// Viser området på kartet og lukker menyen. Uten denne forteller lista
+    /// bare et navn – ikke hvilket terreng du faktisk har liggende.
+    var onShowOnMap: ((OfflinePackInfo) -> Void)?
     @State private var packToDelete: OfflinePackInfo?
+    @State private var packToRename: OfflinePackInfo?
+    @State private var newName: String = ""
 
     var body: some View {
-        Group {
-            if isEmbedded {
-                innerContent
-            } else {
-                NavigationStack { innerContent }
-            }
+        TrakkePushedPage(title: String(localized: "offline.manager.title")) {
+            innerContent
         }
     }
 
@@ -28,25 +28,6 @@ struct DownloadManagerSheet: View {
                 )
             } else {
                 packList
-            }
-        }
-        .background(Color.Trakke.background)
-        .tint(Color.Trakke.brand)
-        .navigationTitle(String(localized: "offline.manager.title"))
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button {
-                    onNewDownload?()
-                    if isEmbedded {
-                        dismissSheet?()
-                    } else {
-                        dismiss()
-                    }
-                } label: {
-                    Image(systemName: "plus")
-                }
-                .accessibilityLabel(String(localized: "offline.download"))
             }
         }
         .trakkeDialog(
@@ -66,6 +47,24 @@ struct DownloadManagerSheet: View {
                 packToDelete = nil
             }
         )
+        // Samme mønster som å endre navn på en kategori i Steder.
+        .alert(String(localized: "offline.renameTitle"), isPresented: Binding(
+            get: { packToRename != nil },
+            set: { if !$0 { packToRename = nil; newName = "" } }
+        )) {
+            TextField(String(localized: "offline.areaName"), text: $newName)
+            Button(String(localized: "common.save")) {
+                if let pack = packToRename {
+                    viewModel.renamePack(pack, to: newName)
+                }
+                packToRename = nil
+                newName = ""
+            }
+            Button(String(localized: "common.cancel"), role: .cancel) {
+                packToRename = nil
+                newName = ""
+            }
+        }
     }
 
     private var packList: some View {
@@ -87,19 +86,6 @@ struct DownloadManagerSheet: View {
                     }
                 }
 
-                // Storage info
-                HStack {
-                    Text(String(localized: "offline.totalStorage"))
-                        .foregroundStyle(Color.Trakke.textTertiary)
-                    Spacer()
-                    let totalBytes = viewModel.packs.reduce(Int64(0)) { $0 + Int64($1.progress.completedBytes) }
-                    Text(OfflineMapService.formatBytes(totalBytes))
-                        .monospacedDigit()
-                        .foregroundStyle(Color.Trakke.textTertiary)
-                }
-                .font(Font.Trakke.caption)
-                .padding(.horizontal, .Trakke.xs)
-
                 Spacer(minLength: .Trakke.lg)
             }
             .padding(.horizontal, .Trakke.sheetHorizontal)
@@ -109,53 +95,79 @@ struct DownloadManagerSheet: View {
     }
 
     private func packRow(_ pack: OfflinePackInfo) -> some View {
-        VStack(alignment: .leading, spacing: .Trakke.rowVertical) {
+        packRowContent(pack)
+            // Hele raden er trykkbar, men bare når nedlastingen er ferdig –
+            // et halvlastet område har ingen meningsfull utstrekning å vise.
+            .contentShape(Rectangle())
+            .onTapGesture {
+                guard pack.progress.isComplete, let onShowOnMap else { return }
+                onShowOnMap(pack)
+            }
+            .contextMenu {
+                Button {
+                    packToRename = pack
+                    newName = pack.name
+                } label: {
+                    Text(String(localized: "offline.rename"))
+                }
+                if pack.progress.isComplete {
+                    Button {
+                        viewModel.refreshPack(pack)
+                    } label: {
+                        Text(String(localized: "offline.refresh"))
+                    }
+                } else if !pack.isDownloading {
+                    Button {
+                        viewModel.resumePack(pack)
+                    } label: {
+                        Text(String(localized: "offline.resume"))
+                    }
+                }
+                Button(role: .destructive) {
+                    packToDelete = pack
+                } label: {
+                    Text(String(localized: "common.delete"))
+                }
+            }
+            .accessibilityElement(children: .combine)
+            .accessibilityHint(
+                pack.progress.isComplete
+                    ? String(localized: "offline.showOnMap")
+                    : ""
+            )
+    }
+
+    /// To linjer: navn og størrelse øverst, kartlag og tilstand under.
+    /// Tidligere brukte en ferdig pakke fire linjer, hvorav én bare sa
+    /// «Fullført» med et grønt flueben – støy for det som er normaltilstanden.
+    /// Med flere områder ble lista unødig lang å bla gjennom.
+    private func packRowContent(_ pack: OfflinePackInfo) -> some View {
+        VStack(alignment: .leading, spacing: .Trakke.labelGap) {
             HStack {
                 Text(pack.name)
                     .font(Font.Trakke.bodyMedium)
-                Spacer()
-                Text(layerDisplayName(pack.layer))
-                    .font(Font.Trakke.captionSoft)
-                    .foregroundStyle(Color.Trakke.textTertiary)
-                    .padding(.horizontal, .Trakke.badgePadH)
-                    .padding(.vertical, .Trakke.badgePadV)
-                    .background(Color.Trakke.brandTint)
-                    .clipShape(Capsule())
-
-                Button {
-                    packToDelete = pack
-                } label: {
-                    Image(systemName: "trash")
-                        .font(Font.Trakke.caption)
-                        .foregroundStyle(Color.Trakke.red)
-                        .frame(minWidth: .Trakke.touchMin, minHeight: .Trakke.touchMin)
-                        .contentShape(Rectangle())
+                    .foregroundStyle(Color.Trakke.text)
+                if viewModel.refreshingPackIds.contains(pack.id) {
+                    ProgressView()
+                        .controlSize(.mini)
+                        .padding(.leading, .Trakke.xs)
                 }
-                .buttonStyle(.plain)
-                .accessibilityLabel(String(localized: "common.delete"))
-            }
-
-            HStack {
-                Text(OfflineMapService.zoomDescription(maxZoom: pack.maxZoom))
-                    .font(Font.Trakke.caption)
-                    .foregroundStyle(Color.Trakke.textTertiary)
-
                 Spacer()
-
                 Text(OfflineMapService.formatBytes(Int64(pack.progress.completedBytes)))
                     .font(Font.Trakke.caption.monospacedDigit())
                     .foregroundStyle(Color.Trakke.textTertiary)
             }
 
-            if viewModel.isErrored(pack) {
-                HStack(spacing: .Trakke.sm) {
-                    Image(systemName: "exclamationmark.circle.fill")
-                        .font(Font.Trakke.caption)
-                        .foregroundStyle(Color.Trakke.red)
-                    Text(String(localized: "offline.downloadError"))
-                        .font(Font.Trakke.caption)
-                        .foregroundStyle(Color.Trakke.red)
-                    Spacer()
+            HStack(spacing: .Trakke.sm) {
+                Text(subtitle(for: pack))
+                    .font(Font.Trakke.caption)
+                    .foregroundStyle(
+                        viewModel.isErrored(pack) ? Color.Trakke.red : Color.Trakke.textTertiary
+                    )
+
+                Spacer()
+
+                if viewModel.isErrored(pack) {
                     Button(String(localized: "offline.retry")) {
                         viewModel.retryPack(pack)
                     }
@@ -163,25 +175,33 @@ struct DownloadManagerSheet: View {
                     .foregroundStyle(Color.Trakke.brand)
                     .buttonStyle(.plain)
                 }
-            } else if !pack.progress.isComplete {
+            }
+
+            // Framdriftslinja står bare mens noe faktisk skjer. På en stanset
+            // pakke er den en linje som aldri beveger seg; tallet i
+            // undertittelen sier det samme uten å ta plass.
+            if pack.isDownloading && !pack.progress.isComplete {
                 ProgressView(value: pack.progress.percentage, total: 100)
                     .tint(Color.Trakke.brand)
-
-                Text(String(format: "%.0f%%", pack.progress.percentage))
-                    .font(Font.Trakke.captionSoft.monospacedDigit())
-                    .foregroundStyle(Color.Trakke.textTertiary)
-            } else {
-                HStack(spacing: .Trakke.xs) {
-                    Image(systemName: "checkmark.circle.fill")
-                        .font(Font.Trakke.caption)
-                        .foregroundStyle(Color.Trakke.brand)
-                    Text(String(localized: "offline.complete"))
-                        .font(Font.Trakke.caption)
-                        .foregroundStyle(Color.Trakke.textTertiary)
-                }
             }
         }
         .padding(.vertical, .Trakke.xs)
+    }
+
+    /// «Topografisk · Detaljert» når alt er nede, ellers med tilstanden bakerst.
+    private func subtitle(for pack: OfflinePackInfo) -> String {
+        let layer = layerDisplayName(pack.layer)
+        if viewModel.isErrored(pack) {
+            return layer + " · " + String(localized: "offline.downloadError")
+        }
+        if pack.progress.isComplete {
+            return layer + " · " + OfflineMapService.zoomDescription(maxZoom: pack.maxZoom)
+        }
+        let percent = MeasurementService.decimal(pack.progress.percentage, digits: 0)
+        let state = pack.isDownloading
+            ? String(localized: "offline.downloading")
+            : String(localized: "offline.stopped")
+        return layer + " · " + state + " " + percent + " %"
     }
 
     private func layerDisplayName(_ layer: String) -> String {

@@ -6,7 +6,6 @@ struct WeatherSheet: View {
     /// navigation-konteksten. Brukes når WeatherSheet embeddes som en
     /// underfane i Info-fanen.
     var inline = false
-    @State private var showForecastLegend = false
 
     var body: some View {
         if inline {
@@ -18,6 +17,10 @@ struct WeatherSheet: View {
                     .tint(Color.Trakke.brand)
                     .navigationTitle(String(localized: "weather.title"))
                     .navigationBarTitleDisplayMode(.inline)
+                    // Værverdiene lenker til forklaringen i Kunnskap. Uten
+                    // denne registreringen gjør trykket ingenting når arket
+                    // står i sin egen NavigationStack.
+                    .knowledgeDestinations(viewModel: nil)
             }
         }
     }
@@ -68,7 +71,6 @@ struct WeatherSheet: View {
             CardSection(String(localized: "weather.current")) {
                 CurrentConditionsCard(
                     data: forecast.current,
-                    hourlyData: forecast.hourly,
                     water: viewModel.waterTemperature,
                     airQuality: viewModel.airQuality,
                     daylight: viewModel.daylight
@@ -214,7 +216,7 @@ struct WeatherSheet: View {
                 .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: .Trakke.labelGap) {
-                Text(String(localized: "weather.uv.label \(String(format: "%.0f", uv))"))
+                Text(String(localized: "weather.uv.label \(MeasurementService.decimal(uv, digits: 0))"))
                     .font(Font.Trakke.bodyMedium)
                     .foregroundStyle(Color.Trakke.text)
                 Text(advice)
@@ -347,41 +349,19 @@ struct WeatherSheet: View {
 
     // MARK: - Daily Row
 
-    /// 7-dagers-seksjon med tappbar info-knapp som forklarer fargekodingen
-    /// (oransje vind = stiv kuling eller mer, oransje UV = nivå 6 og opp).
-    /// Egen layout fordi CardSection ikke støtter custom trailing-element
-    /// i headeren.
+    /// 7-dagers-seksjon. Forklaringsarket er borte sammen med kolonnene det
+    /// forklarte: raden viser nå dag, symbol og temperatur, og det trenger
+    /// ingen legende.
     @ViewBuilder
     private func forecastSection(_ forecast: WeatherForecast) -> some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack(spacing: .Trakke.xs) {
-                Text(String(localized: "weather.forecast"))
-                    .font(Font.Trakke.sectionHeader)
-                    .foregroundStyle(Color.Trakke.textSoft)
-                    .textCase(.uppercase)
-
-                Button {
-                    showForecastLegend = true
-                } label: {
-                    Image(systemName: "info.circle")
-                        .font(.system(size: 14, weight: .regular))
-                        .foregroundStyle(Color.Trakke.textSoft)
-                        .frame(width: .Trakke.touchMin, height: .Trakke.touchMin)
-                        .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel(String(localized: "weather.forecast.legend.label"))
-                .trakkeTooltip(isPresented: $showForecastLegend) {
-                    TrakkeTooltipContent(
-                        title: String(localized: "weather.forecast"),
-                        text: String(localized: "weather.forecast.legend")
-                    )
-                }
-
-                Spacer()
-            }
-            .padding(.horizontal, .Trakke.xs)
-            .padding(.bottom, .Trakke.sm)
+            Text(String(localized: "weather.forecast"))
+                .font(Font.Trakke.sectionHeader)
+                .foregroundStyle(Color.Trakke.textSoft)
+                .textCase(.uppercase)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, .Trakke.xs)
+                .padding(.bottom, .Trakke.sm)
 
             VStack(alignment: .leading, spacing: 0) {
                 weeklyList(forecast: forecast)
@@ -397,13 +377,9 @@ struct WeatherSheet: View {
     private func dailyRow(_ day: WeatherData, isBestDay: Bool) -> some View {
         let gustLevel = WeatherService.gustWarningLevel(day.windGust ?? day.windSpeed)
         let windLevel = WeatherService.windWarningLevel(day.windSpeed)
+        // Vindnivået står igjen fordi raden fortsatt dempes ved farlig vind,
+        // selv om selve vindtallet er flyttet til dagsvisningen.
         let worstWind = max(windLevel, gustLevel)
-
-        let windColor: Color = switch worstWind {
-        case .none: Color.Trakke.textTertiary
-        case .caution: Color.Trakke.warning
-        case .danger, .extreme: Color.Trakke.red
-        }
 
         return HStack(spacing: .Trakke.sm) {
             Text(formatDayName(day.time))
@@ -440,43 +416,12 @@ struct WeatherSheet: View {
                         .foregroundStyle(nightLow < -5 ? Color.Trakke.red : Color.Trakke.textTertiary)
                 }
             }
-            .frame(maxWidth: .infinity)
-
-            VStack(alignment: .trailing, spacing: 1) {
-                HStack(spacing: .Trakke.sm) {
-                    if day.precipitationProbability > 0 {
-                        HStack(spacing: .Trakke.labelGap) {
-                            Image(systemName: "drop")
-                                .font(Font.Trakke.captionSoft)
-                            Text(String(format: "%.0f%%", day.precipitationProbability))
-                        }
-                        .font(Font.Trakke.caption)
-                        .foregroundStyle(Color.Trakke.textSecondary)
-                    }
-
-                    Text(String(format: "%.0f m/s", day.windSpeed))
-                        .font(Font.Trakke.caption)
-                        .foregroundStyle(windColor)
-                }
-
-                if let gust = day.windGust, gust > day.windSpeed * 1.2 {
-                    Text(String(localized: "weather.wind.gustLabel \(String(format: "%.0f", gust))"))
-                        .font(Font.Trakke.captionSoft.monospacedDigit())
-                        .foregroundStyle(windColor)
-                }
-
-                if let uv = day.uvIndex, uv >= 3 {
-                    HStack(spacing: .Trakke.labelGap) {
-                        Image(systemName: "sun.max.fill")
-                            .font(Font.Trakke.captionSoft)
-                        Text(String(format: "UV %.0f", uv))
-                    }
-                    .font(Font.Trakke.captionSoft)
-                    .foregroundStyle(uv >= 6 ? Color.Trakke.warning : Color.Trakke.textSecondary)
-                }
-            }
             .frame(maxWidth: .infinity, alignment: .trailing)
         }
+        // Ukevarselet svarer på ett spørsmål: hvilken dag skal jeg gå? Dag,
+        // symbol og temperatur er nok til å velge. Nedbør, vind, kast og UV
+        // står i dagsvisningen og under «Akkurat nå», der du er når du
+        // først har valgt dag.
         .padding(.vertical, .Trakke.md)
         .opacity(worstWind >= .danger ? 0.7 : 1.0)
         .accessibilityElement(children: .combine)
@@ -493,8 +438,16 @@ struct WeatherSheet: View {
             temp = "\(Int(day.temperature.rounded()))°"
         }
         var label = "\(dayName), \(condition), \(temp)"
-        if let gust = day.windGust, gust > day.windSpeed * 1.2 {
-            label += ", \(String(localized: "weather.wind.gustLabel \(String(format: "%.0f", gust))"))"
+        // Raden dempes visuelt ved farlig vind. Det er et signal VoiceOver
+        // ikke kan se, så det må sies. Vindkast som ikke gir demping nevnes
+        // ikke lenger – da ville skjermleseren fortalt om noe raden ikke
+        // viser, etter at vindtallet flyttet til dagsvisningen.
+        let worstWind = max(
+            WeatherService.windWarningLevel(day.windSpeed),
+            WeatherService.gustWarningLevel(day.windGust ?? day.windSpeed)
+        )
+        if worstWind >= .danger, let gust = day.windGust {
+            label += ", \(String(localized: "weather.wind.gustLabel \(MeasurementService.decimal(gust, digits: 0))"))"
         }
         return label
     }
@@ -509,38 +462,36 @@ struct WeatherSheet: View {
             ? String(localized: "weather.current")
             : String(localized: "weather.daySummary")
 
-        return ScrollView {
-            VStack(spacing: .Trakke.cardGap) {
-                CardSection(summaryTitle) {
-                    CurrentConditionsCard(
-                        data: day,
-                        hourlyData: hours,
-                        water: isToday ? viewModel.waterTemperature : nil,
-                        airQuality: isToday ? viewModel.airQuality : nil,
-                        daylight: isToday ? viewModel.daylight : nil
-                    )
-                }
+        return TrakkePushedPage(title: formatFullDate(day.time)) {
+            ScrollView {
+                VStack(spacing: .Trakke.cardGap) {
+                    CardSection(summaryTitle) {
+                        CurrentConditionsCard(
+                            data: day,
+                            water: isToday ? viewModel.waterTemperature : nil,
+                            airQuality: isToday ? viewModel.airQuality : nil,
+                            daylight: isToday ? viewModel.daylight : nil
+                        )
+                    }
 
-                if !hours.isEmpty {
-                    CardSection(String(localized: "weather.hourly")) {
-                        VStack(spacing: 0) {
-                            ForEach(hours, id: \.time) { hour in
-                                if hours.first?.time != hour.time {
-                                    Divider().padding(.leading, .Trakke.dividerLeading)
+                    if !hours.isEmpty {
+                        CardSection(String(localized: "weather.hourly")) {
+                            VStack(spacing: 0) {
+                                ForEach(hours, id: \.time) { hour in
+                                    if hours.first?.time != hour.time {
+                                        Divider().padding(.leading, .Trakke.dividerLeading)
+                                    }
+                                    hourlyRow(hour)
                                 }
-                                hourlyRow(hour)
                             }
                         }
                     }
                 }
+                .padding(.horizontal, .Trakke.sheetHorizontal)
+                .padding(.top, .Trakke.sheetTop)
+                .padding(.bottom, .Trakke.lg)
             }
-            .padding(.horizontal, .Trakke.sheetHorizontal)
-            .padding(.top, .Trakke.sheetTop)
-            .padding(.bottom, .Trakke.lg)
         }
-        .background(Color.Trakke.background)
-        .navigationTitle(formatFullDate(day.time))
-        .navigationBarTitleDisplayMode(.inline)
     }
 
     private func hoursForDay(_ dayIndex: Int, forecast: WeatherForecast) -> [WeatherData] {
@@ -598,19 +549,19 @@ struct WeatherSheet: View {
                         HStack(spacing: .Trakke.labelGap) {
                             Image(systemName: "drop.fill")
                                 .font(Font.Trakke.captionSoft)
-                            Text(String(format: "%.1f mm", hour.precipitation))
+                            Text(MeasurementService.withUnit(MeasurementService.decimal(hour.precipitation, digits: 1), "mm"))
                         }
                         .font(Font.Trakke.caption)
                         .foregroundStyle(Color.Trakke.textSecondary)
                     }
 
-                    Text(String(format: "%.0f m/s", hour.windSpeed))
+                    Text(MeasurementService.withUnit(MeasurementService.decimal(hour.windSpeed, digits: 0), "m/s"))
                         .font(Font.Trakke.caption.monospacedDigit())
                         .foregroundStyle(windColor)
                 }
 
                 if let gust = hour.windGust, gust > hour.windSpeed * 1.2 {
-                    Text(String(localized: "weather.wind.gustLabel \(String(format: "%.0f", gust))"))
+                    Text(String(localized: "weather.wind.gustLabel \(MeasurementService.decimal(gust, digits: 0))"))
                         .font(Font.Trakke.captionSoft.monospacedDigit())
                         .foregroundStyle(windColor)
                 }

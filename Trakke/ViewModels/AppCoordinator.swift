@@ -110,6 +110,10 @@ final class AppCoordinator {
         // er kalt – uten denne linjen samler et opptak startet uten aktiv
         // kartsporing null punkter og turen går tapt ved lagring.
         mapViewModel.startTrackingLocation()
+        // Et opptak må overleve at skjermen låser seg. Uten dette sluttet
+        // posisjonene å komme i det brukeren la telefonen i lomma, og turen
+        // ble en stump av seg selv – uten at noe varslet om det.
+        mapViewModel.claimBackgroundLocation("recording")
         mapViewModel.setLocationObserver("recording") { [weak activityViewModel] location in
             Task { @MainActor in
                 activityViewModel?.processLocation(location)
@@ -119,11 +123,49 @@ final class AppCoordinator {
         activityViewModel.onRecordingStop = { [weak self] in
             self?.handleRecordingStop()
         }
-        UIApplication.shared.isIdleTimerDisabled = true
+        // Skjermen holdes ikke lenger våken gjennom hele turen. Den vanen kom
+        // av at opptaket stoppet ved skjermlås; nå gjør det ikke det, og et
+        // batteri som varer hele turen er verdt mer enn et tent display.
+        UIApplication.shared.isIdleTimerDisabled = navigationViewModel.isActive || sosViewModel.isActive
+    }
+
+    /// Gjenopptar et opptak som ble avbrutt av at appen døde. Samme oppsett
+    /// som et nytt opptak – observatør, bakgrunnsposisjon, stopp-håndtering –
+    /// bare med sporet som allerede finnes.
+    func resumeInterruptedRecording() {
+        mapViewModel.startTrackingLocation()
+        mapViewModel.claimBackgroundLocation("recording")
+        mapViewModel.setLocationObserver("recording") { [weak activityViewModel] location in
+            Task { @MainActor in
+                activityViewModel?.processLocation(location)
+            }
+        }
+        activityViewModel.onRecordingStop = { [weak self] in
+            self?.handleRecordingStop()
+        }
+        activityViewModel.resumeInterruptedRecording()
+    }
+
+    // MARK: - Handlinger bestilt utenfra
+
+    /// Lagrer posisjonen som et sted, med tidspunktet som navn.
+    ///
+    /// Uten en kjent posisjon lages ingenting. Et sted med gjettet posisjon er
+    /// verre enn ikke noe sted, særlig når hensikten er å finne tilbake.
+    func markCurrentPlace() {
+        guard let coordinate = mapViewModel.userLocation?.coordinate else {
+            mapViewModel.startTrackingLocation()
+            waypointViewModel.saveError = String(localized: "intent.noLocation")
+            return
+        }
+        let name = Date.now.formatted(date: .abbreviated, time: .shortened)
+        waypointViewModel.addWaypoint(name: name, coordinate: coordinate, category: nil)
+        HapticFeedback.success()
     }
 
     private func handleRecordingStop() {
         mapViewModel.removeLocationObserver("recording")
+        mapViewModel.releaseBackgroundLocation("recording")
         activityViewModel.onRecordingStop = nil
         UIApplication.shared.isIdleTimerDisabled = navigationViewModel.isActive || sosViewModel.isActive
     }
@@ -133,7 +175,24 @@ final class AppCoordinator {
     /// Tøm alle cacher som kan inneholde brukerdata. Kalles fra
     /// «Slett alle data»-flyten i innstillinger.
     func clearAllServiceCaches() {
+        // Et pågående opptak er brukerdata: stopp det først, ellers skriver
+        // sporings-aktoren journalen tilbake ved neste sjekkpunkt.
+        if activityViewModel.isRecording {
+            activityViewModel.stopWithoutSaving()
+        }
         GPXExportService.clearAllExports()
+        // Journalen for et pågående opptak er turdata på disk og må med her,
+        // ellers overlever et halvferdig spor en full sletting.
+        ActivityRecordingJournal.clear()
+        activityViewModel.discardInterruptedRecording()
+
+        // Refetch post-delete so no view keeps holding deleted PersistentModel instances.
+        routeViewModel.loadRoutes()
+        waypointViewModel.loadWaypoints()
+        activityViewModel.loadActivities()
+        routeViewModel.clearSelection()
+        waypointViewModel.selectedWaypoint = nil  // can hold a deleted model too
+
         Task { [weak self] in
             guard let self else { return }
             await self.weatherViewModel.clearCaches()
@@ -141,7 +200,7 @@ final class AppCoordinator {
             await self.routeViewModel.clearCaches()
             await self.poiViewModel.clearCaches()
             await self.waypointViewModel.clearCaches()
-            self.knowledgeViewModel.deleteAllPacks()
+            self.knowledgeViewModel.clearCache()
         }
     }
 }

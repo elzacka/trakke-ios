@@ -2,6 +2,7 @@ import Testing
 import Foundation
 import CoreLocation
 import SwiftData
+import UIKit
 @testable import Trakke
 
 // MARK: - Model Tests
@@ -34,6 +35,24 @@ import SwiftData
 @Test func levenshteinEmpty() {
     #expect(Levenshtein.distance("", "abc") == 3)
     #expect(Levenshtein.distance("abc", "") == 3)
+}
+
+@Test func levenshteinNorwegianCharacters() {
+    // ae, oe, aa should be treated as single characters
+    #expect(Levenshtein.distance("baer", "baer") == 0)
+    #expect(Levenshtein.distance("sjo", "sjo") == 0)
+    #expect(Levenshtein.distance("gard", "gard") == 0)
+}
+
+@Test func levenshteinNorwegianOneEdit() {
+    #expect(Levenshtein.distance("bar", "baer") == 1)
+    #expect(Levenshtein.distance("sjoen", "sjen") == 1)
+}
+
+@Test func levenshteinNorwegianCaseDifference() {
+    // Case difference counts as edits (unicode characters)
+    let dist = Levenshtein.distance("Tromso", "tromso")
+    #expect(dist == 1)
 }
 
 // MARK: - Coordinate Parsing Tests
@@ -703,6 +722,18 @@ func poiCategoryIconName(category: POICategory) {
     #expect(!category.iconName.isEmpty)
 }
 
+@Test("Alle POI-ikoner finnes som asset eller SF Symbol",
+      arguments: POICategory.allCases)
+func poiCategoryIconResolves(category: POICategory) {
+    // `POIIconImage` faller stille tilbake til `Image(systemName:)`, og et
+    // SF Symbol-navn som ikke finnes gir ingen feil – bare et tomt kartsymbol.
+    // Fjorten kategorier kom til på én gang i august 2026, så navnene sjekkes
+    // her i stedet for ved å se på kartet.
+    let name = category.iconName
+    let resolved = UIImage(named: name) != nil || UIImage(systemName: name) != nil
+    #expect(resolved, "Ikon «\(name)» for \(category.rawValue) finnes ikke")
+}
+
 @Test("All POI categories have valid hex color strings",
       arguments: POICategory.allCases)
 func poiCategoryColor(category: POICategory) {
@@ -731,7 +762,15 @@ func poiCategoryMinZoom(category: POICategory) {
 }
 
 @Test("POI category count matches expected") func poiCategoryCount() {
-    #expect(POICategory.allCases.count == 13)
+    #expect(POICategory.allCases.count == 26)
+}
+
+@Test("Alle POI-kategorier har bundlede data",
+      arguments: POICategory.allCases)
+func poiCategoryHasBundledFile(category: POICategory) {
+    // Kravet er at hver kategori virker uten dekning. `kulturminner` var
+    // unntaket til UT.no-dataene ble bundlet.
+    #expect(category.isBundled)
 }
 
 // MARK: - Coordinate Edge Cases
@@ -1124,10 +1163,12 @@ func kartverketStyleJSON(layer: BaseLayer) {
 
 @Test func routeViewModelFormattedDistance() async {
     let vm = await RouteViewModel()
+    // Fast mellomrom mellom tall og enhet, og norsk desimalkomma. Testen
+    // hevdet før «2.5 km» med punktum, altså engelsk tallformat.
     let short = await vm.formattedDistance(500)
-    #expect(short == "500 m")
+    #expect(short == "500\u{00A0}m")
     let long = await vm.formattedDistance(2500)
-    #expect(long == "2.5 km")
+    #expect(long == "2,5\u{00A0}km")
     let none = await vm.formattedDistance(nil)
     #expect(none == "--")
     let zero = await vm.formattedDistance(0)
@@ -1149,12 +1190,54 @@ func kartverketStyleJSON(layer: BaseLayer) {
 @Test func sheetCoordinatorDismissAll() async {
     let sheets = await SheetCoordinator()
     await MainActor.run {
-        sheets.present(.search)
-        #expect(sheets.active == .search)
-        sheets.present(.tracks)
-        #expect(sheets.active == .tracks)
+        sheets.present(.waypointList)
+        #expect(sheets.active == .waypointList)
         sheets.dismissAll()
     }
+    let active = await sheets.active
+    #expect(active == nil)
+}
+
+/// Et bytte fra ett ark til et annet kan ikke skje i samme runde: SwiftUI
+/// presenterer bare ett ark per view om gangen, og å sette `active` rett over
+/// et åpent ark gjorde at det nye aldri kom («Currently, only presenting a
+/// single sheet is supported»). Byttet lukker derfor først og presenterer etter.
+@Test func sheetCoordinatorSwapClosesFirstThenPresents() async {
+    let sheets = await SheetCoordinator()
+    await MainActor.run {
+        sheets.present(.waypointList)
+        sheets.present(.tracks)
+        #expect(sheets.active == nil)
+    }
+    try? await Task.sleep(for: .milliseconds(50))
+    let active = await sheets.active
+    #expect(active == .tracks)
+}
+
+/// Menyen eies av `ContentView`, så koordinatoren får vite om den via flagget.
+/// Uten det ville et trykk på en POI bak den åpne menyen presentert direkte
+/// oppå menyen, og arket ville uteblitt.
+@Test func sheetCoordinatorDefersWhenMenuIsOpen() async {
+    let sheets = await SheetCoordinator()
+    await MainActor.run {
+        sheets.present(.poiDetail, otherSheetIsOpen: true)
+        #expect(sheets.active == nil)
+    }
+    try? await Task.sleep(for: .milliseconds(50))
+    let active = await sheets.active
+    #expect(active == .poiDetail)
+}
+
+/// «Slett alle data» lukker arkene. Et utsatt bytte som rakk å bli bestilt før
+/// det, skal ikke vekke arket til live igjen og vise data som nettopp ble slettet.
+@Test func sheetCoordinatorDismissCancelsPendingPresent() async {
+    let sheets = await SheetCoordinator()
+    await MainActor.run {
+        sheets.present(.waypointList)
+        sheets.present(.tracks)   // utsatt
+        sheets.dismissAll()
+    }
+    try? await Task.sleep(for: .milliseconds(50))
     let active = await sheets.active
     #expect(active == nil)
 }
@@ -1506,6 +1589,53 @@ func kartverketStyleJSON(layer: BaseLayer) {
         #expect(!article.title.isEmpty, "Article id \(article.id) has empty title")
         #expect(!article.body.isEmpty, "Article id \(article.id) '\(article.title)' has empty body")
         #expect(!article.category.isEmpty, "Article id \(article.id) '\(article.title)' has empty category")
+        #expect(article.theme == "survival", "Article id \(article.id) '\(article.title)' has unexpected theme '\(article.theme)'")
+    }
+}
+
+// MARK: - Map Legend
+
+// En feilskrevet nøkkel er taus: String(localized:) gir nøkkelen tilbake,
+// og raden viser «legend.row.tettbebyggelse» i stedet for norsk tekst.
+@Test("Alle tegnforklaringsnøkler er oversatt")
+func mapLegendKeysResolve() {
+    for section in MapLegend.sections {
+        #expect(section.title != section.titleKey, "Uoversatt seksjonsnøkkel: \(section.titleKey)")
+        if let footnoteKey = section.footnoteKey {
+            #expect(section.footnote != footnoteKey, "Uoversatt fotnotenøkkel: \(footnoteKey)")
+        }
+        for row in section.rows {
+            #expect(row.name != row.nameKey, "Uoversatt radnøkkel: \(row.nameKey)")
+            if let detailKey = row.detailKey {
+                #expect(row.detail != detailKey, "Uoversatt detaljnøkkel: \(detailKey)")
+            }
+        }
+    }
+    for level in MapLegend.detailLevels {
+        let resolved = String(localized: String.LocalizationValue(level.nameKey))
+        #expect(resolved != level.nameKey, "Uoversatt nivånøkkel: \(level.nameKey)")
+    }
+}
+
+// Hver rad peker på et imageset – et feilskrevet asset-navn rendrer som
+// tomrom uten å feile.
+@Test("Alle tegnforklaringssymboler finnes i asset-katalogen")
+func mapLegendAssetsExist() {
+    for section in MapLegend.sections {
+        for row in section.rows {
+            #expect(UIImage(named: row.asset) != nil, "Mangler imageset: \(row.asset)")
+        }
+    }
+}
+
+// Bundlede artsbilder må finnes i asset-katalogen og aldri skygge for
+// arter som finnes i Artsdatabanken-katalogen med kreditering intakt.
+@Test("Bundlede artsbilder finnes og har kreditering")
+func bundledSpeciesImagesExist() {
+    for (name, entry) in BundledSpeciesImage.byScientificName {
+        #expect(UIImage(named: entry.assetName) != nil, "Mangler imageset for \(name): \(entry.assetName)")
+        #expect(entry.credit.contains("Foto:"), "Kreditering mangler fotograf for \(name)")
+        #expect(entry.credit.contains("CC "), "Kreditering mangler lisens for \(name)")
     }
 }
 

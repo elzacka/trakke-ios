@@ -13,7 +13,7 @@ struct SettingsTabContent: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                TrakkeSheetHeader(title: String(localized: "appTab.settings"))
+                TrakkeSheetHeader()
 
                 ScrollView {
                     PreferencesSheet(

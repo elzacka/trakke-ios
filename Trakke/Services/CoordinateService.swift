@@ -302,10 +302,6 @@ enum CoordinateService {
 
     private static let utmBands = "CDEFGHJKLMNPQRSTUVWX"
 
-    static func utmZone(longitude: Double) -> Int {
-        Int(floor((longitude + 180) / 6)) + 1
-    }
-
     static func utmBand(latitude: Double) -> String {
         let index = Int(floor((latitude + 80) / 8))
         let clamped = max(0, min(index, utmBands.count - 1))

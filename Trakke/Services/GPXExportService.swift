@@ -7,6 +7,13 @@ enum GPXExportService {
     /// inne i `<extensions>`-blokker.
     private static let trakkeNamespace = "https://github.com/elzacka/trakke-ios/xmlns"
 
+    /// Garmins TrackPointExtension. Fart og kurs finnes ikke i GPX 1.1, men
+    /// dette navnerommet er den etablerte måten å bære dem på, og leses av de
+    /// fleste verktøy som tar imot GPX. Nøyaktighet har ingen slik standard og
+    /// går derfor i `trakke:`.
+    private static let garminTrackPointNamespace =
+        "https://www8.garmin.com/xmlschemas/TrackPointExtensionv2.xsd"
+
     static func exportRoute(_ route: Route, waypoints: [Waypoint] = []) -> String {
         // Pre-size the parts buffer: ~8 lines per waypoint + 8 framing lines + 1 line per trackpoint.
         var parts: [String] = []
@@ -118,18 +125,7 @@ enum GPXExportService {
         parts.append("\n    <trkseg>")
 
         for point in activity.trackPoints {
-            guard point.count >= 2 else { continue }
-            let lon = point[0]
-            let lat = point[1]
-            guard lon.isFinite, lat.isFinite else { continue }
-            parts.append("\n      <trkpt lat=\"\(lat)\" lon=\"\(lon)\">")
-            if point.count >= 3, point[2].isFinite {
-                parts.append("\n        <ele>\(point[2])</ele>")
-            }
-            if point.count >= 4, point[3].isFinite {
-                parts.append("\n        <time>\(iso8601(Date(timeIntervalSince1970: point[3])))</time>")
-            }
-            parts.append("\n      </trkpt>")
+            parts.append(trackPointElement(point))
         }
 
         parts.append("\n    </trkseg>")
@@ -152,18 +148,7 @@ enum GPXExportService {
             }
             parts.append("\n    <trkseg>")
             for point in activity.trackPoints {
-                guard point.count >= 2 else { continue }
-                let lon = point[0]
-                let lat = point[1]
-                guard lon.isFinite, lat.isFinite else { continue }
-                parts.append("\n      <trkpt lat=\"\(lat)\" lon=\"\(lon)\">")
-                if point.count >= 3, point[2].isFinite {
-                    parts.append("\n        <ele>\(point[2])</ele>")
-                }
-                if point.count >= 4, point[3].isFinite {
-                    parts.append("\n        <time>\(iso8601(Date(timeIntervalSince1970: point[3])))</time>")
-                }
-                parts.append("\n      </trkpt>")
+                parts.append(trackPointElement(point))
             }
             parts.append("\n    </trkseg>")
             parts.append("\n  </trk>")
@@ -299,6 +284,7 @@ enum GPXExportService {
         <gpx version="1.1" creator="Tråkke"
           xmlns="http://www.topografix.com/GPX/1/1"
           xmlns:trakke="\(trakkeNamespace)"
+          xmlns:gpxtpx="\(garminTrackPointNamespace)"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
           <metadata>
@@ -307,6 +293,77 @@ enum GPXExportService {
           </metadata>\(body)
         </gpx>
         """
+    }
+
+    /// Ett `<trkpt>`, med alt punktet faktisk vet – og ingenting det ikke vet.
+    ///
+    /// Målte verdier skrives, umålte utelates. CoreLocation bruker negative
+    /// tall for «vet ikke», og et `-1` skrevet ut som fart ville sett ut som
+    /// data. Et element som mangler, er ærlig; et element med en oppdiktet
+    /// verdi er det ikke.
+    ///
+    /// Fart og kurs går i Garmins `gpxtpx`-navnerom fordi GPX 1.1 ikke har
+    /// dem. Nøyaktighet har ingen standard og går i `trakke:`.
+    private static func trackPointElement(_ point: [Double]) -> String {
+        guard point.count >= 2 else { return "" }
+        let lon = point[0]
+        let lat = point[1]
+        guard lat.isFinite, lon.isFinite,
+              (-90...90).contains(lat), (-180...180).contains(lon) else { return "" }
+
+        var parts = ["\n      <trkpt lat=\"\(coordinate(lat))\" lon=\"\(coordinate(lon))\">"]
+        if let altitude = Activity.altitude(of: point) {
+            parts.append("\n        <ele>\(number(altitude, places: 1))</ele>")
+        }
+        if let timestamp = Activity.timestamp(of: point) {
+            parts.append("\n        <time>\(iso8601(timestamp))</time>")
+        }
+
+        var trackPointExtensions: [String] = []
+        if let speed = Activity.speed(of: point) {
+            trackPointExtensions.append(
+                "\n          <gpxtpx:speed>\(number(speed, places: 2))</gpxtpx:speed>"
+            )
+        }
+        if let course = Activity.course(of: point) {
+            trackPointExtensions.append(
+                "\n          <gpxtpx:course>\(number(course, places: 1))</gpxtpx:course>"
+            )
+        }
+        var trakkeExtensions: [String] = []
+        if let accuracy = Activity.horizontalAccuracy(of: point) {
+            trakkeExtensions.append(
+                "\n          <trakke:hdop>\(number(accuracy, places: 1))</trakke:hdop>"
+            )
+        }
+
+        if !trackPointExtensions.isEmpty || !trakkeExtensions.isEmpty {
+            parts.append("\n        <extensions>")
+            if !trackPointExtensions.isEmpty {
+                parts.append("\n          <gpxtpx:TrackPointExtension>")
+                parts.append(contentsOf: trackPointExtensions)
+                parts.append("\n          </gpxtpx:TrackPointExtension>")
+            }
+            parts.append(contentsOf: trakkeExtensions)
+            parts.append("\n        </extensions>")
+        }
+
+        parts.append("\n      </trkpt>")
+        return parts.joined()
+    }
+
+    /// Sju desimaler er drøyt 1 cm ved våre breddegrader – langt under det GPS
+    /// kan måle. Uten formatering skriver Swift ut hele flyttallet, som gir
+    /// rader à la `61.49150000000001`: falsk presisjon, og en fil som er
+    /// unødig stor når den har tusenvis av punkter.
+    private static func coordinate(_ value: Double) -> String {
+        number(value, places: 7)
+    }
+
+    /// Fast desimaltegn uansett hvilken region enheten står i. GPX er et
+    /// maskinformat, og et komma her ville gjort fila uleselig for andre.
+    private static func number(_ value: Double, places: Int) -> String {
+        String(format: "%.\(places)f", locale: Locale(identifier: "en_US_POSIX"), value)
     }
 
     private static func escapeXML(_ string: String) -> String {

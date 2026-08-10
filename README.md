@@ -1,20 +1,22 @@
 # Tråkke
 
-En kartapp for iPhone, laget for tur i norsk natur. Bygget på Kartverkets kart. Fungerer offline. Lagrer ingenting om deg.
+En kartapp for iPhone, laget for tur i norsk natur. Bygget på Kartverkets kart. Virker uten dekning. Lagrer ingenting om deg.
 
 [Last ned Tråkke fra App Store](https://apps.apple.com/no/app/id6759306717). Appen er gratis, uten annonser og uten sporing.
 
 ## Hva du får
 
-**Kart fra Kartverket.** Topografisk, gråtone og turkart. Bratthet, naturskog, naturvern og turruter som kartlag. Stedsnavn- og adressesøk. Kompasset veksler kartet mellom nord opp og retning opp. Last ned hele kommuner eller egne områder for offline bruk.
+**Kart fra Kartverket.** Topografisk, gråtone og turkart. Bratthet, snøskred-aktsomhetsområder, naturskog, naturvern og turruter som kartlag. Stedsnavn- og adressesøk. Kompasset veksler kartet mellom nord opp og retning opp. Last ned hele kommuner eller egne områder for bruk uten nett.
 
-**Steder på kartet.** Tilfluktsrom, gapahuker, hytter, badeplasser, bålplasser, hengekøyeplasser, teltplasser, rasteplasser, fosser, huler, utsiktspunkter, kulturminner og krigsminner. Slå av og på etter behov. Det meste fungerer offline.
+**Steder på kartet.** 26 kategorier, gruppert etter hva de er til: friluftsliv (gapahuker, hytter, badeplasser, bålplasser, teltplasser, rasteplasser, hengekøyeplasser, huler, friluftsområder, fiskeplasser, klatrefelt, akebakker, skiheiser, turposter), ferdsel og fasiliteter (bruer og klopper, vadesteder, parkering, skiltpunkt, toaletter, servering), landskap (utsiktspunkter med fjelltopper, fosser), kulturarv (kulturminner, krigsminner, severdigheter) og beredskap (tilfluktsrom). Slå av og på etter behov. Alt virker uten dekning.
 
-**Tur og navigasjon.** Tegn ruter, lagre steder, registrer turer med GPS. Turer og ruter står i samme samling, med felles kategorier og filter. Kompassretning til et valgt mål, også uten dekning. Under navigasjon vises avstand og retning på låseskjermen og i Dynamic Island. Import og eksport av GPX og GeoJSON.
+**Tur og navigasjon.** Tegn ruter, lagre steder, registrer turer med GPS. Turer og ruter står i samme samling, med felles kategorier og filter. Kompassretning til et valgt mål, også uten dekning. Under navigasjon vises avstand og retning på låseskjermen og i Dynamic Island. Turopptak fortsetter med skjermen låst, og har telefonen barometer, brukes det til høydemeterne. Import og eksport av GPX og GeoJSON.
+
+**Uten å åpne appen.** Start og stopp turopptak og marker stedet du står på via Siri, Snarveier eller handlingsknappen.
 
 **Vær og varsler.** Værmelding, luftkvalitet og vanntemperatur fra Meteorologisk institutt. Snøskred og flom fra NVE/Varsom. Soloppgang og solnedgang.
 
-**Trygghet på tur.** Nødnumre, koordinater i flere formater, SOS-signal med blink og lyd, måleverktøy og en kunnskapsbase med artikler om friluftsliv, alt tilgjengelig offline.
+**Trygghet på tur.** Nødnumre, koordinater i flere formater, SOS-signal med blink og lyd, måleverktøy og en kunnskapsbase med artikler om friluftsliv, alt tilgjengelig uten nett.
 
 ## Personvern
 
@@ -63,11 +65,14 @@ MIT.
 - Kartverket: kart, terreng og tjenester (CC BY 4.0)
 - Miljødirektoratet: naturvern og naturskog (NLOD 2.0)
 - Meteorologisk institutt: vær, luftkvalitet, hav- og badevannstemperatur (CC BY 4.0)
+- Yr/NRK: værsymboler (CC BY 4.0)
 - NVE / Varsom: snøskred- og flomvarsler (NLOD)
 - Artsdatabanken: artsbilder (CC BY 4.0)
 - Riksantikvaren: kulturminner (NLOD)
-- DSB: tilfluktsrom (NLOD)
+- DSB, via Geonorge: tilfluktsrom (NLOD)
 - Wikidata: fosser (CC0)
-- UT.no/DNT, Statskog, fjellstyrer m.fl.: hytter
+- Wikimedia Commons: enkelte artsbilder (CC BY / CC BY-SA)
+- UT.no/DNT, Statskog, fjellstyrer m.fl.: hytter, og bruer, vadesteder, parkering, skiltpunkt, toaletter, servering, friluftsområder, fiskeplasser, klatrefelt, akebakker, skiheiser, turposter og severdigheter
+- Oslo kommune (Bymiljøetaten): badeplasser i Oslo (NLOD)
 - OpenStreetMap-bidragsytere: øvrige kategorier (ODbL)
 

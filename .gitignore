@@ -61,3 +61,7 @@ __pycache__/
 
 # Knowledge pack build output
 Scripts/knowledge/output/
+
+# Rå API-svar fra POI-hentescriptene. Regenereres ved behov.
+Scripts/osm_cache/
+Scripts/utno_cache/

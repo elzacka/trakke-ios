@@ -23,7 +23,7 @@ struct ToolsTabContent: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                TrakkeSheetHeader(title: String(localized: "appTab.tools"))
+                TrakkeSheetHeader()
 
                 TrakkeUnderlineTabs(
                     titles: subTabs,
@@ -87,6 +87,17 @@ struct ToolsTabContent: View {
             viewModel: offlineViewModel,
             onCustom: {
                 onStartCustomOfflineSelection()
+                dismiss()
+            },
+            onShowOnMap: { pack in
+                mapViewModel.showBounds(
+                    MapBounds(
+                        south: pack.bounds.south,
+                        west: pack.bounds.west,
+                        north: pack.bounds.north,
+                        east: pack.bounds.east
+                    )
+                )
                 dismiss()
             },
             inline: true

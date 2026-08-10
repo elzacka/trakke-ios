@@ -26,6 +26,13 @@
 	<string>public.app-category.navigation</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSLocationTemporaryUsageDescriptionDictionary</key>
+	<dict>
+		<key>PreciseLocationForNavigation</key>
+		<string>Med omtrentlig posisjon kan Tråkke bomme med flere kilometer. Navigering og turopptak trenger presis posisjon for å vise riktig retning, avstand og spor.</string>
+	</dict>
+	<key>NSMotionUsageDescription</key>
+	<string>Tråkke bruker barometeret i telefonen til å måle høydeendringer mer nøyaktig enn GPS klarer, og til å vise om lufttrykket stiger eller faller. Målingene lagres bare på enheten din.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Tråkke bruker posisjonen din for å vise deg på kartet, navigere langs ruter og hente relevante værmeldinger. Under aktiv navigering fortsetter posisjonssporingen mens skjermen er låst.</string>
 	<key>UIBackgroundModes</key>

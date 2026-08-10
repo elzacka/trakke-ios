@@ -111,6 +111,16 @@ enum APIClient {
             } catch let error as URLError where error.code == .networkConnectionLost {
                 lastError = APIError.networkError(error.localizedDescription)
                 continue
+            } catch is CancellationError {
+                throw CancellationError()
+            } catch let cancelled as URLError where cancelled.code == .cancelled {
+                // Et avbrutt kall er ikke en feil. Uten dette ble det pakket om
+                // til APIError.networkError(error.localizedDescription), altså
+                // «avbrutt», og kallernes `catch is CancellationError` traff
+                // aldri – så hver panorering som rakk å starte et kall
+                // loggførte «POI fetch error», og ekte feil ble umulige å
+                // skille fra normal bruk.
+                throw CancellationError()
             } catch {
                 throw APIError.networkError(error.localizedDescription)
             }
@@ -183,6 +193,16 @@ enum APIClient {
             } catch let error as URLError where error.code == .networkConnectionLost {
                 lastError = APIError.networkError(error.localizedDescription)
                 continue
+            } catch is CancellationError {
+                throw CancellationError()
+            } catch let cancelled as URLError where cancelled.code == .cancelled {
+                // Et avbrutt kall er ikke en feil. Uten dette ble det pakket om
+                // til APIError.networkError(error.localizedDescription), altså
+                // «avbrutt», og kallernes `catch is CancellationError` traff
+                // aldri – så hver panorering som rakk å starte et kall
+                // loggførte «POI fetch error», og ekte feil ble umulige å
+                // skille fra normal bruk.
+                throw CancellationError()
             } catch {
                 throw APIError.networkError(error.localizedDescription)
             }

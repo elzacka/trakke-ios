@@ -137,7 +137,11 @@ actor WeatherService {
         let now = Date()
         let formatter = iso8601Formatter
 
-        let parsed: [(date: Date, data: WeatherData)] = timeseries.compactMap { point in
+        // `precipHours` sier hvor lang periode nedbørtallet gjelder for. MET
+        // leverer time for time de første døgnene og deretter seksti mers-
+        // bolker, og uten denne lengden er det umulig å summere et døgn uten
+        // å telle overlappende perioder flere ganger.
+        let parsed: [(date: Date, data: WeatherData, precipHours: Double)] = timeseries.compactMap { point in
             guard let date = formatter.date(from: point.time) else { return nil }
             let instant = point.data.instant.details
             let next1h = point.data.next_1_hours
@@ -146,6 +150,7 @@ actor WeatherService {
             let symbol = next1h?.summary.symbol_code ?? next6h?.summary.symbol_code ?? "cloudy"
             let precip = next1h?.details?.precipitation_amount ?? next6h?.details?.precipitation_amount ?? 0
             let precipProb = next1h?.details?.probability_of_precipitation ?? next6h?.details?.probability_of_precipitation ?? 0
+            let precipHours: Double = next1h?.details?.precipitation_amount != nil ? 1 : 6
 
             let wd = WeatherData(
                 temperature: instant.air_temperature,
@@ -165,7 +170,7 @@ actor WeatherService {
                 symbol: symbol,
                 time: date
             )
-            return (date, wd)
+            return (date, wd, precipHours)
         }
 
         // Current: closest to now
@@ -177,13 +182,19 @@ actor WeatherService {
                           humidity: 0, pressure: nil, uvIndex: nil, cloudCoverage: 0,
                           symbol: "cloudy", time: now)
 
-        // Hourly: next 24 hours
-        let hourly = parsed.filter { $0.date > now && $0.date < now.addingTimeInterval(86400) }
-            .map(\.data)
+        // Alle framtidige punkter, ikke bare første døgn. MET leverer
+        // timesoppløsning de nærmeste døgnene og deretter seks timers bolker,
+        // og `hoursForDay` plukker ut dem som hører til dagen du har åpnet.
+        // Kuttet ved 24 timer tømte time-for-time-lista på alle dager utover
+        // i morgen, så dagsvisningen sto igjen med bare oppsummeringen.
+        //
+        // Trygt for de to som leser `hourly`: `upcomingChange` filtrerer selv
+        // ned til seks timer fram.
+        let hourly = parsed.filter { $0.date > now }.map(\.data)
 
         // Daily: group by calendar day, pick noon
         let calendar = Calendar.current
-        var dailyMap: [String: [(date: Date, data: WeatherData)]] = [:]
+        var dailyMap: [String: [(date: Date, data: WeatherData, precipHours: Double)]] = [:]
         for item in parsed where item.date > now {
             let components = calendar.dateComponents([.year, .month, .day], from: item.date)
             guard let year = components.year, let month = components.month, let day = components.day else { continue }
@@ -218,14 +229,33 @@ actor WeatherService {
                 Self.windChill(temperature: $0.data.temperature, windSpeedMs: $0.data.windSpeed)
             }
 
+            // Nedbør for et døgn er summen over døgnet, ikke verdien i timen
+            // rundt kl. 12. Regn på kvelden ga «Ingen» hele dagen fordi
+            // middagspunktet var tørt. Temperatur, kast og UV ble allerede
+            // aggregert over døgnet; nedbør var den ene som ikke var det.
+            //
+            // Periodene kan overlappe der MET bytter fra time- til
+            // seksti mers-oppløsning, så bare punkter som starter etter at
+            // forrige perioden er slutt telles med.
+            let ordered = points.sorted { $0.date < $1.date }
+            var totalPrecip = 0.0
+            var nextCountable = Date.distantPast
+            for point in ordered where point.date >= nextCountable {
+                totalPrecip += point.data.precipitation
+                nextCountable = point.date.addingTimeInterval(point.precipHours * 3600)
+            }
+            // Størst sannsynlighet i løpet av døgnet: spørsmålet er om det
+            // regner en gang i dag, ikke om det regner klokka tolv.
+            let maxPrecipProb = points.map(\.data.precipitationProbability).max() ?? 0
+
             return WeatherData(
                 temperature: noon.temperature,
                 temperatureMin: minTemp,
                 temperatureMax: maxTemp,
                 overnightLow: overnightLow,
                 overnightWindChill: overnightWindChill,
-                precipitation: noon.precipitation,
-                precipitationProbability: noon.precipitationProbability,
+                precipitation: totalPrecip,
+                precipitationProbability: maxPrecipProb,
                 windSpeed: noon.windSpeed,
                 windGust: maxGust,
                 windDirection: noon.windDirection,

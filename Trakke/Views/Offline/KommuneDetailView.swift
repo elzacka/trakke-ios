@@ -11,21 +11,19 @@ struct KommuneDetailView: View {
     private var isDownloaded: Bool { viewModel.isKommuneDownloaded(kommune) }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: .Trakke.cardGap) {
-                infoCard
-                layerCard
-                downloadSection
+        TrakkePushedPage(title: kommune.name) {
+            ScrollView {
+                VStack(spacing: .Trakke.cardGap) {
+                    infoCard
+                    layerCard
+                    downloadSection
 
-                Spacer(minLength: .Trakke.lg)
+                    Spacer(minLength: .Trakke.lg)
+                }
+                .padding(.horizontal, .Trakke.sheetHorizontal)
+                .padding(.top, .Trakke.sheetTop)
             }
-            .padding(.horizontal, .Trakke.sheetHorizontal)
-            .padding(.top, .Trakke.sheetTop)
         }
-        .background(Color.Trakke.background)
-        .tint(Color.Trakke.brand)
-        .navigationTitle(kommune.name)
-        .navigationBarTitleDisplayMode(.inline)
     }
 
     // MARK: - Info

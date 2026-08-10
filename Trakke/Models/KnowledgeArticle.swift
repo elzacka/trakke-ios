@@ -61,13 +61,6 @@ enum ArticleCategory: String, CaseIterable, Identifiable, Sendable {
         }
     }
 
-    /// Custom text glyph for categories without an SF Symbol (e.g. § for rettigheter)
-    var iconGlyph: String? {
-        switch self {
-        case .rettigheter: return "§"
-        default: return nil
-        }
-    }
 }
 
 // MARK: - Knowledge Article
@@ -82,9 +75,5 @@ struct KnowledgeArticle: Identifiable, Hashable, Sendable {
     let sourceURL: String?
     let verifiedAt: Date
     let sortOrder: Int
-
-    var articleCategory: ArticleCategory? {
-        ArticleCategory(rawValue: category)
-    }
 }
 

@@ -8,15 +8,17 @@
 
 /* Begin PBXBuildFile section */
 		018DBCB3293351FDB15F3659 /* WeatherViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD31263DF1383B4F9570BD7 /* WeatherViewModel.swift */; };
-		020FCC94EFA0E15C9A21D598 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 71A7D94A0B0976776AABB04E /* GRDB */; };
+		01FF1D83512E62296A41D4B1 /* climbing_spots.geojson in Resources */ = {isa = PBXBuildFile; fileRef = AEA5F676AB183B2FCB7E696B /* climbing_spots.geojson */; };
 		023B6990FF80693C541E87F8 /* heavysleetshowersandthunder_day.svg in Resources */ = {isa = PBXBuildFile; fileRef = 31E85512B571BF6621E937BF /* heavysleetshowersandthunder_day.svg */; };
 		0276EA551629AE02B2B7422B /* rainshowers_day.svg in Resources */ = {isa = PBXBuildFile; fileRef = 6681D51E81D7DF398590E7BF /* rainshowers_day.svg */; };
 		0294B88578D8939E29A37F5E /* Font+Trakke.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E5CE80EEEDF6E815BD6CED /* Font+Trakke.swift */; };
 		02CD6F9C1A6978B204470B9D /* VisibilityToggleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74C9303A7C4126CC1D4E6189 /* VisibilityToggleButton.swift */; };
 		0366A42E2D2503DED5337D71 /* waterfalls.geojson in Resources */ = {isa = PBXBuildFile; fileRef = 59E462E76D2DB17C132DCB18 /* waterfalls.geojson */; };
+		05FE1424B30F3412FE9ACA38 /* OverlayThumbnailGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88747E4752E18D7F59B163CA /* OverlayThumbnailGrid.swift */; };
 		0708C19448134DE5282529E4 /* TrakkeMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6672497810D8608FD93B7A54 /* TrakkeMapView.swift */; };
 		083C4D6A889D047905771B3E /* NavigationActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C42314C5900672252985593D /* NavigationActivityAttributes.swift */; };
 		09A79DCA43FB500CAB668321 /* TrakkeMapView+Annotations.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E2C88B67EF2819E60B5DEE /* TrakkeMapView+Annotations.swift */; };
+		0AD2385BE32EFE36015A9110 /* ArticleDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265353EC28938863922EACE1 /* ArticleDetailView.swift */; };
 		0B9A31FDFCDE1E503D2F311E /* TrakkeDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8175ACC27A5D621298C4DD91 /* TrakkeDialog.swift */; };
 		0C214B9D0F7831BCDBF60E62 /* AirQualityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D4162FC25505243AB8F9DF9 /* AirQualityService.swift */; };
 		0F051C209281F38C528947D9 /* Route.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0D13322F67F86A945E22BC /* Route.swift */; };
@@ -44,22 +46,24 @@
 		1D9A23F5850C6EE463CFDB14 /* war_memorials.geojson in Resources */ = {isa = PBXBuildFile; fileRef = B556205BBD2E3537CA10167A /* war_memorials.geojson */; };
 		1EBC5680B70831AFB4408496 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0100C1D0198B9660EA1B145 /* EmptyStateView.swift */; };
 		1FED65BF751E891F196B6311 /* lightrainshowers_day.svg in Resources */ = {isa = PBXBuildFile; fileRef = 1E5F098ACF02531C20E19146 /* lightrainshowers_day.svg */; };
+		20D942CA06F93CA781BA6175 /* MapLegendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE3698C1461F73A3E756241B /* MapLegendView.swift */; };
 		21DEF037F3A9BBD30A3FBFBC /* DownloadManagerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A44EA42EAE3F1A2EFCC4970 /* DownloadManagerSheet.swift */; };
 		2236E75784F95AEEB323FC61 /* MeasurementService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 819A5E924F30A97BE68BEB3B /* MeasurementService.swift */; };
 		22622F474B78BA60BB411BA3 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = DC4089C79E39FF29856AABDB /* Localizable.xcstrings */; };
 		23C4ABC8368D581B7E310078 /* CoordinateService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7184F69A6CAAAE19B8881113 /* CoordinateService.swift */; };
 		26B2A0433AA3285C2EAF7726 /* lagoons.geojson in Resources */ = {isa = PBXBuildFile; fileRef = F9A31E343D59D2DE504A7846 /* lagoons.geojson */; };
 		27C78CB7CDE96F94CA748DDB /* partlycloudy_polartwilight.svg in Resources */ = {isa = PBXBuildFile; fileRef = 1E1896DFBCA91C699A425B9A /* partlycloudy_polartwilight.svg */; };
+		27CFC0FC30FDBA7C5535E323 /* sledding_hills.geojson in Resources */ = {isa = PBXBuildFile; fileRef = 0F233581809B319389DDFBF1 /* sledding_hills.geojson */; };
 		2874F8CAA18E71422ECF4D70 /* SchemaV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C155D37467B27C3734355C9 /* SchemaV2.swift */; };
 		29182E43A14354AC53371C98 /* EmergencySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C5079E93E4A6094C8BFA43 /* EmergencySheet.swift */; };
 		2962E979B0949089F7C739D3 /* lightsnowshowers_day.svg in Resources */ = {isa = PBXBuildFile; fileRef = 67D7D4AF33EAEE9E387A4B17 /* lightsnowshowers_day.svg */; };
 		2A1621299C4F32C80A69466A /* WeatherWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C18516D4096D860B26F52A5B /* WeatherWidgetView.swift */; };
 		2BE0927F183889B1AB865312 /* snowshowersandthunder_night.svg in Resources */ = {isa = PBXBuildFile; fileRef = B4FA71A4AA88A76B58F1E8A3 /* snowshowersandthunder_night.svg */; };
 		2CFD69A5C65CE0F338661454 /* VarsomService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 345569C9D23A19395D85DDBF /* VarsomService.swift */; };
-		2D17871EA6DD017A18FFDDD9 /* TabbedSheetContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D339C051300FC9F5B0912D1D /* TabbedSheetContent.swift */; };
-		2D76D40D2D321139A08A23A3 /* PackQueryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941E729AA8B0D69303DD0FFE /* PackQueryService.swift */; };
+		2DE5789A6983738E054E0AEF /* ski_lifts.geojson in Resources */ = {isa = PBXBuildFile; fileRef = 02D91883901723F314B7F116 /* ski_lifts.geojson */; };
 		2E414FF596D70D2B13BC7844 /* SheetCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E805A0D492B79F77EC63EDB1 /* SheetCoordinator.swift */; };
 		2F92232ECE9984543AD7BD04 /* TrakkeMenuRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED3D04324C5C9D7F39C8D9C5 /* TrakkeMenuRow.swift */; };
+		311514D8AEF5C32C31E44A43 /* fording_places.geojson in Resources */ = {isa = PBXBuildFile; fileRef = E80ABACDD4E19CE004956954 /* fording_places.geojson */; };
 		31602BB4473F218CC565B788 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4630C010440BDC6D4BE2E8 /* APIClient.swift */; };
 		326AFABCDC0359C2ABF7E8C9 /* RouteDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B26B00165D1496C9D5529B5 /* RouteDetailSheet.swift */; };
 		32F58C00CDF40F53EE6CC6CC /* TrakkeNavigationWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 4AB4C19CF798B91E15E13A8A /* TrakkeNavigationWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -68,6 +72,7 @@
 		360EAFA8C98ECFC607D04621 /* NavigationLiveActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D332EEDCA5A7F163D6A5FFB /* NavigationLiveActivityView.swift */; };
 		38B325270EA26C82353B2AAC /* POIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EC1194CD1BCB7392992B45D /* POIService.swift */; };
 		3993ED3E7C59EF2E48FD0121 /* SearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7E5CE034FD5DA5AE8F00993 /* SearchService.swift */; };
+		3A7B66D000D30CA997BB2067 /* ContentGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3580C430BEB1251F15C28EA2 /* ContentGroup.swift */; };
 		3A7C9DBC47B669FFD8680ABF /* RemoteArticleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4DA85121D4BF952608291D /* RemoteArticleService.swift */; };
 		3B24D12D500F6939390B99C5 /* MapLibre in Frameworks */ = {isa = PBXBuildFile; productRef = 254EF731837012093F79F386 /* MapLibre */; };
 		3BD30BCCA84B6C0CB28ECD5F /* lightsleet.svg in Resources */ = {isa = PBXBuildFile; fileRef = 08D7A6D82993D9A0F3CE5699 /* lightsleet.svg */; };
@@ -82,6 +87,7 @@
 		44917F527137FC77DF90F4D4 /* HTTPDateParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29CC1C3325143EEFC0D7B61 /* HTTPDateParser.swift */; };
 		450DFD4524B091D8A1DC395C /* TrakkeNavigationWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D3502EFD07CE434A9D68FCA /* TrakkeNavigationWidgetBundle.swift */; };
 		479AAD7E8DF5CDE3C8D182EF /* lightrainshowersandthunder_day.svg in Resources */ = {isa = PBXBuildFile; fileRef = 8F5CA7D245716A165D591FB9 /* lightrainshowersandthunder_day.svg */; };
+		481DEEE355BE1F76F77ACBA5 /* attractions.geojson in Resources */ = {isa = PBXBuildFile; fileRef = 41CE15469B379234AB379E3C /* attractions.geojson */; };
 		483512B6FCB52210B848C39B /* sleetshowersandthunder_day.svg in Resources */ = {isa = PBXBuildFile; fileRef = C20D618C96BFC5002C9E90E1 /* sleetshowersandthunder_day.svg */; };
 		48D50A105987C9938356D5F0 /* snowandthunder.svg in Resources */ = {isa = PBXBuildFile; fileRef = 1D06951C8FE4BB5187164B5A /* snowandthunder.svg */; };
 		49ED7B5B84414E401F7C22D9 /* sleetshowersandthunder_night.svg in Resources */ = {isa = PBXBuildFile; fileRef = 95E63A89A70416ABC872B7E3 /* sleetshowersandthunder_night.svg */; };
@@ -104,9 +110,9 @@
 		59C6CA979D4F452670F5F5CE /* TrakkeSearchField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AABCA9FAF6FD91052533CF1 /* TrakkeSearchField.swift */; };
 		5A1D9AC354BDA6A5EBD9FE1F /* andre_hytter.geojson in Resources */ = {isa = PBXBuildFile; fileRef = 9D5CB2C7B926511E20234D1F /* andre_hytter.geojson */; };
 		5A5D405A78217CEF4A26AACD /* RouteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A343A959D49B61F0D7D11BB /* RouteViewModel.swift */; };
-		5A6FB83E8E1F15885CF3C00D /* TrakkeTooltip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EA08AF430C23E60713FC9D3 /* TrakkeTooltip.swift */; };
 		5EDED6BC898533A2080FD9E3 /* sleetshowersandthunder_polartwilight.svg in Resources */ = {isa = PBXBuildFile; fileRef = 740600951A2591C756AAE68C /* sleetshowersandthunder_polartwilight.svg */; };
 		61783110B11D6958BA9D1E4A /* fair_night.svg in Resources */ = {isa = PBXBuildFile; fileRef = 9AA710D3CFFD1C343E55368B /* fair_night.svg */; };
+		654DEF7005B377B9D6E3286B /* sign_points.geojson in Resources */ = {isa = PBXBuildFile; fileRef = DFCAE691D11B1FCD82477253 /* sign_points.geojson */; };
 		657863056B2362E532A58FAB /* NavigationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC559F7420E1F186365A84AC /* NavigationTests.swift */; };
 		6717FE3F26BC3B1EA6414FC6 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB885967CA0CC5CCD1EFA081 /* SwiftUI.framework */; };
 		69DC20A60E8D3CF1FAADAF8A /* lightsleetandthunder.svg in Resources */ = {isa = PBXBuildFile; fileRef = DF6808E74E8FB94C4D910E52 /* lightsleetandthunder.svg */; };
@@ -118,6 +124,7 @@
 		6C414E345AC606C03D0A381F /* HomeTabContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1BD352C9624CC4B8ED580E1 /* HomeTabContent.swift */; };
 		6C75A114FE5E7A4CCB8C39A0 /* GeoJSONImportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCE922FCF0B869B712414E15 /* GeoJSONImportService.swift */; };
 		6C7B6BA44F47D85AFD0B31C7 /* LocationPrimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E26EE05C9FC796FD7D4D17 /* LocationPrimerView.swift */; };
+		6D656CCDFFE7F3D5BD5D9D4E /* fishing_spots.geojson in Resources */ = {isa = PBXBuildFile; fileRef = 8358D32F044F29D3D3DD7BE0 /* fishing_spots.geojson */; };
 		6E1804C75A5E4B6A51645A54 /* hot_springs.geojson in Resources */ = {isa = PBXBuildFile; fileRef = 3530C29205E9BA699DE92417 /* hot_springs.geojson */; };
 		6F5E96704AF6801C16EDE626 /* heavyrainshowersandthunder_day.svg in Resources */ = {isa = PBXBuildFile; fileRef = F4CD560B8D944363E1DFED48 /* heavyrainshowersandthunder_day.svg */; };
 		703A332E82ED636F5B3ADB40 /* snowshowers_day.svg in Resources */ = {isa = PBXBuildFile; fileRef = 63BC3F28C3E7ED54DEF7D169 /* snowshowers_day.svg */; };
@@ -142,29 +149,35 @@
 		7C82D3D2AF2B5914C1760CE1 /* fair_polartwilight.svg in Resources */ = {isa = PBXBuildFile; fileRef = D73BE3B8249B93A825F66049 /* fair_polartwilight.svg */; };
 		7CD2AEF7664153C977F9599C /* snowshowersandthunder_polartwilight.svg in Resources */ = {isa = PBXBuildFile; fileRef = F9D0AC9F2557E4C909665CEA /* snowshowersandthunder_polartwilight.svg */; };
 		7E006791F4A0E21284B0817C /* MarkdownBodyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A23FC13BE17D1AC98EFDC6B8 /* MarkdownBodyView.swift */; };
+		7EC2667CA2C7740484543DBB /* TrakkePushedPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5878646B1247C1D25E7C302 /* TrakkePushedPage.swift */; };
 		7FB69E2272D9A7536F8550FE /* ContentView+FileImport.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDC9DDC45F765546575CC404 /* ContentView+FileImport.swift */; };
 		80187D5439EC4F22563B5B8D /* ExpandableSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6777E1B06D96A5E102A0846E /* ExpandableSection.swift */; };
+		806FFC0B8DF95869E7EC387B /* toilets.geojson in Resources */ = {isa = PBXBuildFile; fileRef = 8A64726AFDD352537DDD42A2 /* toilets.geojson */; };
 		808AA69F56CBE74E3EBBC1AC /* Color+Trakke.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8239B38DDD3DD8EA4588E103 /* Color+Trakke.swift */; };
 		818AA6D1BCDBA51BAB3B7AF1 /* ActivityTrackingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680EA9A161F3E8330CAD98CF /* ActivityTrackingTests.swift */; };
 		81AA4F4F18B7DED2A3A4979E /* TrakkeMapView+Navigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0053452935C75061CC9AD75 /* TrakkeMapView+Navigation.swift */; };
 		82AB66960A754A939F84BB4B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04BA7D999B573FB8FACDB81 /* ContentView.swift */; };
 		82B1B47F78B12B770623CAE3 /* OfflineSetupSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 539530F5D7D2D38CB8917D36 /* OfflineSetupSheet.swift */; };
-		82BDA1DC1399BED61581C814 /* ArticleSuggestionChip.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB019BE993E72F146118F584 /* ArticleSuggestionChip.swift */; };
 		83396EAC1E3FCF126128DE82 /* rainshowers_night.svg in Resources */ = {isa = PBXBuildFile; fileRef = A8779AC0EEF4DFDC1797062A /* rainshowers_night.svg */; };
+		853F7E2E81BD4A94B89E0E3B /* kulturminner_utno.geojson in Resources */ = {isa = PBXBuildFile; fileRef = EBCEF9E1BF664F041D23B248 /* kulturminner_utno.geojson */; };
 		87E6D9AA62033966167EFF7F /* cloudy.svg in Resources */ = {isa = PBXBuildFile; fileRef = B5476F162359305281447032 /* cloudy.svg */; };
 		8833C37EFA90E790240811B0 /* heavyrainshowersandthunder_polartwilight.svg in Resources */ = {isa = PBXBuildFile; fileRef = 4E8617026A86FBC27113BC81 /* heavyrainshowersandthunder_polartwilight.svg */; };
 		883A6C42896BEDEA62B4DBD2 /* heavysleetshowers_day.svg in Resources */ = {isa = PBXBuildFile; fileRef = E9DAF6F4A9C59304113A8AE8 /* heavysleetshowers_day.svg */; };
 		8902A57C1C10EEB17A9AC623 /* BottomNavBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF9D19DED295AF42C8288004 /* BottomNavBar.swift */; };
 		89C15D9F4F21D2569FFB1525 /* lightrainshowers_polartwilight.svg in Resources */ = {isa = PBXBuildFile; fileRef = 8C27590F4E623975560C24A9 /* lightrainshowers_polartwilight.svg */; };
-		8DA1BB017D081E951634550E /* KnowledgeDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C447DBFA7CF7038077D6F70 /* KnowledgeDetailSheet.swift */; };
+		8B6E1CA4EF9C58B11E9E48C2 /* bridges.geojson in Resources */ = {isa = PBXBuildFile; fileRef = 1C9C4243BFACA566FEA595E2 /* bridges.geojson */; };
+		8B90DB2A939F9E33DE5D2772 /* ElevationMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9FC34CECEAC75035DCBF35 /* ElevationMath.swift */; };
 		8E1C27AF318FF72DA6C2E112 /* ActivityRecordingToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41564F1F3B99A090C488A2B /* ActivityRecordingToolbar.swift */; };
 		91AFB001B85B486717560F62 /* MapScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971BE72881FD536060EA34C2 /* MapScreen.swift */; };
 		91EF4F6C50910FCE47451A2B /* fair_day.svg in Resources */ = {isa = PBXBuildFile; fileRef = 42231E41B2F790E4CFAFD79C /* fair_day.svg */; };
+		923302910D8B9F04F8DEF417 /* TrakkeIntentAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8171F7A026FB6DD54590DA2 /* TrakkeIntentAction.swift */; };
 		924C99633C6B2952FBFB92ED /* WaterTemperatureService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39916EBB098B54379CF3238F /* WaterTemperatureService.swift */; };
+		924F94AC844FFC78BF702667 /* BarometerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56E3D93A138695B78E7EF0A1 /* BarometerService.swift */; };
 		94D43CD4334DBAC91A85D040 /* oxbow_lakes.geojson in Resources */ = {isa = PBXBuildFile; fileRef = B9BFDD35B4DAB7BB4947F296 /* oxbow_lakes.geojson */; };
 		9666FCF3983BF4C9C9D4D6D2 /* RouteSaveSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0B6A552D3B2051865D92D15 /* RouteSaveSheet.swift */; };
 		989F96FA810508C3D9D6CC18 /* Bearing.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B26570C579C1A80526E5A /* Bearing.swift */; };
 		98CF7CBB31AA5360AF6AF7CE /* clearsky_night.svg in Resources */ = {isa = PBXBuildFile; fileRef = C5C59C0A84CFCDA153DB0956 /* clearsky_night.svg */; };
+		999A1131FBF002B206938343 /* BundledSpeciesImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F0ECAA575F1796C6EF23511 /* BundledSpeciesImage.swift */; };
 		9B25CEA7AFBBD315B719C25E /* sleet.svg in Resources */ = {isa = PBXBuildFile; fileRef = 078EEA9D89BC3BAEB3584697 /* sleet.svg */; };
 		9C9B4F6981B39E14D4C33AD3 /* rainshowersandthunder_day.svg in Resources */ = {isa = PBXBuildFile; fileRef = 88647FCD9241DD192C359521 /* rainshowersandthunder_day.svg */; };
 		9DAB8CBD444CB9D9DBFD47B6 /* NavigationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4711AD6123FBDCB2103C0D3E /* NavigationViewModel.swift */; };
@@ -185,21 +198,21 @@
 		A79FED383101D84200B7E993 /* heavyrainshowersandthunder_night.svg in Resources */ = {isa = PBXBuildFile; fileRef = F4964EA10DAF7860164D561B /* heavyrainshowersandthunder_night.svg */; };
 		A80383EF15054B5242AF5D6E /* GPXImportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5AC3714DA5E165492A2B05F /* GPXImportService.swift */; };
 		A9C74F17090A553B4B98CED6 /* AppMenuSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5493FD583ACBB19DE453B73D /* AppMenuSheet.swift */; };
+		A9C82D279418CB08275FFC01 /* POIIconRenderingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83CEB9D1D743A88AD1F737A0 /* POIIconRenderingTests.swift */; };
 		ACD3DC37397208250F2BBD0D /* heavyrainandthunder.svg in Resources */ = {isa = PBXBuildFile; fileRef = 737B18CD5BD4F429B0BBA923 /* heavyrainandthunder.svg */; };
+		ADA8E7A8976731139EEE17DF /* food_services.geojson in Resources */ = {isa = PBXBuildFile; fileRef = 15C88924330D5EB82050C6F3 /* food_services.geojson */; };
 		ADAE6CFB789559896614EBB5 /* SolarCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA3A4A2177DEE7800A5DC81 /* SolarCalculator.swift */; };
 		AE3E90D97904DED7C9841D63 /* rain.svg in Resources */ = {isa = PBXBuildFile; fileRef = 0237BCB2E8498223A9A79538 /* rain.svg */; };
-		AF0EAE24F034D9656DFDB406 /* PackCatalogService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB329C11D3079B356F1E0A7 /* PackCatalogService.swift */; };
+		AEF0C42F77D972754C8975B9 /* parking.geojson in Resources */ = {isa = PBXBuildFile; fileRef = FC288093854A66DF7F4A180A /* parking.geojson */; };
 		AF1AE9B801CE27A4619F9F39 /* SOSService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023B5A346EE50C5FEA9E521D /* SOSService.swift */; };
 		AF9A1EF228B260D01D817B9B /* lightsnowshowers_polartwilight.svg in Resources */ = {isa = PBXBuildFile; fileRef = 180F47608E16EF81D49963BA /* lightsnowshowers_polartwilight.svg */; };
 		B0C8277AE10D9B593F73B6D9 /* hammocks.geojson in Resources */ = {isa = PBXBuildFile; fileRef = 108FC16D5E546F826A6D667B /* hammocks.geojson */; };
 		B19031F076E5340EF1529719 /* SchemaV3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021B773834C184822A43EBF9 /* SchemaV3.swift */; };
-		B1DDE220A7F17C253D9C08AC /* KnowledgeEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB54AF153094CE54757BE82D /* KnowledgeEntry.swift */; };
 		B219DB3CA8FA3407DD884828 /* MarkdownParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5884501A1D0CECCB5B236BC /* MarkdownParser.swift */; };
 		B2FE2723F6FC71535E972310 /* Haversine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FC502C1D744A263083D1FFA /* Haversine.swift */; };
 		B54875EA38FCC257004694D6 /* heavysleetshowers_night.svg in Resources */ = {isa = PBXBuildFile; fileRef = AB70E489646C57BDC8AE5259 /* heavysleetshowers_night.svg */; };
 		B6361478941BC5938039890B /* lightsnow.svg in Resources */ = {isa = PBXBuildFile; fileRef = F6FF01E250D74D9D8AE7F97D /* lightsnow.svg */; };
 		B7345A9E1EA8BFE935B88B9C /* TrakkeIconButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB385ABF8B4990C1540794B /* TrakkeIconButton.swift */; };
-		B8761C323796DD291432CD47 /* KnowledgeArticle+GRDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40C0F8CE947B8F54DEE8604 /* KnowledgeArticle+GRDB.swift */; };
 		B9A985D3A600E3F1CDB9DB24 /* snow.svg in Resources */ = {isa = PBXBuildFile; fileRef = 90C09A67E3F12082D0F92E60 /* snow.svg */; };
 		B9BE9AC1075DFE349FED2DA5 /* CardSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8370F4AA2E1940D89D1CBA2C /* CardSection.swift */; };
 		B9C7D6E2F6BF4546678DE939 /* heavysnowshowersandthunder_polartwilight.svg in Resources */ = {isa = PBXBuildFile; fileRef = 55694F167A90291EEAF377DB /* heavysnowshowersandthunder_polartwilight.svg */; };
@@ -212,24 +225,24 @@
 		BE6A90DD6459698A8476B196 /* SelectionToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C9FD38B1796FBA500F9382 /* SelectionToolbar.swift */; };
 		BF680F9D519B5FA64334667D /* TracksListSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078F4286CB5975C232947895 /* TracksListSheet.swift */; };
 		BFAD806109F310967ABFD62F /* sleetandthunder.svg in Resources */ = {isa = PBXBuildFile; fileRef = D01CE01B62A064EED1D3E7C2 /* sleetandthunder.svg */; };
-		BFC6C8822ECC1EEED3A4F2F4 /* PackStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B6E2DD11A5F4E2ACAA70167 /* PackStorageTests.swift */; };
 		C01E19DEEA45FD77A687EE2D /* OfflineViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE74A8C165B99B8F2441A21 /* OfflineViewModel.swift */; };
 		C0B62F424FD965713B29C1EC /* fire_pits.geojson in Resources */ = {isa = PBXBuildFile; fileRef = 323DE62D4065414AE20061EC /* fire_pits.geojson */; };
 		C284C00BEE9743545D3E169C /* lightrainshowersandthunder_polartwilight.svg in Resources */ = {isa = PBXBuildFile; fileRef = CFD5AA78AB2817FF6FDBB352 /* lightrainshowersandthunder_polartwilight.svg */; };
+		C28CD9B9B3CCA8373E00B582 /* trip_records.geojson in Resources */ = {isa = PBXBuildFile; fileRef = 7BBFCEE41F7C3A5C024F5110 /* trip_records.geojson */; };
 		C2A4DA910A6CF81070AC42AE /* tent_sites.geojson in Resources */ = {isa = PBXBuildFile; fileRef = 7CED56C5B0F978DDE8262E22 /* tent_sites.geojson */; };
 		C2D6A15EB1563C55A80D07DF /* AppStorageKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034E657DC24B47BD481DC2C1 /* AppStorageKeys.swift */; };
 		C4FF56FF5DC59F82AF8E7D9D /* ElevationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4FA68D8B869F97DA683451 /* ElevationService.swift */; };
 		C5078A823ADDFAAD762A4605 /* WaypointViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59A7F2A537E0C23D2D119A85 /* WaypointViewModel.swift */; };
-		C50B63725E5C28EE88A96865 /* ArticleDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B9EA0B5AE9C2165FE85693 /* ArticleDetailSheet.swift */; };
 		C50C6383FAE2E4C19E3A7FF8 /* lightrainandthunder.svg in Resources */ = {isa = PBXBuildFile; fileRef = 7F8EFCBC89CFE52F72821E90 /* lightrainandthunder.svg */; };
+		C84A94AAEB9C73660009B855 /* ActivityRecordingJournal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5CF1A1E5E83C4334EDAB21 /* ActivityRecordingJournal.swift */; };
 		C88A3985D43935C4F4BDAA54 /* heavysleet.svg in Resources */ = {isa = PBXBuildFile; fileRef = 355519DDEE60D116BF4F5270 /* heavysleet.svg */; };
 		C979D033A45C6AE88A84B8D5 /* Waypoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC92D2F03A2083F4A6FA2DB /* Waypoint.swift */; };
 		CAFA3A2881A7096CF29CE8C7 /* SolarCalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA37D9843E5FD99A14E48050 /* SolarCalculatorTests.swift */; };
 		CBAF5DBC8035CD9010705FA0 /* Exo2-Variable.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 77FF1E584D3216D6000EF74B /* Exo2-Variable.ttf */; };
 		CE2E50E3844E5A3647715FB5 /* heavysleetshowersandthunder_night.svg in Resources */ = {isa = PBXBuildFile; fileRef = 8936A6973E52AAD3B9439F67 /* heavysleetshowersandthunder_night.svg */; };
 		D0C992C1917F9C211DA110E8 /* wilderness_shelters.geojson in Resources */ = {isa = PBXBuildFile; fileRef = 387B058D2CDB2D4437D30083 /* wilderness_shelters.geojson */; };
+		D23A2FD5AB66EE0757776F17 /* setre.geojson in Resources */ = {isa = PBXBuildFile; fileRef = B2C73F097EF8641452B2E56D /* setre.geojson */; };
 		D2F5EA5B3480AC9ACA056A56 /* snowshowers_polartwilight.svg in Resources */ = {isa = PBXBuildFile; fileRef = 67F5E5FCBB47B3C24EBA9C84 /* snowshowers_polartwilight.svg */; };
-		D3ACC6AEE46BAE0878A98F34 /* SearchSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F3227EF60259A5DDBAB21C /* SearchSheet.swift */; };
 		D3CEFA8AD8A51FB3525BC879 /* WaypointListSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A018926A0576B0506D6A9F0 /* WaypointListSheet.swift */; };
 		D56237AC20BCA3F0F9885FD9 /* POIDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1B7445203EE8264FCD19E3F /* POIDetailSheet.swift */; };
 		D63D63EB20C96AF5968E3630 /* BundledPOIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E6E4C26D5FE9797521FAE65 /* BundledPOIService.swift */; };
@@ -247,6 +260,7 @@
 		E136AAA4279BAE952D1A4EC7 /* lightssnowshowersandthunder_day.svg in Resources */ = {isa = PBXBuildFile; fileRef = DF7660C8D438AD20A4327607 /* lightssnowshowersandthunder_day.svg */; };
 		E164ADD33A1575D147AF39EC /* SearchResultRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14BF64BF4F13693F38DFCEF3 /* SearchResultRow.swift */; };
 		E1B7CD8BF4AF1E8BCE7327D3 /* SheetHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08651969CEACB51EB06A8378 /* SheetHost.swift */; };
+		E35FFA88593111F25453F6D0 /* MapLegend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6000FE797E69443DE4932192 /* MapLegend.swift */; };
 		E4C087FCE6116F6A4E442834 /* NavigationOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE62AFDC0B0B8666E1670EE /* NavigationOverlayView.swift */; };
 		E4EB953A286E201CD77B95F8 /* ElevationProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04340B1B4403F9188A626348 /* ElevationProfileView.swift */; };
 		E5357EDC24333B25A7D65193 /* ActivityDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5A039CA699CC3F185292F7A /* ActivityDetailSheet.swift */; };
@@ -258,24 +272,20 @@
 		E7BD4474A0B6B4104E34F937 /* ActivityKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738DE5BD5F2FA89B4E55A3FC /* ActivityKit.framework */; };
 		E7FEDC2BCE0405BD223132C7 /* OfflineMapService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A072AA3247DF55D602639556 /* OfflineMapService.swift */; };
 		E9A8896E69026923B77C449D /* lightsnowshowers_night.svg in Resources */ = {isa = PBXBuildFile; fileRef = 664080FE17FB672770B2C7B8 /* lightsnowshowers_night.svg */; };
-		EA49991554F05626306B367C /* KnowledgePackRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C5B4F650B2F10840DA1D2B1 /* KnowledgePackRow.swift */; };
 		EA62572CF51EB9F2EA1CC4D0 /* MapControlsOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E771B0038B66E3A05A4334B /* MapControlsOverlay.swift */; };
-		EAD6C43C6AF091A108665840 /* PackDownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0DD508DB0E133C978B8959 /* PackDownloadManager.swift */; };
 		EB2DDF69B9A25809E96462D6 /* partlycloudy_day.svg in Resources */ = {isa = PBXBuildFile; fileRef = ABF858D94A3455A994BAEBD2 /* partlycloudy_day.svg */; };
 		EB4FA73525B3A7FEE3500E2E /* dnt_hytter.geojson in Resources */ = {isa = PBXBuildFile; fileRef = B99142C66149EFC2492C89CD /* dnt_hytter.geojson */; };
 		EC3E7E122046760DFC75CDBC /* TrakkeListCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0D5DDCDEEC69F776DA8492 /* TrakkeListCard.swift */; };
 		EE67EEA7B97B3EB98DCB8235 /* lightsnowandthunder.svg in Resources */ = {isa = PBXBuildFile; fileRef = D34AAF64BE00633F268D3FE4 /* lightsnowandthunder.svg */; };
-		EF43652A11A22F5F5BD6FFB3 /* KnowledgeTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25F3760709AA65934A20AD1 /* KnowledgeTheme.swift */; };
-		F02120925CA0AF97951BFB53 /* CategoryPickerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 621B221F56A79F77A10ED993 /* CategoryPickerSheet.swift */; };
 		F07A82134353353DAA41B224 /* WaypointDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0A8D498B9F39DC00383EC0 /* WaypointDetailSheet.swift */; };
-		F161D9A25AE4B1BD583FEE27 /* MeasurementSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6636CECF08E17D7F0EF8B705 /* MeasurementSheet.swift */; };
 		F2577FB6537AEF30FA78E3C8 /* KnowledgeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F89D880883BA2585D8DEE20 /* KnowledgeViewModel.swift */; };
 		F313BA1545DC0193F31F9E39 /* POIViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5A64668B3D5B242EA5910C /* POIViewModel.swift */; };
 		F39A3E5BD391FAE3753E54AA /* InfoSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 410D3AEE72E9675202D9132B /* InfoSheet.swift */; };
+		F40DF5E9AA67EB546B803E2E /* recreation_areas.geojson in Resources */ = {isa = PBXBuildFile; fileRef = 7AE886BC5D103E2488F2BBA5 /* recreation_areas.geojson */; };
 		F41896207378BF88AA620421 /* sleetshowers_polartwilight.svg in Resources */ = {isa = PBXBuildFile; fileRef = 2F839339307DB2720A58C1E5 /* sleetshowers_polartwilight.svg */; };
 		F4755A36B00FA44065AE500E /* heavysnowshowers_day.svg in Resources */ = {isa = PBXBuildFile; fileRef = 0EBC068C83DB2AF3452BB22B /* heavysnowshowers_day.svg */; };
 		F4BAF3BF9A7EED05FCAE124C /* Logger+Trakke.swift in Sources */ = {isa = PBXBuildFile; fileRef = F485AF61CC2982501FCF1FFF /* Logger+Trakke.swift */; };
-		F4BDBED665F58B3ED1A7D3FD /* KnowledgePack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F85C307536813A4292BFE90 /* KnowledgePack.swift */; };
+		F540EF7484F7052F34FE9403 /* TrakkeAppIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1780821A9F4D22E2FEDD258F /* TrakkeAppIntents.swift */; };
 		F5B76961FC8F9649F633D278 /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B29F6390BF0EEEC81B010AF /* SearchViewModel.swift */; };
 		F8187B77A8E33D2F2A2D4798 /* ImportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBF793DA5E7942669B363884 /* ImportTests.swift */; };
 		F8F517E28C3371FBAD7DC0B2 /* GPXExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB767622B5A8BEEFB5A12F9 /* GPXExportService.swift */; };
@@ -329,6 +339,7 @@
 		0237BCB2E8498223A9A79538 /* rain.svg */ = {isa = PBXFileReference; path = rain.svg; sourceTree = "<group>"; };
 		023B5A346EE50C5FEA9E521D /* SOSService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SOSService.swift; sourceTree = "<group>"; };
 		0261D93AF55F528B9DB72F82 /* heavysnowshowersandthunder_day.svg */ = {isa = PBXFileReference; path = heavysnowshowersandthunder_day.svg; sourceTree = "<group>"; };
+		02D91883901723F314B7F116 /* ski_lifts.geojson */ = {isa = PBXFileReference; path = ski_lifts.geojson; sourceTree = "<group>"; };
 		034E657DC24B47BD481DC2C1 /* AppStorageKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStorageKeys.swift; sourceTree = "<group>"; };
 		03F82764318557C5E0B8AD3F /* lightssleetshowersandthunder_polartwilight.svg */ = {isa = PBXFileReference; path = lightssleetshowersandthunder_polartwilight.svg; sourceTree = "<group>"; };
 		04340B1B4403F9188A626348 /* ElevationProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElevationProfileView.swift; sourceTree = "<group>"; };
@@ -343,15 +354,19 @@
 		0B9DAF1705EE166B0F42A5E1 /* POIIconImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POIIconImage.swift; sourceTree = "<group>"; };
 		0D3E81DAF66B1B3EBDFB3A5A /* shelters.geojson */ = {isa = PBXFileReference; path = shelters.geojson; sourceTree = "<group>"; };
 		0EBC068C83DB2AF3452BB22B /* heavysnowshowers_day.svg */ = {isa = PBXFileReference; path = heavysnowshowers_day.svg; sourceTree = "<group>"; };
+		0F233581809B319389DDFBF1 /* sledding_hills.geojson */ = {isa = PBXFileReference; path = sledding_hills.geojson; sourceTree = "<group>"; };
 		108FC16D5E546F826A6D667B /* hammocks.geojson */ = {isa = PBXFileReference; path = hammocks.geojson; sourceTree = "<group>"; };
 		1205261DCF0024EE3CCFA31C /* NavigationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationState.swift; sourceTree = "<group>"; };
 		141766496BBFD7A301341B62 /* HapticFeedbackService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticFeedbackService.swift; sourceTree = "<group>"; };
 		14BF64BF4F13693F38DFCEF3 /* SearchResultRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultRow.swift; sourceTree = "<group>"; };
 		14F012EEBD017E7239C13DE5 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		15C88924330D5EB82050C6F3 /* food_services.geojson */ = {isa = PBXFileReference; path = food_services.geojson; sourceTree = "<group>"; };
+		1780821A9F4D22E2FEDD258F /* TrakkeAppIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrakkeAppIntents.swift; sourceTree = "<group>"; };
 		180F47608E16EF81D49963BA /* lightsnowshowers_polartwilight.svg */ = {isa = PBXFileReference; path = lightsnowshowers_polartwilight.svg; sourceTree = "<group>"; };
 		1B26B00165D1496C9D5529B5 /* RouteDetailSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteDetailSheet.swift; sourceTree = "<group>"; };
 		1B359D627BE06494B8B332DA /* heavysnowshowers_night.svg */ = {isa = PBXFileReference; path = heavysnowshowers_night.svg; sourceTree = "<group>"; };
 		1C155D37467B27C3734355C9 /* SchemaV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchemaV2.swift; sourceTree = "<group>"; };
+		1C9C4243BFACA566FEA595E2 /* bridges.geojson */ = {isa = PBXFileReference; path = bridges.geojson; sourceTree = "<group>"; };
 		1D06951C8FE4BB5187164B5A /* snowandthunder.svg */ = {isa = PBXFileReference; path = snowandthunder.svg; sourceTree = "<group>"; };
 		1D7E07DFCCE9D8F176D8FBD7 /* heavysleetshowersandthunder_polartwilight.svg */ = {isa = PBXFileReference; path = heavysleetshowersandthunder_polartwilight.svg; sourceTree = "<group>"; };
 		1D8ECEF365EEFE1B927AEC44 /* Spacing+Trakke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Spacing+Trakke.swift"; sourceTree = "<group>"; };
@@ -363,13 +378,14 @@
 		221FFB6A9D3755A4F47D4774 /* WeatherSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherSheet.swift; sourceTree = "<group>"; };
 		25CE94AC2610B82AFF460286 /* FileImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileImporter.swift; sourceTree = "<group>"; };
 		26047FD676D04C6F0702E265 /* WeatherAdvice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherAdvice.swift; sourceTree = "<group>"; };
+		265353EC28938863922EACE1 /* ArticleDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleDetailView.swift; sourceTree = "<group>"; };
 		2A0D13322F67F86A945E22BC /* Route.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Route.swift; sourceTree = "<group>"; };
 		2AABCA9FAF6FD91052533CF1 /* TrakkeSearchField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrakkeSearchField.swift; sourceTree = "<group>"; };
 		2B036CAF984717980FB64AE9 /* lightsleetshowers_polartwilight.svg */ = {isa = PBXFileReference; path = lightsleetshowers_polartwilight.svg; sourceTree = "<group>"; };
 		2B51FCCCA65C36296EAFA352 /* DownloadAreaSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadAreaSheet.swift; sourceTree = "<group>"; };
 		2B5AA04468954FB6FBA31348 /* Trakke.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Trakke.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		2B6E2DD11A5F4E2ACAA70167 /* PackStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackStorageTests.swift; sourceTree = "<group>"; };
 		2E6E4C26D5FE9797521FAE65 /* BundledPOIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundledPOIService.swift; sourceTree = "<group>"; };
+		2F0ECAA575F1796C6EF23511 /* BundledSpeciesImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundledSpeciesImage.swift; sourceTree = "<group>"; };
 		2F839339307DB2720A58C1E5 /* sleetshowers_polartwilight.svg */ = {isa = PBXFileReference; path = sleetshowers_polartwilight.svg; sourceTree = "<group>"; };
 		30BCD1CBB926C9DDCED61BED /* KnowledgeArticle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnowledgeArticle.swift; sourceTree = "<group>"; };
 		31E85512B571BF6621E937BF /* heavysleetshowersandthunder_day.svg */ = {isa = PBXFileReference; path = heavysleetshowersandthunder_day.svg; sourceTree = "<group>"; };
@@ -377,14 +393,15 @@
 		345569C9D23A19395D85DDBF /* VarsomService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VarsomService.swift; sourceTree = "<group>"; };
 		3530C29205E9BA699DE92417 /* hot_springs.geojson */ = {isa = PBXFileReference; path = hot_springs.geojson; sourceTree = "<group>"; };
 		355519DDEE60D116BF4F5270 /* heavysleet.svg */ = {isa = PBXFileReference; path = heavysleet.svg; sourceTree = "<group>"; };
+		3580C430BEB1251F15C28EA2 /* ContentGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentGroup.swift; sourceTree = "<group>"; };
 		37D830B9D98AF2D9D6DFD5C6 /* ActivityViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityViewModel.swift; sourceTree = "<group>"; };
 		387B058D2CDB2D4437D30083 /* wilderness_shelters.geojson */ = {isa = PBXFileReference; path = wilderness_shelters.geojson; sourceTree = "<group>"; };
 		39916EBB098B54379CF3238F /* WaterTemperatureService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterTemperatureService.swift; sourceTree = "<group>"; };
 		3EC1194CD1BCB7392992B45D /* POIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POIService.swift; sourceTree = "<group>"; };
 		3FD95598E4CEB0775131A6ED /* rest_areas.geojson */ = {isa = PBXFileReference; path = rest_areas.geojson; sourceTree = "<group>"; };
 		410D3AEE72E9675202D9132B /* InfoSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoSheet.swift; sourceTree = "<group>"; };
+		41CE15469B379234AB379E3C /* attractions.geojson */ = {isa = PBXFileReference; path = attractions.geojson; sourceTree = "<group>"; };
 		42231E41B2F790E4CFAFD79C /* fair_day.svg */ = {isa = PBXFileReference; path = fair_day.svg; sourceTree = "<group>"; };
-		42B9EA0B5AE9C2165FE85693 /* ArticleDetailSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleDetailSheet.swift; sourceTree = "<group>"; };
 		44E67DF50AC72B5B791232E2 /* ActivityTrackingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityTrackingService.swift; sourceTree = "<group>"; };
 		4711AD6123FBDCB2103C0D3E /* NavigationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationViewModel.swift; sourceTree = "<group>"; };
 		48A20058239EB89295A71175 /* Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Activity.swift; sourceTree = "<group>"; };
@@ -408,6 +425,7 @@
 		55694F167A90291EEAF377DB /* heavysnowshowersandthunder_polartwilight.svg */ = {isa = PBXFileReference; path = heavysnowshowersandthunder_polartwilight.svg; sourceTree = "<group>"; };
 		559F5DCD85C2F379A5C9A254 /* PERSONVERN.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = PERSONVERN.md; sourceTree = "<group>"; };
 		56C9FD38B1796FBA500F9382 /* SelectionToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionToolbar.swift; sourceTree = "<group>"; };
+		56E3D93A138695B78E7EF0A1 /* BarometerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarometerService.swift; sourceTree = "<group>"; };
 		59334E43AE90F972287C3276 /* AppLifecycleModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLifecycleModifier.swift; sourceTree = "<group>"; };
 		595621232BA0E70711D83D32 /* lightsleetshowers_day.svg */ = {isa = PBXFileReference; path = lightsleetshowers_day.svg; sourceTree = "<group>"; };
 		59A7F2A537E0C23D2D119A85 /* WaypointViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaypointViewModel.swift; sourceTree = "<group>"; };
@@ -420,16 +438,14 @@
 		5DA3F4DF229164FB0DE48C86 /* rainshowersandthunder_night.svg */ = {isa = PBXFileReference; path = rainshowersandthunder_night.svg; sourceTree = "<group>"; };
 		5DB385ABF8B4990C1540794B /* TrakkeIconButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrakkeIconButton.swift; sourceTree = "<group>"; };
 		5E61EBE99D6DE3DF695A466E /* MeasurementToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementToolbar.swift; sourceTree = "<group>"; };
-		5EA08AF430C23E60713FC9D3 /* TrakkeTooltip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrakkeTooltip.swift; sourceTree = "<group>"; };
 		5F944958F71417AD19101601 /* SettingsTabContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTabContent.swift; sourceTree = "<group>"; };
+		6000FE797E69443DE4932192 /* MapLegend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapLegend.swift; sourceTree = "<group>"; };
 		60E4BC9E47AE926C88440B0D /* TrakkeToggleStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrakkeToggleStyle.swift; sourceTree = "<group>"; };
 		611359BB6027406F4E946147 /* MapActionBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapActionBar.swift; sourceTree = "<group>"; };
-		621B221F56A79F77A10ED993 /* CategoryPickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryPickerSheet.swift; sourceTree = "<group>"; };
 		638348A4A793DF01067BCA7F /* swimming_spots.geojson */ = {isa = PBXFileReference; path = swimming_spots.geojson; sourceTree = "<group>"; };
 		63BC3F28C3E7ED54DEF7D169 /* snowshowers_day.svg */ = {isa = PBXFileReference; path = snowshowers_day.svg; sourceTree = "<group>"; };
 		65999337FCB4974C83A35FA4 /* KommuneDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KommuneDetailView.swift; sourceTree = "<group>"; };
 		659CFAD4D3A7ABE378AE5E6C /* WaypointEditSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaypointEditSheet.swift; sourceTree = "<group>"; };
-		6636CECF08E17D7F0EF8B705 /* MeasurementSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementSheet.swift; sourceTree = "<group>"; };
 		664080FE17FB672770B2C7B8 /* lightsnowshowers_night.svg */ = {isa = PBXFileReference; path = lightsnowshowers_night.svg; sourceTree = "<group>"; };
 		6672497810D8608FD93B7A54 /* TrakkeMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrakkeMapView.swift; sourceTree = "<group>"; };
 		6681D51E81D7DF398590E7BF /* rainshowers_day.svg */ = {isa = PBXFileReference; path = rainshowers_day.svg; sourceTree = "<group>"; };
@@ -437,10 +453,9 @@
 		67D7D4AF33EAEE9E387A4B17 /* lightsnowshowers_day.svg */ = {isa = PBXFileReference; path = lightsnowshowers_day.svg; sourceTree = "<group>"; };
 		67F5E5FCBB47B3C24EBA9C84 /* snowshowers_polartwilight.svg */ = {isa = PBXFileReference; path = snowshowers_polartwilight.svg; sourceTree = "<group>"; };
 		680EA9A161F3E8330CAD98CF /* ActivityTrackingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityTrackingTests.swift; sourceTree = "<group>"; };
-		6C447DBFA7CF7038077D6F70 /* KnowledgeDetailSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnowledgeDetailSheet.swift; sourceTree = "<group>"; };
-		6C5B4F650B2F10840DA1D2B1 /* KnowledgePackRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnowledgePackRow.swift; sourceTree = "<group>"; };
 		6D2287F6E967D854F1476EC0 /* lightsleetshowers_night.svg */ = {isa = PBXFileReference; path = lightsleetshowers_night.svg; sourceTree = "<group>"; };
 		6E574D64AAAB4D2201F6384A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		6E5CF1A1E5E83C4334EDAB21 /* ActivityRecordingJournal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityRecordingJournal.swift; sourceTree = "<group>"; };
 		6F89D880883BA2585D8DEE20 /* KnowledgeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnowledgeViewModel.swift; sourceTree = "<group>"; };
 		7184F69A6CAAAE19B8881113 /* CoordinateService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoordinateService.swift; sourceTree = "<group>"; };
 		7270BD1249BAB2F213E17EA1 /* KnowledgeSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnowledgeSheet.swift; sourceTree = "<group>"; };
@@ -452,6 +467,8 @@
 		77FF1E584D3216D6000EF74B /* Exo2-Variable.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Exo2-Variable.ttf"; sourceTree = "<group>"; };
 		7A1BDD96E4A2516102CF07D9 /* lightssleetshowersandthunder_night.svg */ = {isa = PBXFileReference; path = lightssleetshowersandthunder_night.svg; sourceTree = "<group>"; };
 		7A343A959D49B61F0D7D11BB /* RouteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteViewModel.swift; sourceTree = "<group>"; };
+		7AE886BC5D103E2488F2BBA5 /* recreation_areas.geojson */ = {isa = PBXFileReference; path = recreation_areas.geojson; sourceTree = "<group>"; };
+		7BBFCEE41F7C3A5C024F5110 /* trip_records.geojson */ = {isa = PBXFileReference; path = trip_records.geojson; sourceTree = "<group>"; };
 		7C7CC07ECBFFF2A606A4FD1D /* TrakkeButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrakkeButtonStyle.swift; sourceTree = "<group>"; };
 		7CED56C5B0F978DDE8262E22 /* tent_sites.geojson */ = {isa = PBXFileReference; path = tent_sites.geojson; sourceTree = "<group>"; };
 		7D3502EFD07CE434A9D68FCA /* TrakkeNavigationWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrakkeNavigationWidgetBundle.swift; sourceTree = "<group>"; };
@@ -468,22 +485,24 @@
 		8189D635686A4CDE4596B117 /* heavysnowshowers_polartwilight.svg */ = {isa = PBXFileReference; path = heavysnowshowers_polartwilight.svg; sourceTree = "<group>"; };
 		819A5E924F30A97BE68BEB3B /* MeasurementService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementService.swift; sourceTree = "<group>"; };
 		8239B38DDD3DD8EA4588E103 /* Color+Trakke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Trakke.swift"; sourceTree = "<group>"; };
+		8358D32F044F29D3D3DD7BE0 /* fishing_spots.geojson */ = {isa = PBXFileReference; path = fishing_spots.geojson; sourceTree = "<group>"; };
 		8370F4AA2E1940D89D1CBA2C /* CardSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSection.swift; sourceTree = "<group>"; };
+		83CEB9D1D743A88AD1F737A0 /* POIIconRenderingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POIIconRenderingTests.swift; sourceTree = "<group>"; };
 		83E5CE80EEEDF6E815BD6CED /* Font+Trakke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Font+Trakke.swift"; sourceTree = "<group>"; };
 		85804A9ADE33A40BE3F01CA2 /* WeatherService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherService.swift; sourceTree = "<group>"; };
 		86854A653B1AAB8193BFFA22 /* snowshowers_night.svg */ = {isa = PBXFileReference; path = snowshowers_night.svg; sourceTree = "<group>"; };
 		88647FCD9241DD192C359521 /* rainshowersandthunder_day.svg */ = {isa = PBXFileReference; path = rainshowersandthunder_day.svg; sourceTree = "<group>"; };
+		88747E4752E18D7F59B163CA /* OverlayThumbnailGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayThumbnailGrid.swift; sourceTree = "<group>"; };
 		8936A6973E52AAD3B9439F67 /* heavysleetshowersandthunder_night.svg */ = {isa = PBXFileReference; path = heavysleetshowersandthunder_night.svg; sourceTree = "<group>"; };
 		8A44EA42EAE3F1A2EFCC4970 /* DownloadManagerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManagerSheet.swift; sourceTree = "<group>"; };
+		8A64726AFDD352537DDD42A2 /* toilets.geojson */ = {isa = PBXFileReference; path = toilets.geojson; sourceTree = "<group>"; };
 		8AA3A4A2177DEE7800A5DC81 /* SolarCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolarCalculator.swift; sourceTree = "<group>"; };
 		8AF0F698152CE74F12DF9E12 /* InfoTabContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoTabContent.swift; sourceTree = "<group>"; };
 		8B03F9398DB7A9AE8052F970 /* TrakkeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrakkeApp.swift; sourceTree = "<group>"; };
-		8B0DD508DB0E133C978B8959 /* PackDownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackDownloadManager.swift; sourceTree = "<group>"; };
 		8C27590F4E623975560C24A9 /* lightrainshowers_polartwilight.svg */ = {isa = PBXFileReference; path = lightrainshowers_polartwilight.svg; sourceTree = "<group>"; };
 		8F5CA7D245716A165D591FB9 /* lightrainshowersandthunder_day.svg */ = {isa = PBXFileReference; path = lightrainshowersandthunder_day.svg; sourceTree = "<group>"; };
 		8FB767622B5A8BEEFB5A12F9 /* GPXExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPXExportService.swift; sourceTree = "<group>"; };
 		90C09A67E3F12082D0F92E60 /* snow.svg */ = {isa = PBXFileReference; path = snow.svg; sourceTree = "<group>"; };
-		941E729AA8B0D69303DD0FFE /* PackQueryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackQueryService.swift; sourceTree = "<group>"; };
 		95E63A89A70416ABC872B7E3 /* sleetshowersandthunder_night.svg */ = {isa = PBXFileReference; path = sleetshowersandthunder_night.svg; sourceTree = "<group>"; };
 		95F656E976AD14BC9DB5BD8E /* NavigateTabContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigateTabContent.swift; sourceTree = "<group>"; };
 		9704BAF7A2898110673828EF /* Kommune.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Kommune.swift; sourceTree = "<group>"; };
@@ -496,7 +515,6 @@
 		9D5CB2C7B926511E20234D1F /* andre_hytter.geojson */ = {isa = PBXFileReference; path = andre_hytter.geojson; sourceTree = "<group>"; };
 		9E771B0038B66E3A05A4334B /* MapControlsOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapControlsOverlay.swift; sourceTree = "<group>"; };
 		9F6D928AD7D002ECC5E284AE /* MeasurementViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementViewModel.swift; sourceTree = "<group>"; };
-		9F85C307536813A4292BFE90 /* KnowledgePack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnowledgePack.swift; sourceTree = "<group>"; };
 		A072AA3247DF55D602639556 /* OfflineMapService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineMapService.swift; sourceTree = "<group>"; };
 		A0B6A552D3B2051865D92D15 /* RouteSaveSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteSaveSheet.swift; sourceTree = "<group>"; };
 		A10030F1F5146DA2A30CFD0E /* heavyrainshowers_day.svg */ = {isa = PBXFileReference; path = heavyrainshowers_day.svg; sourceTree = "<group>"; };
@@ -505,7 +523,6 @@
 		A1F9C343CDA8510C0C705666 /* viewpoints.geojson */ = {isa = PBXFileReference; path = viewpoints.geojson; sourceTree = "<group>"; };
 		A23FC13BE17D1AC98EFDC6B8 /* MarkdownBodyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownBodyView.swift; sourceTree = "<group>"; };
 		A3E7FCE5E821359A8E008B82 /* heavysnow.svg */ = {isa = PBXFileReference; path = heavysnow.svg; sourceTree = "<group>"; };
-		A40C0F8CE947B8F54DEE8604 /* KnowledgeArticle+GRDB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KnowledgeArticle+GRDB.swift"; sourceTree = "<group>"; };
 		A5BE335BBFB4AF5BB2B6595F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A7E5CE034FD5DA5AE8F00993 /* SearchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchService.swift; sourceTree = "<group>"; };
 		A8779AC0EEF4DFDC1797062A /* rainshowers_night.svg */ = {isa = PBXFileReference; path = rainshowers_night.svg; sourceTree = "<group>"; };
@@ -516,15 +533,17 @@
 		AD50F41AFD99044F6F927C77 /* TrakkeMapView+Overlays.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrakkeMapView+Overlays.swift"; sourceTree = "<group>"; };
 		AE47AEB2F925E616D203E595 /* PrivacySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacySheet.swift; sourceTree = "<group>"; };
 		AE4FA68D8B869F97DA683451 /* ElevationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElevationService.swift; sourceTree = "<group>"; };
+		AEA5F676AB183B2FCB7E696B /* climbing_spots.geojson */ = {isa = PBXFileReference; path = climbing_spots.geojson; sourceTree = "<group>"; };
 		B0053452935C75061CC9AD75 /* TrakkeMapView+Navigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrakkeMapView+Navigation.swift"; sourceTree = "<group>"; };
 		B0FF38196268941563D81847 /* Trakke.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Trakke.entitlements; sourceTree = "<group>"; };
-		B25F3760709AA65934A20AD1 /* KnowledgeTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnowledgeTheme.swift; sourceTree = "<group>"; };
 		B29CC1C3325143EEFC0D7B61 /* HTTPDateParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPDateParser.swift; sourceTree = "<group>"; };
+		B2C73F097EF8641452B2E56D /* setre.geojson */ = {isa = PBXFileReference; path = setre.geojson; sourceTree = "<group>"; };
 		B30DEA9123729BC53C0866B1 /* lightrain.svg */ = {isa = PBXFileReference; path = lightrain.svg; sourceTree = "<group>"; };
 		B461F0109B3D0DC2B15E78F6 /* Levenshtein.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Levenshtein.swift; sourceTree = "<group>"; };
 		B4FA71A4AA88A76B58F1E8A3 /* snowshowersandthunder_night.svg */ = {isa = PBXFileReference; path = snowshowersandthunder_night.svg; sourceTree = "<group>"; };
 		B5476F162359305281447032 /* cloudy.svg */ = {isa = PBXFileReference; path = cloudy.svg; sourceTree = "<group>"; };
 		B556205BBD2E3537CA10167A /* war_memorials.geojson */ = {isa = PBXFileReference; path = war_memorials.geojson; sourceTree = "<group>"; };
+		B5878646B1247C1D25E7C302 /* TrakkePushedPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrakkePushedPage.swift; sourceTree = "<group>"; };
 		B5884501A1D0CECCB5B236BC /* MarkdownParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownParser.swift; sourceTree = "<group>"; };
 		B5BED2C31E8D0D360FA1DAF6 /* DrawingToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingToolbar.swift; sourceTree = "<group>"; };
 		B5E2C88B67EF2819E60B5DEE /* TrakkeMapView+Annotations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrakkeMapView+Annotations.swift"; sourceTree = "<group>"; };
@@ -535,6 +554,7 @@
 		BCDDDABAA5002865E16D6C60 /* TrakkeSheetHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrakkeSheetHeader.swift; sourceTree = "<group>"; };
 		BDB68334BD4B19CA1B2C4058 /* heavyrain.svg */ = {isa = PBXFileReference; path = heavyrain.svg; sourceTree = "<group>"; };
 		BEE62AFDC0B0B8666E1670EE /* NavigationOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationOverlayView.swift; sourceTree = "<group>"; };
+		BF9FC34CECEAC75035DCBF35 /* ElevationMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElevationMath.swift; sourceTree = "<group>"; };
 		C0807CEACE5F08F12855256A /* ArtsdatabankenImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtsdatabankenImageService.swift; sourceTree = "<group>"; };
 		C0F6E0B6654DE78D734D3B6A /* heavysleetandthunder.svg */ = {isa = PBXFileReference; path = heavysleetandthunder.svg; sourceTree = "<group>"; };
 		C18516D4096D860B26F52A5B /* WeatherWidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherWidgetView.swift; sourceTree = "<group>"; };
@@ -544,14 +564,12 @@
 		C5AC3714DA5E165492A2B05F /* GPXImportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPXImportService.swift; sourceTree = "<group>"; };
 		C5C59C0A84CFCDA153DB0956 /* clearsky_night.svg */ = {isa = PBXFileReference; path = clearsky_night.svg; sourceTree = "<group>"; };
 		CA37D9843E5FD99A14E48050 /* SolarCalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolarCalculatorTests.swift; sourceTree = "<group>"; };
-		CB54AF153094CE54757BE82D /* KnowledgeEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnowledgeEntry.swift; sourceTree = "<group>"; };
 		CBF793DA5E7942669B363884 /* ImportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportTests.swift; sourceTree = "<group>"; };
 		CE85D5C3A8548A0D6D53B3E9 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
 		CF5C74893EF7B38931FA8BC9 /* TrakkeUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = TrakkeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CF9D19DED295AF42C8288004 /* BottomNavBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomNavBar.swift; sourceTree = "<group>"; };
 		CFD5AA78AB2817FF6FDBB352 /* lightrainshowersandthunder_polartwilight.svg */ = {isa = PBXFileReference; path = lightrainshowersandthunder_polartwilight.svg; sourceTree = "<group>"; };
 		D01CE01B62A064EED1D3E7C2 /* sleetandthunder.svg */ = {isa = PBXFileReference; path = sleetandthunder.svg; sourceTree = "<group>"; };
-		D339C051300FC9F5B0912D1D /* TabbedSheetContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabbedSheetContent.swift; sourceTree = "<group>"; };
 		D34AAF64BE00633F268D3FE4 /* lightsnowandthunder.svg */ = {isa = PBXFileReference; path = lightsnowandthunder.svg; sourceTree = "<group>"; };
 		D3E0B2DC97F74EE7893D8E93 /* SurvivalArticles.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = SurvivalArticles.json; sourceTree = "<group>"; };
 		D5F93149D1D612A4ABF2B837 /* clearsky_polartwilight.svg */ = {isa = PBXFileReference; path = clearsky_polartwilight.svg; sourceTree = "<group>"; };
@@ -570,7 +588,7 @@
 		DF739DEDA40DECB3557B9EAE /* snowshowersandthunder_day.svg */ = {isa = PBXFileReference; path = snowshowersandthunder_day.svg; sourceTree = "<group>"; };
 		DF7660C8D438AD20A4327607 /* lightssnowshowersandthunder_day.svg */ = {isa = PBXFileReference; path = lightssnowshowersandthunder_day.svg; sourceTree = "<group>"; };
 		DFACD2A0311FC9E0E9B7E2BD /* TrakkeMigrationPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrakkeMigrationPlan.swift; sourceTree = "<group>"; };
-		E0F3227EF60259A5DDBAB21C /* SearchSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchSheet.swift; sourceTree = "<group>"; };
+		DFCAE691D11B1FCD82477253 /* sign_points.geojson */ = {isa = PBXFileReference; path = sign_points.geojson; sourceTree = "<group>"; };
 		E1B7445203EE8264FCD19E3F /* POIDetailSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POIDetailSheet.swift; sourceTree = "<group>"; };
 		E2120D0B22F0935323CE76D8 /* DialogHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogHost.swift; sourceTree = "<group>"; };
 		E244C4D83CFC0CC9C9551368 /* Brukerveiledning.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Brukerveiledning.md; sourceTree = "<group>"; };
@@ -578,10 +596,12 @@
 		E41564F1F3B99A090C488A2B /* ActivityRecordingToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityRecordingToolbar.swift; sourceTree = "<group>"; };
 		E7626F9A3B9D18A8E2B4DF23 /* CurrentConditionsCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentConditionsCard.swift; sourceTree = "<group>"; };
 		E805A0D492B79F77EC63EDB1 /* SheetCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheetCoordinator.swift; sourceTree = "<group>"; };
+		E80ABACDD4E19CE004956954 /* fording_places.geojson */ = {isa = PBXFileReference; path = fording_places.geojson; sourceTree = "<group>"; };
+		E8171F7A026FB6DD54590DA2 /* TrakkeIntentAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrakkeIntentAction.swift; sourceTree = "<group>"; };
 		E9DAF6F4A9C59304113A8AE8 /* heavysleetshowers_day.svg */ = {isa = PBXFileReference; path = heavysleetshowers_day.svg; sourceTree = "<group>"; };
 		EAD31263DF1383B4F9570BD7 /* WeatherViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherViewModel.swift; sourceTree = "<group>"; };
-		EB019BE993E72F146118F584 /* ArticleSuggestionChip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleSuggestionChip.swift; sourceTree = "<group>"; };
 		EB885967CA0CC5CCD1EFA081 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		EBCEF9E1BF664F041D23B248 /* kulturminner_utno.geojson */ = {isa = PBXFileReference; path = kulturminner_utno.geojson; sourceTree = "<group>"; };
 		ECE77FD4C10FBD0343AA52BC /* SOSViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SOSViewModel.swift; sourceTree = "<group>"; };
 		ED3D04324C5C9D7F39C8D9C5 /* TrakkeMenuRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrakkeMenuRow.swift; sourceTree = "<group>"; };
 		EF0A8D498B9F39DC00383EC0 /* WaypointDetailSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaypointDetailSheet.swift; sourceTree = "<group>"; };
@@ -599,10 +619,11 @@
 		F9A31E343D59D2DE504A7846 /* lagoons.geojson */ = {isa = PBXFileReference; path = lagoons.geojson; sourceTree = "<group>"; };
 		F9D0AC9F2557E4C909665CEA /* snowshowersandthunder_polartwilight.svg */ = {isa = PBXFileReference; path = snowshowersandthunder_polartwilight.svg; sourceTree = "<group>"; };
 		FB6D3487EBF4CF7D6E9589EB /* TrakkeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrakkeUITests.swift; sourceTree = "<group>"; };
-		FBB329C11D3079B356F1E0A7 /* PackCatalogService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackCatalogService.swift; sourceTree = "<group>"; };
+		FC288093854A66DF7F4A180A /* parking.geojson */ = {isa = PBXFileReference; path = parking.geojson; sourceTree = "<group>"; };
 		FCE922FCF0B869B712414E15 /* GeoJSONImportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeoJSONImportService.swift; sourceTree = "<group>"; };
 		FD19714DB7F64E4465BF9BD5 /* UserGuideSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserGuideSheet.swift; sourceTree = "<group>"; };
 		FDC9DDC45F765546575CC404 /* ContentView+FileImport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContentView+FileImport.swift"; sourceTree = "<group>"; };
+		FE3698C1461F73A3E756241B /* MapLegendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapLegendView.swift; sourceTree = "<group>"; };
 		FF1A35679838CEB54A969B05 /* TrakkeUnderlineTabs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrakkeUnderlineTabs.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -613,7 +634,6 @@
 			files = (
 				3B24D12D500F6939390B99C5 /* MapLibre in Frameworks */,
 				4EB430D7926BB414550656AF /* MapLibreSwiftUI in Frameworks */,
-				020FCC94EFA0E15C9A21D598 /* GRDB in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -633,9 +653,11 @@
 		12AAA05BD044A1242A035EFE /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				6E5CF1A1E5E83C4334EDAB21 /* ActivityRecordingJournal.swift */,
 				44E67DF50AC72B5B791232E2 /* ActivityTrackingService.swift */,
 				7D4162FC25505243AB8F9DF9 /* AirQualityService.swift */,
 				C0807CEACE5F08F12855256A /* ArtsdatabankenImageService.swift */,
+				56E3D93A138695B78E7EF0A1 /* BarometerService.swift */,
 				2E6E4C26D5FE9797521FAE65 /* BundledPOIService.swift */,
 				1E0BEDBF7D60BD5AE002820D /* ConnectivityMonitor.swift */,
 				7184F69A6CAAAE19B8881113 /* CoordinateService.swift */,
@@ -647,9 +669,6 @@
 				7D98545EADB9E8AFE4CDBC64 /* KartverketTileService.swift */,
 				819A5E924F30A97BE68BEB3B /* MeasurementService.swift */,
 				A072AA3247DF55D602639556 /* OfflineMapService.swift */,
-				FBB329C11D3079B356F1E0A7 /* PackCatalogService.swift */,
-				8B0DD508DB0E133C978B8959 /* PackDownloadManager.swift */,
-				941E729AA8B0D69303DD0FFE /* PackQueryService.swift */,
 				3EC1194CD1BCB7392992B45D /* POIService.swift */,
 				DE4DA85121D4BF952608291D /* RemoteArticleService.swift */,
 				A7E5CE034FD5DA5AE8F00993 /* SearchService.swift */,
@@ -678,6 +697,7 @@
 			isa = PBXGroup;
 			children = (
 				18005C6C5A4CF8F4DAA43BAA /* Extensions */,
+				280A59ED23877D2E1861E80F /* Intents */,
 				31E5884A623A2161C94A7B76 /* Models */,
 				377E3D3C693DAD1188622ABF /* Networking */,
 				8AB36068F65B63BD00B0C48F /* Resources */,
@@ -693,6 +713,15 @@
 			path = Trakke;
 			sourceTree = "<group>";
 		};
+		280A59ED23877D2E1861E80F /* Intents */ = {
+			isa = PBXGroup;
+			children = (
+				1780821A9F4D22E2FEDD258F /* TrakkeAppIntents.swift */,
+				E8171F7A026FB6DD54590DA2 /* TrakkeIntentAction.swift */,
+			);
+			path = Intents;
+			sourceTree = "<group>";
+		};
 		28820234EC7C97D7C59469D0 /* Routes */ = {
 			isa = PBXGroup;
 			children = (
@@ -706,30 +735,20 @@
 		28C22EF4069B982A7C204939 /* POI */ = {
 			isa = PBXGroup;
 			children = (
-				621B221F56A79F77A10ED993 /* CategoryPickerSheet.swift */,
 				E1B7445203EE8264FCD19E3F /* POIDetailSheet.swift */,
 			);
 			path = POI;
-			sourceTree = "<group>";
-		};
-		3086EB1E25DE4B4C6779CFB2 /* Measurement */ = {
-			isa = PBXGroup;
-			children = (
-				6636CECF08E17D7F0EF8B705 /* MeasurementSheet.swift */,
-			);
-			path = Measurement;
 			sourceTree = "<group>";
 		};
 		31E5884A623A2161C94A7B76 /* Models */ = {
 			isa = PBXGroup;
 			children = (
 				48A20058239EB89295A71175 /* Activity.swift */,
+				2F0ECAA575F1796C6EF23511 /* BundledSpeciesImage.swift */,
+				3580C430BEB1251F15C28EA2 /* ContentGroup.swift */,
 				30BCD1CBB926C9DDCED61BED /* KnowledgeArticle.swift */,
-				A40C0F8CE947B8F54DEE8604 /* KnowledgeArticle+GRDB.swift */,
-				CB54AF153094CE54757BE82D /* KnowledgeEntry.swift */,
-				9F85C307536813A4292BFE90 /* KnowledgePack.swift */,
-				B25F3760709AA65934A20AD1 /* KnowledgeTheme.swift */,
 				9704BAF7A2898110673828EF /* Kommune.swift */,
+				6000FE797E69443DE4932192 /* MapLegend.swift */,
 				C42314C5900672252985593D /* NavigationActivityAttributes.swift */,
 				1205261DCF0024EE3CCFA31C /* NavigationState.swift */,
 				DB10B0187C9B9DAF22046927 /* POI.swift */,
@@ -840,6 +859,7 @@
 			isa = PBXGroup;
 			children = (
 				F04B26570C579C1A80526E5A /* Bearing.swift */,
+				BF9FC34CECEAC75035DCBF35 /* ElevationMath.swift */,
 				4FC502C1D744A263083D1FFA /* Haversine.swift */,
 				B461F0109B3D0DC2B15E78F6 /* Levenshtein.swift */,
 				F485AF61CC2982501FCF1FFF /* Logger+Trakke.swift */,
@@ -874,7 +894,6 @@
 			isa = PBXGroup;
 			children = (
 				14BF64BF4F13693F38DFCEF3 /* SearchResultRow.swift */,
-				E0F3227EF60259A5DDBAB21C /* SearchSheet.swift */,
 			);
 			path = Search;
 			sourceTree = "<group>";
@@ -882,10 +901,9 @@
 		786CD572C86015BEA6233325 /* Knowledge */ = {
 			isa = PBXGroup;
 			children = (
-				42B9EA0B5AE9C2165FE85693 /* ArticleDetailSheet.swift */,
-				6C447DBFA7CF7038077D6F70 /* KnowledgeDetailSheet.swift */,
-				6C5B4F650B2F10840DA1D2B1 /* KnowledgePackRow.swift */,
+				265353EC28938863922EACE1 /* ArticleDetailView.swift */,
 				7270BD1249BAB2F213E17EA1 /* KnowledgeSheet.swift */,
+				FE3698C1461F73A3E756241B /* MapLegendView.swift */,
 			);
 			path = Knowledge;
 			sourceTree = "<group>";
@@ -919,18 +937,33 @@
 			isa = PBXGroup;
 			children = (
 				9D5CB2C7B926511E20234D1F /* andre_hytter.geojson */,
+				41CE15469B379234AB379E3C /* attractions.geojson */,
+				1C9C4243BFACA566FEA595E2 /* bridges.geojson */,
 				7EA142B392856DFB169FC608 /* caves.geojson */,
+				AEA5F676AB183B2FCB7E696B /* climbing_spots.geojson */,
 				B99142C66149EFC2492C89CD /* dnt_hytter.geojson */,
 				323DE62D4065414AE20061EC /* fire_pits.geojson */,
+				8358D32F044F29D3D3DD7BE0 /* fishing_spots.geojson */,
+				15C88924330D5EB82050C6F3 /* food_services.geojson */,
+				E80ABACDD4E19CE004956954 /* fording_places.geojson */,
 				5C8AC32198C5F03FDFAAED4B /* giant_kettles.geojson */,
 				108FC16D5E546F826A6D667B /* hammocks.geojson */,
 				3530C29205E9BA699DE92417 /* hot_springs.geojson */,
+				EBCEF9E1BF664F041D23B248 /* kulturminner_utno.geojson */,
 				F9A31E343D59D2DE504A7846 /* lagoons.geojson */,
 				B9BFDD35B4DAB7BB4947F296 /* oxbow_lakes.geojson */,
+				FC288093854A66DF7F4A180A /* parking.geojson */,
+				7AE886BC5D103E2488F2BBA5 /* recreation_areas.geojson */,
 				3FD95598E4CEB0775131A6ED /* rest_areas.geojson */,
+				B2C73F097EF8641452B2E56D /* setre.geojson */,
 				0D3E81DAF66B1B3EBDFB3A5A /* shelters.geojson */,
+				DFCAE691D11B1FCD82477253 /* sign_points.geojson */,
+				02D91883901723F314B7F116 /* ski_lifts.geojson */,
+				0F233581809B319389DDFBF1 /* sledding_hills.geojson */,
 				638348A4A793DF01067BCA7F /* swimming_spots.geojson */,
 				7CED56C5B0F978DDE8262E22 /* tent_sites.geojson */,
+				8A64726AFDD352537DDD42A2 /* toilets.geojson */,
+				7BBFCEE41F7C3A5C024F5110 /* trip_records.geojson */,
 				A1F9C343CDA8510C0C705666 /* viewpoints.geojson */,
 				B556205BBD2E3537CA10167A /* war_memorials.geojson */,
 				59E462E76D2DB17C132DCB18 /* waterfalls.geojson */,
@@ -959,7 +992,6 @@
 				4C69089D49507DC49F88AB6D /* Info */,
 				786CD572C86015BEA6233325 /* Knowledge */,
 				4C495BD884B3E9DC63342CB0 /* Map */,
-				3086EB1E25DE4B4C6779CFB2 /* Measurement */,
 				5BE6584849DA19688B9E80B5 /* Navigate */,
 				56949886481DA87DDE1CC9AE /* Navigation */,
 				8DE0A7D8375AA0814F8C3174 /* Offline */,
@@ -1004,7 +1036,7 @@
 				680EA9A161F3E8330CAD98CF /* ActivityTrackingTests.swift */,
 				CBF793DA5E7942669B363884 /* ImportTests.swift */,
 				DC559F7420E1F186365A84AC /* NavigationTests.swift */,
-				2B6E2DD11A5F4E2ACAA70167 /* PackStorageTests.swift */,
+				83CEB9D1D743A88AD1F737A0 /* POIIconRenderingTests.swift */,
 				AD44A017C1943139E3607EC5 /* ServiceTests.swift */,
 				CA37D9843E5FD99A14E48050 /* SolarCalculatorTests.swift */,
 				5473FD0EBFDACA3278AFB2E7 /* TrakkeTests.swift */,
@@ -1038,7 +1070,6 @@
 			isa = PBXGroup;
 			children = (
 				5493FD583ACBB19DE453B73D /* AppMenuSheet.swift */,
-				EB019BE993E72F146118F584 /* ArticleSuggestionChip.swift */,
 				CF9D19DED295AF42C8288004 /* BottomNavBar.swift */,
 				8370F4AA2E1940D89D1CBA2C /* CardSection.swift */,
 				5A0DEA1A78CE59CA51EE5576 /* EditNameCategorySheet.swift */,
@@ -1049,19 +1080,19 @@
 				611359BB6027406F4E946147 /* MapActionBar.swift */,
 				A23FC13BE17D1AC98EFDC6B8 /* MarkdownBodyView.swift */,
 				D9EEE652DD9274DFB6B807F4 /* OfflineToasts.swift */,
+				88747E4752E18D7F59B163CA /* OverlayThumbnailGrid.swift */,
 				0B9DAF1705EE166B0F42A5E1 /* POIIconImage.swift */,
 				808E75F58FCD02C57629BE59 /* ShareSheet.swift */,
 				981B2C4C5AC621BF40960530 /* StatTile.swift */,
-				D339C051300FC9F5B0912D1D /* TabbedSheetContent.swift */,
 				7C7CC07ECBFFF2A606A4FD1D /* TrakkeButtonStyle.swift */,
 				8175ACC27A5D621298C4DD91 /* TrakkeDialog.swift */,
 				5DB385ABF8B4990C1540794B /* TrakkeIconButton.swift */,
 				AA0D5DDCDEEC69F776DA8492 /* TrakkeListCard.swift */,
 				ED3D04324C5C9D7F39C8D9C5 /* TrakkeMenuRow.swift */,
+				B5878646B1247C1D25E7C302 /* TrakkePushedPage.swift */,
 				2AABCA9FAF6FD91052533CF1 /* TrakkeSearchField.swift */,
 				BCDDDABAA5002865E16D6C60 /* TrakkeSheetHeader.swift */,
 				60E4BC9E47AE926C88440B0D /* TrakkeToggleStyle.swift */,
-				5EA08AF430C23E60713FC9D3 /* TrakkeTooltip.swift */,
 				FF1A35679838CEB54A969B05 /* TrakkeUnderlineTabs.swift */,
 				74C9303A7C4126CC1D4E6189 /* VisibilityToggleButton.swift */,
 			);
@@ -1216,7 +1247,6 @@
 			packageProductDependencies = (
 				254EF731837012093F79F386 /* MapLibre */,
 				B20C41DFD30629853159F9CD /* MapLibreSwiftUI */,
-				71A7D94A0B0976776AABB04E /* GRDB */,
 			);
 			productName = Trakke;
 			productReference = 2B5AA04468954FB6FBA31348 /* Trakke.app */;
@@ -1283,7 +1313,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastUpgradeCheck = 2650;
+				LastUpgradeCheck = 2660;
 				TargetAttributes = {
 					4CDCAF61BAE86FC76BC013F3 = {
 						DevelopmentTeam = 8NW62A7PRA;
@@ -1309,7 +1339,6 @@
 			mainGroup = 3241D291E1877084913966F9;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				35D657859CEC9995F570E304 /* XCRemoteSwiftPackageReference "GRDB.swift" */,
 				3044EB09DCC6BF380138ED4D /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */,
 				E304B341153993036392B3D4 /* XCRemoteSwiftPackageReference "swiftui-dsl" */,
 			);
@@ -1339,17 +1368,23 @@
 				E75C63EB6E3715CB9B38A01F /* PrivacyInfo.xcprivacy in Resources */,
 				1668B7461EC231B60A4C85C8 /* SurvivalArticles.json in Resources */,
 				5A1D9AC354BDA6A5EBD9FE1F /* andre_hytter.geojson in Resources */,
+				481DEEE355BE1F76F77ACBA5 /* attractions.geojson in Resources */,
+				8B6E1CA4EF9C58B11E9E48C2 /* bridges.geojson in Resources */,
 				7B4C7BFACC2388F614094403 /* caves.geojson in Resources */,
 				9E8FEF6DAD1BD834801F2B64 /* clearsky_day.svg in Resources */,
 				98CF7CBB31AA5360AF6AF7CE /* clearsky_night.svg in Resources */,
 				FAD9C7A815E5B4247EEC96D2 /* clearsky_polartwilight.svg in Resources */,
+				01FF1D83512E62296A41D4B1 /* climbing_spots.geojson in Resources */,
 				87E6D9AA62033966167EFF7F /* cloudy.svg in Resources */,
 				EB4FA73525B3A7FEE3500E2E /* dnt_hytter.geojson in Resources */,
 				91EF4F6C50910FCE47451A2B /* fair_day.svg in Resources */,
 				61783110B11D6958BA9D1E4A /* fair_night.svg in Resources */,
 				7C82D3D2AF2B5914C1760CE1 /* fair_polartwilight.svg in Resources */,
 				C0B62F424FD965713B29C1EC /* fire_pits.geojson in Resources */,
+				6D656CCDFFE7F3D5BD5D9D4E /* fishing_spots.geojson in Resources */,
 				BB27A14223E0DD9205FFC783 /* fog.svg in Resources */,
+				ADA8E7A8976731139EEE17DF /* food_services.geojson in Resources */,
+				311514D8AEF5C32C31E44A43 /* fording_places.geojson in Resources */,
 				105277C8B785221EA7DD5537 /* giant_kettles.geojson in Resources */,
 				B0C8277AE10D9B593F73B6D9 /* hammocks.geojson in Resources */,
 				74337CB1F49F803A03BF1FAF /* heavyrain.svg in Resources */,
@@ -1377,6 +1412,7 @@
 				7C2327A508E74DF9451431A9 /* heavysnowshowersandthunder_night.svg in Resources */,
 				B9C7D6E2F6BF4546678DE939 /* heavysnowshowersandthunder_polartwilight.svg in Resources */,
 				6E1804C75A5E4B6A51645A54 /* hot_springs.geojson in Resources */,
+				853F7E2E81BD4A94B89E0E3B /* kulturminner_utno.geojson in Resources */,
 				26B2A0433AA3285C2EAF7726 /* lagoons.geojson in Resources */,
 				D6F80FCC419F4FF3D5850F38 /* lightrain.svg in Resources */,
 				C50C6383FAE2E4C19E3A7FF8 /* lightrainandthunder.svg in Resources */,
@@ -1403,6 +1439,7 @@
 				A4683F65E152429710C943AC /* lightssnowshowersandthunder_night.svg in Resources */,
 				41B614ADC0983443EC411DDB /* lightssnowshowersandthunder_polartwilight.svg in Resources */,
 				94D43CD4334DBAC91A85D040 /* oxbow_lakes.geojson in Resources */,
+				AEF0C42F77D972754C8975B9 /* parking.geojson in Resources */,
 				EB2DDF69B9A25809E96462D6 /* partlycloudy_day.svg in Resources */,
 				E7043265ABF67D2064337C69 /* partlycloudy_night.svg in Resources */,
 				27C78CB7CDE96F94CA748DDB /* partlycloudy_polartwilight.svg in Resources */,
@@ -1414,8 +1451,13 @@
 				9C9B4F6981B39E14D4C33AD3 /* rainshowersandthunder_day.svg in Resources */,
 				A4EC1954BF18A3624BD8B820 /* rainshowersandthunder_night.svg in Resources */,
 				78A6FEDDD77FE61ACF5F2F62 /* rainshowersandthunder_polartwilight.svg in Resources */,
+				F40DF5E9AA67EB546B803E2E /* recreation_areas.geojson in Resources */,
 				596AAE8205392CFC00A2C97F /* rest_areas.geojson in Resources */,
+				D23A2FD5AB66EE0757776F17 /* setre.geojson in Resources */,
 				4D54E1D52C1FE8AD0A4C2D76 /* shelters.geojson in Resources */,
+				654DEF7005B377B9D6E3286B /* sign_points.geojson in Resources */,
+				2DE5789A6983738E054E0AEF /* ski_lifts.geojson in Resources */,
+				27CFC0FC30FDBA7C5535E323 /* sledding_hills.geojson in Resources */,
 				9B25CEA7AFBBD315B719C25E /* sleet.svg in Resources */,
 				BFAD806109F310967ABFD62F /* sleetandthunder.svg in Resources */,
 				3CB14FAA0166FC77B1CAEA64 /* sleetshowers_day.svg in Resources */,
@@ -1434,6 +1476,8 @@
 				7CD2AEF7664153C977F9599C /* snowshowersandthunder_polartwilight.svg in Resources */,
 				E6600B668FB3134873B33C4A /* swimming_spots.geojson in Resources */,
 				C2A4DA910A6CF81070AC42AE /* tent_sites.geojson in Resources */,
+				806FFC0B8DF95869E7EC387B /* toilets.geojson in Resources */,
+				C28CD9B9B3CCA8373E00B582 /* trip_records.geojson in Resources */,
 				114B3348F8F39431E4AF33A3 /* viewpoints.geojson in Resources */,
 				1D9A23F5850C6EE463CFDB14 /* war_memorials.geojson in Resources */,
 				0366A42E2D2503DED5337D71 /* waterfalls.geojson in Resources */,
@@ -1461,6 +1505,7 @@
 				31602BB4473F218CC565B788 /* APIClient.swift in Sources */,
 				A2F551613A2767A71602C1BB /* Activity.swift in Sources */,
 				E5357EDC24333B25A7D65193 /* ActivityDetailSheet.swift in Sources */,
+				C84A94AAEB9C73660009B855 /* ActivityRecordingJournal.swift in Sources */,
 				8E1C27AF318FF72DA6C2E112 /* ActivityRecordingToolbar.swift in Sources */,
 				16981343887CA8C81F1D7B60 /* ActivitySaveSheet.swift in Sources */,
 				537E36F8EA95441DB8B13A83 /* ActivityTrackingService.swift in Sources */,
@@ -1470,17 +1515,18 @@
 				4011217D83E20CCD779BE43C /* AppLifecycleModifier.swift in Sources */,
 				A9C74F17090A553B4B98CED6 /* AppMenuSheet.swift in Sources */,
 				C2D6A15EB1563C55A80D07DF /* AppStorageKeys.swift in Sources */,
-				C50B63725E5C28EE88A96865 /* ArticleDetailSheet.swift in Sources */,
-				82BDA1DC1399BED61581C814 /* ArticleSuggestionChip.swift in Sources */,
+				0AD2385BE32EFE36015A9110 /* ArticleDetailView.swift in Sources */,
 				1AD38502496121EB9B131456 /* ArtsdatabankenImageService.swift in Sources */,
+				924F94AC844FFC78BF702667 /* BarometerService.swift in Sources */,
 				989F96FA810508C3D9D6CC18 /* Bearing.swift in Sources */,
 				8902A57C1C10EEB17A9AC623 /* BottomNavBar.swift in Sources */,
 				D63D63EB20C96AF5968E3630 /* BundledPOIService.swift in Sources */,
+				999A1131FBF002B206938343 /* BundledSpeciesImage.swift in Sources */,
 				B9BE9AC1075DFE349FED2DA5 /* CardSection.swift in Sources */,
 				1705EE926883A0215705E800 /* CategoryHierarchyView.swift in Sources */,
-				F02120925CA0AF97951BFB53 /* CategoryPickerSheet.swift in Sources */,
 				808AA69F56CBE74E3EBBC1AC /* Color+Trakke.swift in Sources */,
 				DD16FDE8B1506E3C766110C4 /* ConnectivityMonitor.swift in Sources */,
+				3A7B66D000D30CA997BB2067 /* ContentGroup.swift in Sources */,
 				7FB69E2272D9A7536F8550FE /* ContentView+FileImport.swift in Sources */,
 				82AB66960A754A939F84BB4B /* ContentView.swift in Sources */,
 				23C4ABC8368D581B7E310078 /* CoordinateService.swift in Sources */,
@@ -1490,6 +1536,7 @@
 				21DEF037F3A9BBD30A3FBFBC /* DownloadManagerSheet.swift in Sources */,
 				4B891A1511F7C6567B2FEEE1 /* DrawingToolbar.swift in Sources */,
 				5494B8DABE850872D374288C /* EditNameCategorySheet.swift in Sources */,
+				8B90DB2A939F9E33DE5D2772 /* ElevationMath.swift in Sources */,
 				E4EB953A286E201CD77B95F8 /* ElevationProfileView.swift in Sources */,
 				C4FF56FF5DC59F82AF8E7D9D /* ElevationService.swift in Sources */,
 				29182E43A14354AC53371C98 /* EmergencySheet.swift in Sources */,
@@ -1508,14 +1555,8 @@
 				F39A3E5BD391FAE3753E54AA /* InfoSheet.swift in Sources */,
 				74C8B9856AEEB32649992C8E /* InfoTabContent.swift in Sources */,
 				E5B758BF45F55039DD871AA9 /* KartverketTileService.swift in Sources */,
-				B8761C323796DD291432CD47 /* KnowledgeArticle+GRDB.swift in Sources */,
 				150743C677FF1E6A1A5203F0 /* KnowledgeArticle.swift in Sources */,
-				8DA1BB017D081E951634550E /* KnowledgeDetailSheet.swift in Sources */,
-				B1DDE220A7F17C253D9C08AC /* KnowledgeEntry.swift in Sources */,
-				F4BDBED665F58B3ED1A7D3FD /* KnowledgePack.swift in Sources */,
-				EA49991554F05626306B367C /* KnowledgePackRow.swift in Sources */,
 				BA78EF98DDC289411EFEB839 /* KnowledgeSheet.swift in Sources */,
-				EF43652A11A22F5F5BD6FFB3 /* KnowledgeTheme.swift in Sources */,
 				F2577FB6537AEF30FA78E3C8 /* KnowledgeViewModel.swift in Sources */,
 				9DE591A01075FF23FDF70F66 /* Kommune.swift in Sources */,
 				71E808AE1D239043CCEF36B8 /* KommuneDetailView.swift in Sources */,
@@ -1525,12 +1566,13 @@
 				E0698DA01F271607D6254202 /* MapActionBar.swift in Sources */,
 				DFB113A57BCAE5CBF0D21C73 /* MapAnnotations.swift in Sources */,
 				EA62572CF51EB9F2EA1CC4D0 /* MapControlsOverlay.swift in Sources */,
+				E35FFA88593111F25453F6D0 /* MapLegend.swift in Sources */,
+				20D942CA06F93CA781BA6175 /* MapLegendView.swift in Sources */,
 				91AFB001B85B486717560F62 /* MapScreen.swift in Sources */,
 				D9BAFBF64307433147F829DA /* MapViewModel.swift in Sources */,
 				7E006791F4A0E21284B0817C /* MarkdownBodyView.swift in Sources */,
 				B219DB3CA8FA3407DD884828 /* MarkdownParser.swift in Sources */,
 				2236E75784F95AEEB323FC61 /* MeasurementService.swift in Sources */,
-				F161D9A25AE4B1BD583FEE27 /* MeasurementSheet.swift in Sources */,
 				BA3A7CFE7F5226CFAD1A4E76 /* MeasurementToolbar.swift in Sources */,
 				0FCAB2E0C251794C34AC48AE /* MeasurementViewModel.swift in Sources */,
 				1C9268A0DB14FE7DC8E8E66C /* ModeToolbar.swift in Sources */,
@@ -1543,14 +1585,12 @@
 				82B1B47F78B12B770623CAE3 /* OfflineSetupSheet.swift in Sources */,
 				7B43988546166027685AFFF7 /* OfflineToasts.swift in Sources */,
 				C01E19DEEA45FD77A687EE2D /* OfflineViewModel.swift in Sources */,
+				05FE1424B30F3412FE9ACA38 /* OverlayThumbnailGrid.swift in Sources */,
 				BA6877207ADABA84E283B8E8 /* POI.swift in Sources */,
 				D56237AC20BCA3F0F9885FD9 /* POIDetailSheet.swift in Sources */,
 				3C7FDE2B1259725D2B127776 /* POIIconImage.swift in Sources */,
 				38B325270EA26C82353B2AAC /* POIService.swift in Sources */,
 				F313BA1545DC0193F31F9E39 /* POIViewModel.swift in Sources */,
-				AF0EAE24F034D9656DFDB406 /* PackCatalogService.swift in Sources */,
-				EAD6C43C6AF091A108665840 /* PackDownloadManager.swift in Sources */,
-				2D76D40D2D321139A08A23A3 /* PackQueryService.swift in Sources */,
 				DD00102E934AC08C405ED14C /* PreferencesSheet.swift in Sources */,
 				7B6E08F436AD85044A51DC86 /* PrivacySheet.swift in Sources */,
 				3A7C9DBC47B669FFD8680ABF /* RemoteArticleService.swift in Sources */,
@@ -1565,7 +1605,6 @@
 				B19031F076E5340EF1529719 /* SchemaV3.swift in Sources */,
 				E164ADD33A1575D147AF39EC /* SearchResultRow.swift in Sources */,
 				3993ED3E7C59EF2E48FD0121 /* SearchService.swift in Sources */,
-				D3ACC6AEE46BAE0878A98F34 /* SearchSheet.swift in Sources */,
 				F5B76961FC8F9649F633D278 /* SearchViewModel.swift in Sources */,
 				BE6A90DD6459698A8476B196 /* SelectionToolbar.swift in Sources */,
 				112AE48ECC65AE3C5F31F4D5 /* SettingsTabContent.swift in Sources */,
@@ -1575,13 +1614,14 @@
 				ADAE6CFB789559896614EBB5 /* SolarCalculator.swift in Sources */,
 				7389FF3205A3511191485F7E /* Spacing+Trakke.swift in Sources */,
 				11532E290A9E03981F095327 /* StatTile.swift in Sources */,
-				2D17871EA6DD017A18FFDDD9 /* TabbedSheetContent.swift in Sources */,
 				3E11D3750CF250FF175DAD76 /* ToolsTabContent.swift in Sources */,
 				BF680F9D519B5FA64334667D /* TracksListSheet.swift in Sources */,
 				D93E5AAF99E9E852878F6594 /* TrakkeApp.swift in Sources */,
+				F540EF7484F7052F34FE9403 /* TrakkeAppIntents.swift in Sources */,
 				E70B22E36F345DF45CE6B23A /* TrakkeButtonStyle.swift in Sources */,
 				0B9A31FDFCDE1E503D2F311E /* TrakkeDialog.swift in Sources */,
 				B7345A9E1EA8BFE935B88B9C /* TrakkeIconButton.swift in Sources */,
+				923302910D8B9F04F8DEF417 /* TrakkeIntentAction.swift in Sources */,
 				EC3E7E122046760DFC75CDBC /* TrakkeListCard.swift in Sources */,
 				09A79DCA43FB500CAB668321 /* TrakkeMapView+Annotations.swift in Sources */,
 				F96B880ED98B387AA67D78BA /* TrakkeMapView+Gestures.swift in Sources */,
@@ -1590,10 +1630,10 @@
 				0708C19448134DE5282529E4 /* TrakkeMapView.swift in Sources */,
 				2F92232ECE9984543AD7BD04 /* TrakkeMenuRow.swift in Sources */,
 				A49AC86F04EB27028B788E8A /* TrakkeMigrationPlan.swift in Sources */,
+				7EC2667CA2C7740484543DBB /* TrakkePushedPage.swift in Sources */,
 				59C6CA979D4F452670F5F5CE /* TrakkeSearchField.swift in Sources */,
 				10F6610A7BFA66F229E14014 /* TrakkeSheetHeader.swift in Sources */,
 				5152DDEB4EBED16CB9F8293F /* TrakkeToggleStyle.swift in Sources */,
-				5A6FB83E8E1F15885CF3C00D /* TrakkeTooltip.swift in Sources */,
 				14B344C9077B51EA41B54963 /* TrakkeUnderlineTabs.swift in Sources */,
 				A544B0B1F75B4A20C6B0E7C4 /* UserGuideSheet.swift in Sources */,
 				2CFD69A5C65CE0F338661454 /* VarsomService.swift in Sources */,
@@ -1619,7 +1659,7 @@
 				818AA6D1BCDBA51BAB3B7AF1 /* ActivityTrackingTests.swift in Sources */,
 				F8187B77A8E33D2F2A2D4798 /* ImportTests.swift in Sources */,
 				657863056B2362E532A58FAB /* NavigationTests.swift in Sources */,
-				BFC6C8822ECC1EEED3A4F2F4 /* PackStorageTests.swift in Sources */,
+				A9C82D279418CB08275FFC01 /* POIIconRenderingTests.swift in Sources */,
 				71E68995683C0315DB852C75 /* ServiceTests.swift in Sources */,
 				CAFA3A2881A7096CF29CE8C7 /* SolarCalculatorTests.swift in Sources */,
 				A3EFF083EC4B51A062A832A4 /* TrakkeTests.swift in Sources */,
@@ -1709,7 +1749,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -1724,7 +1764,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 1.7.2;
+				MARKETING_VERSION = 1.7.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1816,7 +1856,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -1835,7 +1875,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 1.7.2;
+				MARKETING_VERSION = 1.7.3;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -2010,15 +2050,7 @@
 			repositoryURL = "https://github.com/maplibre/maplibre-gl-native-distribution";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 6.26.0;
-			};
-		};
-		35D657859CEC9995F570E304 /* XCRemoteSwiftPackageReference "GRDB.swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/groue/GRDB.swift";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 7.10.0;
+				minimumVersion = 6.28.0;
 			};
 		};
 		E304B341153993036392B3D4 /* XCRemoteSwiftPackageReference "swiftui-dsl" */ = {
@@ -2036,11 +2068,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3044EB09DCC6BF380138ED4D /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */;
 			productName = MapLibre;
-		};
-		71A7D94A0B0976776AABB04E /* GRDB */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 35D657859CEC9995F570E304 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
-			productName = GRDB;
 		};
 		B20C41DFD30629853159F9CD /* MapLibreSwiftUI */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -80,9 +80,18 @@ struct TrakkeDialog: View {
         .padding(.vertical, .Trakke.md)
     }
 
+    /// Side ved side er *bekreftelsens* form: ett valg, og en vei ut. To
+    /// likeverdige handlinger i samme oppsett leses som «Avbryt | OK», og da
+    /// leter øyet etter et spørsmål som ikke finnes. Derfor bestemmer rollene
+    /// layouten, ikke antallet: én handling pluss en avbryt-knapp legges ved
+    /// siden av hverandre, alt annet stables.
+    private var isConfirmation: Bool {
+        buttons.count == 2 && buttons.contains { $0.role == .cancel }
+    }
+
     @ViewBuilder
     private var buttonBar: some View {
-        if buttons.count == 2 {
+        if isConfirmation {
             HStack(spacing: 0) {
                 dialogButton(buttons[1])
                 Divider()

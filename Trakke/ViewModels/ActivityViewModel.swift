@@ -10,10 +10,14 @@ final class ActivityViewModel {
     private(set) var currentElevationGain: Double = 0
     private(set) var currentDuration: TimeInterval = 0
     private(set) var activities: [Activity] = []
-    var selectedActivity: Activity?
     var saveError: String?
 
+    /// Et opptak som lå igjen etter at appen døde. Settes ved oppstart, og
+    /// brukeren får velge om turen skal gjenopptas eller forkastes.
+    private(set) var interruptedRecording: ActivityRecordingJournal?
+
     private let trackingService: any ActivityTracking
+    private let barometer = BarometerService()
     private var statsTask: Task<Void, Never>?
     private var modelContext: ModelContext?
     /// Called by AppCoordinator after recording stops to tear down the location
@@ -36,6 +40,46 @@ final class ActivityViewModel {
         activities = (try? modelContext.fetch(descriptor)) ?? []
     }
 
+    // MARK: - Avbrutt opptak
+
+    /// Kalles ved oppstart. Finnes det en journal, ble et opptak avbrutt av
+    /// noe annet enn brukeren – appen ble avlivet, batteriet tok slutt.
+    func checkForInterruptedRecording() {
+        guard !isRecording else { return }
+        interruptedRecording = ActivityRecordingJournal.recover()
+    }
+
+    /// Gjenopptar turen der den slapp. Punktene som ble tatt opp før avbruddet
+    /// beholdes, og opptaket fortsetter i samme tur.
+    func resumeInterruptedRecording() {
+        guard let journal = interruptedRecording, !isRecording else { return }
+        interruptedRecording = nil
+        isRecording = true
+
+        Task { [weak self] in
+            await self?.barometer.start()
+            await self?.trackingService.resume(from: journal)
+            await self?.updateStats()
+        }
+        startStatsTicker()
+    }
+
+    /// Forkaster turen. Journalen slettes, ellers ville den blitt tilbudt på
+    /// nytt ved hver eneste oppstart.
+    func discardInterruptedRecording() {
+        interruptedRecording = nil
+        ActivityRecordingJournal.clear()
+    }
+
+    /// Skriver et sjekkpunkt med én gang. Kalles når appen går i bakgrunnen,
+    /// der sjansen for å bli avlivet er størst.
+    func checkpointRecording() {
+        guard isRecording else { return }
+        Task { [weak self] in
+            await self?.trackingService.checkpointNow()
+        }
+    }
+
     // MARK: - Recording
 
     func startRecording() {
@@ -46,9 +90,15 @@ final class ActivityViewModel {
         currentDuration = 0
 
         Task { [weak self] in
+            await self?.barometer.start()
             await self?.trackingService.start()
         }
 
+        startStatsTicker()
+    }
+
+    private func startStatsTicker() {
+        statsTask?.cancel()
         statsTask = Task { [weak self] in
             while !Task.isCancelled {
                 try? await Task.sleep(for: .seconds(1))
@@ -60,7 +110,13 @@ final class ActivityViewModel {
 
     func processLocation(_ location: CLLocation) {
         guard isRecording else { return }
-        Task { [weak self] in await self?.trackingService.addLocation(location) }
+        Task { [weak self] in
+            guard let self else { return }
+            // Barometeret leses her og sendes med posisjonen, så sporingen
+            // holdes fri for CoreMotion og lar seg teste uten sensor.
+            let relativeAltitude = await barometer.relativeAltitude
+            await trackingService.addLocation(location, relativeAltitude: relativeAltitude)
+        }
     }
 
     func stopAndSave(name: String) async {
@@ -70,11 +126,13 @@ final class ActivityViewModel {
         statsTask = nil
         onRecordingStop?()
 
+        await barometer.stop()
         let result = await trackingService.finish()
 
         guard let modelContext else { return }
         guard result.trackPoints.count >= 2 else {
             saveError = String(localized: "activity.tooFewPoints")
+            ActivityRecordingJournal.clear()
             return
         }
 
@@ -92,8 +150,13 @@ final class ActivityViewModel {
         modelContext.insert(activity)
         do {
             try modelContext.save()
+            // Først nå finnes turen to steder. Journalen kan slippes.
+            ActivityRecordingJournal.clear()
             loadActivities()
         } catch {
+            // Journalen blir liggende med vilje: går lagringen galt, er den
+            // det eneste som fortsatt har turen, og den tilbys ved neste
+            // oppstart.
             saveError = error.localizedDescription
         }
     }
@@ -106,9 +169,17 @@ final class ActivityViewModel {
         currentDistance = 0
         currentElevationGain = 0
         currentDuration = 0
-        onRecordingStop?()
         Task { [weak self] in
-            await self?.trackingService.finish()
+            guard let self else { return }
+            await self.barometer.stop()
+            // Turen forkastes, så resultatet skal ikke brukes til noe. Kallet
+            // avslutter økta i sporings-aktøren, og journalen slettes først
+            // *etterpå*: en fiks som alt var underveis kunne ellers rekke å
+            // skrive et sjekkpunkt etter slettingen, og den forkastede turen
+            // hadde gjenoppstått ved neste oppstart.
+            _ = await self.trackingService.finish()
+            ActivityRecordingJournal.clear()
+            self.onRecordingStop?()
         }
     }
 
@@ -380,15 +451,16 @@ final class ActivityViewModel {
         return total
     }
 
+    /// Høydemeter for et importert spor.
+    ///
+    /// To ting var galt her. `1..<points.count` er et ugyldig område når
+    /// sporet er tomt, og en GPX-fil med et tomt `<trkseg>` tok dermed appen
+    /// ned ved import. Og hver minste høydeendring ble summert, mens et
+    /// opptak i appen bare teller endringer over `elevationThreshold` – samme
+    /// tur ga forskjellige tall alt etter om den ble gått eller importert.
+    /// Terskelen og ankeret er nå de samme som i `ActivityTrackingService`.
     private static func elevationGainLoss(for points: [[Double]]) -> (gain: Double, loss: Double) {
-        var gain: Double = 0
-        var loss: Double = 0
-        for i in 1..<points.count {
-            guard points[i].count >= 3, points[i - 1].count >= 3 else { continue }
-            let delta = points[i][2] - points[i - 1][2]
-            if delta > 0 { gain += delta } else { loss -= delta }
-        }
-        return (gain, loss)
+        ElevationMath.gainLoss(altitudes: points.map(Activity.altitude))
     }
 
     // MARK: - Formatting

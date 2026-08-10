@@ -14,8 +14,8 @@ Norwegian outdoor map app for iPhone. Built on Kartverket maps (not Apple Maps).
 ## Project
 
 - **Repo**: https://github.com/elzacka/trakke-ios
-- **Version**: 1.7.2 (build 6) — set in `project.yml`
-- **Target**: iOS 26.0+, Swift 6.3, Xcode 26.5
+- **Version**: 1.7.3 (build 1) — set in `project.yml`
+- **Target**: iOS 26.0+, Swift 6.3.3, Xcode 26.6 (iOS 26.5 SDK)
 - **PWA reference**: `/Users/lene/dev/trakke_pwa` — reference ONLY when explicitly instructed
 
 Architecture and subsystem details: [dev_only/CLAUDE.md](dev_only/CLAUDE.md).
@@ -41,7 +41,7 @@ xcodebuild -project Trakke.xcodeproj -scheme Trakke \
 - **Light mode only** — `.preferredColorScheme(.light)` enforced
 - **No blue text** — use `Color.Trakke.brand` (#3e4533) and `.tint(Color.Trakke.brand)`
 - **No tracking, no IDFA, no analytics** — Location When In Use only
-- **EU/EEA data residency** for API calls (exception: GitHub knowledge packs — no user data sent)
+- **EU/EEA data residency** for API calls (exception: GitHub article updates — no user data sent)
 - **WCAG 2.2 AA** mandatory (Norwegian law + EAA from June 2025)
 - **Coordinate formats**: DD, DMS, UTM (EUREF89 sone 33). MGRS was removed — the NGA `mgrs-ios` dependency is gone
 - **iPhone-only by design, iPad by accident** — every layout decision targets iPhone. `TARGETED_DEVICE_FAMILY` is `"1,2"` and **cannot be narrowed**: Apple rejects updates supporting fewer devices than the published version (QA1623). Attempted and rejected at upload on 1 August 2026. Real iPhone-only would need a new bundle ID, losing reviews and existing users. Consequence: App Store Connect requires a 13" iPad screenshot, and `ShareSheet`'s popover anchor plus the `horizontalSizeClass` branch in `ElevationProfileView` must stay

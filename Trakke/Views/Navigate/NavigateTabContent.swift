@@ -29,7 +29,7 @@ struct NavigateTabContent: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                TrakkeSheetHeader(title: String(localized: "appTab.navigate"))
+                TrakkeSheetHeader()
 
                 TrakkeUnderlineTabs(
                     titles: subTabs,

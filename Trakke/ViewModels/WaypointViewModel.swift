@@ -242,13 +242,6 @@ final class WaypointViewModel {
         return GPXExportService.writeToTemporaryFile(gpxString: gpxString, filename: filename)
     }
 
-    func exportCategoryGPX(category: String) -> URL? {
-        let filtered = waypoints(for: category)
-        let gpxString = GPXExportService.exportWaypoints(filtered, name: category)
-        let filename = GPXExportService.sanitizeFilename(category)
-        return GPXExportService.writeToTemporaryFile(gpxString: gpxString, filename: filename)
-    }
-
     // MARK: - Import
 
     /// Detects file format from extension and routes to the appropriate parser.

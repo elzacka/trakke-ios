@@ -322,22 +322,19 @@ struct TracksListSheet: View {
                         argument: String(localized: "list.showOnlyThis.announce \(route.name)")
                     )
                 } label: {
-                    Label(
-                        String(localized: "routes.showOnlyThis"),
-                        systemImage: "eye.circle"
-                    )
+                    Text(String(localized: "routes.showOnlyThis"))
                 }
 
                 Button {
                     editingRoute = route
                 } label: {
-                    Label(String(localized: "common.edit"), systemImage: "pencil")
+                    Text(String(localized: "common.edit"))
                 }
 
                 Button(role: .destructive) {
                     routeViewModel.deleteRoute(route)
                 } label: {
-                    Label(String(localized: "common.delete"), systemImage: "trash")
+                    Text(String(localized: "common.delete"))
                 }
             }
 
@@ -372,12 +369,6 @@ struct TracksListSheet: View {
             }
 
             Spacer()
-
-            if !route.isVisible {
-                Image(systemName: "eye.slash")
-                    .font(Font.Trakke.captionSoft)
-                    .foregroundStyle(Color.Trakke.textSoft)
-            }
         }
         .padding(.vertical, 12)
         .frame(minHeight: .Trakke.touchMin)
@@ -409,22 +400,19 @@ struct TracksListSheet: View {
                 Button {
                     editingActivity = activity
                 } label: {
-                    Label(String(localized: "common.edit"), systemImage: "pencil")
+                    Text(String(localized: "common.edit"))
                 }
 
                 Button {
                     activityViewModel.convertToRoute(activity, using: routeViewModel)
                 } label: {
-                    Label(
-                        String(localized: "activity.convertToRoute"),
-                        systemImage: "point.topleft.down.to.point.bottomright.curvepath"
-                    )
+                    Text(String(localized: "activity.convertToRoute"))
                 }
 
                 Button(role: .destructive) {
                     activityViewModel.deleteActivity(activity)
                 } label: {
-                    Label(String(localized: "common.delete"), systemImage: "trash")
+                    Text(String(localized: "common.delete"))
                 }
             }
 
@@ -467,11 +455,6 @@ struct TracksListSheet: View {
                     .foregroundStyle(Color.Trakke.textSoft)
             }
 
-            if !activity.isVisible {
-                Image(systemName: "eye.slash")
-                    .font(Font.Trakke.captionSoft)
-                    .foregroundStyle(Color.Trakke.textSoft)
-            }
         }
         .padding(.vertical, 12)
         .frame(minHeight: .Trakke.touchMin)
@@ -557,20 +540,23 @@ struct TracksListSheet: View {
                 action: { showFileImporter = true }
             )
 
-            TrakkeIconButton(
-                systemImage: "square.and.arrow.down",
-                isEnabled: !isEmpty,
-                accessibilityLabel: String(localized: "import.exportAll"),
-                action: { showExportOptions = true }
-            )
+            // Eksport og sletting tegnes ikke når det ikke finnes noe å
+            // eksportere eller slette. En nedtonet knapp er en knapp du må
+            // lese og forkaste; en knapp som ikke er der, koster ingenting.
+            if !isEmpty {
+                TrakkeIconButton(
+                    systemImage: "square.and.arrow.down",
+                    accessibilityLabel: String(localized: "import.exportAll"),
+                    action: { showExportOptions = true }
+                )
 
-            TrakkeIconButton(
-                systemImage: "trash",
-                role: .destructive,
-                isEnabled: !isEmpty,
-                accessibilityLabel: String(localized: "tracks.deleteAll.title"),
-                action: { showDeleteOptions = true }
-            )
+                TrakkeIconButton(
+                    systemImage: "trash",
+                    role: .destructive,
+                    accessibilityLabel: String(localized: "tracks.deleteAll.title"),
+                    action: { showDeleteOptions = true }
+                )
+            }
         }
     }
 
@@ -600,8 +586,8 @@ struct TracksListSheet: View {
                 return
             }
         case "gpx":
-            let aCount = activityViewModel.importFile(from: url)
-            let rCount = aCount > 0 ? 0 : routeViewModel.importFile(from: url)
+            let aCount = await activityViewModel.importFileAsync(from: url)
+            let rCount = aCount > 0 ? 0 : await routeViewModel.importFileAsync(from: url)
             activityCount = aCount
             routeCount = rCount
         default:
@@ -631,6 +617,7 @@ struct TracksListSheet: View {
             routeViewModel.edit(route, name: newName, category: newCategory)
         }
         .presentationDetents([.medium, .large])
+        .presentationContentInteraction(.scrolls)
         .presentationDragIndicator(.visible)
     }
 
@@ -645,6 +632,7 @@ struct TracksListSheet: View {
             activityViewModel.edit(activity, name: newName, category: newCategory)
         }
         .presentationDetents([.medium, .large])
+        .presentationContentInteraction(.scrolls)
         .presentationDragIndicator(.visible)
     }
 
@@ -661,8 +649,12 @@ struct TracksListSheet: View {
             // Innfelt i menyen må chipen klare den flytende BottomNavBar.
             .padding(.bottom, isEmbedded ? .Trakke.bottomNavClearance : .Trakke.lg)
             .transition(reduceMotion ? .opacity : .move(edge: .bottom).combined(with: .opacity))
-            .task {
+            .task(id: importMessage) {
+                guard importMessage != nil else { return }
                 try? await Task.sleep(for: .seconds(3))
+                // try? svelger CancellationError – uten denne ville den gamle
+                // timeren (kansellert av id-endringen) fjernet den nye meldingen.
+                guard !Task.isCancelled else { return }
                 withAnimation(reduceMotion ? nil : .default) {
                     importMessage = nil
                 }

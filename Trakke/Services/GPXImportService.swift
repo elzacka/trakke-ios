@@ -450,6 +450,9 @@ private class GPXActivityParser: NSObject, XMLParserDelegate {
     private var pendingLon: Double?
     private var pendingEle: Double?
     private var pendingTime: Date?
+    private var pendingSpeed: Double?
+    private var pendingCourse: Double?
+    private var pendingAccuracy: Double?
 
     private let iso8601Formatter: ISO8601DateFormatter = {
         let f = ISO8601DateFormatter()
@@ -468,6 +471,35 @@ private class GPXActivityParser: NSObject, XMLParserDelegate {
         parser.delegate = self
         if !parser.parse(), let error = parser.parserError { throw error }
         return activities
+    }
+
+    /// Bygger en rad med samme oppsett som `Activity.trackPoints`:
+    /// `[lon, lat, alt, tid, nøyaktighet, fart, kurs, høydenøyaktighet]`.
+    ///
+    /// Raden kortes ned til det fila faktisk inneholdt. En GPX uten
+    /// utvidelser gir fire tall, akkurat som før – og `-1` for «ikke oppgitt»
+    /// står bare der noe *etter* det finnes, siden posisjonen i rekka er det
+    /// eneste som gir feltene mening.
+    private static func encodePoint(
+        longitude: Double,
+        latitude: Double,
+        elevation: Double?,
+        timestamp: TimeInterval,
+        accuracy: Double?,
+        speed: Double?,
+        course: Double?
+    ) -> [Double] {
+        var values: [Double] = [longitude, latitude, elevation ?? 0, timestamp]
+        guard accuracy != nil || speed != nil || course != nil || elevation != nil else {
+            return values
+        }
+        values.append(accuracy ?? -1)
+        values.append(speed ?? -1)
+        values.append(course ?? -1)
+        // En høyde som faktisk sto i fila er en måling. Sto den ikke der,
+        // skal 0-en over ikke kunne forveksles med havnivå.
+        values.append(elevation != nil ? 0 : -1)
+        return values
     }
 
     func parser(
@@ -499,6 +531,9 @@ private class GPXActivityParser: NSObject, XMLParserDelegate {
                 pendingLon = lon
                 pendingEle = nil
                 pendingTime = nil
+                pendingSpeed = nil
+                pendingCourse = nil
+                pendingAccuracy = nil
             }
         case "extensions":
             // Only treat as trk-level extensions when not inside a trkpt/seg.
@@ -543,6 +578,22 @@ private class GPXActivityParser: NSObject, XMLParserDelegate {
                 pendingTime = iso8601Formatter.date(from: trimmed)
                     ?? iso8601FormatterNoFraction.date(from: trimmed)
             }
+        // Fart og kurs i Garmins gpxtpx-navnerom, nøyaktighet i vårt eget.
+        // Uten disse tapte appen sine egne felt så snart en eksportert fil ble
+        // importert igjen – en runde ut og inn gjorde turen fattigere.
+        // `elementName` er kvalifisert («gpxtpx:speed»), så suffikset testes.
+        case _ where insideTrkPt && name.hasSuffix("speed"):
+            if let value = Double(trimmed), value.isFinite, value >= 0 {
+                pendingSpeed = value
+            }
+        case _ where insideTrkPt && name.hasSuffix("course"):
+            if let value = Double(trimmed), value.isFinite, (0...360).contains(value) {
+                pendingCourse = value
+            }
+        case _ where insideTrkPt && name.hasSuffix("hdop"):
+            if let value = Double(trimmed), value.isFinite, value >= 0 {
+                pendingAccuracy = value
+            }
         case "extensions":
             insideExtensions = false
         case "trkpt":
@@ -553,13 +604,26 @@ private class GPXActivityParser: NSObject, XMLParserDelegate {
                 let timestamp = pendingTime?.timeIntervalSince1970
                     ?? currentStartedAt?.timeIntervalSince1970
                     ?? Date.now.timeIntervalSince1970
-                currentPoints.append([lon, lat, pendingEle ?? 0, timestamp])
+                currentPoints.append(
+                    Self.encodePoint(
+                        longitude: lon,
+                        latitude: lat,
+                        elevation: pendingEle,
+                        timestamp: timestamp,
+                        accuracy: pendingAccuracy,
+                        speed: pendingSpeed,
+                        course: pendingCourse
+                    )
+                )
             }
             insideTrkPt = false
             pendingLat = nil
             pendingLon = nil
             pendingEle = nil
             pendingTime = nil
+            pendingSpeed = nil
+            pendingCourse = nil
+            pendingAccuracy = nil
         case "trkseg":
             insideTrkSeg = false
         case "trk":

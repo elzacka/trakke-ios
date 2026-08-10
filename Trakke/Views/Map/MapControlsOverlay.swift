@@ -8,6 +8,7 @@ struct MapControlsOverlay<WeatherContent: View>: View {
     var showCompass = false
     var showZoomControls = false
     var showScaleBar = false
+    var showZoomLevel = false
     var hideMenuAndZoom = false
     var isConnected = true
     var isCleanMapActive = false
@@ -18,6 +19,7 @@ struct MapControlsOverlay<WeatherContent: View>: View {
     var onToggleCameraMode: (() -> Void)?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var showCleanMapHint = false
+    @State private var shownCameraModeHint: MapCameraFollowMode?
 
     var body: some View {
         ZStack {
@@ -38,7 +40,7 @@ struct MapControlsOverlay<WeatherContent: View>: View {
                 HStack(alignment: .bottom) {
                     // Bunn venstre: målestokk over Kartverket-attribusjon, samme stil
                     VStack(alignment: .leading, spacing: .Trakke.rowVertical) {
-                        if showScaleBar {
+                        if showScaleBar || showZoomLevel {
                             scaleBar
                         }
                         attributionText
@@ -68,6 +70,24 @@ struct MapControlsOverlay<WeatherContent: View>: View {
 
             // Kort hint når rent-kart slås på – trykk og hold kan trigges utilsiktet
             // (f.eks. med hansker), og eneste andre signal er at ikonet endres.
+            if let mode = shownCameraModeHint {
+                // Ikonene er nye for brukeren. En kort etikett navngir modusen
+                // du nettopp slo på, så formen læres. Vises aldri for «fritt» –
+                // at kartet står fritt er selvforklarende når du selv dro i det.
+                Text(mode.localizedName)
+                    .font(Font.Trakke.caption)
+                    .foregroundStyle(Color.Trakke.textInverse)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, .Trakke.lg)
+                    .padding(.vertical, .Trakke.sm)
+                    .background(Color.Trakke.brand)
+                    .clipShape(Capsule())
+                    .frame(maxHeight: .infinity, alignment: .bottom)
+                    .padding(.bottom, 80)
+                    .transition(.opacity)
+                    .allowsHitTesting(false)
+            }
+
             if showCleanMapHint {
                 // Samme stil og plassering som info-chipene i OfflineToasts.
                 Text(String(localized: "map.cleanMap.hint"))
@@ -92,6 +112,19 @@ struct MapControlsOverlay<WeatherContent: View>: View {
             try? await Task.sleep(for: .seconds(2))
             withAnimation(reduceMotion ? .none : .easeInOut(duration: 0.2)) {
                 showCleanMapHint = false
+            }
+        }
+        .task(id: followMode) {
+            // `.free` navngis ikke: en pan er sin egen forklaring, og et varsel
+            // på hver eneste kartflytting ville vært støy.
+            guard followMode != .free, !isCleanMapActive else { return }
+            let mode = followMode
+            withAnimation(reduceMotion ? .none : .easeInOut(duration: 0.2)) {
+                shownCameraModeHint = mode
+            }
+            try? await Task.sleep(for: .seconds(2))
+            withAnimation(reduceMotion ? .none : .easeInOut(duration: 0.2)) {
+                shownCameraModeHint = nil
             }
         }
     }
@@ -175,33 +208,68 @@ struct MapControlsOverlay<WeatherContent: View>: View {
 
     // MARK: - Scale Bar
 
+    /// Målestokk og zoomnivå i samme pille. Begge har egen bryter i
+    /// Innstillinger, og pillen viser det som er slått på – én, begge eller
+    /// ingen. De hører sammen fordi de svarer på samme spørsmål: hvor mye
+    /// kart ser jeg, og hvor tett er detaljene.
     private var scaleBar: some View {
         let scale = scaleInfo
         return HStack(spacing: .Trakke.xs) {
-            Rectangle()
-                .fill(Color.Trakke.textTertiary)
-                .frame(width: scale.widthPt, height: 2)
-                .overlay(alignment: .leading) {
-                    Rectangle()
-                        .fill(Color.Trakke.textTertiary)
-                        .frame(width: 1, height: 6)
-                }
-                .overlay(alignment: .trailing) {
-                    Rectangle()
-                        .fill(Color.Trakke.textTertiary)
-                        .frame(width: 1, height: 6)
-                }
-            Text(scale.label)
-                .font(Font.Trakke.captionSoft)
-                .foregroundStyle(Color.Trakke.textTertiary)
+            if showScaleBar {
+                scaleRule(width: scale.widthPt)
+
+                Text(scale.label)
+                    .font(Font.Trakke.captionSoft)
+                    .foregroundStyle(Color.Trakke.textTertiary)
+            }
+
+            if showZoomLevel {
+                // Avrundet nedover, ikke til nærmeste: terskler sjekkes med
+                // `zoom >= minZoom` på den brøkne verdien, så «z12» skal bety
+                // «du har passert 12», ikke «du er i nærheten av 12».
+                Text("z\(scale.zoom)")
+                    .font(Font.Trakke.captionSoft.monospacedDigit())
+                    .foregroundStyle(Color.Trakke.textTertiary)
+            }
         }
         .padding(.horizontal, .Trakke.sm)
         .padding(.vertical, .Trakke.xs)
         .background(.ultraThinMaterial)
         .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.sm))
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(String(localized: "map.scale.a11y"))
+        .accessibilityValue(scaleAccessibilityValue(scale))
     }
 
-    private var scaleInfo: (widthPt: CGFloat, label: String) {
+    private func scaleRule(width: CGFloat) -> some View {
+        Rectangle()
+            .fill(Color.Trakke.textTertiary)
+            .frame(width: width, height: 2)
+            .overlay(alignment: .leading) {
+                Rectangle()
+                    .fill(Color.Trakke.textTertiary)
+                    .frame(width: 1, height: 6)
+            }
+            .overlay(alignment: .trailing) {
+                Rectangle()
+                    .fill(Color.Trakke.textTertiary)
+                    .frame(width: 1, height: 6)
+            }
+    }
+
+    private func scaleAccessibilityValue(
+        _ scale: (widthPt: CGFloat, label: String, zoom: Int)
+    ) -> String {
+        var parts: [String] = []
+        if showScaleBar { parts.append(scale.label) }
+        if showZoomLevel {
+            parts.append("\(String(localized: "map.zoomLevel")) \(scale.zoom)")
+        }
+        return parts.joined(separator: ", ")
+    }
+
+
+    private var scaleInfo: (widthPt: CGFloat, label: String, zoom: Int) {
         let lat = viewModel.currentCenter.latitude
         let zoom = viewModel.currentZoom
         let metersPerPixel = 156543.03392 * cos(lat * .pi / 180) / pow(2, zoom)
@@ -222,7 +290,11 @@ struct MapControlsOverlay<WeatherContent: View>: View {
             label = "\(Int(snapped)) m"
         }
 
-        return (widthPt: CGFloat(max(30, min(barWidth, 120))), label: label)
+        return (
+            widthPt: CGFloat(max(30, min(barWidth, 120))),
+            label: label,
+            zoom: Int(zoom.rounded(.down))
+        )
     }
 
     // MARK: - Attribution
@@ -236,6 +308,11 @@ struct MapControlsOverlay<WeatherContent: View>: View {
                 }
         let text = parts.joined(separator: " | ")
         return Text(text)
+            // Teksten vokser med påslåtte kartlag («© Kartverket | © NVE»),
+            // så UI-testen kan ikke slå opp på hele strengen. Identifikatoren
+            // holder oppslaget stabilt; testen sjekker at teksten *begynner*
+            // med den påkrevde Kartverket-krediteringen.
+            .accessibilityIdentifier("map.attribution")
             .font(Font.Trakke.captionSoft)
             .foregroundStyle(Color.Trakke.textTertiary)
             .padding(.horizontal, .Trakke.sm)
@@ -246,40 +323,70 @@ struct MapControlsOverlay<WeatherContent: View>: View {
 
     // MARK: - Compass
 
-    private var isHeadingUpActive: Bool {
-        isNavigating ? navigationCameraMode == .courseUp : viewModel.isHeadingUp
+    var followMode: MapCameraFollowMode {
+        MapCameraFollowMode.current(
+            isCameraDetached: viewModel.isCameraDetached,
+            isNavigating: isNavigating,
+            navigationCameraMode: navigationCameraMode,
+            isTrackingUser: viewModel.isTrackingUser,
+            isHeadingUp: viewModel.isHeadingUp
+        )
     }
 
-    /// Kompass + retnings-veksler. Tapper:
-    /// - Under navigasjon: veksler mellom nord-opp og retning-opp via kamera-modus.
-    /// - Ellers: slår heading-up av/på og sentrerer på brukeren.
-    /// Ikon-fargen signalerer aktiv tilstand (grønn = retning-opp, rød = nord-opp).
+    /// Farge er forsterkning, ikke bærer: grå når kartet står fritt, grønn når
+    /// det følger deg. Den gamle rød/grønn-vekslingen mellom nord-opp og
+    /// retning-opp er borte – de to skilles nå på ikonets form, som er lesbart
+    /// også for de som ikke skiller rødt fra grønt.
+    private var compassTint: Color {
+        followMode == .free ? Color.Trakke.textTertiary : Color.Trakke.brand
+    }
+
+    /// Kompass + følgemodus, samme tredeling som lokasjonsknappen i Apples Kart.
+    ///
+    /// Rekkefølgen er bevisst ulik i de to bruksmåtene, fordi hviletilstanden
+    /// er motsatt: utenfor navigasjon er fritt kart det normale og følging et
+    /// avbrekk, under navigasjon er det omvendt.
+    /// - Fritt kart: ett trykk henter kameraet tilbake til den modusen du
+    ///   hadde. Det bytter ikke modus i tillegg – ett trykk gjør én ting.
+    /// - Følger, utenfor navigasjon: trykk veksler nord opp ↔ retning opp.
+    /// - Følger, under navigasjon: trykk veksler kameramodus (samme veksling,
+    ///   men eid av navigasjonen slik at den overlever HUD-en).
     private var compassButton: some View {
         Button {
-            if isNavigating {
-                onToggleCameraMode?()
-            } else if viewModel.isHeadingUp {
-                viewModel.isHeadingUp = false
-                viewModel.shouldResetHeading = true
+            switch followMode {
+            case .free:
                 viewModel.centerOnUser()
-            } else {
-                viewModel.isHeadingUp = true
-                viewModel.centerOnUser()
+            case .followNorth:
+                if isNavigating {
+                    onToggleCameraMode?()
+                } else {
+                    viewModel.isHeadingUp = true
+                    viewModel.centerOnUser()
+                }
+            case .followHeading:
+                if isNavigating {
+                    onToggleCameraMode?()
+                } else {
+                    viewModel.isHeadingUp = false
+                    viewModel.shouldResetHeading = true
+                    viewModel.centerOnUser()
+                }
             }
         } label: {
-            Image(systemName: "location.north.fill")
+            Image(systemName: followMode.symbolName)
                 .font(Font.Trakke.bodyMedium)
-                .foregroundStyle(isHeadingUpActive ? Color.Trakke.brand : Color.Trakke.red)
+                .foregroundStyle(compassTint)
+                // Nålen peker mot nord i alle tre modusene – det er den ene
+                // opplysningen som gjelder uansett hva kameraet gjør.
                 .rotationEffect(.degrees(-viewModel.currentHeading))
                 .frame(width: 56, height: 56)
                 .background(Color.Trakke.surface)
                 .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.xl))
                 .trakkeControlShadow()
         }
-        .accessibilityLabel(isHeadingUpActive
-            ? String(localized: "map.controls.compass.courseUp")
-            : String(localized: "map.controls.compass"))
-        .accessibilityHint(String(localized: "map.controls.myPosition"))
+        .accessibilityLabel(String(localized: "map.camera.a11yLabel"))
+        .accessibilityValue(followMode.localizedName)
+        .accessibilityHint(String(localized: "map.camera.a11yHint"))
     }
 
     // MARK: - Offline Chip

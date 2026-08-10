@@ -13,13 +13,15 @@ struct CategoryHierarchyView: View {
     @Bindable var poiViewModel: POIViewModel
     @State private var expandedGroups: Set<ContentGroup> = []
 
-    /// Rekkefølgen på gruppene som vises – matcher brukerens skisse.
-    private let displayedGroups: [ContentGroup] = [
-        .friluftsliv,
-        .landskap,
-        .kulturarv,
-        .beredskap,
-    ]
+    /// Gruppene som vises, alfabetisk – samme sortering som radene inni hver
+    /// gruppe. Utledet fra kategoriene som faktisk finnes, ikke en egen liste:
+    /// en gruppe uten kategorier (`naturOgVern`) faller bort av seg selv, og en
+    /// ny kategori med en ny gruppe kan ikke bli usynlig fordi noen glemte å
+    /// føre gruppen opp her.
+    private var displayedGroups: [ContentGroup] {
+        Array(Set(POICategory.allCases.map(\.contentGroup)))
+            .sorted { $0.displayName.localizedCompare($1.displayName) == .orderedAscending }
+    }
 
     var body: some View {
         CardSection {
@@ -38,8 +40,33 @@ struct CategoryHierarchyView: View {
                         }
                     )
                 }
+
+                if !poiViewModel.enabledCategories.isEmpty {
+                    Divider().padding(.leading, .Trakke.dividerLeading)
+                    removeAllRow
+                }
             }
         }
+    }
+
+    /// Fjerner alle kategorier fra kartet. Lå tidligere i `CategoryPickerSheet`,
+    /// som ingen kodelinje åpnet – med ti kategorier på måtte du slå av hver
+    /// enkelt. Vises bare når det faktisk er noe å fjerne.
+    ///
+    /// `eye.slash` er appens etablerte symbol for å skjule noe fra kartet, og
+    /// står alene: navnet ligger i accessibilityLabel for skjermleser.
+    private var removeAllRow: some View {
+        Button {
+            poiViewModel.disableAllCategories()
+        } label: {
+            Image(systemName: "eye.slash")
+                .font(.system(size: 15, weight: .regular))
+                .foregroundStyle(Color.Trakke.brandLight)
+                .frame(maxWidth: .infinity, minHeight: .Trakke.touchMin)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(String(localized: "categories.disableAll"))
     }
 
     private func toggleExpanded(_ group: ContentGroup) {

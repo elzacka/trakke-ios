@@ -61,6 +61,19 @@ struct InfoSheet: View {
 
                 Divider().padding(.leading, .Trakke.dividerLeading)
 
+                // Tegnforklaringen pushes som egen side: innholdet er en
+                // symbolliste med egne kort og seksjoner, ikke et dokument
+                // som kan rendres inline slik naboene kan.
+                NavigationLink(value: KnowledgeDestination.mapLegend) {
+                    TrakkeMenuRow(
+                        label: String(localized: "legend.title"),
+                        trailing: { TrakkeMenuRowChevron() }
+                    )
+                }
+                .buttonStyle(.plain)
+
+                Divider().padding(.leading, .Trakke.dividerLeading)
+
                 ExpandableSection(
                     String(localized: "info.privacy.policy"),
                     bare: true,
@@ -174,9 +187,21 @@ struct InfoSheet: View {
                         )
                         Divider()
                         dataSourceRow(
+                            name: "Wikimedia Commons",
+                            detail: String(localized: "info.wikimedia.detail"),
+                            license: "CC BY / CC BY-SA"
+                        )
+                        Divider()
+                        dataSourceRow(
                             name: "UT.no/DNT, Statskog m.fl.",
                             detail: String(localized: "info.utno.detail"),
                             license: "ODbL / NLOD"
+                        )
+                        Divider()
+                        dataSourceRow(
+                            name: "Oslo kommune",
+                            detail: String(localized: "info.oslo.detail"),
+                            license: "NLOD"
                         )
                         Divider()
                         dataSourceRow(
@@ -184,6 +209,8 @@ struct InfoSheet: View {
                             detail: String(localized: "info.osm.detail"),
                             license: "ODbL"
                         )
+                        Divider()
+                        legendAttribution
                     }
                 }
 
@@ -195,12 +222,6 @@ struct InfoSheet: View {
                 ) {
                     VStack(spacing: 0) {
                         dataSourceRow(
-                            name: "GRDB",
-                            detail: String(localized: "info.grdb.detail"),
-                            license: "MIT"
-                        )
-                        Divider()
-                        dataSourceRow(
                             name: "MapLibre",
                             detail: String(localized: "info.maplibre.detail"),
                             license: "BSD / ISC"
@@ -210,6 +231,12 @@ struct InfoSheet: View {
                             name: "Material Symbols",
                             detail: String(localized: "info.materialsymbols.detail"),
                             license: "Apache 2.0"
+                        )
+                        Divider()
+                        dataSourceRow(
+                            name: "Lucide",
+                            detail: String(localized: "info.lucide.detail"),
+                            license: "ISC"
                         )
                         Divider()
                         dataSourceRow(
@@ -225,6 +252,28 @@ struct InfoSheet: View {
         }
         .padding(.horizontal, inline ? 0 : .Trakke.sheetHorizontal)
         .padding(.top, inline ? 0 : .Trakke.sheetTop)
+    }
+
+    // MARK: - Legend attribution
+    //
+    // CC BY 4.0 krever at bearbeiding angis og at lisensen lenkes. Utsnittene
+    // i tegnforklaringen er beskårne, så begge deler må stå et sted – og det
+    // stedet er her, sammen med de andre kildene, ikke i tegnforklaringen.
+
+    private var legendAttribution: some View {
+        VStack(alignment: .leading, spacing: .Trakke.labelGap) {
+            Text(String(localized: "legend.attribution"))
+                .foregroundStyle(Color.Trakke.textTertiary)
+            // Lenka arver tinten og skal ikke dempes med teksten over – da
+            // ser den ikke ut som en lenke, og CC BY krever at den er der.
+            Link(destination: URL(string: "https://creativecommons.org/licenses/by/4.0/deed.no")!) {
+                Text(verbatim: "creativecommons.org/licenses/by/4.0")
+            }
+            .accessibilityHint(String(localized: "accessibility.opensExternalLink"))
+        }
+        .font(Font.Trakke.captionSoft)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.vertical, .Trakke.sm)
     }
 
     // MARK: - Network status
