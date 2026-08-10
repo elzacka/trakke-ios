@@ -3,7 +3,7 @@ options:
   bundleIdPrefix: no.tazk
   deploymentTarget:
     iOS: "26.0"
-  xcodeVersion: "26.5"
+  xcodeVersion: "26.6"
   generateEmptyDirectories: true
   groupSortPosition: top
   developmentLanguage: nb
@@ -31,13 +31,10 @@ schemes:
 packages:
   MapLibreNative:
     url: https://github.com/maplibre/maplibre-gl-native-distribution
-    from: "6.26.0"
+    from: "6.28.0"
   MapLibreSwiftUI:
     url: https://github.com/maplibre/swiftui-dsl
     from: "0.25.0"
-  GRDB:
-    url: https://github.com/groue/GRDB.swift
-    from: "7.10.0"
 
 settings:
   base:
@@ -98,8 +95,6 @@ targets:
       - package: MapLibreNative
         product: MapLibre
       - package: MapLibreSwiftUI
-      - package: GRDB
-        product: GRDB
       - target: TrakkeNavigationWidget
         embed: true
     entitlements:

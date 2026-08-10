@@ -12,24 +12,26 @@ concurrency:
 
 jobs:
   build-and-test:
-    runs-on: macos-15
+    runs-on: macos-26
     timeout-minutes: 30
 
     steps:
       - uses: actions/checkout@v5
 
+      # macos-15 topped out at Xcode 26.3 and iOS 26.2 simulators, so CI
+      # validated a compiler three minor versions behind the one releases are
+      # built with. macos-26 carries Xcode 26.6 and an iOS 26.5 runtime with
+      # iPhone 17 Pro — the same pair used locally.
       - name: Select Xcode
         run: |
-          if [ -d /Applications/Xcode_26.5.app ]; then
-            sudo xcode-select -s /Applications/Xcode_26.5.app/Contents/Developer
-          elif [ -d /Applications/Xcode_26.4.app ]; then
-            sudo xcode-select -s /Applications/Xcode_26.4.app/Contents/Developer
-          elif [ -d /Applications/Xcode_26.3.app ]; then
-            sudo xcode-select -s /Applications/Xcode_26.3.app/Contents/Developer
-          else
-            echo "::error::Xcode 26.3, 26.4 or 26.5 not found on runner"; exit 1
-          fi
-          xcodebuild -version
+          for V in 26.6 26.5 26.4.1; do
+            if [ -d "/Applications/Xcode_$V.app" ]; then
+              sudo xcode-select -s "/Applications/Xcode_$V.app/Contents/Developer"
+              xcodebuild -version
+              exit 0
+            fi
+          done
+          echo "::error::None of Xcode 26.6, 26.5 or 26.4.1 found on runner"; exit 1
 
       - name: Install XcodeGen
         run: brew install xcodegen
@@ -37,11 +39,20 @@ jobs:
       - name: Generate Xcode project
         run: xcodegen generate
 
+      # Keyed on project.yml, not Package.resolved: that file is gitignored
+      # (.gitignore excludes project.xcworkspace/) and is written by the
+      # resolve step below, so hashing it here always yielded an empty hash —
+      # a constant key that hit on every run and therefore never re-saved,
+      # freezing the cache on whatever the first run downloaded. project.yml
+      # is tracked, present at checkout, and is where the version
+      # requirements actually live. restore-keys lets a new key start from
+      # the previous cache instead of from nothing.
       - name: Cache SPM packages
         uses: actions/cache@v5
         with:
           path: SourcePackages
-          key: spm-${{ hashFiles('Trakke.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
+          key: spm-${{ hashFiles('project.yml') }}
+          restore-keys: spm-
 
       - name: Resolve packages
         run: xcodebuild -resolvePackageDependencies -project Trakke.xcodeproj -scheme Trakke -clonedSourcePackagesDirPath SourcePackages
