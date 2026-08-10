@@ -13,13 +13,15 @@ struct CategoryHierarchyView: View {
     @Bindable var poiViewModel: POIViewModel
     @State private var expandedGroups: Set<ContentGroup> = []
 
-    /// Rekkefølgen på gruppene som vises – matcher brukerens skisse.
-    private let displayedGroups: [ContentGroup] = [
-        .friluftsliv,
-        .landskap,
-        .kulturarv,
-        .beredskap,
-    ]
+    /// Gruppene som vises, alfabetisk – samme sortering som radene inni hver
+    /// gruppe. Utledet fra kategoriene som faktisk finnes, ikke en egen liste:
+    /// en gruppe uten kategorier (`naturOgVern`) faller bort av seg selv, og en
+    /// ny kategori med en ny gruppe kan ikke bli usynlig fordi noen glemte å
+    /// føre gruppen opp her.
+    private var displayedGroups: [ContentGroup] {
+        Array(Set(POICategory.allCases.map(\.contentGroup)))
+            .sorted { $0.displayName.localizedCompare($1.displayName) == .orderedAscending }
+    }
 
     var body: some View {
         CardSection {

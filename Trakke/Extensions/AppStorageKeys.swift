@@ -2,7 +2,6 @@ import Foundation
 
 enum AppStorageKeys {
     static let showWeatherWidget = "showWeatherWidget"
-    static let showCompass = "showCompass"
     static let showZoomControls = "showZoomControls"
     static let showScaleBar = "showScaleBar"
     static let showZoomLevel = "showZoomLevel"
@@ -12,6 +11,12 @@ enum AppStorageKeys {
     static let overlayNaturvernomrader = "overlayNaturvernomrader"
     static let overlayBratthetskart = "overlayBratthetskart"
     static let overlayUtmRunenett = "overlayUtmRunenett"
+    static let overlaySvekketIs = "overlaySvekketIs"
+    static let overlayKvikkleire = "overlayKvikkleire"
+    static let overlayEiendomsgrenser = "overlayEiendomsgrenser"
+    static let overlayFerdselsforbud = "overlayFerdselsforbud"
+    static let overlayInnsjodybde = "overlayInnsjodybde"
+    static let overlaySnoskredAktsomhet = "overlaySnoskredAktsomhet"
     static let coordinateFormat = "coordinateFormat"
     static let baseLayer = "baseLayer"
     static let navigationSessionActive = "navigationSessionActive"

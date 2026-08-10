@@ -26,6 +26,7 @@ struct OfflineSetupSheet: View {
                 innerContent
             }
             .presentationDetents([.medium, .large])
+            .presentationContentInteraction(.scrolls)
             .presentationDragIndicator(.visible)
         }
     }

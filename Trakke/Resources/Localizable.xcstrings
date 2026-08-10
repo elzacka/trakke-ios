@@ -129,29 +129,7 @@
         }
       }
     },
-    "action.done" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ferdig"
-          }
-        }
-      }
-    },
-    "activities.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Turer"
-          }
-        }
-      }
-    },
-    "activity.averagePace" : {
+    "activity.averageSpeed" : {
       "extractionState" : "manual",
       "localizations" : {
         "nb" : {
@@ -169,17 +147,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gjør om til rute"
-          }
-        }
-      }
-    },
-    "activity.date" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dato"
           }
         }
       }
@@ -206,17 +173,6 @@
         }
       }
     },
-    "activity.delete.confirm" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Slett"
-          }
-        }
-      }
-    },
     "activity.delete.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -224,50 +180,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Slett denne turen?"
-          }
-        }
-      }
-    },
-    "activity.deleteAll" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Slett alle"
-          }
-        }
-      }
-    },
-    "activity.deleteAll.confirm" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Slett alle"
-          }
-        }
-      }
-    },
-    "activity.deleteAll.message" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alle turer slettes permanent."
-          }
-        }
-      }
-    },
-    "activity.deleteAll.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Slett alle turer?"
           }
         }
       }
@@ -284,17 +196,6 @@
       }
     },
     "activity.discard" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Forkast"
-          }
-        }
-      }
-    },
-    "activity.discard.confirm" : {
       "extractionState" : "manual",
       "localizations" : {
         "nb" : {
@@ -349,24 +250,13 @@
         }
       }
     },
-    "activity.empty.subtitle" : {
+    "activity.ended" : {
       "extractionState" : "manual",
       "localizations" : {
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trykk pluss-knapp (logge tur) eller importer-knapp (importer fra fil)."
-          }
-        }
-      }
-    },
-    "activity.empty.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ingen turer"
+            "value" : "Slutt"
           }
         }
       }
@@ -393,13 +283,13 @@
         }
       }
     },
-    "activity.history" : {
+    "activity.highestPoint" : {
       "extractionState" : "manual",
       "localizations" : {
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Turhistorikk"
+            "value" : "Høyeste punkt"
           }
         }
       }
@@ -460,6 +350,50 @@
         }
       }
     },
+    "activity.interrupted.discard" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forkast"
+          }
+        }
+      }
+    },
+    "activity.interrupted.message %@ %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Et opptak fra %1$@ ble avbrutt før du rakk å lagre det. %2$lld punkter er tatt vare på."
+          }
+        }
+      }
+    },
+    "activity.interrupted.resume" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fortsett"
+          }
+        }
+      }
+    },
+    "activity.interrupted.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fortsette turen?"
+          }
+        }
+      }
+    },
     "activity.log" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -471,6 +405,39 @@
         }
       }
     },
+    "activity.lowestPoint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laveste punkt"
+          }
+        }
+      }
+    },
+    "activity.maxSpeed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maksfart"
+          }
+        }
+      }
+    },
+    "activity.movingTime" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I bevegelse"
+          }
+        }
+      }
+    },
     "activity.noElevationData" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -478,6 +445,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ingen høydedata tilgjengelig"
+          }
+        }
+      }
+    },
+    "activity.pausedTime" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pause"
           }
         }
       }
@@ -559,13 +537,13 @@
         }
       }
     },
-    "activity.startRecording" : {
+    "activity.started" : {
       "extractionState" : "manual",
       "localizations" : {
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Start opptak"
+            "value" : "Start"
           }
         }
       }
@@ -592,17 +570,6 @@
         }
       }
     },
-    "activity.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Turer"
-          }
-        }
-      }
-    },
     "activity.tooFewPoints" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -621,28 +588,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sporpunkter"
-          }
-        }
-      }
-    },
-    "activity.uncategorized" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uten kategori"
-          }
-        }
-      }
-    },
-    "app.tagline" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Oppdag Norge med turskoa på"
           }
         }
       }
@@ -702,17 +647,6 @@
         }
       }
     },
-    "bibliotek.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mer"
-          }
-        }
-      }
-    },
     "categories.disableAll" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -720,17 +654,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fjern alle"
-          }
-        }
-      }
-    },
-    "categories.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kategorier"
           }
         }
       }
@@ -775,28 +698,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tøm"
-          }
-        }
-      }
-    },
-    "common.close" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lukk"
-          }
-        }
-      }
-    },
-    "common.copied" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kopiert"
           }
         }
       }
@@ -1098,17 +999,6 @@
         }
       }
     },
-    "emergency.coordinates.accuracy %lld" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nøyaktighet: ca. %lld meter"
-          }
-        }
-      }
-    },
     "emergency.coordinates.decimal" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1120,28 +1010,6 @@
         }
       }
     },
-    "emergency.coordinates.infoLabel" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Informasjon om koordinater"
-          }
-        }
-      }
-    },
-    "emergency.coordinates.instruction" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "UTM-koordinater samsvarer med Kartverkets papirkart (1:50 000)."
-          }
-        }
-      }
-    },
     "emergency.coordinates.noPosition" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1149,28 +1017,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ingen GPS-posisjon. Slå på Stedstjenester i Innstillinger."
-          }
-        }
-      }
-    },
-    "emergency.coordinates.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nødkoordinat"
-          }
-        }
-      }
-    },
-    "emergency.nearestShelters" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nærmeste ly"
           }
         }
       }
@@ -1226,50 +1072,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Politi"
-          }
-        }
-      }
-    },
-    "emergency.numbers.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nødnummer"
-          }
-        }
-      }
-    },
-    "emergency.shelter.navigateHint" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trykk for kompassnavigering"
-          }
-        }
-      }
-    },
-    "emergency.tab.coordinates" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Koordinater"
-          }
-        }
-      }
-    },
-    "emergency.tab.signal" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "SOS-signal"
           }
         }
       }
@@ -1384,6 +1186,17 @@
         }
       }
     },
+    "explore.group.ferdsel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ferdsel og fasiliteter"
+          }
+        }
+      }
+    },
     "explore.group.friluftsliv" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1424,28 +1237,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Natur og vern"
-          }
-        }
-      }
-    },
-    "explore.kartinnhold" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kartinnhold"
-          }
-        }
-      }
-    },
-    "explore.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verktøy"
           }
         }
       }
@@ -1681,24 +1472,13 @@
         }
       }
     },
-    "info.grdb.detail" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Databasemotor"
-          }
-        }
-      }
-    },
     "info.kartverket.detail" : {
       "extractionState" : "manual",
       "localizations" : {
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kart, terreng og tjenester"
+            "value" : "Kart, terreng, eiendomsgrenser, havdybde og tjenester"
           }
         }
       }
@@ -1714,6 +1494,17 @@
         }
       }
     },
+    "info.lucide.detail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kartsymbol for parkering"
+          }
+        }
+      }
+    },
     "info.maplibre.detail" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1721,17 +1512,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kartmotor"
-          }
-        }
-      }
-    },
-    "info.mapzen.detail" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "3D-relieff"
           }
         }
       }
@@ -1764,7 +1544,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Naturvern og naturskog"
+            "value" : "Naturvern, naturskog og ferdselsforbud"
           }
         }
       }
@@ -1879,24 +1659,13 @@
         }
       }
     },
-    "info.nga.detail" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Koordinatkonvertering"
-          }
-        }
-      }
-    },
     "info.nve.detail" : {
       "extractionState" : "manual",
       "localizations" : {
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Snøskred- og flomvarsler"
+            "value" : "Snøskred- og flomvarsler, bratt terreng, svekket is, kvikkleire og innsjødybde"
           }
         }
       }
@@ -1908,6 +1677,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Åpen kildekode"
+          }
+        }
+      }
+    },
+    "info.oslo.detail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Badeplasser i Oslo, fra Bymiljøetaten."
           }
         }
       }
@@ -2017,18 +1797,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hytter og friluftspunkter"
-          }
-        }
-      }
-    },
-    "info.valhalla.detail" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ruteberegning"
+            "value" : "Hytter, bruer, vadesteder, parkering, turposter, fjelltopper og flere kategorier på kartet"
           }
         }
       }
@@ -2073,6 +1842,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Værsymboler"
+          }
+        }
+      }
+    },
+    "intent.noLocation" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tråkke vet ikke hvor du er ennå. Vent til posisjonen din vises på kartet, og prøv igjen."
           }
         }
       }
@@ -2198,17 +1978,6 @@
         }
       }
     },
-    "knowledge.article.signalering" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Redningssignaler"
-          }
-        }
-      }
-    },
     "knowledge.article.utstyr" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2297,39 +2066,6 @@
         }
       }
     },
-    "knowledge.description" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Beskrivelse"
-          }
-        }
-      }
-    },
-    "knowledge.details" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Detaljer"
-          }
-        }
-      }
-    },
-    "knowledge.download" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Last ned"
-          }
-        }
-      }
-    },
     "knowledge.source" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2337,83 +2073,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kilde"
-          }
-        }
-      }
-    },
-    "knowledge.source.miljodirektoratet" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Miljødirektoratet"
-          }
-        }
-      }
-    },
-    "knowledge.theme.arterNasjonal" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Arter av nasjonal interesse"
-          }
-        }
-      }
-    },
-    "knowledge.theme.friluftslivsomrader" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Friluftslivsområder"
-          }
-        }
-      }
-    },
-    "knowledge.theme.kulturmiljoer" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kulturmiljøer"
-          }
-        }
-      }
-    },
-    "knowledge.theme.kulturminnerLokaliteter" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kulturminnelokaliteter"
-          }
-        }
-      }
-    },
-    "knowledge.theme.naturvernomrader" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Naturvernområder"
-          }
-        }
-      }
-    },
-    "knowledge.theme.restriksjonsomraderNaturvern" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Restriksjonsområder (naturvern)"
           }
         }
       }
@@ -2513,39 +2172,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zoomnivåer"
-          }
-        }
-      }
-    },
-    "kommune.empty.subtitle" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kunne ikke laste kommunelisten"
-          }
-        }
-      }
-    },
-    "kommune.empty.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ingen kommuner"
-          }
-        }
-      }
-    },
-    "kommune.noResults.subtitle" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prøv et annet søkeord"
           }
         }
       }
@@ -3507,28 +3133,6 @@
         }
       }
     },
-    "list.category.hideAll" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Skjul alle i %@"
-          }
-        }
-      }
-    },
-    "list.category.showAll" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vis alle i %@"
-          }
-        }
-      }
-    },
     "list.showOnlyThis.announce" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3580,6 +3184,50 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vis posisjonen din"
+          }
+        }
+      }
+    },
+    "location.reducedAccuracy.allow" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gi presis posisjon"
+          }
+        }
+      }
+    },
+    "location.reducedAccuracy.continue" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fortsett likevel"
+          }
+        }
+      }
+    },
+    "location.reducedAccuracy.message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du har gitt Tråkke omtrentlig posisjon. Da kan retning, avstand og turspor bomme med flere kilometer. Tråkke kan be om presis posisjon for denne økta."
+          }
+        }
+      }
+    },
+    "location.reducedAccuracy.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posisjonen er upresis"
           }
         }
       }
@@ -3650,39 +3298,6 @@
         }
       }
     },
-    "map.controls.compass" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kompass"
-          }
-        }
-      }
-    },
-    "map.controls.compass.courseUp" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kompass, retning opp"
-          }
-        }
-      }
-    },
-    "map.controls.myPosition" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Min posisjon"
-          }
-        }
-      }
-    },
     "map.controls.zoomIn" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3701,17 +3316,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zoom ut"
-          }
-        }
-      }
-    },
-    "map.fab.label" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Meny"
           }
         }
       }
@@ -3749,17 +3353,6 @@
         }
       }
     },
-    "map.longPressTitle" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Handling"
-          }
-        }
-      }
-    },
     "map.overlay.bratthetskart" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3771,13 +3364,46 @@
         }
       }
     },
-    "map.overlay.hillshading" : {
+    "map.overlay.eiendomsgrenser" : {
       "extractionState" : "manual",
       "localizations" : {
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3D-relieff"
+            "value" : "Eiendomsgrenser"
+          }
+        }
+      }
+    },
+    "map.overlay.ferdselsforbud" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ferdselsforbud"
+          }
+        }
+      }
+    },
+    "map.overlay.innsjodybde" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Innsjødybde"
+          }
+        }
+      }
+    },
+    "map.overlay.kvikkleire" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kvikkleire"
           }
         }
       }
@@ -3800,6 +3426,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Naturvernområde"
+          }
+        }
+      }
+    },
+    "map.overlay.snoskredAktsomhet" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Snøskred aktsomhetsområde"
+          }
+        }
+      }
+    },
+    "map.overlay.svekketIs" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Svekket is"
           }
         }
       }
@@ -3903,17 +3551,6 @@
         }
       }
     },
-    "measurement.selectMode" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Velg måletype"
-          }
-        }
-      }
-    },
     "measurement.startArea" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3947,72 +3584,6 @@
         }
       }
     },
-    "more.backToMenu" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Meny"
-          }
-        }
-      }
-    },
-    "more.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mer"
-          }
-        }
-      }
-    },
-    "myPlaces.empty" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trykk og hold på kartet for å legge til et sted."
-          }
-        }
-      }
-    },
-    "myPlaces.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mine steder"
-          }
-        }
-      }
-    },
-    "mystuff.places" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Steder"
-          }
-        }
-      }
-    },
-    "mystuff.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mine ting"
-          }
-        }
-      }
-    },
     "navigation.arrived" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4035,83 +3606,6 @@
         }
       }
     },
-    "navigation.cameraMode.courseUp" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kurs opp"
-          }
-        }
-      }
-    },
-    "navigation.cameraMode.northUp" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nord opp"
-          }
-        }
-      }
-    },
-    "navigation.compassBearing" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kompasspeiling"
-          }
-        }
-      }
-    },
-    "navigation.compassDescription" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Retningspil mot målet. Krever ikke dekning."
-          }
-        }
-      }
-    },
-    "navigation.computeRoute" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Beregn rute langs sti"
-          }
-        }
-      }
-    },
-    "navigation.computeRouteDescription" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Beregner beste rute langs stier fra posisjonen din. Krever dekning."
-          }
-        }
-      }
-    },
-    "navigation.computingRoute" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Beregner rute …"
-          }
-        }
-      }
-    },
     "navigation.destinationLabel" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4130,61 +3624,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Avstand"
-          }
-        }
-      }
-    },
-    "navigation.elevationGain" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stigning"
-          }
-        }
-      }
-    },
-    "navigation.elevationLoss" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fall"
-          }
-        }
-      }
-    },
-    "navigation.elevationProfile" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stigning/fall"
-          }
-        }
-      }
-    },
-    "navigation.elevationProfile.a11y %lld %lld" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld meter stigning og %2$lld meter fall"
-          }
-        }
-      }
-    },
-    "navigation.elevationRemaining" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stigning igjen"
           }
         }
       }
@@ -4233,17 +3672,6 @@
         }
       }
     },
-    "navigation.more" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mer"
-          }
-        }
-      }
-    },
     "navigation.navigateHere" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4251,28 +3679,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Naviger hit"
-          }
-        }
-      }
-    },
-    "navigation.offTrack %lld" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Du er %lld m fra ruten"
-          }
-        }
-      }
-    },
-    "navigation.offlineHint" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Frakoblet – kun kompasspeiling tilgjengelig"
           }
         }
       }
@@ -4288,50 +3694,6 @@
         }
       }
     },
-    "navigation.paused" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pauset"
-          }
-        }
-      }
-    },
-    "navigation.progress" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fremgang langs ruten"
-          }
-        }
-      }
-    },
-    "navigation.remaining" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gjenstår"
-          }
-        }
-      }
-    },
-    "navigation.reroute" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Beregn rute på nytt"
-          }
-        }
-      }
-    },
     "navigation.resume" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4339,28 +3701,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fortsett"
-          }
-        }
-      }
-    },
-    "navigation.reverse" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Snu ruten"
-          }
-        }
-      }
-    },
-    "navigation.routeAttribution" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rute: © OpenStreetMap-bidragsytere"
           }
         }
       }
@@ -4416,50 +3756,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Avstand i luftlinje"
-          }
-        }
-      }
-    },
-    "navigation.switchToCompass" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bytt til kompass"
-          }
-        }
-      }
-    },
-    "navigation.switchToRoute" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bytt til rute"
-          }
-        }
-      }
-    },
-    "navigation.timeRemaining" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tid igjen"
-          }
-        }
-      }
-    },
-    "navigation.traveled" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gått"
           }
         }
       }
@@ -4542,39 +3838,6 @@
         }
       }
     },
-    "offline.choice.custom.subtitle" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Velg et eget område på kartet"
-          }
-        }
-      }
-    },
-    "offline.choice.kommune" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kommune"
-          }
-        }
-      }
-    },
-    "offline.choice.kommune.subtitle" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Last ned kart for en kommune"
-          }
-        }
-      }
-    },
     "offline.choice.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4582,17 +3845,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Last ned kart"
-          }
-        }
-      }
-    },
-    "offline.complete" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fullført"
           }
         }
       }
@@ -4681,17 +3933,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Laster ned"
-          }
-        }
-      }
-    },
-    "offline.empty.short" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ingen lastet ned ennå"
           }
         }
       }
@@ -4960,17 +4201,6 @@
         }
       }
     },
-    "offline.totalStorage" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Totalt lagret"
-          }
-        }
-      }
-    },
     "offline.zoom.detailed" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5026,6 +4256,17 @@
         }
       }
     },
+    "poi.akebakker" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akebakker"
+          }
+        }
+      }
+    },
     "poi.badeplasser" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5044,6 +4285,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bålplasser"
+          }
+        }
+      }
+    },
+    "poi.bruer" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bruer og gangbaner"
           }
         }
       }
@@ -5279,6 +4531,17 @@
         }
       }
     },
+    "poi.fiskeplasser" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fiskeplasser"
+          }
+        }
+      }
+    },
     "poi.fosser" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5286,6 +4549,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fosser"
+          }
+        }
+      }
+    },
+    "poi.friluftsomrader" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Friluftsområder"
           }
         }
       }
@@ -5334,13 +4608,13 @@
         }
       }
     },
-    "poi.jettegryter" : {
+    "poi.klatrefelt" : {
       "extractionState" : "manual",
       "localizations" : {
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Jettegryter"
+            "value" : "Klatrefelt"
           }
         }
       }
@@ -5356,17 +4630,6 @@
         }
       }
     },
-    "poi.kroksjoer" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kroksjøer"
-          }
-        }
-      }
-    },
     "poi.kulturminner" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5374,28 +4637,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kulturminner"
-          }
-        }
-      }
-    },
-    "poi.laguner" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Laguner"
-          }
-        }
-      }
-    },
-    "poi.medStrand" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Med strand"
           }
         }
       }
@@ -5411,6 +4652,17 @@
         }
       }
     },
+    "poi.parkering" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parkering"
+          }
+        }
+      }
+    },
     "poi.rasteplasser" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5418,6 +4670,50 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Rasteplasser"
+          }
+        }
+      }
+    },
+    "poi.servering" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Servering"
+          }
+        }
+      }
+    },
+    "poi.severdigheter" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Severdigheter"
+          }
+        }
+      }
+    },
+    "poi.skiheiser" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skiheiser"
+          }
+        }
+      }
+    },
+    "poi.skiltpunkt" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skiltpunkt"
           }
         }
       }
@@ -5455,6 +4751,28 @@
         }
       }
     },
+    "poi.toaletter" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toaletter"
+          }
+        }
+      }
+    },
+    "poi.turposter" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turposter"
+          }
+        }
+      }
+    },
     "poi.utsiktspunkter" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5466,13 +4784,13 @@
         }
       }
     },
-    "poi.varmeKilder" : {
+    "poi.vadesteder" : {
       "extractionState" : "manual",
       "localizations" : {
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Varme kilder"
+            "value" : "Vadesteder"
           }
         }
       }
@@ -5587,17 +4905,6 @@
         }
       }
     },
-    "routes.delete.confirm" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Slett rute"
-          }
-        }
-      }
-    },
     "routes.delete.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5609,39 +4916,6 @@
         }
       }
     },
-    "routes.deleteAll" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Slett alle"
-          }
-        }
-      }
-    },
-    "routes.deleteAll.message" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alle ruter slettes permanent."
-          }
-        }
-      }
-    },
-    "routes.deleteAll.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Slett alle ruter?"
-          }
-        }
-      }
-    },
     "routes.draw" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5649,28 +4923,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tegn rute"
-          }
-        }
-      }
-    },
-    "routes.empty.subtitle" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trykk plussknapp (lage) eller importer-knapp (importer fra fil)."
-          }
-        }
-      }
-    },
-    "routes.empty.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ingen ruter"
           }
         }
       }
@@ -5764,28 +5016,6 @@
         }
       }
     },
-    "routes.new" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ny rute"
-          }
-        }
-      }
-    },
-    "routes.saved" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lagrede ruter"
-          }
-        }
-      }
-    },
     "routes.showOnMap" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5808,28 +5038,6 @@
         }
       }
     },
-    "routes.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ruter"
-          }
-        }
-      }
-    },
-    "routes.uncategorized" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uten kategori"
-          }
-        }
-      }
-    },
     "routes.visibleOnMap" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5837,83 +5045,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vis på kart"
-          }
-        }
-      }
-    },
-    "routing.error.decoding" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kunne ikke lese rutedata"
-          }
-        }
-      }
-    },
-    "routing.error.noRoute" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fant ingen rute"
-          }
-        }
-      }
-    },
-    "routing.error.offline" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ingen dekning"
-          }
-        }
-      }
-    },
-    "routing.error.rateLimited" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "For mange forespørsler, prøv igjen om litt"
-          }
-        }
-      }
-    },
-    "routing.error.server %lld" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Serverfeil (%lld)"
-          }
-        }
-      }
-    },
-    "routing.error.timeout" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tidsavbrudd, prøv igjen"
-          }
-        }
-      }
-    },
-    "search.clear" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tøm søk"
           }
         }
       }
@@ -6017,17 +5148,6 @@
         }
       }
     },
-    "search.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Søk"
-          }
-        }
-      }
-    },
     "settings.baseLayer" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6083,17 +5203,6 @@
         }
       }
     },
-    "settings.deleteAllData.confirm" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Slett alt"
-          }
-        }
-      }
-    },
     "settings.deleteAllData.message" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6138,61 +5247,6 @@
         }
       }
     },
-    "settings.format.dd.tooltip" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uttrykker bredde og lengde som desimaltall, uten minutter og sekunder. Brukes i GIS-verktøy, karttjenester på nett som Google Maps, og i GPS-mottakere."
-          }
-        }
-      }
-    },
-    "settings.format.dms.tooltip" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Deler en sirkel inn i 360 grader, hver grad i 60 bueminutter og hvert minutt i 60 buesekunder. Brukes først og fremst til navigasjon, kartografi, geodesi og astronomi. GPS-enheter og kart lar deg ofte taste inn posisjoner i DMS."
-          }
-        }
-      }
-    },
-    "settings.format.example" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Eksempel"
-          }
-        }
-      }
-    },
-    "settings.format.info" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vis informasjon om koordinatformat"
-          }
-        }
-      }
-    },
-    "settings.format.utm.tooltip" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EUREF89 UTM sone 33. Bruker meter framfor grader. Norges standard for kart over hele fastlandet."
-          }
-        }
-      }
-    },
     "settings.overlays" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6204,28 +5258,6 @@
         }
       }
     },
-    "settings.overlays.nature" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Natur og ferdsel"
-          }
-        }
-      }
-    },
-    "settings.overlays.terrain" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Terreng"
-          }
-        }
-      }
-    },
     "settings.resetDefaults" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6233,17 +5265,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tilbakestill til standardverdier"
-          }
-        }
-      }
-    },
-    "settings.showCompass" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vis kompass"
           }
         }
       }
@@ -6325,39 +5346,6 @@
         }
       }
     },
-    "sos.callReminder" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kombiner med å ringe 112 hvis mulig. SOS-signalet kommer i tillegg til å ringe nødetaten, det erstatter ikke et nødanrop."
-          }
-        }
-      }
-    },
-    "sos.description" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sender internasjonalt SOS-signal (morse) med lommelykten. Signalet fortsetter også når skjermen slås av."
-          }
-        }
-      }
-    },
-    "sos.infoLabel" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Informasjon om SOS-signal"
-          }
-        }
-      }
-    },
     "sos.lockHint" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6365,17 +5353,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "La skjermen stå på. Låser du telefonen, fortsetter lyden, men iOS slår av lommelykten."
-          }
-        }
-      }
-    },
-    "sos.menu" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "SOS-signal"
           }
         }
       }
@@ -6409,17 +5386,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Stopp"
-          }
-        }
-      }
-    },
-    "tooltip.readMore %@" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Les om %@ i Kunnskap"
           }
         }
       }
@@ -6512,17 +5478,6 @@
         }
       }
     },
-    "tracks.export.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hva vil du eksportere?"
-          }
-        }
-      }
-    },
     "tracks.import.activities %lld" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6609,17 +5564,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Uten kategori"
-          }
-        }
-      }
-    },
-    "userGuide.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bruke appen"
           }
         }
       }
@@ -7274,17 +6218,6 @@
         }
       }
     },
-    "weather.dayAssessment %@" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ på tur"
-          }
-        }
-      }
-    },
     "weather.daySummary" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7292,28 +6225,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dagsoversikt"
-          }
-        }
-      }
-    },
-    "weather.daylight" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dagslys"
-          }
-        }
-      }
-    },
-    "weather.daylightRemaining" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dagslys igjen"
           }
         }
       }
@@ -7538,72 +6449,6 @@
         }
       }
     },
-    "weather.humidity.impact.high" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Klam luft. Klær og sovepose tørker tregt. Pakk tett."
-          }
-        }
-      }
-    },
-    "weather.humidity.impact.low" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tørr luft. Drikk ofte. Økt skogbrannfare. Vær varsom med bål."
-          }
-        }
-      }
-    },
-    "weather.humidity.impact.moderate" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Normal fuktighet. Gode forhold for tur."
-          }
-        }
-      }
-    },
-    "weather.humidity.impact.veryHigh" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mettet luft, ofte med tåke eller regn. Klær holder seg våte. Fare for nedkjøling."
-          }
-        }
-      }
-    },
-    "weather.humidity.label" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "luftfuktighet"
-          }
-        }
-      }
-    },
-    "weather.humidity.tooltip" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Relativ fuktighet måles i prosent. 100 % betyr at luften er mettet med vanndamp og ikke kan ta opp mer. Høy fuktighet (over 80 %) gjør at kroppen mister varme raskere, og klær som blir fuktige av svette isolerer dårlig. Tørr luft (under 30 %) gjør at du tørster fortere uten å merke det.\n\nHelse: I varmt vær gjør høy fuktighet det vanskeligere for kroppen å kvitte seg med varmen. Svette fordamper dårligere, og du kan kjenne klam tyngde, slapphet, hodepine og økt belastning på hjertet. Over 75–80 % fuktighet sammen med varme øker risikoen for overoppheting betydelig."
-          }
-        }
-      }
-    },
     "weather.lightrain" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -7813,72 +6658,6 @@
         }
       }
     },
-    "weather.precip.feels.drizzle" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Yr eller lett snø. Du kjenner det i ansiktet, men blir knapt våt."
-          }
-        }
-      }
-    },
-    "weather.precip.feels.heavy" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kraftig nedbør: dårlig sikt og vanskelige forhold. Full regnbekledning og gamasjer er nødvendig."
-          }
-        }
-      }
-    },
-    "weather.precip.feels.light" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lett nedbør. Du merker det godt. Skalljakke holder deg tørr."
-          }
-        }
-      }
-    },
-    "weather.precip.feels.moderate" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jevn nedbør. Du blir våt uten skallklær. Stier blir glatte og det kan bli mer vann i bekker og elver."
-          }
-        }
-      }
-    },
-    "weather.precip.feels.none" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tørt. Ingen nedbør å merke."
-          }
-        }
-      }
-    },
-    "weather.precip.feels.torrential" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Svært kraftig nedbør, farevarsel-nivå. Fare for flom i bekker og elver. Søk ly og hold avstand til vassdrag."
-          }
-        }
-      }
-    },
     "weather.precip.heavy" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -7886,50 +6665,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kraftig nedbør"
-          }
-        }
-      }
-    },
-    "weather.precip.impact.heavy" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hold deg unna elver og bratte skråninger. Vurder å snu."
-          }
-        }
-      }
-    },
-    "weather.precip.impact.light" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lett yr. Du blir våt uten regntøy. Stier kan bli glatte."
-          }
-        }
-      }
-    },
-    "weather.precip.impact.moderate" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Regntøy er nødvendig. Bekker kan stige raskt. Pakk utstyr vanntett."
-          }
-        }
-      }
-    },
-    "weather.precip.impact.none" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tørt vær. Gode forhold for tur."
           }
         }
       }
@@ -7989,17 +6724,6 @@
         }
       }
     },
-    "weather.precipitation.tooltip" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Måles i millimeter. 1 mm er 1 liter vann per kvadratmeter. Sannsynligheten sier om det kommer noe, ikke hvor mye.\n\nSlik kjennes nedbøren (mm per time):\n• Under 0,5 mm/t: Yr eller småregn. Lette klær holder.\n• 0,5–2,5 mm/t: Lett regn. Vannavvisende jakke er nok på kort tur.\n• 2,5–7,5 mm/t: Moderat regn. Regnklær trengs på lengre tur.\n• 7,5–15 mm/t: Kraftig regn. Skallklær, ekstra varmt undertøy, vurder kortere rute.\n• Over 15 mm/t: Styrtregn eller skybrudd. Bekker svulmer på minutter, økt rasfare i bratt terreng, dårlig sikt.\n\nFor snø er tommelfingerregelen at 1 mm vann gir ca. 1 cm snø, men tørr puddersnø kan gi opptil det tredobbelte.\n\nHelse: Våte klær gir mye raskere varmetap enn tørre, og sammen med vind og kulde er dette en hovedgrunn til hypotermi (kroppstemperatur under 35 °C). Barn og eldre er mest utsatt, men friske voksne kan også bli kraftig påvirket etter lang tid i vått og kaldt vær."
-          }
-        }
-      }
-    },
     "weather.pressure" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -8007,138 +6731,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lufttrykk"
-          }
-        }
-      }
-    },
-    "weather.pressure.falling" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fallende"
-          }
-        }
-      }
-    },
-    "weather.pressure.impact.falling" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trykket faller. Dårligere vær er på vei. Regn og sterk vind kan komme. Vurder å snu tidlig."
-          }
-        }
-      }
-    },
-    "weather.pressure.impact.noTrend" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ikke nok data til å vise utviklingen ennå. Sjekk igjen litt senere."
-          }
-        }
-      }
-    },
-    "weather.pressure.impact.rising" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trykket stiger. Været bedrer seg. Skyene letter, og vinden roer seg."
-          }
-        }
-      }
-    },
-    "weather.pressure.impact.stable" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trykket er stabilt. Været holder seg trolig som nå."
-          }
-        }
-      }
-    },
-    "weather.pressure.last3h" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "siste 3 t"
-          }
-        }
-      }
-    },
-    "weather.pressure.meaning.falling" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dårligere vær på vei"
-          }
-        }
-      }
-    },
-    "weather.pressure.meaning.rising" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bedring i sikte"
-          }
-        }
-      }
-    },
-    "weather.pressure.meaning.stable" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stabilt vær"
-          }
-        }
-      }
-    },
-    "weather.pressure.rising" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stigende"
-          }
-        }
-      }
-    },
-    "weather.pressure.stable" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stabilt"
-          }
-        }
-      }
-    },
-    "weather.pressure.tooltip" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Måles i hektopascal (hPa). Normalt trykk ved havflaten er 1013 hPa. Trykket faller ca. 1 hPa per 8 meter du stiger. På 1000 moh. er det rundt 900 hPa.\n\nHva trykket forteller om været:\n• Lavtrykk (under ca. 1010 hPa, kraftig lavtrykk 970–990 hPa): Luft stiger, skyer dannes og det kommer ofte vind og nedbør. Lavtrykk betyr ikke kaldere, men det bringer som regel mildere og fuktigere luft inn over landet.\n• Høytrykk (over ca. 1020 hPa, kraftig høytrykk 1025–1050 hPa): Luft synker, himmelen klarner og det roer seg. Gir varme dager om sommeren, men kalde, stjerneklare netter om vinteren.\n• Fallende trykk: Dårligere vær på vei. Stigende trykk: Bedring på vei.\n\nHelse: Når trykket faller raskt, i lavtrykk eller når du går raskt opp i fjellet, oppstår det en trykkforskjell mellom lufta i bihuler og mellomøre og lufta utenfor. Du kan kjenne press over panne, tette ører, hodepine eller svimmelhet. For mange med migrene kan værskifter utløse anfall. Kronisk bihulebetennelse og plager i det indre øret som gir svimmelhet, øker risikoen.\n\nKilde: Store norske leksikon."
           }
         }
       }
@@ -8183,116 +6775,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Regnbyger og torden"
-          }
-        }
-      }
-    },
-    "weather.ref.precip.body" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nedbør måles i millimeter per time (mm/t). Prosenten angir sannsynligheten for at det kommer nedbør i perioden.\n\nUnder 0,5 mm/t: Yr eller duskregn\n0,5–4 mm/t: Lett nedbør\n4–10 mm/t: Moderat nedbør: regnklær nødvendig\n10–30 mm/t: Kraftig nedbør: bekker stiger, dårlig sikt\nOver 30 mm/t: Svært kraftig nedbør: fare for flom\n\nNedbørstype avhenger av temperaturen: regn over 2–3°, sludd rundt 0–2°, snø under 0°.\n\nKilde: MET varselkriterier, WMO"
-          }
-        }
-      }
-    },
-    "weather.ref.precip.header" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nedbørsintensitet"
-          }
-        }
-      }
-    },
-    "weather.ref.pressure.body" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lufttrykk måles i hektopascal (hPa). Normalt havnivåtrykk er 1013 hPa.\n\nUnder 1 hPa endring på 3 timer: Stabilt: rolig vær\n1–3 hPa endring: Gradvis værskifte\n3–6 hPa endring: Raskt værskifte: følg med\nOver 6 hPa fall: Kraftig lavtrykk: mulig storm\n\nFallende trykk betyr ofte dårligere vær. Stigende trykk betyr vanligvis bedring, men ikke alltid.\n\nKilde: WMO, METs synoptiske praksis"
-          }
-        }
-      }
-    },
-    "weather.ref.pressure.header" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lufttrykk"
-          }
-        }
-      }
-    },
-    "weather.ref.temp.body" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Følt temperatur kombinerer lufttemperatur og vind. Gjelder under 10° og vind over 1,3 m/s.\n\n0 til −9°: Ubehagelig: kle deg godt\n−10 til −27°: Risiko for forfrysning ved langvarig eksponering\n−28 til −39°: Forfrysning mulig på 10–30 minutter\n−40 til −47°: Forfrysning mulig på 5–10 minutter\nUnder −48°: Livsfarlig: forfrysning på under 2 minutter\n\nVåte klær, mangel på mat og utmattelse gjør deg mer sårbar for kulde enn tallene alene tilsier.\n\nKilde: JAG/TI vindavkjølingsformel (2001), brukt av MET og Yr"
-          }
-        }
-      }
-    },
-    "weather.ref.temp.header" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Følt temperatur (vindavkjøling)"
-          }
-        }
-      }
-    },
-    "weather.ref.uv.body" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "UV-indeksen måler styrken på solens ultrafiolette stråling.\n\n0–2: Lav: beskyttelse ikke nødvendig\n3–5: Moderat: solbriller og solkrem anbefalt\n6–7: Høy: solbeskyttelse nødvendig\n8–10: Svært høy: unngå sol midt på dagen\n11+: Ekstrem: full beskyttelse påkrevd\n\nSnø reflekterer opptil 80 % av UV-strålingen. Skyer demper UV, men stopper den ikke helt.\n\nKilde: WHO Global Solar UV Index"
-          }
-        }
-      }
-    },
-    "weather.ref.uv.header" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "UV-indeks (WHO-skalaen)"
-          }
-        }
-      }
-    },
-    "weather.ref.wind.body" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vind måles i meter per sekund (m/s) og beskrives med Beaufortskalaen (0–12).\n\n0: Stille, under 0,3 m/s\n1: Flau vind, 0,3–1,5 m/s\n2: Svak vind, 1,6–3,3 m/s\n3: Lett bris, 3,4–5,4 m/s\n4: Laber bris, 5,5–7,9 m/s\n5: Frisk bris, 8,0–10,7 m/s\n6: Liten kuling, 10,8–13,8 m/s\n7: Stiv kuling, 13,9–17,1 m/s\n8: Sterk kuling, 17,2–20,7 m/s\n9: Liten storm, 20,8–24,4 m/s\n10: Full storm, 24,5–28,4 m/s\n11: Sterk storm, 28,5–32,6 m/s\n12: Orkan, over 32,7 m/s\n\nVindkast er korte vindstøt som kan være vesentlig sterkere enn den jevne vinden.\n\nKilde: Yr/MET, WMO"
-          }
-        }
-      }
-    },
-    "weather.ref.wind.header" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vindstyrke (Beaufortskalaen)"
           }
         }
       }
@@ -8418,116 +6900,6 @@
         }
       }
     },
-    "weather.tapHint" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trykk for forklaring"
-          }
-        }
-      }
-    },
-    "weather.temp.impact.cold" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kaldt. Ull innerst, vindtett ytterst. Ta ekstra klær i sekken."
-          }
-        }
-      }
-    },
-    "weather.temp.impact.cool" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kjølig. Behagelig turvær med riktige klær. Ta med et ekstra lag til pauser."
-          }
-        }
-      }
-    },
-    "weather.temp.impact.extremeCold" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ekstrem kulde. Forfrysningsfare på minutter. Dekk all hud. Kun korte turer."
-          }
-        }
-      }
-    },
-    "weather.temp.impact.mild" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mildt. Lett bekledning holder. Fine forhold for tur og overnatting."
-          }
-        }
-      }
-    },
-    "weather.temp.impact.veryCold" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Svært kaldt. Lag på lag og hold deg i bevegelse. Pauser kjøler raskt ned."
-          }
-        }
-      }
-    },
-    "weather.temp.impact.warm" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Unngå direkte sol midt på dagen."
-          }
-        }
-      }
-    },
-    "weather.temp.windChillExplain" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vindkjøling"
-          }
-        }
-      }
-    },
-    "weather.temperature" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Temperatur"
-          }
-        }
-      }
-    },
-    "weather.temperature.tooltip" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lufttemperaturen sier hvor varmt eller kaldt det er, men ikke hvor det kjennes. «Føles som» viser opplevd temperatur. Den tar høyde for vind og luftfuktighet og vises bare når den avviker fra målt temperatur.\n\nHelse: I kulde trekker blodårene seg sammen og blodtrykket stiger. Har du hjerte- og karsykdom, er du mer utsatt. I varme er dehydrering og overoppheting den største risikoen. Drikk jevnlig, selv om du ikke er tørst. Meteorologisk institutt regner en hetebølge i Norge som fem dager eller mer med makstemperatur over 27 °C. Eldre og kronisk syke er da særlig utsatt."
-          }
-        }
-      }
-    },
     "weather.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -8638,28 +7010,6 @@
         }
       }
     },
-    "weather.uv.clearSky" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Skyfri himmel"
-          }
-        }
-      }
-    },
-    "weather.uv.cloudNote" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verdien gjelder skyfri himmel. Skyer reduserer UV, men spredt skydekke kan likevel gi sterk eksponering."
-          }
-        }
-      }
-    },
     "weather.uv.extreme" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -8689,61 +7039,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bruk solkrem og søk skygge midt på dagen"
-          }
-        }
-      }
-    },
-    "weather.uv.impact.extreme" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ekstrem UV. Ubeskyttet hud forbrenner på under 15 minutter."
-          }
-        }
-      }
-    },
-    "weather.uv.impact.high" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bruk solkrem og hatt. Søk skygge midt på dagen."
-          }
-        }
-      }
-    },
-    "weather.uv.impact.low" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lite UV. Ingen beskyttelse nødvendig."
-          }
-        }
-      }
-    },
-    "weather.uv.impact.moderate" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bruk solkrem og hatt. Snø og høyde forsterker UV."
-          }
-        }
-      }
-    },
-    "weather.uv.impact.veryHigh" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Søk skygge mellom kl. 12 og 15. Solkrem, hatt og solbriller nødvendig."
           }
         }
       }
@@ -8803,39 +7098,6 @@
         }
       }
     },
-    "weather.uv.snowNote" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Snø reflekterer opptil 80 % av UV-strålingen. I fjellet med snø kan reell eksponering være vesentlig høyere."
-          }
-        }
-      }
-    },
-    "weather.uv.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "UV-indeks"
-          }
-        }
-      }
-    },
-    "weather.uv.tooltip" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "UV-indeksen viser hvor sterk UV-strålingen fra sola er ved bakkenivå. Jo høyere tall, desto raskere kan huden ta skade.\n\n0–2 Lav: Liten fare. Beskyttelse er normalt ikke nødvendig.\n3–5 Moderat: Bruk solkrem (SPF 30+), solbriller og noe på hodet. Søk skygge midt på dagen.\n6–7 Sterk: Klær, hatt, solbriller og rikelig med solkrem. Søk skygge mellom kl. 12 og 15.\n8–10 Svært sterk: Hudskade kan oppstå raskt. Dekk deg til, bruk bredbremmet hatt og solkrem (SPF 30–50+).\n11+ Ekstrem: Maksimal beskyttelse. Hold deg i skyggen og unngå direkte sol midt på dagen.\n\nDSA anbefaler solbeskyttelse fra og med nivå 3. UV-strålingen øker med høyden (omtrent 10 % per 1000 meter), og refleksjon fra snø og vann øker dosen ytterligere.\n\nKilde: Direktoratet for strålevern og atomsikkerhet (DSA)."
-          }
-        }
-      }
-    },
     "weather.uv.veryHigh" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -8880,17 +7142,6 @@
         }
       }
     },
-    "weather.varsom.level %lld" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Faregrad %lld"
-          }
-        }
-      }
-    },
     "weather.warnings" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -8902,17 +7153,6 @@
         }
       }
     },
-    "weather.waterTemperature" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vanntemperatur"
-          }
-        }
-      }
-    },
     "weather.wind" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -8920,248 +7160,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vind"
-          }
-        }
-      }
-    },
-    "weather.wind.0" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stille"
-          }
-        }
-      }
-    },
-    "weather.wind.1" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Flau vind"
-          }
-        }
-      }
-    },
-    "weather.wind.10" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Full storm"
-          }
-        }
-      }
-    },
-    "weather.wind.11" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sterk storm"
-          }
-        }
-      }
-    },
-    "weather.wind.12" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Orkan"
-          }
-        }
-      }
-    },
-    "weather.wind.2" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Svak vind"
-          }
-        }
-      }
-    },
-    "weather.wind.3" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lett bris"
-          }
-        }
-      }
-    },
-    "weather.wind.4" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Laber bris"
-          }
-        }
-      }
-    },
-    "weather.wind.5" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Frisk bris"
-          }
-        }
-      }
-    },
-    "weather.wind.6" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Liten kuling"
-          }
-        }
-      }
-    },
-    "weather.wind.7" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stiv kuling"
-          }
-        }
-      }
-    },
-    "weather.wind.8" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sterk kuling"
-          }
-        }
-      }
-    },
-    "weather.wind.9" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Liten storm"
-          }
-        }
-      }
-    },
-    "weather.wind.context.east" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tørr innlandsluft betyr ofte lite nedbør, men vinterstid kan det bli bitende kaldt."
-          }
-        }
-      }
-    },
-    "weather.wind.context.north" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kald luft fra Arktis betyr ofte skarpt vær. Ta med varme lag uansett årstid."
-          }
-        }
-      }
-    },
-    "weather.wind.context.northeast" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tørr og kald kontinentalluft gir gjerne klart vær, men bitt i lufta. Ekstra hansker og lue er lurt."
-          }
-        }
-      }
-    },
-    "weather.wind.context.northwest" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ustabil og kald havluft gir gjerne raskskiftende vær med byger. Det kan gå fra sol til sludd på en halvtime."
-          }
-        }
-      }
-    },
-    "weather.wind.context.south" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mild luft gir gjerne behagelig temperatur, men ofte skyer og litt nedbør."
-          }
-        }
-      }
-    },
-    "weather.wind.context.southeast" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Varm og tørr luft fra kontinentet gir gjerne fint vær om sommeren, men kan bli trykkende varmt i lavlandet."
-          }
-        }
-      }
-    },
-    "weather.wind.context.southwest" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fuktig Atlanterhavsluft gir gjerne regn og vind. Ha regnjakka lett tilgjengelig, ikke i bunnen av sekken."
-          }
-        }
-      }
-    },
-    "weather.wind.context.west" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kraftig Atlanterhavspåvirkning betyr ofte mye nedbør og kuling, særlig på fjellet og langs vestkysten."
-          }
-        }
-      }
-    },
-    "weather.wind.from %@" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "fra %@"
           }
         }
       }
@@ -9184,347 +7182,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "kast %@ m/s"
-          }
-        }
-      }
-    },
-    "weather.wind.gustRatio" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "sterkere enn middelvind"
-          }
-        }
-      }
-    },
-    "weather.wind.land.0" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Røyken stiger rett opp."
-          }
-        }
-      }
-    },
-    "weather.wind.land.1" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "En kan se vindretningen av røykens drift."
-          }
-        }
-      }
-    },
-    "weather.wind.land.10" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sjelden inne i landet. Trær rykkes opp med rot. Stor skade på hus."
-          }
-        }
-      }
-    },
-    "weather.wind.land.11" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Forekommer sjelden og følges av store ødeleggelser."
-          }
-        }
-      }
-    },
-    "weather.wind.land.12" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Forekommer meget sjelden. Uvanlig store ødeleggelser."
-          }
-        }
-      }
-    },
-    "weather.wind.land.2" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "En kan føle vinden. Bladene på trærne rører seg, vinden kan løfte små vimpler."
-          }
-        }
-      }
-    },
-    "weather.wind.land.3" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Løv og småkvister rører seg. Vinden strekker lette flagg og vimpler."
-          }
-        }
-      }
-    },
-    "weather.wind.land.4" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vinden løfter støv og løse papirer, rører på kvister og smågreine, strekker større flagg og vimpler."
-          }
-        }
-      }
-    },
-    "weather.wind.land.5" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Småtrær med løv begynner å svaie. På vann begynner småbølgene å toppe seg."
-          }
-        }
-      }
-    },
-    "weather.wind.land.6" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Store greiner og mindre stammer rører seg. Det hviner i telefonledninger. Det er vanskelig å bruke paraply. En merker motstand når en går."
-          }
-        }
-      }
-    },
-    "weather.wind.land.7" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hele trær rører på seg. Det er tungt å gå mot vinden."
-          }
-        }
-      }
-    },
-    "weather.wind.land.8" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vinden brekker kvister av trærne. Det er tungt å gå mot vinden."
-          }
-        }
-      }
-    },
-    "weather.wind.land.9" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hele store trær svaier og hiver. Takstein kan blåse ned."
-          }
-        }
-      }
-    },
-    "weather.wind.mountain.0" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Snøfiller daler omtrent rett ned, gjerne i en pendlende bevegelse."
-          }
-        }
-      }
-    },
-    "weather.wind.mountain.1" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Så vidt følbar. Det er tydelig at snøfillene driver med vinden."
-          }
-        }
-      }
-    },
-    "weather.wind.mountain.10" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Denne og høyere vindstyrker vil de fleste aldri komme ut for. Trær velter over ledninger for telefon og strøm. Det knaker i tømmervegger. Lette småhus rives av grunnmuren."
-          }
-        }
-      }
-    },
-    "weather.wind.mountain.11" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Veier og jernbanelinjer blokkeres. Det er kaos på telefon- og strømnettet. Skog blir rasert."
-          }
-        }
-      }
-    },
-    "weather.wind.mountain.12" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hvis bebyggelse rammes blir det en naturkatastrofe som gjerne vil kreve flere menneskeliv."
-          }
-        }
-      }
-    },
-    "weather.wind.mountain.2" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Merkes godt når det er kaldt. Snøfillene beveger seg mer horisontalt enn vertikalt."
-          }
-        }
-      }
-    },
-    "weather.wind.mountain.3" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vinden merkes tydelig og kan sjenere. Fallende snø synes å bevege seg meget raskere horisontalt enn vertikalt."
-          }
-        }
-      }
-    },
-    "weather.wind.mountain.4" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Er ubehagelig i kaldt vær og gir merkbar motstand. Fallende snø hvirvler av sted med vinden. Snødrevet mot ansiktet er meget sjenerende."
-          }
-        }
-      }
-    },
-    "weather.wind.mountain.5" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Det blir tungt å gå på ski mot været. Fokksnø som driver langs bakken, hvirvles så høyt at synsvidden nedsettes. Snødrevet pisker i ansiktet."
-          }
-        }
-      }
-    },
-    "weather.wind.mountain.6" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Svært slitsomt å ta seg fram mot været. Snøfokk setter ned sikten til under 1 km. Vanskelig å holde ubeskyttet ansikt mot vinden i lengre tid. De fleste bør ikke legge ut på tur over snaufjellet i slik vind."
-          }
-        }
-      }
-    },
-    "weather.wind.mountain.7" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "I motvind må en lute seg fram over skiene og legge stor kraft i stavtakene, selv på flat mark. Det kan være vanskelig å holde seg på bena. Snøfokk setter ned sikten til få hundre meter. Vanskelig å orientere seg i terrenget. En skitur i fjellet i slik vind er en stor påkjenning for de fleste."
-          }
-        }
-      }
-    },
-    "weather.wind.mountain.8" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fjellet står i kok. Kvister og lav fra trærne driver med vinden. Meget vanskelig å gå på skiene. Nesten umulig å bære skiene på nakken. Snøfokk setter ned sikten til under 100 m. Umulig å orientere seg i terrenget. Meget vanskelig å følge selv godt kvistede løyper. Legg ikke ut på tur!"
-          }
-        }
-      }
-    },
-    "weather.wind.mountain.9" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vind og snøfokk gjør det umulig å ta seg fram på ski over fjellet. Selv i klarvær og lite snøfokk kan påkjenningen bli så stor at en snøhule eller hytte er eneste redning."
-          }
-        }
-      }
-    },
-    "weather.wind.onLand" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "På land"
-          }
-        }
-      }
-    },
-    "weather.wind.onMountain" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "På fjellet"
-          }
-        }
-      }
-    },
-    "weather.wind.tapHint" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trykk for beskrivelse"
-          }
-        }
-      }
-    },
-    "weather.wind.tooltip" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Middelvinden oppgis i meter per sekund (m/s). Vindkast er den høyeste vindhastigheten målt over tre sekunder, og kan være langt sterkere enn middelvinden.\n\nSlik kjennes vinden (Beaufort-skalaen):\n• 0–1 m/s: Stille eller nesten stille. Røyk stiger rett opp.\n• 2–3 m/s: Svak vind. Du merker den i ansiktet.\n• 4–7 m/s: Lett til laber bris. Behagelig sommervær.\n• 8–10 m/s: Frisk bris. Klærne blafrer, og sjøen får hvite skumtopper.\n• 11–13 m/s: Liten kuling. Du må snakke høyt for å bli hørt.\n• 14–16 m/s: Stiv kuling. Tungt å gå mot vinden.\n• 17–24 m/s: Sterk kuling til liten storm. Greiner brekker. Hold deg unna åpne høyder.\n• 25+ m/s: Full storm eller mer. Livsfarlig. Unngå alle eksponerte steder.\n\nOver tregrensen og i fjorder og trange daler er vinden ofte langt sterkere enn varselet viser.\n\nHelse: Vind river bort det varme luftlaget klærne fanger inntil huden, og du mister kroppsvarme mye raskere, også ved milde temperaturer. Vind tørker dessuten ut slimhinnene og irriterer øynene, særlig i kaldt og snørikt terreng.\n\nKilde: Store norske leksikon (Beauforts vindskala)."
           }
         }
       }

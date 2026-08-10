@@ -72,6 +72,15 @@ enum MeasurementService {
         withUnit("\(Int(meters.rounded()))", "m")
     }
 
+    /// Fart oppgis i km/t. Meter per sekund er enheten CoreLocation leverer,
+    /// men ingen går tur i m/s.
+    static func formatSpeed(_ metersPerSecond: Double) -> String {
+        guard metersPerSecond.isFinite, metersPerSecond > 0 else {
+            return withUnit(decimal(0, digits: 1), "km/t")
+        }
+        return withUnit(decimal(metersPerSecond * 3.6, digits: 1), "km/t")
+    }
+
     static func formatArea(_ squareMeters: Double) -> String {
         if squareMeters >= 10_000 {
             return withUnit(decimal(squareMeters / 1_000_000, digits: 2), "km\u{00B2}")

@@ -19,7 +19,6 @@ struct MapScreen: View {
     @Binding var longPressCoordinate: CLLocationCoordinate2D?
 
     @AppStorage(AppStorageKeys.showWeatherWidget) private var showWeatherWidget = false
-    @AppStorage(AppStorageKeys.showCompass) private var showCompass = false
     @AppStorage(AppStorageKeys.showZoomControls) private var showZoomControls = false
     @AppStorage(AppStorageKeys.showScaleBar) private var showScaleBar = false
     @AppStorage(AppStorageKeys.showZoomLevel) private var showZoomLevel = false
@@ -54,32 +53,16 @@ struct MapScreen: View {
 
     // MARK: - Clean Map
 
-    private var cameraFollowMode: MapCameraFollowMode {
-        MapCameraFollowMode.current(
-            isCameraDetached: mapViewModel.isCameraDetached,
-            isNavigating: navigationViewModel.isActive,
-            navigationCameraMode: navigationViewModel.cameraMode,
-            isTrackingUser: mapViewModel.isTrackingUser,
-            isHeadingUp: mapViewModel.isHeadingUp
-        )
-    }
-
-    /// Knappen er ikke lenger bare et kompass – den er lokasjons- og
-    /// følgekontrollen, og eneste sted modusen leses av. Den må derfor vises
-    /// så snart kameraet gjør noe: følger deg, eller er koblet fra fordi du
-    /// dro i kartet. Uten dette kunne du med kompasset avslått i Visning bare
-    /// se modus «fritt», aldri nå «retning opp», og aldri se at kartet følger
-    /// deg.
+    /// Knappen er ikke et kompass – den er lokasjons- og følgekontrollen, og
+    /// eneste sted både følgemodusen leses av og veien tilbake til egen
+    /// posisjon finnes (`centerOnUser`). Derfor er den alltid der.
     ///
-    /// Det eneste tilfellet som fortsatt respekterer preferansen er
-    /// utgangstilstanden: kartet har aldri fulgt deg, og du har ikke flyttet
-    /// det. Da er det ingenting å melde. Rent kart går foran alt – der er
-    /// poenget at kontrollene er borte.
-    private var effectiveShowCompass: Bool {
-        guard !isCleanMapActive else { return false }
-        if showCompass || navigationViewModel.isActive { return true }
-        return cameraFollowMode != .free || mapViewModel.isCameraDetached
-    }
+    /// Den lå tidligere bak en «Vis kompass»-bryter i Visning. Brytern ble
+    /// fjernet: alt som flytter kameraet – gest, søk, POI – setter
+    /// `isCameraDetached`, og den tvang knappen fram uansett. I praksis virket
+    /// preferansen bare fram til du rørte kartet første gang. Rent kart skjuler
+    /// den fortsatt, sammen med resten av kontrollene.
+    private var effectiveShowCompass: Bool { !isCleanMapActive }
     private var effectiveShowZoomControls: Bool { isCleanMapActive ? false : showZoomControls }
     private var effectiveShowScaleBar: Bool { isCleanMapActive ? false : showScaleBar }
     private var effectiveShowZoomLevel: Bool { isCleanMapActive ? false : showZoomLevel }
@@ -152,12 +135,20 @@ struct MapScreen: View {
 
     private func handlePOISelected(_ poi: POI) {
         poiViewModel.selectPOI(poi)
-        sheets.active = .poiDetail
+        presentSheet(.poiDetail)
     }
 
     private func handleWaypointSelected(_ wp: Waypoint) {
         waypointViewModel.selectedWaypoint = wp
-        sheets.active = .waypointDetail
+        presentSheet(.waypointDetail)
+    }
+
+    /// Åpner et ark fra kartet. Kartet kan trykkes på bak både menyen og et
+    /// åpent ark, så begge må lukkes først – se `SheetCoordinator.present`.
+    private func presentSheet(_ sheet: ActiveSheet) {
+        let menuWasOpen = isFABMenuOpen
+        isFABMenuOpen = false
+        sheets.present(sheet, otherSheetIsOpen: menuWasOpen)
     }
 
     private func handleRoutePointDragged(index: Int, coord: CLLocationCoordinate2D) {
@@ -245,7 +236,7 @@ struct MapScreen: View {
     private var weatherWidgetContent: some View {
         if effectiveShowWeatherWidget {
             WeatherWidgetView(viewModel: weatherViewModel) {
-                sheets.active = .weather
+                presentSheet(.weather)
             }
         }
     }
@@ -292,8 +283,8 @@ struct MapScreen: View {
             routeViewModel: routeViewModel,
             measurementViewModel: measurementViewModel,
             offlineViewModel: offlineViewModel,
-            onRouteSave: { sheets.active = .routeSave },
-            onDownloadArea: { sheets.active = .downloadArea }
+            onRouteSave: { presentSheet(.routeSave) },
+            onDownloadArea: { presentSheet(.downloadArea) }
         )
     }
 
@@ -305,7 +296,7 @@ struct MapScreen: View {
                 formattedDuration: activityViewModel.formattedDuration,
                 formattedElevationGain: activityViewModel.formattedElevationGain,
                 stackBelowNav: navigationViewModel.isActive,
-                onStop: { sheets.active = .activitySave }
+                onStop: { presentSheet(.activitySave) }
             )
         }
     }

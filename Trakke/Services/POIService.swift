@@ -58,9 +58,16 @@ actor POIService {
             let pois: [POI]
             switch category {
             case .shelters:
+                // Live og bundlet er samme datasett med samme id-er, så et
+                // treff fra Geonorge erstatter det bundlede rommet.
                 pois = try await fetchShelters(bounds: buffered)
             case .kulturminner:
-                pois = try await fetchKulturminner(bounds: buffered)
+                // To ulike registre: Riksantikvarens brukerminner og UT.no sine
+                // kulturminner. Ingen felles id, så de slås sammen framfor at
+                // det ene erstatter det andre – ellers ville nett-tilgang
+                // *fjerne* de bundlede kulturminnene fra kartet.
+                let live = try await fetchKulturminner(bounds: buffered)
+                pois = live + Self.notCovered(by: live, in: bundledFallback)
             default:
                 return bundledFallback
             }
@@ -88,17 +95,64 @@ actor POIService {
         cache.removeAll()
     }
 
-    // MARK: - DSB Shelters (WFS/GML)
+    /// The bundled POIs that no live POI already covers. Two registers describing
+    /// the same site would otherwise draw two markers on top of each other.
+    /// 50 m is wide enough for the two registers' differing coordinates for the
+    /// same object, and narrow enough to keep two nearby ruins apart.
+    private static let duplicateRadius: CLLocationDistance = 50
 
+    private static func notCovered(by live: [POI], in bundled: [POI]) -> [POI] {
+        guard !live.isEmpty, !bundled.isEmpty else { return bundled }
+
+        // A degree of latitude is ~111 km everywhere, so 50 m is at most this
+        // much latitude. Comparing degrees first keeps the number of
+        // `CLLocation.distance` calls down: without it this is 300 × 660
+        // trigonometric distance calculations per viewport fetch.
+        let latitudeWindow = duplicateRadius / 111_000
+        let sortedLive = live.sorted { $0.coordinate.latitude < $1.coordinate.latitude }
+        let liveLatitudes = sortedLive.map(\.coordinate.latitude)
+
+        return bundled.filter { candidate in
+            let latitude = candidate.coordinate.latitude
+            // Binary search for the first live POI within the latitude window.
+            var low = 0
+            var high = liveLatitudes.count
+            while low < high {
+                let mid = (low + high) / 2
+                if liveLatitudes[mid] < latitude - latitudeWindow { low = mid + 1 } else { high = mid }
+            }
+
+            let location = CLLocation(latitude: latitude, longitude: candidate.coordinate.longitude)
+            var index = low
+            while index < sortedLive.count, sortedLive[index].coordinate.latitude <= latitude + latitudeWindow {
+                let other = sortedLive[index].coordinate
+                let otherLocation = CLLocation(latitude: other.latitude, longitude: other.longitude)
+                if otherLocation.distance(from: location) <= duplicateRadius { return false }
+                index += 1
+            }
+            return true
+        }
+    }
+
+    // MARK: - Tilfluktsrom (Geonorge WFS/GML)
+
+    /// Public shelters come from Geonorge's WFS 2.0.0 service, the distribution
+    /// Geonorge lists for DSB's dataset. It gives a stable UUID per shelter
+    /// (`app:lokalId`), which DSB's own mapserver at `ogc.dsb.no` does not.
+    /// The bundled copy is produced from the same service by
+    /// `Scripts/fetch_dsb_shelters.swift` and remains the offline baseline.
+    ///
+    /// `BBOX` is `minLat,minLon,maxLat,maxLon` — EPSG:4326 is latitude-first in
+    /// WFS 2.0.0, and passing lon-first returns zero features without an error.
     private func fetchShelters(bounds: ViewportBounds) async throws -> [POI] {
-        guard var components = URLComponents(string: "https://ogc.dsb.no/wfs.ashx") else { return [] }
+        guard var components = URLComponents(string: "https://wfs.geonorge.no/skwms1/wfs.tilfluktsrom_offentlige") else { return [] }
         components.queryItems = [
-            URLQueryItem(name: "SERVICE", value: "WFS"),
-            URLQueryItem(name: "VERSION", value: "1.1.0"),
-            URLQueryItem(name: "REQUEST", value: "GetFeature"),
-            URLQueryItem(name: "TYPENAME", value: "layer_340"),
-            URLQueryItem(name: "SRSNAME", value: "EPSG:4326"),
-            URLQueryItem(name: "BBOX", value: "\(bounds.south),\(bounds.west),\(bounds.north),\(bounds.east),EPSG:4326"),
+            URLQueryItem(name: "service", value: "WFS"),
+            URLQueryItem(name: "version", value: "2.0.0"),
+            URLQueryItem(name: "request", value: "GetFeature"),
+            URLQueryItem(name: "typenames", value: "app:Tilfluktsrom"),
+            URLQueryItem(name: "srsName", value: "urn:ogc:def:crs:EPSG::4326"),
+            URLQueryItem(name: "bbox", value: "\(bounds.south),\(bounds.west),\(bounds.north),\(bounds.east),urn:ogc:def:crs:EPSG::4326"),
         ]
 
         guard let url = components.url else { return [] }
@@ -265,30 +319,35 @@ private struct KulturminnerProperties: Decodable {
     let linkkulturminnesok: String?
 }
 
-// MARK: - DSB Shelter GML Parser
+// MARK: - Tilfluktsrom GML Parser
 
+/// Parses the Geonorge WFS 2.0.0 response (GML 3.2). Features arrive in
+/// `wfs:member`; `app:lokalId` is the stable identity. The DSB attribute
+/// `t_kategori` (construction standard, "76-Rom A" and similar) was removed
+/// upstream in 2026 and is not read.
 private class ShelterGMLParser: NSObject, XMLParserDelegate {
     var pois: [POI] = []
 
-    private var currentElement = ""
     private var currentText = ""
     private var inFeature = false
+    private var localId: String?
     private var romnr: String?
     private var adresse: String?
     private var plasser: String?
-    private var kategori: String?
     private var coordinates: String?
 
+    private static let featureElements: Set<String> = ["featureMember", "member"]
+
     func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes: [String: String] = [:]) {
-        currentElement = elementName.components(separatedBy: ":").last ?? elementName
+        let name = elementName.components(separatedBy: ":").last ?? elementName
         currentText = ""
 
-        if currentElement == "featureMember" || currentElement == "member" {
+        if Self.featureElements.contains(name) {
             inFeature = true
+            localId = nil
             romnr = nil
             adresse = nil
             plasser = nil
-            kategori = nil
             coordinates = nil
         }
     }
@@ -303,16 +362,16 @@ private class ShelterGMLParser: NSObject, XMLParserDelegate {
 
         if inFeature {
             switch name {
+            case "lokalId": localId = text
             case "romnr": romnr = text
             case "adresse": adresse = text
             case "plasser": plasser = text
-            case "t_kategori": kategori = text
             case "pos": coordinates = text
             default: break
             }
         }
 
-        if name == "featureMember" || name == "member" {
+        if Self.featureElements.contains(name) {
             inFeature = false
             if let coordStr = coordinates {
                 // GML pos format: "lat lon"
@@ -322,13 +381,21 @@ private class ShelterGMLParser: NSObject, XMLParserDelegate {
                    let lon = Double(parts[1]),
                    lat.isFinite, lon.isFinite {
 
-                    let id = romnr ?? "\(lat)-\(lon)"
+                    // Same id scheme as the bundled file, so a live result
+                    // replaces the bundled record for the same shelter.
+                    let id: String
+                    if let localId, !localId.isEmpty {
+                        id = localId
+                    } else if let romnr, !romnr.isEmpty {
+                        id = "romnr-\(romnr)"
+                    } else {
+                        id = "\(lat)-\(lon)"
+                    }
                     let displayName = "Tilfluktsrom \(romnr ?? "")"
 
                     var details: [String: String] = [:]
                     if let addr = adresse { details["address"] = addr }
                     if let cap = plasser { details["capacity"] = cap }
-                    if let kat = kategori { details["category"] = kat }
 
                     pois.append(POI(
                         id: "shelter-\(id)",

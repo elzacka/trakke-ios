@@ -43,6 +43,7 @@ struct RouteDetailSheet: View {
                 viewModel.edit(route, name: newName, category: newCategory)
             }
             .presentationDetents([.medium, .large])
+            .presentationContentInteraction(.scrolls)
             .presentationDragIndicator(.visible)
         }
         .sheet(item: $shareURL) { item in

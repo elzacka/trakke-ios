@@ -38,17 +38,6 @@ final class MeasurementViewModel {
         }
     }
 
-    var rawResult: Double {
-        switch mode {
-        case .distance:
-            return MeasurementService.polylineDistance(points)
-        case .area:
-            return MeasurementService.polygonArea(points)
-        case nil:
-            return 0
-        }
-    }
-
     // MARK: - Actions
 
     func startMeasuring(mode: MeasurementMode) {

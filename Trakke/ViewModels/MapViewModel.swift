@@ -20,6 +20,36 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
     var userLocation: CLLocation?
     var isTrackingUser = false
     var locationAuthStatus: CLAuthorizationStatus = .notDetermined
+
+    /// Om brukeren har gitt presis posisjon eller bare omtrentlig.
+    ///
+    /// Med «Omtrentlig posisjon» kommer fikser med kilometers feil. Da er
+    /// peiling, avstand og ankomst i navigasjonen verdiløse, og et turspor
+    /// blir en tilfeldig strek. Appen leste aldri dette før, så den lot som
+    /// ingenting mens tallene stille var meningsløse.
+    var accuracyAuthorization: CLAccuracyAuthorization = .fullAccuracy
+
+    /// Sann når posisjonen er nedgradert *og* brukeren gjør noe som krever
+    /// presisjon. Utenfor navigasjon og opptak er omtrentlig posisjon helt
+    /// greit til å vise hvor på kartet du omtrent er.
+    var needsFullAccuracy: Bool {
+        accuracyAuthorization == .reducedAccuracy && (isNavigating || hasRecordingClaim)
+    }
+
+    private var hasRecordingClaim: Bool {
+        backgroundLocationClaims.contains("recording")
+    }
+
+    /// Ber om presis posisjon for denne økta. iOS viser dialogen selv, og
+    /// svaret gjelder til appen avsluttes. Nøkkelen må ligge i Info.plist
+    /// under `NSLocationTemporaryUsageDescriptionDictionary`.
+    func requestFullAccuracy() async {
+        guard accuracyAuthorization == .reducedAccuracy else { return }
+        try? await locationManager.requestTemporaryFullAccuracyAuthorization(
+            withPurposeKey: "PreciseLocationForNavigation"
+        )
+        accuracyAuthorization = locationManager.accuracyAuthorization
+    }
     var currentZoom: Double = MapConstants.defaultZoom
     var currentHeading: Double = 0
     var shouldResetHeading = false
@@ -105,6 +135,7 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
     /// svinge seg inn på riktig retning.
     private var hasSmoothedHeading = false
     @ObservationIgnored nonisolated(unsafe) private var defaultsObserver: NSObjectProtocol?
+    @ObservationIgnored nonisolated(unsafe) private var lowPowerObserver: NSObjectProtocol?
     private nonisolated static let headingMinInterval: TimeInterval = 0.2  // ~5 Hz max
     private nonisolated static let headingMinDelta: Double = 2.0           // degrees
     private static let headingSmoothingFactor: Double = 0.25   // low-pass filter (0 = ignore new, 1 = no smoothing)
@@ -116,6 +147,20 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationAuthStatus = locationManager.authorizationStatus
+        accuracyAuthorization = locationManager.accuracyAuthorization
+
+        // Slår brukeren lavstrømmodus av eller på midt i en økt, skal
+        // nøyaktigheten følge etter uten at appen må startes på nytt.
+        lowPowerObserver = NotificationCenter.default.addObserver(
+            forName: .NSProcessInfoPowerStateDidChange,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            MainActor.assumeIsolated {
+                self?.applyDesiredAccuracy()
+            }
+        }
+        applyDesiredAccuracy()
 
         loadOverlaysFromDefaults()
         // PreferencesSheet writes overlay flags via @AppStorage – observe
@@ -149,18 +194,16 @@ final class MapViewModel: NSObject, CLLocationManagerDelegate {
         if let observer = defaultsObserver {
             NotificationCenter.default.removeObserver(observer)
         }
+        if let observer = lowPowerObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
     }
 
     // MARK: - Overlay sync
 
     private func loadOverlaysFromDefaults() {
         let defaults = UserDefaults.standard
-        var overlays: Set<OverlayLayer> = []
-        if defaults.bool(forKey: AppStorageKeys.overlayTurrutebasen) { overlays.insert(.turrutebasen) }
-if defaults.bool(forKey: AppStorageKeys.overlayNaturvernomrader) { overlays.insert(.naturvernomrader) }
-        if defaults.bool(forKey: AppStorageKeys.overlayBratthetskart) { overlays.insert(.bratthetskart) }
-        if defaults.bool(forKey: AppStorageKeys.overlayUtmRunenett) { overlays.insert(.utmRunenett) }
-        if defaults.bool(forKey: AppStorageKeys.overlayNaturskog) { overlays.insert(.naturskog) }
+        let overlays = Set(OverlayLayer.allCases.filter { defaults.bool(forKey: $0.storageKey) })
         if overlays != enabledOverlays {
             enabledOverlays = overlays
         }
@@ -197,9 +240,58 @@ if defaults.bool(forKey: AppStorageKeys.overlayNaturvernomrader) { overlays.inse
         UIApplication.shared.open(url)
     }
 
-    func stopTrackingLocation() {
-        isTrackingUser = false
-        locationManager.stopUpdatingLocation()
+    // MARK: - Bakgrunnsposisjon
+
+    /// Hvem som trenger posisjon med skjermen låst, akkurat nå.
+    ///
+    /// Både navigasjon og turopptak trenger det, og de kan være i gang
+    /// samtidig. Med en enkel av/på-bryter slo den som stoppet først av
+    /// bakgrunnen for den andre – avsluttet du navigasjonen midt i en tur,
+    /// sluttet turen å bli tatt opp så snart skjermen låste seg. Nøkler i et
+    /// sett, slik som `locationObservers`, gjør at bakgrunnen står på så lenge
+    /// noen faktisk trenger den.
+    private var backgroundLocationClaims: Set<String> = []
+
+    func claimBackgroundLocation(_ key: String) {
+        backgroundLocationClaims.insert(key)
+        applyBackgroundLocationConfiguration()
+    }
+
+    func releaseBackgroundLocation(_ key: String) {
+        backgroundLocationClaims.remove(key)
+        applyBackgroundLocationConfiguration()
+    }
+
+    /// Nøyaktigheten senkes i lavstrømmodus, men bare når ingen trenger den.
+    ///
+    /// Under navigasjon og opptak står den på «best» uansett: der er presisjon
+    /// hele poenget, og en bruker som har slått på lavstrømmodus har gjort det
+    /// for å komme hjem, ikke for å få et dårligere spor. Ellers holder ti
+    /// meter til å vise hvor på kartet du er, og radioen får hvile.
+    private func applyDesiredAccuracy() {
+        let needsPrecision = isNavigating || !backgroundLocationClaims.isEmpty
+        let lowPower = ProcessInfo.processInfo.isLowPowerModeEnabled
+        locationManager.desiredAccuracy = (lowPower && !needsPrecision)
+            ? kCLLocationAccuracyNearestTenMeters
+            : kCLLocationAccuracyBest
+    }
+
+    private func applyBackgroundLocationConfiguration() {
+        let needsBackground = !backgroundLocationClaims.isEmpty
+        applyDesiredAccuracy()
+        locationManager.allowsBackgroundLocationUpdates = needsBackground
+        // Den blå indikatoren i statuslinja er hele grunnlaget for at dette er
+        // greit med «Mens appen er i bruk»: brukeren ser at posisjonen leses.
+        locationManager.showsBackgroundLocationIndicator = needsBackground
+        // Automatisk pause av: iOS gjenopptar ikke pålitelig etter pause med
+        // låst skjerm, og et opptak som stopper i det stille er verre enn et
+        // som bruker litt mer strøm.
+        locationManager.pausesLocationUpdatesAutomatically = !needsBackground
+        locationManager.distanceFilter = kCLDistanceFilterNone
+        locationManager.activityType = needsBackground ? .fitness : .other
+        if needsBackground {
+            locationManager.startUpdatingLocation()
+        }
     }
 
     func centerOnUser() {
@@ -271,21 +363,14 @@ if defaults.bool(forKey: AppStorageKeys.overlayNaturvernomrader) { overlays.inse
         isTrackingUser = true
         isCameraDetached = false
 
-        // Allow location updates to continue when the screen locks so the
-        // Live Activity on the lock screen stays current. The blue status-bar
-        // indicator (showsBackgroundLocationIndicator) makes this visible to
-        // the user. No CLBackgroundActivitySession needed – this is a
-        // continuation of the foreground session, not a persistent background
-        // process, so it stops naturally if the app is force-quit.
-        locationManager.allowsBackgroundLocationUpdates = true
-        locationManager.showsBackgroundLocationIndicator = true
-        // Ingen distanceFilter under navigasjon: et filter stopper alle
-        // callbacks når brukeren står stille, noe som fryser HUD/Live Activity
-        // og utløser GPS-vaktbikkja falskt. Automatisk pause må også av –
-        // iOS gjenopptar ikke oppdateringer pålitelig etter pause med låst skjerm.
-        locationManager.pausesLocationUpdatesAutomatically = false
-        locationManager.distanceFilter = kCLDistanceFilterNone
-        locationManager.activityType = .fitness
+        // Posisjonen må fortsette med låst skjerm så Live Activity på
+        // låseskjermen holder seg oppdatert. Ingen CLBackgroundActivitySession
+        // trengs – dette er en fortsettelse av forgrunnsøkta, ikke en
+        // vedvarende bakgrunnsprosess, så den stopper av seg selv om appen
+        // tvangsavsluttes. Ingen distanceFilter heller: et filter stopper alle
+        // callbacks når brukeren står stille, fryser HUD-en og utløser
+        // GPS-vaktbikkja falskt.
+        claimBackgroundLocation("navigation")
 
         // Uten dette svarer iOS aldri på et ukalibrert magnetometer: standard
         // er å ikke vise kalibreringsskjermen, så en pil som bommer 30 grader
@@ -306,19 +391,16 @@ if defaults.bool(forKey: AppStorageKeys.overlayNaturvernomrader) { overlays.inse
         removeLocationObserver("navigation")
         headingThrottle.withLock { $0 = HeadingThrottleState() }
 
-        // Fully stop all location services first to ensure a clean break.
-        locationManager.stopUpdatingLocation()
         locationManager.stopUpdatingHeading()
-        locationManager.allowsBackgroundLocationUpdates = false
-        locationManager.showsBackgroundLocationIndicator = false
-        locationManager.pausesLocationUpdatesAutomatically = true
-        locationManager.distanceFilter = kCLDistanceFilterNone
-        locationManager.activityType = .other
+        // Slipper bare navigasjonens eget krav. Går det et turopptak samtidig,
+        // beholder det sin bakgrunn – og sine posisjoner.
+        releaseBackgroundLocation("navigation")
 
-        // Restart basic location tracking for the map's user position dot.
-        // This uses default settings (no distance filter).
-        if isTrackingUser {
+        // Kartets posisjonsprikk trenger fortsatt oppdateringer.
+        if isTrackingUser || !backgroundLocationClaims.isEmpty {
             locationManager.startUpdatingLocation()
+        } else {
+            locationManager.stopUpdatingLocation()
         }
     }
 
@@ -388,9 +470,11 @@ if defaults.bool(forKey: AppStorageKeys.overlayNaturvernomrader) { overlays.inse
 
     nonisolated func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         let status = manager.authorizationStatus
+        let accuracy = manager.accuracyAuthorization
         Task { @MainActor [weak self] in
             guard let self else { return }
             locationAuthStatus = status
+            accuracyAuthorization = accuracy
             if status == .authorizedWhenInUse || status == .authorizedAlways {
                 if isTrackingUser || isNavigating {
                     locationManager.startUpdatingLocation()

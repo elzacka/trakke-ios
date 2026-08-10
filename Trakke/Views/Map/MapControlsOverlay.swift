@@ -308,6 +308,11 @@ struct MapControlsOverlay<WeatherContent: View>: View {
                 }
         let text = parts.joined(separator: " | ")
         return Text(text)
+            // Teksten vokser med påslåtte kartlag («© Kartverket | © NVE»),
+            // så UI-testen kan ikke slå opp på hele strengen. Identifikatoren
+            // holder oppslaget stabilt; testen sjekker at teksten *begynner*
+            // med den påkrevde Kartverket-krediteringen.
+            .accessibilityIdentifier("map.attribution")
             .font(Font.Trakke.captionSoft)
             .foregroundStyle(Color.Trakke.textTertiary)
             .padding(.horizontal, .Trakke.sm)

@@ -49,9 +49,11 @@ Har du åpnet tastaturet uten å ville søke likevel, lukker et trykk hvor som h
 
 ### Kategorier på kartet
 
-Kategoriene er gruppert etter tema: Friluftsliv, Landskap, Kulturarv og Beredskap. Trykk en gruppe for å åpne den, og slå på kategoriene du vil se.
+Kategoriene er gruppert etter tema: Friluftsliv, Ferdsel og fasiliteter, Landskap, Kulturarv og Beredskap. Trykk en gruppe for å åpne den, og slå på kategoriene du vil se. Innenfor hver gruppe står kategoriene alfabetisk.
 
-Zoom litt inn hvis du ikke ser ikonene på kartet. De fleste kategoriene er lagret i appen og virker uten dekning. Unntaket er kulturminner, som hentes fra internett.
+Zoom litt inn hvis du ikke ser ikonene på kartet. Noen kategorier har mange punkter og krever at du er godt innzoomet – turposter og skiltpunkt vises først fra zoomnivå 13.
+
+Alle kategoriene er lagret i appen og virker uten dekning. Kulturminner henter i tillegg oppdaterte funn fra Riksantikvaren når du har nett.
 
 ## 4. Naviger
 
@@ -104,7 +106,13 @@ Trykk og hold på en kategori-overskrift i Steder-listen og velg «Endre navn».
 
 Åpne **Naviger → Turer og ruter** og trykk pluss-knappen. Verktøylinjen viser varighet, avstand og høydemeter underveis. Du kan starte navigasjon mens turen tas opp uten å bryte sporet.
 
-Etter turen får du statistikk, høydeprofil, eksport som GPX, og «Gå tilbake til start» som navigerer tilbake til startpunktet.
+Opptaket fortsetter med skjermen låst, så du kan legge telefonen i lomma. Posisjonsindikatoren i statuslinjen viser at det pågår. Skjermen holdes ikke våken — det sparer batteri på lange turer.
+
+Sporet skrives løpende til enheten mens du går. Blir appen avsluttet av telefonen underveis, får du tilbud om å fortsette turen neste gang du åpner Tråkke.
+
+Har telefonen barometer, brukes det til høydemeterne. Det måler høydeendring mer nøyaktig enn GPS, og virker også der satellittsignalet er dårlig — i skog, i skar og under bratte fjellsider. Første gang spør iOS om tilgang til bevegelse. Sier du nei, brukes GPS-høyde i stedet.
+
+Etter turen får du statistikk, høydeprofil, eksport som GPX, og «Gå tilbake til start» som navigerer tilbake til startpunktet. Statistikken viser distanse, varighet, tid i bevegelse, pause, snitt- og maksfart, høydemeter og laveste og høyeste punkt.
 
 ### Navigasjon
 
@@ -160,7 +168,7 @@ La skjermen stå på mens signalet går. Låser du telefonen med sideknappen, fo
 
 ### Vær
 
-Trykk på et værtall for å se hva det betyr for turen din. Finnes det en kunnskapsartikkel om temaet, lenker forklaringen videre.
+Trykk på et værtall med pil til høyre, så åpner kunnskapsartikkelen som forklarer det — på avsnittet som gjelder tallet du trykket på. Pila tilbake øverst til venstre fører deg til været igjen.
 
 - **Føles som**: Vises under graden når vinden gjør det kaldere enn lufttemperaturen.
 - **UV-indeks**: Vises alltid, med kategori, for eksempel «6 – Sterk». Er indeksen 3 eller høyere, får du et eget varsel med beskyttelsesråd.
@@ -193,20 +201,59 @@ Brukerveiledningen og personvernerklæringen åpnes og lukkes ved å trykke på 
 
 ### Kartlag
 
+Kartlagene velger du med forhåndsvisningskortene: trykk på et kort for å slå laget på
+eller av. Du kan kombinere så mange lag du vil. Lagene hentes fra internett og vises
+ikke når du er uten dekning.
+
 - **Bratt terreng**: Terreng over 27 grader, med potensiell snøskredfare.
+- **Eiendomsgrenser**: Eiendomsgrenser fra matrikkelen, Norges offisielle eiendomsregister.
+  Vises først når du har zoomet godt inn. Grensene er veiledende og ikke juridisk bindende.
+- **Ferdselsforbud**: Verneområder der ferdsel er forbudt deler av året, som sjøfuglreservater.
+  Forbudet gjelder vanligvis 15. april til 15. juli, men varierer – sjekk verneforskriften
+  for området.
+  Ikke ment for navigasjon på sjøen.
+- **Snøskred aktsomhetsområde**: Områder der snøskred kan løsne og gå ut, fra NVE. Rød skravur. Bratthetskartet viser hvor bratt det er; dette viser hvor skredet kan nå – også nede i dalsiden under den bratte flanken. Vises fra zoomnivå 13. Kartet er et grovt oversiktskart for hele landet, ikke en vurdering av forholdene en enkelt dag: sjekk alltid skredvarselet på varsom.no i tillegg.
+- **Innsjødybde**: Dybdekart for innsjøer der NVE har målt dybden – rundt 600 av landets
+  innsjøer. De fleste innsjøer viser derfor ingenting.
+- **Kvikkleire**: Faresoner for kvikkleireskred, gradert etter faregrad. Bare kartlagte
+  områder vises – et område uten soner er ikke dermed trygt.
 - **Naturskog**: Gammelskog, naturskogsannsynlighet eller nærhet til naturskog.
 - **Naturvernområde**: Vernede områder.
+- **Svekket is**: Områder der isen på regulerte vann og vassdrag typisk er svekket –
+  råker, inn- og utløp og strandsoner. Kartet viser en normal midtvinter, ikke isen
+  akkurat nå. Sjekk alltid isen selv, og se [varsom.no](https://www.varsom.no) for
+  isvarsler. Gjelder issesongen, normalt november til april.
 - **Turruter**: Merkede stier.
 - **UTM-rutenett**: Kartrutenett for kartreferanser.
 
 ### Visning
 
-Tillat kartrotasjon. Vis eller skjul kompass, målestokk, zoomnivå, værwidget og zoomknapper.
+Tillat kartrotasjon. Vis eller skjul målestokk, zoomnivå, værwidget og zoomknapper. Posisjonsknappen er alltid synlig — den er veien tilbake til din egen posisjon. Vil du se kartet helt uten kontroller, bruk Rent kart.
 
 ### Koordinatformat
 
-DD, DMS eller UTM (EUREF89 sone 33). Trykk info-knappen ved hvert format for forklaring.
+DD, DMS eller UTM (EUREF89 sone 33). Hvert format vises med et eksempel på hvordan en koordinat ser ut.
 
 ### Slett alle data
 
-Sletter alle lokale ruter, steder, turer, nedlastede kart, kunnskapspakker og innstillinger. Krever bekreftelse. Kan ikke angres. Dette dekker også retten din til sletting under GDPR.
+Sletter alle lokale ruter, steder, turer, nedlastede kart og innstillinger. Krever bekreftelse. Kan ikke angres. Dette dekker også retten din til sletting under GDPR.
+
+## 8. Siri, Snarveier og Handlingsknappen
+
+Tre av handlingene i Tråkke kan startes uten at du åpner appen selv og leter deg fram i menyen. Det er ment for situasjonen de hører hjemme i: votter på, regn, telefonen i lomma.
+
+- **Start turopptak**: Begynner å ta opp turen.
+- **Stopp turopptak**: Avslutter opptaket og åpner lagre-arket.
+- **Marker stedet**: Lagrer posisjonen din som et sted. Stedet får dato og klokkeslett som navn, så du kan gi det et bedre navn senere.
+
+Du når dem på tre måter:
+
+- **Siri**: Si for eksempel «Start turopptak i Tråkke», «Stopp turopptak i Tråkke» eller «Marker stedet i Tråkke». Appnavnet må være med, ellers vet ikke Siri hvilken app du mener.
+- **Snarveier**: Handlingene ligger klare i Snarveier-appen under Tråkke. Derfra kan du sette dem sammen med andre handlinger eller legge dem på hjemskjermen.
+- **Handlingsknappen**: Har telefonen din handlingsknapp, kan du tilordne en av dem i Innstillinger → Handlingsknapp → Snarvei. Da starter du et turopptak med ett langt trykk.
+
+Alle tre åpner Tråkke før handlingen utføres. Det er med vilje: både turopptak og «Marker stedet» trenger en GPS-posisjon, og en handling som kjører uten å vise noe har verken tilgang til posisjonen eller tid til å vente på den. Når appen åpnes, ser du med én gang at noe skjedde, og om GPS-en er klar.
+
+Handlingene gjentar ikke seg selv. Ber du om «start turopptak» mens et opptak allerede går, fortsetter opptaket som før i stedet for å starte på nytt.
+
+Har ikke appen posisjonen din ennå når du ber om «Marker stedet», begynner den å lete etter den, og du får beskjed om å prøve igjen.

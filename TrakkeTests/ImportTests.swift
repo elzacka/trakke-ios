@@ -328,8 +328,49 @@ import Foundation
     #expect(activities[0].name == "Morgenløp")
     #expect(activities[0].trackPoints.count == 3)
     let firstPoint = activities[0].trackPoints[0]
-    #expect(firstPoint.count == 4, "[lon, lat, ele, timestamp]")
+    // Fila oppga høyde, så høydenøyaktigheten settes til «målt». Uten den
+    // ville en oppgitt høyde på 0 blitt lest som manglende data.
+    #expect(firstPoint.count == 8, "[lon, lat, ele, tid, nøyaktighet, fart, kurs, høydenøyaktighet]")
     #expect(firstPoint[2] == 10)
+    #expect(Activity.altitude(of: firstPoint) == 10)
+    #expect(Activity.speed(of: firstPoint) == nil)
+    #expect(Activity.course(of: firstPoint) == nil)
+    #expect(Activity.horizontalAccuracy(of: firstPoint) == nil)
+}
+
+/// Fart, kurs og nøyaktighet skal overleve en runde ut og inn. Uten dette
+/// tapte appen sine egne felt så snart en eksportert fil ble importert igjen.
+@Test func gpxImportReadsSpeedCourseAndAccuracyExtensions() throws {
+    let gpx = """
+    <?xml version="1.0" encoding="UTF-8"?>
+    <gpx version="1.1" creator="Test"
+      xmlns:trakke="https://github.com/elzacka/trakke-ios/xmlns"
+      xmlns:gpxtpx="https://www8.garmin.com/xmlschemas/TrackPointExtensionv2.xsd">
+      <trk><name>Med utvidelser</name><trkseg>
+        <trkpt lat="59.9" lon="10.7"><ele>10</ele><time>2026-05-19T08:00:00Z</time>
+          <extensions>
+            <gpxtpx:TrackPointExtension>
+              <gpxtpx:speed>1.75</gpxtpx:speed>
+              <gpxtpx:course>91.5</gpxtpx:course>
+            </gpxtpx:TrackPointExtension>
+            <trakke:hdop>6.5</trakke:hdop>
+          </extensions>
+        </trkpt>
+        <trkpt lat="59.91" lon="10.71"><ele>12</ele><time>2026-05-19T08:01:00Z</time></trkpt>
+      </trkseg></trk>
+    </gpx>
+    """
+    let url = try writeImportTempFile(gpx, name: "extensions.gpx")
+    let activities = try GPXImportService.parseActivities(from: url)
+    let first = try #require(activities.first?.trackPoints.first)
+    #expect(Activity.speed(of: first) == 1.75)
+    #expect(Activity.course(of: first) == 91.5)
+    #expect(Activity.horizontalAccuracy(of: first) == 6.5)
+
+    // Punktet uten utvidelser skal ikke arve verdiene fra det forrige.
+    let second = try #require(activities.first?.trackPoints.last)
+    #expect(Activity.speed(of: second) == nil)
+    #expect(Activity.course(of: second) == nil)
 }
 
 @Test func gpxImportPlannedRouteNotImportedAsActivity() throws {

@@ -6,9 +6,19 @@ import SwiftUI
 /// Supports two image types:
 /// - Asset catalog: `![caption](asset-name)` -- loads from Xcode assets
 /// - Species: `![caption](species:Scientific Name)` -- fetches from Artsdatabanken
+/// Identiteten til en h2-overskrift, slik at en visning utenfor artikkelen kan
+/// scrolle til den. Nøkkelen er selve overskriftsteksten som står i artikkelen.
+struct MarkdownHeadingAnchor: Hashable {
+    let heading: String
+}
+
 struct MarkdownBodyView: View {
     let markdown: String
     var imageService: ArtsdatabankenImageService = ArtsdatabankenImageService.default
+    /// Kalles når markdown er parset og overskriftene finnes i visningstreet.
+    /// `ArticleDetailView` scroller til et avsnitt herfra – en `scrollTo` før
+    /// dette finner ingen id, fordi blokkene ennå ikke er lagt ut.
+    var onParsed: (() -> Void)? = nil
     @State private var selectedImage: ImageRef?
     @State private var parsedBlocks: [MarkdownBlock]?
 
@@ -33,6 +43,10 @@ struct MarkdownBodyView: View {
         }
         .task(id: markdown) {
             parsedBlocks = MarkdownParser.parse(markdown, options: Self.parseOptions)
+            // Ett hopp i kjøresløyfa før varselet: blokkene er satt, men ikke
+            // lagt ut, og en scrollTo i samme steg treffer ingenting.
+            await Task.yield()
+            onParsed?()
         }
         .fullScreenCover(item: $selectedImage) { ref in
             if ref.isSpecies, let uiImage = ref.loadedImage {
@@ -56,6 +70,7 @@ struct MarkdownBodyView: View {
             inlineText(text)
                 .font(Font.Trakke.articleHeading)
                 .padding(.top, .Trakke.xl)
+                .id(MarkdownHeadingAnchor(heading: text))
 
         case .heading3(let text):
             inlineText(text)
@@ -225,19 +240,101 @@ private struct SpeciesImageBlock: View {
 
 // MARK: - Markdown Table View
 
+/// Renders a markdown table in one of two layouts.
+///
+/// **Why two.** An iPhone sheet gives the content about 340 pt. Split four ways
+/// that leaves roughly 65 pt of text per column, which is narrower than the
+/// words going into it: «Kartverket (cache.kartverket.no)» came out hyphenated
+/// across five lines as «Kartver-ket (cache.-kartver-ket.no)». A column that
+/// cannot fit one word is not a column.
+///
+/// So a table with three or more columns is stacked instead: one block per row,
+/// the first cell as its heading, the rest as label-and-value pairs. Nothing is
+/// dropped or truncated — the same cells are simply laid out down the screen
+/// rather than across it. Two-column tables are the common case (33 of the 41
+/// tables in the bundled articles) and stay side by side, because a label and
+/// its value read well in two narrow columns.
+///
+/// At accessibility text sizes even two columns stop fitting, so those stack too.
 struct MarkdownTableView: View {
     let headers: [String]
     let rows: [[String]]
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    private var isStacked: Bool {
+        headers.count >= 3 || dynamicTypeSize >= .accessibility1
+    }
+
     var body: some View {
+        Group {
+            if isStacked {
+                stackedLayout
+            } else {
+                gridLayout
+            }
+        }
+        .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))
+        .overlay(
+            RoundedRectangle(cornerRadius: .TrakkeRadius.lg)
+                .stroke(Color(.separator), lineWidth: 0.5)
+        )
+    }
+
+    // MARK: - Stacked (3+ columns, or accessibility sizes)
+
+    private var stackedLayout: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // Header row
-            HStack(spacing: 0) {
+            ForEach(Array(rows.enumerated()), id: \.offset) { rowIndex, row in
+                if rowIndex > 0 {
+                    Divider()
+                }
+                stackedRow(row)
+            }
+        }
+    }
+
+    private func stackedRow(_ row: [String]) -> some View {
+        // The first cell names the thing the row is about, so it becomes the
+        // heading. The remaining cells pair with their own column header, which
+        // is what replaces the header row the stacked layout has no room for.
+        VStack(alignment: .leading, spacing: .Trakke.sm) {
+            if let first = row.first {
+                Self.markdownText(first)
+                    .font(Font.Trakke.bodyRegular.weight(.semibold))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+
+            ForEach(Array(row.dropFirst().prefix(max(headers.count - 1, 0)).enumerated()), id: \.offset) { index, cell in
+                let trimmed = cell.trimmingCharacters(in: .whitespaces)
+                if !trimmed.isEmpty {
+                    VStack(alignment: .leading, spacing: .Trakke.labelGap) {
+                        Self.markdownText(headers[index + 1])
+                            .font(Font.Trakke.caption)
+                            .foregroundStyle(Color.Trakke.textSecondary)
+                        Self.markdownText(trimmed)
+                            .font(Font.Trakke.bodyRegular)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+            }
+        }
+        .padding(.vertical, .Trakke.cardPadV)
+        .padding(.horizontal, .Trakke.cardPadH)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .accessibilityElement(children: .combine)
+    }
+
+    // MARK: - Grid (2 columns)
+
+    private var gridLayout: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            HStack(alignment: .top, spacing: 0) {
                 ForEach(Array(headers.enumerated()), id: \.offset) { _, header in
                     Self.markdownText(header)
                         .font(Font.Trakke.bodyRegular.weight(.semibold))
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.vertical, .Trakke.xs)
+                        .padding(.vertical, .Trakke.rowVertical)
                         .padding(.horizontal, .Trakke.sm)
                 }
             }
@@ -245,7 +342,6 @@ struct MarkdownTableView: View {
 
             Divider()
 
-            // Data rows
             ForEach(Array(rows.enumerated()), id: \.offset) { rowIndex, row in
                 if rowIndex > 0 {
                     Divider()
@@ -255,17 +351,13 @@ struct MarkdownTableView: View {
                         Self.markdownText(cell)
                             .font(Font.Trakke.bodyRegular)
                             .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.vertical, .Trakke.xs)
+                            .padding(.vertical, .Trakke.rowVertical)
                             .padding(.horizontal, .Trakke.sm)
                     }
                 }
+                .accessibilityElement(children: .combine)
             }
         }
-        .clipShape(RoundedRectangle(cornerRadius: .TrakkeRadius.lg))
-        .overlay(
-            RoundedRectangle(cornerRadius: .TrakkeRadius.lg)
-                .stroke(Color(.separator), lineWidth: 0.5)
-        )
     }
 
     private static func markdownText(_ text: String) -> Text {

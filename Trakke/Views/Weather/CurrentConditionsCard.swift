@@ -4,6 +4,28 @@ import SwiftUI
 //
 // Ett kort svar over folden («er det greit nå?») + nøkkeltall
 // + valgfri akkordeon for sekundære detaljer. Ingen popovers.
+//
+// Kortet viser tall. Hva tallene betyr står i Kunnskap, og en verdi med en
+// forklaring navigerer dit i stedet for å gjenta forklaringen i et eget ark.
+// Før lå den samme teksten to steder – i et tooltip her og i artikkelen – og
+// de to kunne si forskjellige ting om samme fenomen.
+
+/// Hvor en verdi forklares i Kunnskap: artikkel-id og overskriften det
+/// scrolles til. `section` er teksten i overskriften slik den står i
+/// `SurvivalArticles.json`, ikke en UI-streng – endres en overskrift der, må
+/// den endres her. nil åpner artikkelen fra toppen.
+private struct WeatherExplanation {
+    let articleID: Int64
+    var section: String? = nil
+
+    static let temperature = WeatherExplanation(articleID: 38)
+    static let wind = WeatherExplanation(articleID: 37, section: "Beaufortskalaen")
+    static let precipitation = WeatherExplanation(articleID: 35, section: "Nedb\u{00F8}rsintensitet")
+    static let uv = WeatherExplanation(articleID: 36, section: "UV-indeksen")
+    static let pressure = WeatherExplanation(articleID: 34, section: "H\u{00F8}ytrykk og lavtrykk")
+    static let humidity = WeatherExplanation(articleID: 39)
+    static let airQuality = WeatherExplanation(articleID: 33, section: "Forurensningsniv\u{00E5}er")
+}
 
 struct CurrentConditionsCard: View {
     let data: WeatherData
@@ -12,12 +34,6 @@ struct CurrentConditionsCard: View {
     var daylight: SolarCalculator.DaylightInfo? = nil
 
     @State private var showMore = false
-    @State private var showTemperatureTooltip = false
-    @State private var showWindTooltip = false
-    @State private var showPrecipitationTooltip = false
-    @State private var showPressureTooltip = false
-    @State private var showHumidityTooltip = false
-    @State private var showUVTooltip = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
@@ -47,30 +63,21 @@ struct CurrentConditionsCard: View {
             // `ViewThatFits` faller tilbake til den stablede varianten når
             // teksten ikke får plass ved siden av. Ved store tekststørrelser
             // ville temperaturen ellers presset tilstanden ut av kortet.
-            ViewThatFits(in: .horizontal) {
-                heroSideBySide(
-                    tempRounded: tempRounded,
-                    apparentRounded: apparentRounded,
-                    apparentTemp: apparentTemp,
-                    showFeelsLike: showFeelsLike
-                )
-                heroStacked(
-                    tempRounded: tempRounded,
-                    apparentRounded: apparentRounded,
-                    apparentTemp: apparentTemp,
-                    showFeelsLike: showFeelsLike
-                )
-            }
-            .contentShape(Rectangle())
-            .onTapGesture { showTemperatureTooltip = true }
-            .accessibilityAddTraits(.isButton)
-            .accessibilityHint(String(localized: "accessibility.tapForExplanation"))
-            .trakkeTooltip(isPresented: $showTemperatureTooltip) {
-                TrakkeTooltipContent(
-                    title: String(localized: "weather.temperature"),
-                    text: String(localized: "weather.temperature.tooltip")
-                )
-                TooltipArticleLink(articleId: 38)
+            explains(.temperature) {
+                ViewThatFits(in: .horizontal) {
+                    heroSideBySide(
+                        tempRounded: tempRounded,
+                        apparentRounded: apparentRounded,
+                        apparentTemp: apparentTemp,
+                        showFeelsLike: showFeelsLike
+                    )
+                    heroStacked(
+                        tempRounded: tempRounded,
+                        apparentRounded: apparentRounded,
+                        apparentTemp: apparentTemp,
+                        showFeelsLike: showFeelsLike
+                    )
+                }
             }
 
             // Alle skillelinjene ligger i samme stabel med `spacing: 0`, så de
@@ -80,37 +87,22 @@ struct CurrentConditionsCard: View {
             VStack(spacing: 0) {
                 Divider().padding(.leading, .Trakke.dividerLeading)
 
-                statRow(
-                    label: String(localized: "weather.wind"),
-                    value: windValue
-                )
-                .contentShape(Rectangle())
-                .onTapGesture { showWindTooltip = true }
-                .accessibilityAddTraits(.isButton)
-                .accessibilityHint(String(localized: "accessibility.tapForExplanation"))
-                .trakkeTooltip(isPresented: $showWindTooltip) {
-                    TrakkeTooltipContent(
-                        title: String(localized: "weather.wind"),
-                        text: String(localized: "weather.wind.tooltip")
+                explains(.wind) {
+                    statRow(
+                        label: String(localized: "weather.wind"),
+                        value: windValue,
+                        explained: true
                     )
-                    TooltipArticleLink(articleId: 37)
                 }
 
                 Divider().padding(.leading, .Trakke.dividerLeading)
-                statRow(
-                    label: String(localized: "weather.precipitation"),
-                    value: precipValue
-                )
-                .contentShape(Rectangle())
-                .onTapGesture { showPrecipitationTooltip = true }
-                .accessibilityAddTraits(.isButton)
-                .accessibilityHint(String(localized: "accessibility.tapForExplanation"))
-                .trakkeTooltip(isPresented: $showPrecipitationTooltip) {
-                    TrakkeTooltipContent(
-                        title: String(localized: "weather.precipitation"),
-                        text: String(localized: "weather.precipitation.tooltip")
+
+                explains(.precipitation) {
+                    statRow(
+                        label: String(localized: "weather.precipitation"),
+                        value: precipValue,
+                        explained: true
                     )
-                    TooltipArticleLink(articleId: 35)
                 }
 
                 if let water, !water.bathingSpots.isEmpty || water.oceanTemperature != nil {
@@ -181,7 +173,10 @@ struct CurrentConditionsCard: View {
             }
             .multilineTextAlignment(.trailing)
             .fixedSize(horizontal: false, vertical: true)
+
+            TrakkeMenuRowChevron()
         }
+        .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
     }
 
@@ -215,7 +210,10 @@ struct CurrentConditionsCard: View {
             }
 
             Spacer()
+
+            TrakkeMenuRowChevron()
         }
+        .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
     }
 
@@ -259,7 +257,10 @@ struct CurrentConditionsCard: View {
         return "\(rounded) – \(category)"
     }
 
-    private func statRow(label: String, value: String) -> some View {
+    /// `explained` styrer chevronen: raden fører til en forklaring i Kunnskap.
+    /// Rader uten forklaring holder likevel av plassen, slik at alle verdiene
+    /// står i samme kolonne – samme grep som de skjulte hakene i listeradene.
+    private func statRow(label: String, value: String, explained: Bool = false) -> some View {
         HStack(spacing: .Trakke.md) {
             Text(label)
                 .font(Font.Trakke.bodyRegular)
@@ -275,10 +276,46 @@ struct CurrentConditionsCard: View {
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
                 .multilineTextAlignment(.trailing)
+
+            explanationChevron(explained)
         }
         .padding(.vertical, .Trakke.sm)
+        .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(label), \(value)")
+    }
+
+    @ViewBuilder
+    private func explanationChevron(_ visible: Bool) -> some View {
+        if visible {
+            TrakkeMenuRowChevron()
+        } else {
+            TrakkeMenuRowChevron()
+                .hidden()
+        }
+    }
+
+    // MARK: Forklaring i Kunnskap
+
+    /// Pakker en verdi i en lenke til artikkelen som forklarer den. Finner
+    /// oppslaget ingen artikkel, vises verdien uendret og uten trykkbar flate
+    /// – en lenke som ikke fører noe sted er verre enn ingen lenke.
+    @ViewBuilder
+    private func explains<Content: View>(
+        _ explanation: WeatherExplanation,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        if let article = BundledArticles.article(explanation.articleID) {
+            NavigationLink(
+                value: KnowledgeDestination.article(article, section: explanation.section)
+            ) {
+                content()
+            }
+            .buttonStyle(.plain)
+            .accessibilityHint(String(localized: "accessibility.tapForExplanation"))
+        } else {
+            content()
+        }
     }
 
     // MARK: Akkordeon (sekundære detaljer)
@@ -323,56 +360,33 @@ struct CurrentConditionsCard: View {
             // (sen kveld i Norge gir typisk UV 0–1 – sola er for lavt på
             // himmelen for at UV-B når bakken).
             if let uv = data.uvIndex {
-                statRow(
-                    label: String(localized: "weather.uv"),
-                    value: uvValueText(uv)
-                )
-                .contentShape(Rectangle())
-                .onTapGesture { showUVTooltip = true }
-                .accessibilityAddTraits(.isButton)
-                .accessibilityHint(String(localized: "accessibility.tapForExplanation"))
-                .trakkeTooltip(isPresented: $showUVTooltip) {
-                    TrakkeTooltipContent(
-                        title: String(localized: "weather.uv"),
-                        text: String(localized: "weather.uv.tooltip")
+                explains(.uv) {
+                    statRow(
+                        label: String(localized: "weather.uv"),
+                        value: uvValueText(uv),
+                        explained: true
                     )
                 }
                 Divider().padding(.leading, .Trakke.dividerLeading)
             }
 
             if let pressure = data.pressure {
-                statRow(
-                    label: String(localized: "weather.pressure"),
-                    value: MeasurementService.withUnit(MeasurementService.decimal(pressure, digits: 0), "hPa")
-                )
-                .contentShape(Rectangle())
-                .onTapGesture { showPressureTooltip = true }
-                .accessibilityAddTraits(.isButton)
-                .accessibilityHint(String(localized: "accessibility.tapForExplanation"))
-                .trakkeTooltip(isPresented: $showPressureTooltip) {
-                    TrakkeTooltipContent(
-                        title: String(localized: "weather.pressure"),
-                        text: String(localized: "weather.pressure.tooltip")
+                explains(.pressure) {
+                    statRow(
+                        label: String(localized: "weather.pressure"),
+                        value: MeasurementService.withUnit(MeasurementService.decimal(pressure, digits: 0), "hPa"),
+                        explained: true
                     )
-                    TooltipArticleLink(articleId: 34)
                 }
                 Divider().padding(.leading, .Trakke.dividerLeading)
             }
 
-            statRow(
-                label: String(localized: "weather.humidity"),
-                value: MeasurementService.withUnit(MeasurementService.decimal(data.humidity, digits: 0), "%")
-            )
-            .contentShape(Rectangle())
-            .onTapGesture { showHumidityTooltip = true }
-            .accessibilityAddTraits(.isButton)
-            .accessibilityHint(String(localized: "accessibility.tapForExplanation"))
-            .trakkeTooltip(isPresented: $showHumidityTooltip) {
-                TrakkeTooltipContent(
-                    title: String(localized: "weather.humidity"),
-                    text: String(localized: "weather.humidity.tooltip")
+            explains(.humidity) {
+                statRow(
+                    label: String(localized: "weather.humidity"),
+                    value: MeasurementService.withUnit(MeasurementService.decimal(data.humidity, digits: 0), "%"),
+                    explained: true
                 )
-                TooltipArticleLink(articleId: 39)
             }
 
             if let daylight {
@@ -390,10 +404,13 @@ struct CurrentConditionsCard: View {
 
             if let aq = airQuality, aq.aqiClass.rawValue < 3 {
                 Divider().padding(.leading, .Trakke.dividerLeading)
-                statRow(
-                    label: String(localized: "weather.airQuality"),
-                    value: aq.aqiClass.norwegianName
-                )
+                explains(.airQuality) {
+                    statRow(
+                        label: String(localized: "weather.airQuality"),
+                        value: aq.aqiClass.norwegianName,
+                        explained: true
+                    )
+                }
             }
 
             Divider().padding(.leading, .Trakke.dividerLeading)

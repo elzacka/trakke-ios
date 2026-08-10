@@ -37,6 +37,24 @@ import UIKit
     #expect(Levenshtein.distance("abc", "") == 3)
 }
 
+@Test func levenshteinNorwegianCharacters() {
+    // ae, oe, aa should be treated as single characters
+    #expect(Levenshtein.distance("baer", "baer") == 0)
+    #expect(Levenshtein.distance("sjo", "sjo") == 0)
+    #expect(Levenshtein.distance("gard", "gard") == 0)
+}
+
+@Test func levenshteinNorwegianOneEdit() {
+    #expect(Levenshtein.distance("bar", "baer") == 1)
+    #expect(Levenshtein.distance("sjoen", "sjen") == 1)
+}
+
+@Test func levenshteinNorwegianCaseDifference() {
+    // Case difference counts as edits (unicode characters)
+    let dist = Levenshtein.distance("Tromso", "tromso")
+    #expect(dist == 1)
+}
+
 // MARK: - Coordinate Parsing Tests
 
 @Test func parseDD() {
@@ -704,6 +722,18 @@ func poiCategoryIconName(category: POICategory) {
     #expect(!category.iconName.isEmpty)
 }
 
+@Test("Alle POI-ikoner finnes som asset eller SF Symbol",
+      arguments: POICategory.allCases)
+func poiCategoryIconResolves(category: POICategory) {
+    // `POIIconImage` faller stille tilbake til `Image(systemName:)`, og et
+    // SF Symbol-navn som ikke finnes gir ingen feil – bare et tomt kartsymbol.
+    // Fjorten kategorier kom til på én gang i august 2026, så navnene sjekkes
+    // her i stedet for ved å se på kartet.
+    let name = category.iconName
+    let resolved = UIImage(named: name) != nil || UIImage(systemName: name) != nil
+    #expect(resolved, "Ikon «\(name)» for \(category.rawValue) finnes ikke")
+}
+
 @Test("All POI categories have valid hex color strings",
       arguments: POICategory.allCases)
 func poiCategoryColor(category: POICategory) {
@@ -732,7 +762,15 @@ func poiCategoryMinZoom(category: POICategory) {
 }
 
 @Test("POI category count matches expected") func poiCategoryCount() {
-    #expect(POICategory.allCases.count == 13)
+    #expect(POICategory.allCases.count == 26)
+}
+
+@Test("Alle POI-kategorier har bundlede data",
+      arguments: POICategory.allCases)
+func poiCategoryHasBundledFile(category: POICategory) {
+    // Kravet er at hver kategori virker uten dekning. `kulturminner` var
+    // unntaket til UT.no-dataene ble bundlet.
+    #expect(category.isBundled)
 }
 
 // MARK: - Coordinate Edge Cases
@@ -1154,10 +1192,52 @@ func kartverketStyleJSON(layer: BaseLayer) {
     await MainActor.run {
         sheets.present(.waypointList)
         #expect(sheets.active == .waypointList)
-        sheets.present(.tracks)
-        #expect(sheets.active == .tracks)
         sheets.dismissAll()
     }
+    let active = await sheets.active
+    #expect(active == nil)
+}
+
+/// Et bytte fra ett ark til et annet kan ikke skje i samme runde: SwiftUI
+/// presenterer bare ett ark per view om gangen, og å sette `active` rett over
+/// et åpent ark gjorde at det nye aldri kom («Currently, only presenting a
+/// single sheet is supported»). Byttet lukker derfor først og presenterer etter.
+@Test func sheetCoordinatorSwapClosesFirstThenPresents() async {
+    let sheets = await SheetCoordinator()
+    await MainActor.run {
+        sheets.present(.waypointList)
+        sheets.present(.tracks)
+        #expect(sheets.active == nil)
+    }
+    try? await Task.sleep(for: .milliseconds(50))
+    let active = await sheets.active
+    #expect(active == .tracks)
+}
+
+/// Menyen eies av `ContentView`, så koordinatoren får vite om den via flagget.
+/// Uten det ville et trykk på en POI bak den åpne menyen presentert direkte
+/// oppå menyen, og arket ville uteblitt.
+@Test func sheetCoordinatorDefersWhenMenuIsOpen() async {
+    let sheets = await SheetCoordinator()
+    await MainActor.run {
+        sheets.present(.poiDetail, otherSheetIsOpen: true)
+        #expect(sheets.active == nil)
+    }
+    try? await Task.sleep(for: .milliseconds(50))
+    let active = await sheets.active
+    #expect(active == .poiDetail)
+}
+
+/// «Slett alle data» lukker arkene. Et utsatt bytte som rakk å bli bestilt før
+/// det, skal ikke vekke arket til live igjen og vise data som nettopp ble slettet.
+@Test func sheetCoordinatorDismissCancelsPendingPresent() async {
+    let sheets = await SheetCoordinator()
+    await MainActor.run {
+        sheets.present(.waypointList)
+        sheets.present(.tracks)   // utsatt
+        sheets.dismissAll()
+    }
+    try? await Task.sleep(for: .milliseconds(50))
     let active = await sheets.active
     #expect(active == nil)
 }
@@ -1509,6 +1589,7 @@ func kartverketStyleJSON(layer: BaseLayer) {
         #expect(!article.title.isEmpty, "Article id \(article.id) has empty title")
         #expect(!article.body.isEmpty, "Article id \(article.id) '\(article.title)' has empty body")
         #expect(!article.category.isEmpty, "Article id \(article.id) '\(article.title)' has empty category")
+        #expect(article.theme == "survival", "Article id \(article.id) '\(article.title)' has unexpected theme '\(article.theme)'")
     }
 }
 

@@ -80,10 +80,6 @@ final class SearchViewModel {
         }
     }
 
-    func selectResult(_ result: SearchResult) {
-        selectedResult = result
-    }
-
     func clearSearch() {
         query = ""
         results = []

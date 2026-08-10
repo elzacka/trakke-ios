@@ -17,6 +17,10 @@ struct WeatherSheet: View {
                     .tint(Color.Trakke.brand)
                     .navigationTitle(String(localized: "weather.title"))
                     .navigationBarTitleDisplayMode(.inline)
+                    // Værverdiene lenker til forklaringen i Kunnskap. Uten
+                    // denne registreringen gjør trykket ingenting når arket
+                    // står i sin egen NavigationStack.
+                    .knowledgeDestinations(viewModel: nil)
             }
         }
     }
